@@ -21,48 +21,52 @@
       "folder": "slides/04-platform"
     },
     {
-      "id": "05-hyperscalers",
-      "folder": "slides/05-hyperscalers"
+      "id": "05-platform-use-cases",
+      "folder": "slides/05-platform-use-cases"
     },
     {
-      "id": "06-innovations",
-      "folder": "slides/06-innovations"
+      "id": "06-hyperscalers",
+      "folder": "slides/06-hyperscalers"
     },
     {
-      "id": "07-devzero",
-      "folder": "slides/07-devzero"
+      "id": "07-innovations",
+      "folder": "slides/07-innovations"
     },
     {
-      "id": "08-resilience",
-      "folder": "slides/08-resilience"
+      "id": "08-devzero",
+      "folder": "slides/08-devzero"
     },
     {
-      "id": "09-governance",
-      "folder": "slides/09-governance"
+      "id": "09-resilience",
+      "folder": "slides/09-resilience"
     },
     {
-      "id": "10-customers",
-      "folder": "slides/10-customers"
+      "id": "10-governance",
+      "folder": "slides/10-governance"
     },
     {
-      "id": "11-packages",
-      "folder": "slides/11-packages"
+      "id": "11-customers",
+      "folder": "slides/11-customers"
     },
     {
-      "id": "12-delivery",
-      "folder": "slides/12-delivery"
+      "id": "12-packages",
+      "folder": "slides/12-packages"
     },
     {
-      "id": "13-partners",
-      "folder": "slides/13-partners"
+      "id": "13-delivery",
+      "folder": "slides/13-delivery"
     },
     {
-      "id": "14-demo",
-      "folder": "slides/14-demo"
+      "id": "14-partners",
+      "folder": "slides/14-partners"
     },
     {
-      "id": "15-closing",
-      "folder": "slides/15-closing"
+      "id": "15-demo",
+      "folder": "slides/15-demo"
+    },
+    {
+      "id": "16-closing",
+      "folder": "slides/16-closing"
     }
   ]
 }

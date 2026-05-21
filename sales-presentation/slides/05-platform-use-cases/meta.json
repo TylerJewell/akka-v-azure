@@ -1,15 +1,15 @@
 {
-  "id": "07-devzero",
-  "nav_id": "s5-wrapper",
+  "id": "05-platform-use-cases",
+  "nav_id": "platform-pattern-wrapper",
   "pre_spacer": 0,
   "scroll": {
-    "envelope_vh": "140vh"
+    "envelope_vh": "180vh"
   },
   "reveals": {
     "scroll_progress": null,
     "intersection": [
       {
-        "selector": ".s5-reveal",
+        "selector": ".pp-reveal",
         "threshold": 0.15
       }
     ]

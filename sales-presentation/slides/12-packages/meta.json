@@ -1,15 +1,19 @@
 {
-  "id": "05-hyperscalers",
-  "nav_id": "s6b-wrapper",
+  "id": "12-packages",
+  "nav_id": "pkg-wrapper",
   "pre_spacer": 0,
   "scroll": {
-    "envelope_vh": "180vh"
+    "envelope_vh": "calc(100vh + 300px)"
   },
   "reveals": {
     "scroll_progress": null,
     "intersection": [
       {
-        "selector": ".s6b-reveal",
+        "selector": ".pkg-reveal",
+        "threshold": 0.15
+      },
+      {
+        "selector": ".pkg-tier",
         "threshold": 0.15
       }
     ]

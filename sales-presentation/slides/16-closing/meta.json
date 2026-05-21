@@ -1,15 +1,15 @@
 {
-  "id": "06-innovations",
-  "nav_id": "s13-wrapper",
+  "id": "16-closing",
+  "nav_id": "closing",
   "pre_spacer": 0,
   "scroll": {
-    "envelope_vh": "180vh"
+    "envelope_vh": "100vh"
   },
   "reveals": {
     "scroll_progress": null,
     "intersection": [
       {
-        "selector": ".s13-reveal",
+        "selector": ".closing-reveal",
         "threshold": 0.15
       }
     ]
