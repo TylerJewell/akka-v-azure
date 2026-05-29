@@ -29,14 +29,14 @@ const views = [
   }
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight') {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
       e.preventDefault();
       var idx = currentViewIndex();
       if (idx < views.length - 1) {
         views[idx + 1].scrollIntoView({ behavior: 'smooth' });
       }
     }
-    if (e.key === 'ArrowLeft') {
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
       e.preventDefault();
       var idx = currentViewIndex();
       var scrollY = window.scrollY || window.pageYOffset;

@@ -14,7 +14,11 @@
       }
     ]
   },
-  "images": [],
+  "images": [
+    "customers/dojo.png",
+    "customers/tubi.jpg",
+    "customers/manulife.jpg"
+  ],
   "include_in": [
     "overview",
     "shareable",

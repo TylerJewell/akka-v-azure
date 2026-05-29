@@ -64,8 +64,9 @@
   display: flex; flex-direction: column;
   gap: 0;
   padding-left: 32px;
-  align-self: center;
-  margin-top: -40px;
+  align-self: flex-start;
+  /* align top with the graphic, not the headline */
+  margin-top: 290px;
 }
 
 .s4-prop {
@@ -78,7 +79,12 @@
 .s4-prop-num {
   font-size: clamp(24px, 2.2vw, 34px); font-weight: 700;
   color: #28C840; letter-spacing: -0.04em; line-height: 1;
-  flex-shrink: 0; width: 160px; text-align: right;
+  flex-shrink: 0; width: 180px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.s4-arrow {
+  display: inline-block; margin-right: 6px;
+  font-family: 'JetBrains Mono', 'Instrument Sans', monospace;
 }
 .s4-prop-text { flex: 1; min-width: 0; }
 .s4-prop-title {
