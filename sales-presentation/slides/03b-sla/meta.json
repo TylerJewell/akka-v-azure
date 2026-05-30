@@ -1,0 +1,23 @@
+{
+  "id": "03b-sla",
+  "nav_id": "s-sla-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "250vh"
+  },
+  "reveals": {
+    "intersection": [
+      {
+        "selector": "[data-sla]",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}
