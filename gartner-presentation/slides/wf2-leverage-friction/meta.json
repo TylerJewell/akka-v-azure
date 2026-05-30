@@ -1,0 +1,25 @@
+{
+  "id": "wf2-leverage-friction",
+  "nav_id": "wf2-wrapper",
+  "section": 1,
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "160vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".wf2-reveal",
+        "threshold": 0.2
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

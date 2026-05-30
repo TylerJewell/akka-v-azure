@@ -1,0 +1,78 @@
+#thankyou {
+  height: 100vh; min-height: 680px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#thankyou::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#thankyou::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+#thankyou > * { position: relative; z-index: 2; }
+
+.ty-logo {
+  margin-bottom: 36px;
+  opacity:0; transform:translateY(16px); animation: fadeUp .6s ease forwards .2s;
+}
+.ty-logo svg { height: 44px; width: auto; }
+
+.ty-headline {
+  font-size: clamp(44px, 6.5vw, 92px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 22px;
+  opacity:0; transform:translateY(16px); animation: fadeUp .6s ease forwards .4s;
+}
+.ty-headline .accent { color: var(--yellow); }
+
+.ty-sub {
+  font-size: clamp(12px, 1.2vw, 16px); color: var(--gray); font-weight: 600;
+  letter-spacing: 4px; line-height: 1.5; margin-bottom: 44px;
+  opacity:0; transform:translateY(16px); animation: fadeUp .5s ease forwards .6s;
+}
+
+.ty-divider {
+  width: 56px; height: 3px; background: var(--yellow); margin-bottom: 36px;
+  opacity:0; animation: fadeUp .5s ease forwards .8s;
+}
+
+.ty-presenter {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  opacity:0; transform:translateY(16px); animation: fadeUp .5s ease forwards .9s;
+}
+.ty-presenter > a {
+  color: var(--white); text-decoration: none;
+  font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
+  display: inline-flex; align-items: center; gap: 8px; transition: color .2s ease;
+}
+.ty-presenter > a:hover { color: var(--yellow); }
+.ty-presenter > a svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+.ty-title {
+  font-size: 12px; color: var(--gray); text-transform: uppercase;
+  letter-spacing: 2px; font-weight: 600;
+}
+.ty-contact {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 8px; margin-top: 8px; font-size: 14px;
+}
+.ty-contact a { color: #b8b8b8; text-decoration: none; transition: color .2s ease; }
+.ty-contact a:hover { color: var(--yellow); }
+.ty-contact-dot { color: #555; }
+
+.ty-qr {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: 32px;
+  opacity:0; transform:translateY(16px); animation: fadeUp .5s ease forwards 1.1s;
+}
+.ty-qr img {
+  width: 132px; height: 132px; background: #fff; padding: 9px;
+  border-radius: 10px; display: block;
+}
+.ty-qr span {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--gray);
+}

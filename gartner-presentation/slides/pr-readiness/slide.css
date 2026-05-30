@@ -1,0 +1,62 @@
+#pr-readiness-wrapper { position: relative; }
+#pr {
+  min-height: 100vh;
+  background: var(--black);
+  color: var(--white);
+  padding: 52px var(--pad-8) 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#pr-readiness-wrapper .accent { color: var(--yellow); }
+.pr-inner { max-width: 1240px; margin: 0 auto; width: 100%; }
+.pr-head { margin-bottom: 20px; }
+.pr-eyebrow {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--yellow); margin-bottom: 16px;
+}
+.pr-headline {
+  font-size: clamp(28px, 3.8vw, 48px); font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 14px;
+}
+.pr-table { border-top: 1px solid rgba(255,255,255,0.14); }
+.pr-colhead { display: grid; grid-template-columns: 1fr 1fr; }
+.pr-ch {
+  padding: 10px 22px; font-size: clamp(15px, 1.5vw, 19px); font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.pr-ch-base { color: rgba(255,255,255,0.5); }
+.pr-ch-ai {
+  color: var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-left: 1px solid rgba(245,197,24,0.28);
+}
+.pr-ch-ai::before { content: "+ "; }
+
+.pr-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.pr-base, .pr-ai {
+  padding: 10px 22px;
+  font-size: clamp(15px, 1.5vw, 18px); line-height: 1.3;
+}
+.pr-base { color: rgba(255,255,255,0.72); }
+.pr-area {
+  display: block; font-size: clamp(16px, 1.65vw, 20px); font-weight: 700;
+  color: var(--white); margin-bottom: 4px; letter-spacing: -0.01em;
+}
+.pr-ai {
+  color: rgba(255,255,255,0.88);
+  background: rgba(245,197,24,0.05);
+  border-left: 1px solid rgba(245,197,24,0.28);
+}
+
+.pr-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.pr-reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 820px) {
+  .pr-colhead { display: none; }
+  .pr-row { grid-template-columns: 1fr; }
+  .pr-ai { border-left: none; border-top: 1px dashed rgba(245,197,24,0.3); }
+}

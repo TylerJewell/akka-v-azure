@@ -1,0 +1,24 @@
+{
+  "id": "06-hyperscalers",
+  "nav_id": "s6b-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "180vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".s6b-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

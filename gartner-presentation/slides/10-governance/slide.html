@@ -1,0 +1,286 @@
+<div id="s7-problem">
+  <div id="s7-problem-sticky">
+    <div class="s7-eyebrow" data-s7="0">Akka Governance Platform</div>
+    <div class="s7-problem-headline" data-s7="0">Evaluation is not <span class="accent">control.</span></div>
+    <div class="s7-problems">
+      <div class="s7-prob" data-s7="0">
+        <div class="s7-prob-stat">&euro;35M Penalties</div>
+        <div class="s7-prob-text">174 regulatory frameworks &mdash; all of them changing. Which ones apply to your agents? How do you re-posture every time they shift? EU AI Act penalties alone reach &euro;35M.</div>
+      </div>
+      <div class="s7-prob" data-s7="0">
+        <div class="s7-prob-stat">Outside Looking In</div>
+        <div class="s7-prob-text">Governance tools observe AI from the outside. They can't enforce at agent boundaries, can't gate a deployment, can't link a policy decision to the human who approved it. They produce reports &mdash; not proof.</div>
+      </div>
+      <div class="s7-prob" data-s7="0">
+        <div class="s7-prob-stat">PB+</div>
+        <div class="s7-prob-text">Petabyte-scale storage for regulatory holds &mdash; 10-year retention for high-risk AI under EU AI Act Art. 72. Copied logs aren't tamper-proof. When auditors come, you need hash-chains &mdash; not hope. Governance isn't cheap; it has to be built in.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s7-answer-wrapper">
+<div id="s7-answer">
+  <div class="s7-eyebrow s7-reveal">The control loop</div>
+  <div class="s7-answer-headline s7-reveal">Akka's governance is a runtime control loop: <span class="accent">Classify, Approve, Enforce, Prove.</span></div>
+
+  <div class="s7-control-loop s7-reveal">
+    <div class="s7-loop-main">
+      <div class="s7-loop-steps">
+        <div class="s7-loop-step">
+          <div class="s7-step-body">
+            <div class="s7-step-title">Classify</div>
+            <div class="s7-step-text">Map each AI system to 174 frameworks and 521 controls to derive its obligation set.</div>
+          </div>
+        </div>
+        <div class="s7-loop-arrow"></div>
+        <div class="s7-loop-step">
+          <div class="s7-step-body">
+            <div class="s7-step-title">Approve</div>
+            <div class="s7-step-text">Route dossiers through Legal, Risk, Security, Model Risk, and business-owner sign-off recipes.</div>
+          </div>
+        </div>
+        <div class="s7-loop-arrow"></div>
+        <div class="s7-loop-step">
+          <div class="s7-step-body">
+            <div class="s7-step-title">Enforce</div>
+            <div class="s7-step-text">Apply guardrails, eval checkpoints, HITL gates, policy decisions, and containment inline.</div>
+          </div>
+        </div>
+        <div class="s7-loop-arrow"></div>
+        <div class="s7-loop-step">
+          <div class="s7-step-body">
+            <div class="s7-step-title">Prove</div>
+            <div class="s7-step-text">Emit non-sampled interaction logs, evidence bundles, legal holds, retention state, and audit records.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s7-side-col s7-impact-col">
+      <div class="s7-loop-label">Runtime safety</div>
+      <div class="s7-floating-list">
+        <div class="s7-floating-item">Policies stay current as regulations change.</div>
+        <div class="s7-floating-item">Unsafe actions are stopped before execution, not scored later.</div>
+        <div class="s7-floating-item">Every decision has a runtime evidence trail.</div>
+        <div class="s7-floating-item">Separate AI eval and observability tools become optional, not required.</div>
+      </div>
+    </div>
+
+    <div class="s7-side-col s7-reg-col">
+      <div class="s7-reg-count">174</div>
+      <div class="s7-reg-caption">AI regulations<br>monitored</div>
+      <div class="s7-reg-list">
+        <div class="s7-reg-item">EU AI Act</div>
+        <div class="s7-reg-item">DORA</div>
+        <div class="s7-reg-item">GDPR</div>
+        <div class="s7-reg-item">HIPAA</div>
+        <div class="s7-reg-item">NIST AI RMF</div>
+        <div class="s7-reg-item">ISO 42001</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s7-proof-strip s7-reveal">
+    <div class="s7-proof-box proof-posture"><img src="images/governance-posture.png" alt="Governance posture"></div>
+    <div class="s7-proof-box proof-log"><img src="images/interaction-log.png" alt="Interaction log"></div>
+    <div class="s7-proof-box proof-control"><img src="images/control-detail.png" alt="Control detail"></div>
+    <div class="s7-proof-box proof-authoring"><img src="images/policy-authoring.png" alt="Policy authoring"></div>
+    <div class="s7-proof-box proof-sandbox"><img src="images/policy-sandbox.png" alt="Policy sandbox"></div>
+    <div class="s7-proof-box proof-audit"><img src="images/audit.png" alt="Audit package"></div>
+  </div>
+
+  <div class="s7-answer-layout s7-reveal">
+  <div class="s7-carousel-section">
+    <div class="s7-carousel" id="s7Carousel">
+      <div class="s7-carousel-track" id="s7Track">
+
+        <!-- Slide 1: Every Agent, Everywhere -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img" style="display:flex; flex-direction:column; justify-content:center; padding:32px 24px; gap:16px; background:#080808;">
+            <div style="display:grid; grid-template-columns:1fr; gap:12px;">
+              <div style="background:#0f1117; border:1px solid #222; border-left:3px solid #3fb950; border-radius:8px; padding:16px 18px;">
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:2px; color:#3fb950; font-weight:700; margin-bottom:6px;">Akka-Native</div>
+                <div style="font-size:13px; color:#ccc; line-height:1.4;">Full interior enforcement — event journal, tool metadata, session memory, delegation chains. Every decision logged.</div>
+              </div>
+              <div style="background:#0f1117; border:1px solid #222; border-left:3px solid #d29922; border-radius:8px; padding:16px 18px;">
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:2px; color:#d29922; font-weight:700; margin-bottom:6px;">Hybrid</div>
+                <div style="font-size:13px; color:#ccc; line-height:1.4;">Akka proxy in the call path for external agents — OpenAI, Anthropic, LangChain, CrewAI. Wire-level signals: prompts, responses, tokens, timing.</div>
+              </div>
+              <div style="background:#0f1117; border:1px solid #222; border-left:3px solid #8b949e; border-radius:8px; padding:16px 18px;">
+                <div style="font-size:10px; text-transform:uppercase; letter-spacing:2px; color:#8b949e; font-weight:700; margin-bottom:6px;">Proxy-Only</div>
+                <div style="font-size:13px; color:#ccc; line-height:1.4;">No instrumentation required. Governance via signed attestation documents — Model Cards, DPIAs, Red-Team Reports, SOC 2.</div>
+              </div>
+            </div>
+          </div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">01 / 08</div>
+            <div class="s7-slide-title">Every Agent, Everywhere</div>
+            <div class="s7-slide-desc">Akka governs every agent in your environment &mdash; not just the ones you built on Akka. Three coverage tiers adapt to how deeply you can observe each system, from full interior enforcement to proxy-level signals to signed attestations from vendors.</div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Living Regulatory Corpus -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img" style="display:flex; flex-direction:column; justify-content:center; padding:32px 28px; background:#080808; gap:20px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div style="background:#0f1117; border:1px solid #222; border-radius:6px; padding:14px 16px; text-align:center;">
+                <div style="font-size:36px; font-weight:700; color:#F5C518; letter-spacing:-2px; line-height:1;">174</div>
+                <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1.5px; margin-top:4px;">Frameworks in Corpus</div>
+              </div>
+              <div style="background:#0f1117; border:1px solid #222; border-radius:6px; padding:14px 16px; text-align:center;">
+                <div style="font-size:36px; font-weight:700; color:#F5C518; letter-spacing:-2px; line-height:1;">521</div>
+                <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1.5px; margin-top:4px;">Mapped Controls</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:2px;">Continuously monitored</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">EU AI Act</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">GDPR</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">HIPAA</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">DORA</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">SR 11-7</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">ISO 42001</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">NIST AI RMF</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">Colorado AI Act</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">NYC LL 144</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">South Korea AI Act</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">Brazil PL 2338</span>
+                <span style="font-size:11px; background:#111; border:1px solid #222; border-radius:4px; padding:3px 8px; color:#999;">+ 163 more</span>
+              </div>
+            </div>
+            <div style="background:rgba(245,197,24,0.05); border:1px solid rgba(245,197,24,0.15); border-radius:6px; padding:10px 14px;">
+              <div style="font-size:12px; color:#aaa; line-height:1.4;">Every change mapped to controls, automatically applied to every deployed system. When a regulation updates, affected agents are flagged for re-assessment.</div>
+            </div>
+          </div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">02 / 08</div>
+            <div class="s7-slide-title">Living Regulatory Corpus</div>
+            <div class="s7-slide-desc">174 regulatory frameworks, continuously monitored. Each one mapped to controls, controls mapped to enforcement points. When a regulation changes, Akka identifies every affected deployed system and triggers re-assessment &mdash; automatically.</div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Governance Posture Dashboard -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/governance-posture.png" alt="Governance Posture Dashboard"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">03 / 08</div>
+            <div class="s7-slide-title">Governance Posture Dashboard</div>
+            <div class="s7-slide-desc">Article-by-article regulatory coverage mapped to every deployed system in real time. 174 frameworks. 521 controls. Violations, halted executions, rubber-stamped HITL, and scope drift &mdash; surfaced the moment they happen, not reconstructed from logs after the fact.</div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Immutable Coordination Log -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/interaction-log.png" alt="Immutable Coordination Log"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">04 / 08</div>
+            <div class="s7-slide-title">Immutable Coordination Log</div>
+            <div class="s7-slide-desc">Every agent coordination event &mdash; delegation, tool call, HITL gate, LLM invocation &mdash; captured automatically by the runtime. Zero developer instrumentation. Hash-chained for tamper-proof evidence. EU AI Act Art. 12 retention tiers built in. This is the source of truth.</div>
+          </div>
+        </div>
+
+        <!-- Slide 5: Policy Authoring & Sign-off -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/control-detail.png" alt="Policy Authoring and Sign-off"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">05 / 08</div>
+            <div class="s7-slide-title">Policy Authoring &amp; Sign-off</div>
+            <div class="s7-slide-desc">Governance is a deployment pre-condition, not an afterthought. Each control maps to exact regulatory articles, specifies runtime enforcement requirements (guardrails, observability), and requires sign-off from every relevant persona &mdash; Legal, Ethics, Model Risk, Security. No signed bundle, no deployment.</div>
+          </div>
+        </div>
+
+        <!-- Slide 6: Runtime Monitoring -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/policy-authoring.png" alt="Runtime Monitoring Metrics"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">06 / 08</div>
+            <div class="s7-slide-title">Bring Your Monitors</div>
+            <div class="s7-slide-desc">34 types of outcome metrics &mdash; PSI, AUC degradation, Gini, bias ratios, and more &mdash; evaluated against live rolling-window feeds. Akka provides baseline probes, but more importantly integrates with your existing monitoring stack and the best-in-class third-party monitors your organization has already chosen. 135 tunable parameters. No lock-in.</div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Policy Sandbox -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/policy-sandbox.png" alt="Policy Sandbox"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">07 / 08</div>
+            <div class="s7-slide-title">Policy Sandbox</div>
+            <div class="s7-slide-desc">Test policy changes against every historical scenario before they go live. See exactly which agents break, which pass, and what regresses &mdash; against your real corpus of controls. Catch the blast radius of a regulatory update before it hits production.</div>
+          </div>
+        </div>
+
+        <!-- Slide 5: Governance Posture Package -->
+        <div class="s7-carousel-slide">
+          <div class="s7-slide-img"><img src="images/audit.png" alt="Governance Posture Package"></div>
+          <div class="s7-slide-text">
+            <div class="s7-slide-num">08 / 08</div>
+            <div class="s7-slide-title">Governance Posture Package</div>
+            <div class="s7-slide-desc">A signed, portable compliance artifact that travels with every deployment. Cryptographically links every human approval to the deployed system. Classification, coverage dossier, attestation documents, and version history &mdash; in one artifact your auditors, regulators, and board can verify.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="s7-carousel-arrows">
+        <button class="s7-carousel-arrow" onclick="s7Prev()">&#8249;</button>
+        <button class="s7-carousel-arrow" onclick="s7Next()">&#8250;</button>
+      </div>
+    </div>
+    <div class="s7-carousel-nav" id="s7Dots"></div>
+  </div>
+
+  <div class="s7-features">
+    <div class="s7-feat-col">
+      <div class="s7-feat-col-title">Platform</div>
+      <div class="s7-feat-item">Inline guardrails</div>
+      <div class="s7-feat-item">HITL gate enforcement</div>
+      <div class="s7-feat-item">LLMs-as-judges</div>
+      <div class="s7-feat-item">PII sanitization</div>
+      <div class="s7-feat-item">Verifiable agent identity</div>
+      <div class="s7-feat-item">Deployment gate</div>
+      <div class="s7-feat-item">Multi-persona sign-off</div>
+      <div class="s7-feat-item">Policy sandbox</div>
+      <div class="s7-feat-item">Native, hybrid &amp; proxy</div>
+      <div class="s7-feat-item">Posture package</div>
+      <div class="s7-feat-item">Immutable interaction log</div>
+      <div class="s7-feat-item">Hash-chained journal</div>
+      <div class="s7-feat-item">Petabyte-scale retention</div>
+      <div class="s7-feat-item">10-yr retention (Art. 12)</div>
+      <div class="s7-feat-item">Auditor-signed records</div>
+      <div class="s7-feat-item">Zero instrumentation</div>
+      <div class="s7-feat-item">Per-transaction evaluation</div>
+      <div class="s7-feat-item">Parameter sign-off gates</div>
+      <div class="s7-feat-item">Corpus drift auto-flagging</div>
+      <div class="s7-feat-item">Risk classification engine</div>
+      <div class="s7-feat-item">Sign-off recipe engine</div>
+      <div class="s7-feat-item">Change materiality gate</div>
+    </div>
+    <div class="s7-feat-col">
+      <div class="s7-feat-col-title">174 Frameworks</div>
+      <div class="s7-feat-item">EU AI Act</div>
+      <div class="s7-feat-item">GDPR</div>
+      <div class="s7-feat-item">HIPAA</div>
+      <div class="s7-feat-item">DORA</div>
+      <div class="s7-feat-item">NIST AI RMF</div>
+      <div class="s7-feat-item">ISO/IEC 42001</div>
+      <div class="s7-feat-item">SOC 2</div>
+      <div class="s7-feat-item">Colorado AI Act</div>
+      <div class="s7-feat-item">NYC Local Law 144</div>
+      <div class="s7-feat-item">Illinois HB 3773</div>
+      <div class="s7-feat-item">California AB 2013</div>
+      <div class="s7-feat-item">Utah AI Policy Act</div>
+      <div class="s7-feat-item">China GenAI Measures</div>
+      <div class="s7-feat-item">South Korea AI Act</div>
+      <div class="s7-feat-item">Brazil PL 2338</div>
+      <div class="s7-feat-item">UK AI Regulation Bill</div>
+      <div class="s7-feat-item">Singapore AI Framework</div>
+      <div class="s7-feat-item">OECD AI Principles</div>
+      <div class="s7-feat-item">Council of Europe AI</div>
+      <div class="s7-feat-item">SR 11-7</div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>

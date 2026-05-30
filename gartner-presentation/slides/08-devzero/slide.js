@@ -1,0 +1,338 @@
+(function() {
+  var script = [
+    { type:'cmd', text:'/akka:specify "Customer loyalty program with points, tiers, and rewards"', phase:'specify' },
+    { type:'ai',  text:'How should points expire? Fixed calendar window, rolling from last activity, or never?' },
+    { type:'ok',  text:'[specify] spec.md written \u2714  Branch: 001-loyalty-service' },
+    { type:'blank' },
+
+    { type:'cmd', text:'/akka:clarify "Rolling 12-month expiry. Grace period before tier downgrade."', phase:'specify' },
+    { type:'ok',  text:'[clarify] spec.md updated \u2714  2 decisions captured', trigger:'spec' },
+    { type:'blank' },
+
+    { type:'cmd', text:'/akka:plan "High-perf APIs, read data in views. Host client app in backend."', phase:'specify' },
+    { type:'ok',  text:'[plan] plan.md written \u2714  Event Sourced Entities, Views, Endpoints + SPA' },
+    { type:'blank' },
+
+    { type:'cmd', text:'/akka:tasks && /akka:implement && /akka:build', phase:'implement' },
+    { type:'lines', items: [
+      { text:'[tasks] 6 tasks generated, dependency-ordered \u2714', cls:'ok' },
+      { text:'[implement] Writing entities, endpoints, views, workflow...', cls:'ai' },
+      { text:'[implement] 989 lines across 12 files \u2714  50/50 tests passing', cls:'ok' },
+      { text:'[build] mvn compile \u2714  mvn test \u2714  running on :8080', cls:'ok' },
+    ], trigger:'arch'},
+    { type:'blank' },
+
+    { type:'cmd', text:'/akka:review && /akka:analyze && /akka:deploy', phase:'deploy' },
+    { type:'lines', items: [
+      { text:'[review] Spec compliance 100% \u2714  Coverage 94%', cls:'ok' },
+      { text:'[analyze] Full cross-artifact traceability \u2714', cls:'ok' },
+      { text:'[deploy] Container built \u2714  Routes configured \u2714  loyalty.acme.akka.app', cls:'ai' },
+      { text:'[deploy] Live on your Akka cloud \u2714  Active-active HA, 3 replicas', cls:'ok' },
+    ]},
+    { type:'blank' },
+    { type:'warn', text:'\u2728 loyalty-service is live. Spec to production in 2 hours, 14 minutes.' },
+  ];
+
+  var body = document.getElementById('s5TermBody');
+  var specCard = document.getElementById('s5Spec');
+  var archCard = document.getElementById('s5Arch');
+  var props = document.querySelectorAll('.s5-prop');
+  var currentPhase = null;
+  var cursorEl = null;
+
+  var CMD_CHAR_MS  = 24;
+  var PAUSE_AFTER_CMD = 350;
+  var WAIT_BEFORE_RESPONSE = 450;
+  var PAUSE_AFTER_STEP = 380;
+
+  function scroll() { body.scrollTop = body.scrollHeight; }
+
+  function removeCursor() {
+    if (cursorEl) { cursorEl.remove(); cursorEl = null; }
+  }
+
+  function addCursor(parent) {
+    removeCursor();
+    cursorEl = document.createElement('span');
+    cursorEl.className = 's5-cursor';
+    parent.appendChild(cursorEl);
+  }
+
+  function highlightProp(phase) {
+    if (phase && phase !== currentPhase) {
+      currentPhase = phase;
+      props.forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-phase') === phase);
+      });
+    }
+  }
+
+  /* Artifact reveal + terminal reset logic */
+  var revealQueue = [specCard, archCard];
+  var revealIdx = 0;
+  var s5Anchored = false;
+  var s5Running = false;
+  var s5DownCount = 0;
+  var s5WrapperEl = document.getElementById('s5-wrapper');
+
+  var s5UpCount = 0;
+  var s5State = 'idle'; /* idle | forward | reverse | done */
+  var runToken = 0;     /* incremented on reset to invalidate in-flight typing chains */
+
+  function fillTerminalFull() {
+    body.innerHTML = '';
+    removeCursor();
+    for (var i = 0; i < script.length; i++) {
+      var step = script[i];
+      if (step.type === 'cmd') {
+        var d = document.createElement('div');
+        d.className = 's5-tline';
+        d.innerHTML = '<span class="prompt">$ </span><span class="cmd">' + step.text + '</span>';
+        body.appendChild(d);
+      } else if (step.type === 'blank') {
+        var d = document.createElement('div');
+        d.className = 's5-tline';
+        d.innerHTML = '&nbsp;';
+        body.appendChild(d);
+      } else if (step.type === 'lines') {
+        for (var j = 0; j < step.items.length; j++) {
+          var item = step.items[j];
+          var c = item.cls === 'ok' ? 'success' : 'ai';
+          instantLine(c, item.text, j === 0);
+        }
+      } else {
+        var cls = step.type === 'ok' ? 'success' : (step.type === 'warn' ? 'warn' : step.type);
+        instantLine(cls, step.text, true);
+      }
+    }
+    var end = document.createElement('div');
+    end.className = 's5-tline';
+    end.innerHTML = '<span class="prompt">$ </span>';
+    body.appendChild(end);
+    addCursor(end);
+  }
+
+  function resetS5() {
+    runToken++;
+    body.innerHTML = '';
+    removeCursor();
+    specCard.classList.remove('show');
+    archCard.classList.remove('show');
+    revealIdx = 0;
+    s5DownCount = 0;
+    s5UpCount = 0;
+    currentPhase = null;
+    props.forEach(function(p) { p.classList.remove('active'); });
+    s5Running = false;
+    s5Anchored = false;
+    s5State = 'idle';
+  }
+
+  function completeS5() {
+    if (s5State !== 'forward' || !s5Running) return;
+    runToken++;
+    fillTerminalFull();
+    specCard.classList.add('show');
+    archCard.classList.add('show');
+    revealIdx = revealQueue.length;
+    s5DownCount = 0;
+    currentPhase = null;
+    props.forEach(function(p) { p.classList.remove('active'); });
+    s5Running = false;
+    s5State = 'done';
+  }
+
+  function checkS5() {
+    var wTop = s5WrapperEl.offsetTop;
+    var wHeight = s5WrapperEl.offsetHeight;
+    var wBottom = wTop + wHeight;
+    var scrollY = window.scrollY;
+    var viewBottom = scrollY + window.innerHeight;
+
+    var progress = (scrollY - wTop) / (wHeight - window.innerHeight);
+
+    var pastBelow = scrollY > wBottom;
+    var pastAbove = viewBottom < wTop;
+    var inView = !pastAbove && !pastBelow;
+    var anchored = progress >= 0 && progress <= 1;
+
+    if (pastAbove || pastBelow) {
+      if (s5State !== 'idle') resetS5();
+      return;
+    }
+
+    if (s5State === 'idle' && inView) {
+      /* Wrapper just entered viewport — determine direction */
+      if (viewBottom > wBottom - 10) {
+        /* Bottom of wrapper is near bottom of viewport = scrolling up from below */
+        s5State = 'reverse';
+        s5Running = true;
+        s5Anchored = true;
+        fillTerminalFull();
+        specCard.classList.add('show');
+        archCard.classList.add('show');
+        revealIdx = 2;
+        s5UpCount = 0;
+      } else {
+        /* Forward entry — section in view (nav jump or scroll-in from above) */
+        s5State = 'forward';
+        s5Anchored = true;
+        s5Running = true;
+        var t = runToken;
+        setTimeout(function() { run(0, t); }, 600);
+      }
+    }
+
+    /* Forward: detect when we first anchor */
+    if (s5State === 'forward' && anchored && !s5Anchored) {
+      s5Anchored = true;
+      if (!s5Running) {
+        s5Running = true;
+        var t2 = runToken;
+        setTimeout(function() { run(0, t2); }, 600);
+      }
+    }
+
+    /* Forward: also reveal cards by scroll progress so fast scrollers see them */
+    if (s5State === 'forward' && anchored) {
+      if (progress >= 0.35 && !specCard.classList.contains('show')) {
+        specCard.classList.add('show');
+        if (revealIdx < 1) revealIdx = 1;
+      }
+      if (progress >= 0.65 && !archCard.classList.contains('show')) {
+        archCard.classList.add('show');
+        if (revealIdx < 2) revealIdx = 2;
+      }
+    }
+
+    /* Reverse: peel off artifacts based on scroll progress toward top */
+    if (s5State === 'reverse' && anchored) {
+      /* progress 1 = bottom of wrapper, 0 = top. As we scroll up, progress decreases */
+      if (progress < 0.55 && archCard.classList.contains('show')) {
+        archCard.classList.remove('show');
+      }
+      if (progress < 0.25 && specCard.classList.contains('show')) {
+        specCard.classList.remove('show');
+      }
+    }
+  }
+  window.addEventListener('scroll', checkS5, { passive: true });
+
+  document.addEventListener('keydown', function(e) {
+    if (!s5Anchored) return;
+
+    if (e.key === 'ArrowDown' && s5State === 'forward' && s5Running) {
+      e.preventDefault();
+      completeS5();
+    }
+
+  });
+
+  function fireTrigger(t) {
+    if (t === 'spec' && !specCard.classList.contains('show')) {
+      specCard.classList.add('show');
+      if (revealIdx < 1) revealIdx = 1;
+    }
+    if (t === 'arch' && !archCard.classList.contains('show')) {
+      archCard.classList.add('show');
+      if (revealIdx < 2) revealIdx = 2;
+    }
+  }
+
+  function typeText(span, text, charMs, cb, token) {
+    var i = 0;
+    function tick() {
+      if (token !== runToken) return;
+      if (i < text.length) {
+        span.textContent += text[i]; i++;
+        scroll();
+        setTimeout(tick, charMs);
+      } else { if (cb) cb(); }
+    }
+    tick();
+  }
+
+  var AI_PREFIX_HTML = '<span class="ai-prefix">AI &rarr; </span>';
+  var AI_INDENT_HTML = '<span class="ai-indent">       </span>';
+
+  function instantLine(cls, text, isFirst) {
+    var div = document.createElement('div');
+    div.className = 's5-tline';
+    div.innerHTML = (isFirst ? AI_PREFIX_HTML : AI_INDENT_HTML)
+      + '<span class="' + cls + '">' + text + '</span>';
+    body.appendChild(div);
+    scroll();
+  }
+
+  function run(idx, token) {
+    if (token !== runToken) return;
+    if (idx >= script.length) {
+      removeCursor();
+      var end = document.createElement('div');
+      end.className = 's5-tline';
+      end.innerHTML = '<span class="prompt">$ </span>';
+      body.appendChild(end);
+      addCursor(end);
+      scroll();
+      props.forEach(function(p) { p.classList.remove('active'); });
+      s5Running = false;
+      s5State = 'done';
+      return;
+    }
+
+    var step = script[idx];
+    if (step.phase) highlightProp(step.phase);
+
+    if (step.type === 'blank') {
+      var bl = document.createElement('div');
+      bl.className = 's5-tline';
+      bl.innerHTML = '&nbsp;';
+      body.appendChild(bl);
+      scroll();
+      setTimeout(function() { run(idx + 1, token); }, 120);
+
+    } else if (step.type === 'cmd') {
+      var line = document.createElement('div');
+      line.className = 's5-tline';
+      line.innerHTML = '<span class="prompt">$ </span>';
+      var cmdSpan = document.createElement('span');
+      cmdSpan.className = 'cmd';
+      line.appendChild(cmdSpan);
+      body.appendChild(line);
+      addCursor(line);
+      scroll();
+      typeText(cmdSpan, step.text, CMD_CHAR_MS, function() {
+        if (token !== runToken) return;
+        removeCursor();
+        setTimeout(function() { run(idx + 1, token); }, PAUSE_AFTER_CMD);
+      }, token);
+
+    } else if (step.type === 'ai' || step.type === 'ok' || step.type === 'warn') {
+      var clsMap = { ai:'ai', ok:'success', warn:'warn' };
+      setTimeout(function() {
+        if (token !== runToken) return;
+        instantLine(clsMap[step.type], step.text, true);
+        if (step.trigger) fireTrigger(step.trigger);
+        setTimeout(function() { run(idx + 1, token); }, PAUSE_AFTER_STEP);
+      }, WAIT_BEFORE_RESPONSE);
+
+    } else if (step.type === 'lines') {
+      setTimeout(function() {
+        if (token !== runToken) return;
+        var clsMap = { ok:'success', ai:'ai' };
+        step.items.forEach(function(item, i) {
+          instantLine(clsMap[item.cls] || 'success', item.text, i === 0);
+        });
+        if (step.trigger) fireTrigger(step.trigger);
+        setTimeout(function() { run(idx + 1, token); }, PAUSE_AFTER_STEP);
+      }, WAIT_BEFORE_RESPONSE);
+    }
+  }
+
+  var revObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('#s5 .s5-reveal').forEach(function(el) { revObs.observe(el); });
+})();

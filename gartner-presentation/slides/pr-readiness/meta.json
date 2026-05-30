@@ -1,0 +1,25 @@
+{
+  "id": "pr-readiness",
+  "nav_id": "pr-readiness-wrapper",
+  "section": 2,
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "160vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".pr-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

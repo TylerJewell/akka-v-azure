@@ -1,0 +1,25 @@
+{
+  "id": "07-innovations",
+  "nav_id": "s13-wrapper",
+  "section": 2,
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "180vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".s13-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

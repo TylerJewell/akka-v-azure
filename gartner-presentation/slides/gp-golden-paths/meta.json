@@ -1,0 +1,25 @@
+{
+  "id": "gp-golden-paths",
+  "nav_id": "gp-wrapper",
+  "section": 3,
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "160vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".gp-reveal",
+        "threshold": 0.2
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}
