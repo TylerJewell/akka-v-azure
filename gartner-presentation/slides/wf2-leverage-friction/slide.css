@@ -55,6 +55,7 @@
 .wf2-col-lev .wf2-pts li::before { background: var(--yellow); }
 .wf2-col-fric .wf2-pts li::before { background: #F97316; }
 .wf2-term { font-weight: 800; color: var(--white); }
+.wf2-col-fric .wf2-pts li { white-space: nowrap; }
 .wf2-col-note {
   margin-top: 22px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);
   font-size: 13.5px; line-height: 1.45; color: rgba(255,255,255,0.6);
@@ -72,4 +73,5 @@
 
 @media (max-width: 820px) {
   .wf2-split { grid-template-columns: 1fr; }
+  .wf2-col-fric .wf2-pts li { white-space: normal; }
 }

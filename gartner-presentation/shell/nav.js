@@ -2,7 +2,7 @@
 
 const views = [
     document.getElementById('title'),
-    document.getElementById('hero'),
+    document.getElementById('hero-wrapper'),
     document.getElementById('s4-wrapper'),
     document.getElementById('platform-pattern-wrapper'),
     document.getElementById('wf1-wrapper'),
@@ -18,11 +18,15 @@ const views = [
     document.getElementById('thankyou'),
   ].filter(Boolean);
 
+  function viewTop(el) {
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+
   function currentViewIndex() {
     var scrollY = window.scrollY || window.pageYOffset;
     var best = 0;
     for (var i = 0; i < views.length; i++) {
-      if (views[i].offsetTop <= scrollY + 10) best = i;
+      if (viewTop(views[i]) <= scrollY + 10) best = i;
     }
     return best;
   }
@@ -32,7 +36,7 @@ const views = [
       e.preventDefault();
       var idx = currentViewIndex();
       if (idx < views.length - 1) {
-        views[idx + 1].scrollIntoView({ behavior: 'smooth' });
+        window.scrollTo({ top: viewTop(views[idx + 1]), behavior: 'smooth' });
       }
     }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
@@ -40,10 +44,10 @@ const views = [
       var idx = currentViewIndex();
       var scrollY = window.scrollY || window.pageYOffset;
       // If we're partway into the current view, go to its top first
-      if (scrollY > views[idx].offsetTop + 10 && idx >= 0) {
-        views[idx].scrollIntoView({ behavior: 'smooth' });
+      if (scrollY > viewTop(views[idx]) + 10 && idx >= 0) {
+        window.scrollTo({ top: viewTop(views[idx]), behavior: 'smooth' });
       } else if (idx > 0) {
-        views[idx - 1].scrollIntoView({ behavior: 'smooth' });
+        window.scrollTo({ top: viewTop(views[idx - 1]), behavior: 'smooth' });
       }
     }
   });

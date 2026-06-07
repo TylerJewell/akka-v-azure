@@ -1,3 +1,6 @@
-generated/
+# Built HTML + assets are tracked so they can be shared via GitHub.
+# Keep the heavy zip archive out of version control.
+generated/*.zip
+generated/**/*.zip
 __pycache__/
 *.pyc
