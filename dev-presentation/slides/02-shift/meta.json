@@ -1,0 +1,9 @@
+{
+  "id": "02-shift",
+  "nav_id": "slide-02",
+  "section": 1,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

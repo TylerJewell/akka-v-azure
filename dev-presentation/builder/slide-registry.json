@@ -1,0 +1,48 @@
+{
+  "slides": [
+    {
+      "id": "00-title",
+      "folder": "slides/00-title"
+    },
+    {
+      "id": "01-foundation",
+      "folder": "slides/01-foundation"
+    },
+    {
+      "id": "02-shift",
+      "folder": "slides/02-shift"
+    },
+    {
+      "id": "03-trust-loop",
+      "folder": "slides/03-trust-loop"
+    },
+    {
+      "id": "04-akka-move",
+      "folder": "slides/04-akka-move"
+    },
+    {
+      "id": "05-evalmatrix",
+      "folder": "slides/05-evalmatrix"
+    },
+    {
+      "id": "06-control-loci",
+      "folder": "slides/06-control-loci"
+    },
+    {
+      "id": "07-human-controls",
+      "folder": "slides/07-human-controls"
+    },
+    {
+      "id": "08-layering",
+      "folder": "slides/08-layering"
+    },
+    {
+      "id": "09-harness-roadmap",
+      "folder": "slides/09-harness-roadmap"
+    },
+    {
+      "id": "10-whiteboard",
+      "folder": "slides/10-whiteboard"
+    }
+  ]
+}

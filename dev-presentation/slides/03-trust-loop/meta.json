@@ -1,0 +1,9 @@
+{
+  "id": "03-trust-loop",
+  "nav_id": "slide-03",
+  "section": 1,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

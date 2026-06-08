@@ -1,0 +1,9 @@
+{
+  "id": "04-akka-move",
+  "nav_id": "slide-04",
+  "section": 2,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

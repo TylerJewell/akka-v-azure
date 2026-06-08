@@ -1,0 +1,9 @@
+{
+  "id": "10-whiteboard",
+  "nav_id": "slide-10",
+  "section": 0,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

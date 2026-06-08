@@ -1,0 +1,9 @@
+{
+  "id": "07-human-controls",
+  "nav_id": "slide-07",
+  "section": 3,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

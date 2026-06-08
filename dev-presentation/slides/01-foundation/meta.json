@@ -1,0 +1,9 @@
+{
+  "id": "01-foundation",
+  "nav_id": "slide-01",
+  "section": 1,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}
