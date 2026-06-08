@@ -61,7 +61,8 @@ python build-index.py
 
 It pulls each deck's link text from its first-slide headline, the kicker from that
 slide's subtitle, and the `Last updated` date from the last commit on the linked file
-(`git log -1 --format=%cs`). Each deck is listed once.
+(`git log -1 --format=%cs`). Each deck is listed once, **ordered latest-updated first**
+(by the linked file's last commit time).
 
 To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
 `build-index.py` — its `dir` and the published `link` (e.g.

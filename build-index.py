@@ -18,6 +18,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # One entry per published deck. `link` is the Pages-relative entry point the
 # landing page points at (and whose git history sets the "Last updated" date).
+# List order does not matter — the page is rendered latest-updated first.
 PRESENTATIONS = [
     {"dir": "gartner-presentation", "link": "gartner-presentation/generated/akka-gartner-deck.html"},
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/overview/"},
@@ -45,6 +46,16 @@ def last_commit_date(link):
     return out or "unpublished"
 
 
+def last_commit_epoch(link):
+    """Unix timestamp of the last commit touching `link` (0 if uncommitted).
+    Used to order decks latest-first — finer than the displayed YYYY-MM-DD date."""
+    out = subprocess.run(
+        ["git", "log", "-1", "--format=%ct", "--", link],
+        cwd=ROOT, capture_output=True, text=True,
+    ).stdout.strip()
+    return int(out) if out.isdigit() else 0
+
+
 def render_item(p):
     title_html = os.path.join(ROOT, p["dir"], "slides", "00-title", "slide.html")
     title = slide_text(title_html, "h1", "title-headline")
@@ -59,7 +70,9 @@ def render_item(p):
     )
 
 
-items = "\n".join(render_item(p) for p in PRESENTATIONS)
+# Order decks latest-updated first (by last commit on the linked file).
+ordered = sorted(PRESENTATIONS, key=lambda p: last_commit_epoch(p["link"]), reverse=True)
+items = "\n".join(render_item(p) for p in ordered)
 
 PAGE = """<!DOCTYPE html>
 <html lang="en">
@@ -96,6 +109,6 @@ PAGE = """<!DOCTYPE html>
 with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
     f.write(PAGE)
 
-print("Wrote index.html with %d presentation(s):" % len(PRESENTATIONS))
-for p in PRESENTATIONS:
+print("Wrote index.html with %d presentation(s), latest first:" % len(ordered))
+for p in ordered:
     print("  - %s  (%s)" % (p["link"], last_commit_date(p["link"])))
