@@ -21,6 +21,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 PRESENTATIONS = [
     {"dir": "gartner-presentation", "link": "gartner-presentation/generated/akka-gartner-deck.html"},
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/overview/"},
+    {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
 ]
 
 
