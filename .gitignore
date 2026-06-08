@@ -1,8 +1,8 @@
 # Claude Code per-machine settings
 .claude/
 
-# Sales presentation build outputs
-sales-presentation/generated/
+# Build outputs are governed per-presentation (see */.gitignore):
+# only the published overview build is tracked.
 
 # Python
 __pycache__/

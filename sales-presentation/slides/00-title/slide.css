@@ -64,6 +64,7 @@
 }
 .title-presenter a:hover { color: var(--yellow); }
 .title-presenter a svg { width: 13px; height: 13px; fill: currentColor; flex-shrink: 0; }
+.title-presenter-email a { font-size: 13px; font-weight: 600; color: var(--gray); }
 .title-presenter-title {
   font-size: 12px; color: var(--gray); text-transform: uppercase;
   letter-spacing: 2px; font-weight: 600;
