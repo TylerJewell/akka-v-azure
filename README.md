@@ -16,7 +16,8 @@ GitHub Pages.
   builder/bundle.py   (Gartner) inlines images -> single-file generated/akka-gartner-deck.html
   presenters/*.json   name / title / email / linkedin for personalized builds
   generated/          build output served by Pages
-index.html            the landing page that lists every deck
+build-index.py        regenerates index.html (titles from slides, dates from git log)
+index.html            the landing page that lists every deck (generated — do not hand-edit)
 .nojekyll             tells Pages to serve files verbatim (do not delete)
 ```
 
@@ -50,16 +51,22 @@ index.html            the landing page that lists every deck
 - Each presentation's own `.gitignore` governs its `generated/`; the root `.gitignore`
   must not blanket-ignore a presentation's published build.
 
-### 5. Update index.html
-When adding a presentation (or changing a title/date), edit `index.html`:
-- One `<li>` per presentation — **list each deck once** (no duplicate entries).
-- **Link text = the deck's first-slide title** (not the file name).
-- Link target = the published entry point
-  (`<name>-presentation/generated/overview/` or the single-file deck).
-- Summary line = the deck's subtitle + `Last updated <YYYY-MM-DD>`, where the date is the
-  last commit on the linked file:
-  `git log -1 --format=%cs -- <path-to-linked-file>`.
-- These dates are hardcoded; refresh them whenever you republish a deck.
+### 5. Regenerate index.html
+The landing page is generated — **do not hand-edit `index.html`**. After (re)building a
+deck, run:
+
+```bash
+python build-index.py
+```
+
+It pulls each deck's link text from its first-slide headline, the kicker from that
+slide's subtitle, and the `Last updated` date from the last commit on the linked file
+(`git log -1 --format=%cs`). Each deck is listed once.
+
+To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
+`build-index.py` — its `dir` and the published `link` (e.g.
+`<name>-presentation/generated/overview/` or a single-file deck) — then re-run it and
+commit `index.html`.
 
 ## Publishing
 
