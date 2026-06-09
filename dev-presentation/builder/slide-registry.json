@@ -59,6 +59,10 @@
     {
       "id": "14-whiteboard",
       "folder": "slides/14-whiteboard"
+    },
+    {
+      "id": "15-azure-comparison",
+      "folder": "slides/15-azure-comparison"
     }
   ]
 }

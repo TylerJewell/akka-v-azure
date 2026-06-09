@@ -1,0 +1,72 @@
+.azure-comparison-slide {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+.azure-comparison-slide .slide-head.compact {
+  margin-bottom: 20px;
+}
+.azure-comparison-slide .slide-head h2 {
+  font-size: 39px;
+  line-height: 1.05;
+}
+.source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.source-links a {
+  border: 1px solid rgba(245,197,24,.32);
+  background: rgba(245,197,24,.07);
+  color: #ece2ad;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .25px;
+  text-decoration: none;
+}
+.comparison-table {
+  display: grid;
+  border: 1px solid var(--line);
+  background: rgba(16,17,22,.9);
+}
+.comparison-row {
+  display: grid;
+  grid-template-columns: 270px 260px 1fr;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.comparison-row:first-child { border-top: 0; }
+.comparison-row span {
+  min-width: 0;
+  padding: 9px 13px;
+  color: #d7d8df;
+  font-size: 12.5px;
+  line-height: 1.22;
+}
+.comparison-row span:not(:last-child) {
+  border-right: 1px solid rgba(255,255,255,.1);
+}
+.comparison-row strong {
+  color: var(--white);
+  font-weight: 900;
+}
+.comparison-head {
+  background: rgba(245,197,24,.09);
+}
+.comparison-head span {
+  color: var(--yellow) !important;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 10.5px;
+  font-weight: 900;
+}
+@media (max-width: 1000px) {
+  .comparison-row {
+    grid-template-columns: 1fr;
+  }
+  .comparison-row span:not(:last-child) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+}

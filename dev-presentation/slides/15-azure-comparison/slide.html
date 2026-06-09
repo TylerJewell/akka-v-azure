@@ -1,0 +1,22 @@
+<section id="slide-15" class="deck-slide azure-comparison-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Competitive reference</div>
+    <h2>Microsoft Foundry announcements <span class="accent">validate the governance-first direction</span>.</h2>
+    <div class="source-links">
+      <a href="https://thenewstack.io/microsoft-foundry-build-2026-ai-agents/">The New Stack article</a>
+      <a href="https://devblogs.microsoft.com/foundry/build-2026-open-trust-stack-ai-agents/">Microsoft trust stack announcement</a>
+      <a href="https://devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-build-2026/">Microsoft Foundry Build edition</a>
+    </div>
+  </div>
+  <div class="comparison-table">
+    <div class="comparison-row comparison-head"><span>Microsoft announcement</span><span>Rough Akka equivalent</span><span>Difference in our thinking</span></div>
+    <div class="comparison-row"><span><strong>ASSERT</strong> policy-driven evaluation</span><span><strong>EvalMatrix + EvalKit</strong></span><span>ASSERT sounds like eval generation from policies; our stronger frame is that EvalMatrix is the business/risk/legal source artifact that also drives generated controls.</span></div>
+    <div class="comparison-row"><span><strong>Agent Control Specification</strong></span><span><strong>Generated Controls / Guardrails / Control Loci</strong></span><span>ACS appears focused on deterministic runtime checkpoints: input, LLM, state, tool, output. Our control loci are broader: runtime, HITL, HOTL, CI/CD, deployment, evidence, periodic metrics.</span></div>
+    <div class="comparison-row"><span><strong>Guided Guardrail Setup</strong></span><span><strong>EvalMatrix authoring assistance</strong></span><span>Microsoft helps developers choose guardrails. We want non-dev governance teams to define posture, then Specify generates the controls.</span></div>
+    <div class="comparison-row"><span><strong>Rubric evaluator</strong></span><span><strong>Evaluation / Observation model</strong></span><span>Microsoft emphasizes quality scoring. Our richer opportunity is typed observations: fairness drift, disclosure timing, HITL effectiveness, audit freshness, retention, coverage gaps.</span></div>
+    <div class="comparison-row"><span><strong>Tracing/evals across frameworks via OpenTelemetry</strong></span><span><strong>Interaction Log + TestKit/EvalKit</strong></span><span>OTel gives trace portability. Our point should be evidence-grade execution history that feeds regression, compliance proof, HITL/HOTL, and generated datasets.</span></div>
+    <div class="comparison-row"><span><strong>Purview DLP in Foundry</strong></span><span><strong>Runtime guardrails for data minimization / PII egress</strong></span><span>Strong Microsoft fit because they own enterprise data policy. We should treat this as an integration point and keep our posture layer broader.</span></div>
+    <div class="comparison-row"><span><strong>Agent 365 registry / Defender / Entra / Intune</strong></span><span><strong>Agent Directory + Governance Registry distinction</strong></span><span>Microsoft is strong on estate discovery and security control plane. Our differentiation is the governance record: what system is approved, under what EvalMatrix, with what evidence.</span></div>
+    <div class="comparison-row"><span><strong>MXC / Windows 365 isolated agents</strong></span><span><strong>Deployment/security substrate</strong></span><span>Useful containment layer, but not governance by itself. It enforces where/how agents run; it does not define the governance posture.</span></div>
+  </div>
+</section>
