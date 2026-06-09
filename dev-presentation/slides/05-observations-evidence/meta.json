@@ -1,0 +1,9 @@
+{
+  "id": "01d-observations-evidence",
+  "nav_id": "slide-01d",
+  "section": 5,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

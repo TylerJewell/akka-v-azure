@@ -361,39 +361,124 @@ body {
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 02-shift */
+/* 02-observations-model */
+.observation-table {
+  display: grid;
+  border: 1px solid var(--line);
+  background: rgba(16,17,22,.88);
+}
+.observation-slide {
+  padding-top: 54px;
+  padding-bottom: 54px;
+}
+.observation-slide .slide-head.compact {
+  margin-bottom: 22px;
+}
+.observation-slide .slide-head h2 {
+  font-size: 42px;
+  line-height: 1.04;
+}
+.observation-slide .slide-head p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.28;
+  max-width: 980px;
+}
+.observation-row {
+  display: grid;
+  grid-template-columns: 190px 190px 190px 1fr;
+  min-height: 34px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.observation-row:first-child { border-top: 0; }
+.observation-row span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 12px;
+  color: #d7d8df;
+  font-size: 13.4px;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.observation-row span:not(:last-child) {
+  border-right: 1px solid rgba(255,255,255,.1);
+}
+.observation-row span:first-child {
+  color: var(--white);
+  font-weight: 850;
+}
+.observation-head {
+  background: rgba(245,197,24,.09);
+}
+.observation-head span {
+  color: var(--yellow) !important;
+  text-transform: uppercase;
+  letter-spacing: 1.7px;
+  font-size: 11px;
+  font-weight: 900;
+}
+@media (max-width: 1000px) {
+  .observation-row {
+    grid-template-columns: 1fr;
+  }
+  .observation-row span {
+    white-space: normal;
+  }
+  .observation-row span:not(:last-child) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+}
+
+
+/* 03-observations-governance */
+/* Observation table styles are defined on the first observation slide. */
+
+
+/* 04-observations-corpus */
+/* Observation table styles are defined on the first observation slide. */
+
+
+/* 05-observations-evidence */
+/* Observation table styles are defined on the first observation slide. */
+
+
+/* 06-shift */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 03-trust-loop */
+/* 07-trust-loop */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 04-akka-move */
+/* 08-akka-move */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 05-evalmatrix */
+/* 09-evalmatrix */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 06-control-loci */
+/* 10-control-loci */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 07-human-controls */
+/* 11-human-controls */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 08-layering */
+/* 12-layering */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 09-harness-roadmap */
+/* 13-harness-roadmap */
 /* Slide-specific overrides intentionally minimal. */
 
 
-/* 10-whiteboard */
+/* 14-whiteboard */
 /* Slide-specific overrides intentionally minimal. */
 
 </style>
@@ -425,6 +510,89 @@ body {
     <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Prove</div><div class="stat-text">What evidence shows the posture actually operated?</div></div>
   </div>
   <div class="whiteboard-prompt">Whiteboard: what would make a probabilistic decision trustworthy?</div>
+</section>
+
+
+<section id="slide-01a" class="deck-slide observation-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observation examples</div>
+    <h2>Evaluations can observe <span class="accent">model behavior</span>.</h2>
+    <p>Each observation is a typed fact. It may feed a guardrail, gate, dashboard, evidence record, or alert.</p>
+  </div>
+  <div class="observation-table">
+    <div class="observation-row observation-head"><span>Observation</span><span>Trigger</span><span>Useful in</span><span>Regulatory pattern</span></div>
+    <div class="observation-row"><span>Groundedness</span><span>Model response</span><span>EvalKit, live sample</span><span>EU AI Act transparency; consumer protection</span></div>
+    <div class="observation-row"><span>Factual consistency</span><span>Response or tool result</span><span>EvalKit, live sample</span><span>Credit, healthcare, financial advice controls</span></div>
+    <div class="observation-row"><span>Hallucination risk</span><span>Model response</span><span>EvalKit, safety gate</span><span>AI safety, unfair/deceptive practice controls</span></div>
+    <div class="observation-row"><span>Rationale quality</span><span>Decision output</span><span>EvalKit, live audit</span><span>FCRA adverse action; GDPR Art. 22; EU AI Act Art. 86</span></div>
+    <div class="observation-row"><span>Calibration</span><span>EvalSuite run</span><span>Model testing</span><span>SR 11-7; model-risk validation</span></div>
+    <div class="observation-row"><span>Robustness</span><span>Prompt or context variant</span><span>AI testing, release gate</span><span>EU AI Act accuracy and robustness</span></div>
+    <div class="observation-row"><span>Refusal fit</span><span>EvalCase or live sample</span><span>Safety testing</span><span>Prohibited practices; acceptable-use controls</span></div>
+    <div class="observation-row"><span>Prompt injection</span><span>Tool or model event</span><span>Red team, live monitor</span><span>SOC 2 security; OWASP LLM risks</span></div>
+    <div class="observation-row"><span>Regression delta</span><span>Candidate EvalRun</span><span>EvalKit CI</span><span>Release governance; model-risk change control</span></div>
+  </div>
+</section>
+
+
+<section id="slide-01b" class="deck-slide observation-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observation examples</div>
+    <h2>Evaluations can observe <span class="accent">runtime boundaries</span>.</h2>
+    <p>These observations explain whether the running system stayed inside its approved authority and human-review design.</p>
+  </div>
+  <div class="observation-table">
+    <div class="observation-row observation-head"><span>Observation</span><span>Trigger</span><span>Useful in</span><span>Regulatory pattern</span></div>
+    <div class="observation-row"><span>Tool authority</span><span>Tool event</span><span>TestKit, live</span><span>Least privilege; access-control controls</span></div>
+    <div class="observation-row"><span>Scope adherence</span><span>Workflow or tool event</span><span>TestKit, live</span><span>Purpose limitation; approved system definition</span></div>
+    <div class="observation-row"><span>Data minimization</span><span>Tool payload or response</span><span>Guardrail input, live</span><span>GDPR; HIPAA privacy controls</span></div>
+    <div class="observation-row"><span>Residency fit</span><span>Integration event</span><span>Live, deploy gate</span><span>GDPR transfers; residency controls</span></div>
+    <div class="observation-row"><span>HITL reached</span><span>Workflow event</span><span>TestKit, live</span><span>EU AI Act Art. 14; human oversight</span></div>
+    <div class="observation-row"><span>HITL effectiveness</span><span>Human response</span><span>Periodic metric</span><span>Human oversight; rubber-stamping risk</span></div>
+    <div class="observation-row"><span>HOTL quality</span><span>Human-source Evaluation</span><span>EvalKit, live QA</span><span>Reviewer calibration; model-risk QA</span></div>
+    <div class="observation-row"><span>Queue SLA</span><span>Queue metric</span><span>Live, periodic</span><span>Operational oversight; review timeliness</span></div>
+  </div>
+</section>
+
+
+<section id="slide-01c" class="deck-slide observation-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observation examples</div>
+    <h2>Evaluations can observe <span class="accent">corpus-derived metrics</span>.</h2>
+    <p>These are the periodic, metric-driven observations that turn regulatory obligations into measurable posture.</p>
+  </div>
+  <div class="observation-table">
+    <div class="observation-row observation-head"><span>Observation</span><span>Trigger</span><span>Useful in</span><span>Regulatory pattern</span></div>
+    <div class="observation-row"><span>Disclosure presence</span><span>Session event</span><span>Live, CI</span><span>EU AI Act Art. 50; state AI notices</span></div>
+    <div class="observation-row"><span>Disclosure timing</span><span>Session history</span><span>Live, periodic</span><span>NYC LL144; employment AEDT notice</span></div>
+    <div class="observation-row"><span>Protected-attribute use</span><span>Decision event</span><span>Guardrail input, EvalKit</span><span>ECOA; FCRA; anti-discrimination controls</span></div>
+    <div class="observation-row"><span>Disparate impact</span><span>Nightly or weekly window</span><span>Periodic metric</span><span>Four-fifths rule; fair lending; AEDT bias audit</span></div>
+    <div class="observation-row"><span>Subgroup error parity</span><span>Batch eval</span><span>EvalKit, periodic</span><span>Algorithmic discrimination testing</span></div>
+    <div class="observation-row"><span>Outcome drift</span><span>Windowed metric</span><span>Live, periodic</span><span>EU AI Act post-market monitoring; model risk</span></div>
+    <div class="observation-row"><span>Data drift</span><span>Windowed metric</span><span>Live, periodic</span><span>SR 11-7; model-risk monitoring</span></div>
+    <div class="observation-row"><span>Appeal handling</span><span>Appeal event</span><span>Live, periodic</span><span>Right to contest; EU AI Act Art. 86</span></div>
+    <div class="observation-row"><span>Incident signal</span><span>Runtime event</span><span>Live, periodic</span><span>EU AI Act incident reporting; safety monitoring</span></div>
+  </div>
+</section>
+
+
+<section id="slide-01d" class="deck-slide observation-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observation examples</div>
+    <h2>Evaluations can observe <span class="accent">evidence and operational readiness</span>.</h2>
+    <p>These observations prove that the system is measurable, auditable, and safe to promote through gates.</p>
+  </div>
+  <div class="observation-table">
+    <div class="observation-row observation-head"><span>Observation</span><span>Trigger</span><span>Useful in</span><span>Regulatory pattern</span></div>
+    <div class="observation-row"><span>Logging completeness</span><span>Trace or interaction log</span><span>CI, live</span><span>EU AI Act Art. 12; auditability</span></div>
+    <div class="observation-row"><span>Evidence completeness</span><span>Test or live event</span><span>CI, audit</span><span>Evidence and dossier readiness</span></div>
+    <div class="observation-row"><span>Retention class</span><span>Log event</span><span>Live, periodic</span><span>Record retention; legal hold</span></div>
+    <div class="observation-row"><span>Bias audit freshness</span><span>Scheduled check</span><span>Deploy gate, periodic</span><span>NYC LL144; state AI laws</span></div>
+    <div class="observation-row"><span>Risk assessment freshness</span><span>Scheduled check</span><span>Deploy gate, periodic</span><span>Colorado AI Act; ISO 42001-style controls</span></div>
+    <div class="observation-row"><span>Technical docs</span><span>CI or scheduled check</span><span>Gate, audit</span><span>EU AI Act technical documentation</span></div>
+    <div class="observation-row"><span>Availability</span><span>Metric window</span><span>Periodic</span><span>SOC 2 availability</span></div>
+    <div class="observation-row"><span>Access anomaly</span><span>Security event</span><span>Live</span><span>SOC 2 security monitoring</span></div>
+    <div class="observation-row"><span>Coverage gap</span><span>Build or review</span><span>CI, sign-off</span><span>Control coverage; audit readiness</span></div>
+  </div>
 </section>
 
 

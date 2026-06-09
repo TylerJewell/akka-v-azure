@@ -1,0 +1,9 @@
+{
+  "id": "01a-observations-model",
+  "nav_id": "slide-01a",
+  "section": 2,
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}
