@@ -17,35 +17,3 @@ function updateS7() {
 }
 window.addEventListener('scroll', updateS7, { passive: true });
 updateS7();
-
-/* ── Phase 2: IntersectionObserver reveals ── */
-const s7observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('#s7-answer .s7-reveal').forEach(el => s7observer.observe(el));
-
-/* ── Carousel ── */
-let s7idx = 0;
-const s7track = document.getElementById('s7Track');
-const s7slides = s7track ? s7track.children : [];
-const s7dotsEl = document.getElementById('s7Dots');
-
-function s7BuildDots() {
-  if (!s7dotsEl) return;
-  for (let i = 0; i < s7slides.length; i++) {
-    const d = document.createElement('button');
-    d.className = 's7-carousel-dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => s7GoTo(i);
-    s7dotsEl.appendChild(d);
-  }
-}
-function s7GoTo(i) {
-  s7idx = Math.max(0, Math.min(i, s7slides.length - 1));
-  if (s7track) s7track.style.transform = `translateX(-${s7idx * 100}%)`;
-  s7dotsEl.querySelectorAll('.s7-carousel-dot').forEach((d, j) => d.classList.toggle('active', j === s7idx));
-}
-function s7Next() { s7GoTo(s7idx + 1); }
-function s7Prev() { s7GoTo(s7idx - 1); }
-s7BuildDots();

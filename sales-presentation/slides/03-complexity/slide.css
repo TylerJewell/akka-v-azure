@@ -50,6 +50,18 @@
 }
 .s2-sub.visible { opacity:1; transform:none; }
 
+.s2-bridge {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #C8C8C8; line-height: 1.45;
+  width: 100%; max-width: 1500px;
+  margin-top: 28px;
+  position: relative; z-index: 1;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+.s2-bridge.visible { opacity: 1; transform: none; }
+.s2-bridge .accent { color: var(--yellow); font-weight: 600; }
+
 .s2-grid {
   width: 100%; max-width: 1500px;
   display: grid;

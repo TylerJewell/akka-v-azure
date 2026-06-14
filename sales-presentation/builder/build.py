@@ -344,6 +344,14 @@ if os.path.exists(resilience_src):
         shutil.rmtree(resilience_dst)
     shutil.copytree(resilience_src, resilience_dst)
 
+# governance/ iframe dependency (slide 10 answer half)
+governance_src = os.path.join(ROOT, 'assets', 'governance')
+governance_dst = os.path.join(out_dir, 'governance')
+if os.path.exists(governance_src):
+    if os.path.exists(governance_dst):
+        shutil.rmtree(governance_dst)
+    shutil.copytree(governance_src, governance_dst)
+
 size_kb = os.path.getsize(out_path) // 1024
 
 # ── Zip output dir ────────────────────────────────────────────────────────────

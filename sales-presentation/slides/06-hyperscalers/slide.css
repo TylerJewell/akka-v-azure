@@ -53,8 +53,9 @@
 }
 .s6b-rows.visible .s6b-row { opacity: 1; transform: none; }
 .s6b-rows.visible .s6b-row:nth-child(1) { transition-delay: .35s; }
-.s6b-rows.visible .s6b-row:nth-child(2) { transition-delay: .50s; }
-.s6b-rows.visible .s6b-row:nth-child(3) { transition-delay: .65s; }
+.s6b-rows.visible .s6b-row:nth-child(2) { transition-delay: .48s; }
+.s6b-rows.visible .s6b-row:nth-child(3) { transition-delay: .61s; }
+.s6b-rows.visible .s6b-row:nth-child(4) { transition-delay: .74s; }
 
 .s6b-them-card {
   opacity: 0;
@@ -63,8 +64,9 @@
 }
 .s6b-rows.visible .s6b-row .s6b-them-card { opacity: 1; transform: none; }
 .s6b-rows.visible .s6b-row:nth-child(1) .s6b-them-card { transition-delay: .60s; }
-.s6b-rows.visible .s6b-row:nth-child(2) .s6b-them-card { transition-delay: .75s; }
-.s6b-rows.visible .s6b-row:nth-child(3) .s6b-them-card { transition-delay: .90s; }
+.s6b-rows.visible .s6b-row:nth-child(2) .s6b-them-card { transition-delay: .73s; }
+.s6b-rows.visible .s6b-row:nth-child(3) .s6b-them-card { transition-delay: .86s; }
+.s6b-rows.visible .s6b-row:nth-child(4) .s6b-them-card { transition-delay: .99s; }
 
 /* Header */
 .s6b-head { flex-shrink: 0; }
@@ -108,8 +110,8 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  margin-top: 50px;
+  gap: 14px;
+  margin-top: 28px;
   min-height: 0;
 }
 
@@ -128,12 +130,12 @@
 }
 
 .s6b-theme {
-  font-size: clamp(34px, 4.2vw, 60px);
+  font-size: clamp(28px, 3.2vw, 46px);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #28C840;
   line-height: 0.95;
-  padding: 28px 32px;
+  padding: 18px 28px;
   display: flex;
   align-items: center;
   background: rgba(40,200,64,0.05);
@@ -143,15 +145,15 @@
 .s6b-right {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   justify-content: center;
-  padding: 28px 32px;
+  padding: 18px 28px;
 }
 
 .s6b-us-body {
-  font-size: clamp(15px, 1.3vw, 20px);
+  font-size: clamp(14px, 1.15vw, 18px);
   color: #ececec;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .s6b-them-card {
