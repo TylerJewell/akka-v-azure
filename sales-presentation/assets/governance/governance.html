@@ -9,37 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  /* Forward deck-navigation keys to parent when embedded as iframe */
-  </style>
-  <script>
-    (function(){
-      if (window.parent === window) return; // not embedded
-      var NAV_KEYS = ['ArrowLeft','ArrowRight','PageUp','PageDown'];
-      document.addEventListener('keydown', function(e){
-        if (NAV_KEYS.indexOf(e.key) === -1) return;
-        var t = e.target;
-        var tag = t && t.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
-        try { window.parent.postMessage({ type: 'akka-deck-nav', key: e.key }, '*'); } catch (err) {}
-      }, true);
-    })();
-  </script>
-  <style>
-  /* Akka-styled scrollbars — applied to page and any inner scrollable element */
-  html, * { scrollbar-width: auto; scrollbar-color: #4A4A4A #0A0A0A; }
-  ::-webkit-scrollbar { width: 14px; height: 14px; }
-  ::-webkit-scrollbar-track {
-    background: #0A0A0A;
-    border-left: 1px solid #1E1E1E;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #4A4A4A;
-    border: 3px solid #0A0A0A;
-    border-radius: 8px;
-    min-height: 40px;
-  }
-  ::-webkit-scrollbar-thumb:hover { background: #F5C518; }
-  ::-webkit-scrollbar-corner { background: #0A0A0A; }
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root{
     --yellow:#F5C518; --black:#000; --panel:#101116; --line:#27282f;
@@ -56,10 +25,10 @@
     background-image:radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
     background-size:48px 48px; pointer-events:none; z-index:0;
   }
-  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:72px 48px 160px; }
-  @media (max-width:900px){ .wrap{ padding:44px 20px 200px; } }
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:40px 48px 40px; }
+  @media (max-width:900px){ .wrap{ padding:32px 20px 40px; } }
 
-  .brand-mark{ font-size:24px; font-weight:800; letter-spacing:7px; color:var(--white); margin-bottom:40px; }
+  .brand-mark{ font-size:24px; font-weight:800; letter-spacing:7px; color:var(--white); margin-bottom:20px; }
   h1{ font-size:64px; line-height:1.0; letter-spacing:-0.04em; font-weight:800; margin-bottom:22px; }
   .accent{ color:var(--yellow); }
   .intro{ color:#d7d7dc; font-size:20px; line-height:1.42; max-width:840px; margin-bottom:34px; }
@@ -163,9 +132,20 @@
   .phead b{ color:inherit; font-weight:inherit; font-style:italic; }
 
   /* question blocks */
-  .qb{ margin-bottom:26px; }
-  .qb .q{ font-weight:700; color:var(--white); display:block; font-size:17.5px; letter-spacing:-0.01em; margin-bottom:3px; }
-  .qb .drives{ display:block; font-size:13px; color:var(--muted); margin-bottom:10px; line-height:1.45; }
+  .qb{
+    position: relative;
+    padding: 18px 0 22px 18px;
+    border-left: 3px solid transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    transition: border-left-color .15s ease, background .15s ease;
+  }
+  .qb:last-child{ border-bottom: none; padding-bottom: 6px; }
+  .qb:focus-within{
+    border-left-color: var(--yellow);
+    background: rgba(245,197,24,0.025);
+  }
+  .qb .q{ font-weight:700; color:var(--white); display:block; font-size:17.5px; letter-spacing:-0.01em; margin-bottom:2px; }
+  .qb .drives{ display:block; font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.45; }
   .qb .drives b{ color:var(--yellow); font-weight:700; }
   .cond-badge{ font-size:10px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
     color:var(--blue); border:1px solid rgba(126,200,227,.4); background:rgba(126,200,227,.08);
@@ -182,10 +162,18 @@
   .chips label:has(input:checked){ background:var(--yellow); border-color:var(--yellow);
     color:var(--black); font-weight:800; }
 
-  textarea, input[type=text]{ font-family:inherit; font-size:14px; color:var(--white);
-    border:1px solid var(--line); border-radius:6px; padding:10px 12px; background:var(--panel); width:100%; }
-  textarea::placeholder, input[type=text]::placeholder{ color:#5d5f6a; }
-  textarea:focus, input[type=text]:focus{ outline:none; border-color:var(--yellow); }
+  textarea, input[type=text]{
+    font-family:inherit; font-size:14.5px; color:var(--white);
+    border:1px solid var(--input-border, rgba(255,255,255,0.2)); border-radius:6px;
+    padding:11px 14px; background:var(--input-bg, #1d1f27); width:100%;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  textarea::placeholder, input[type=text]::placeholder{ color:var(--input-placeholder, #7c7f8a); }
+  textarea:focus, input[type=text]:focus{
+    outline:none; border-color:var(--yellow);
+    background:var(--input-bg-focus, #23252e);
+    box-shadow: 0 0 0 3px rgba(245,197,24,0.12);
+  }
   textarea{ min-height:64px; resize:vertical; }
 
   /* list widgets */
@@ -223,6 +211,8 @@
   .scope .hd .nums .lk{ text-decoration:underline dotted; text-underline-offset:3px; cursor:pointer; }
   .scope .hd .nums .lk:hover{ color:var(--yellow); }
   .scope .hd .tog{ float:right; color:var(--muted); font-size:11px; margin-top:2px; }
+  .scope.no-detail .hd{ cursor:default; }
+  .scope.no-detail .hd .tog{ display:none; }
   .scope .list{ overflow-y:auto; border-top:1px solid var(--line); padding:4px 0; display:none; }
   .scope.open .list{ display:block; }
   .scope .grp{ font-size:9.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase;
@@ -249,24 +239,34 @@
   .scope .fw .n{ color:var(--yellow); font-variant-numeric:tabular-nums; white-space:nowrap; min-width:24px; text-align:right; }
   .scope .empty{ padding:10px 16px 13px; font-size:12.5px; color:var(--muted); line-height:1.5; }
 
-  /* Akka-styled scrollbars on the two main scroll surfaces. */
-  .scope .list, .mx-body, .pop-card{
+  /* Akka-styled scrollbars — applied document-wide and to inner scroll surfaces. */
+  html, body, .scope .list, .mx-body, .pop-card{
     scrollbar-width:thin;
     scrollbar-color:var(--line) #0a0b0e;
   }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
   .scope .list::-webkit-scrollbar,
   .mx-body::-webkit-scrollbar,
   .pop-card::-webkit-scrollbar{ width:8px; height:8px; }
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track,
   .scope .list::-webkit-scrollbar-track,
   .mx-body::-webkit-scrollbar-track,
   .pop-card::-webkit-scrollbar-track{ background:#0a0b0e; }
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb,
   .scope .list::-webkit-scrollbar-thumb,
   .mx-body::-webkit-scrollbar-thumb,
   .pop-card::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px;
     border:1px solid #0a0b0e; }
+  html::-webkit-scrollbar-thumb:hover,
+  body::-webkit-scrollbar-thumb:hover,
   .scope .list::-webkit-scrollbar-thumb:hover,
   .mx-body::-webkit-scrollbar-thumb:hover,
   .pop-card::-webkit-scrollbar-thumb:hover{ background:var(--yellow); }
+  html::-webkit-scrollbar-corner,
+  body::-webkit-scrollbar-corner,
   .scope .list::-webkit-scrollbar-corner,
   .mx-body::-webkit-scrollbar-corner,
   .pop-card::-webkit-scrollbar-corner{ background:#0a0b0e; }
@@ -283,7 +283,7 @@
   .mx-bar button{ background:none; border:1px solid var(--line); border-radius:5px; color:#c8d1d9;
     font-family:inherit; font-size:11px; font-weight:700; padding:4px 10px; cursor:pointer; }
   .mx-bar button:hover{ border-color:var(--yellow); color:var(--white); }
-  .mx-body{ display:none; height:46vh; overflow:auto; border-top:1px solid var(--line); }
+  .mx-body{ display:none; height:min(46vh, calc(100vh - 120px)); overflow:auto; border-top:1px solid var(--line); }
   .mx.open .mx-body{ display:block; }
   .mx table{ width:100%; border-collapse:collapse; }
   .mx th{ position:sticky; top:0; background:#14151b; color:var(--yellow); text-align:left;
@@ -292,23 +292,38 @@
   .mx td{ font-size:11px; line-height:13px; height:15px; max-height:15px; padding:1px 10px;
     color:#c8d1d9; border-bottom:1px solid #1a1b21; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .mx td.id{ color:var(--yellow); font-weight:800; width:42px; }
-  .mx td.ctl{ max-width:330px; color:#e6e8ec; }
-  .mx td.mech{ width:118px; font-weight:600; }
+  .mx td.ctl{ color:#e6e8ec; white-space:nowrap; }
+  .mx td.mech{ font-weight:600; white-space:nowrap; }
   .mx td.mech.G,.mx td.mech.H{ color:var(--red); }
   .mx td.mech.W{ color:var(--blue); }
   .mx td.mech.P,.mx td.mech.E{ color:var(--green); }
+  .mx td.mech.HR{ color:#7EC8E3; }    /* HOOTL — softer blue to distinguish from W */
   .mx td.mech.B{ color:#c39bf5; }
   .mx td.mech.K{ color:#ff6ec7; }
   /* magenta — system-halt; distinct from B's softer lavender */
-  .mx td.impl{ max-width:250px; color:#aeb4bb; }
-  .mx td.enf{ width:88px; color:var(--muted); }
+  .mx td.impl{ color:#aeb4bb; white-space:nowrap; }
+  .mx td.enf{ color:var(--muted); white-space:nowrap; }
   .mx td.src{ width:210px; }
   .mx td.ctl .lnk{ color:#e6e8ec; cursor:pointer; text-decoration:underline dotted rgba(245,197,24,.5); text-underline-offset:3px; }
   .mx td.ctl .lnk:hover{ color:var(--yellow); }
-  .mx td.src .lnk{ color:#d9c87a; cursor:pointer; text-decoration:underline dotted rgba(217,200,122,.55); text-underline-offset:3px; }
-  .mx td.src .lnk:hover{ color:var(--yellow); }
+  .mx td.src .lnk{ color:#d9c87a; cursor:pointer; text-decoration:underline dotted rgba(217,200,122,.65); text-underline-offset:3px; }
+  .mx td.src .lnk:hover{ color:var(--yellow); text-decoration-color:var(--yellow); }
+  /* Mechanism + Implementation cells are clickable; keep the family colour
+     but signal interactivity with a dotted underline + pointer cursor. */
+  .mx td.mech .lnk, .mx td.impl .lnk{
+    cursor:pointer; color:inherit;
+    text-decoration:underline dotted rgba(255,255,255,0.35);
+    text-underline-offset:3px;
+  }
+  .mx td.mech .lnk:hover, .mx td.impl .lnk:hover{ color:var(--yellow); text-decoration-color:var(--yellow); }
+  .em-full td.mech .lnk, .em-full td.impl .lnk{
+    cursor:pointer; color:inherit;
+    text-decoration:underline dotted rgba(255,255,255,0.35);
+    text-underline-offset:3px;
+  }
+  .em-full td.mech .lnk:hover, .em-full td.impl .lnk:hover{ color:var(--yellow); text-decoration-color:var(--yellow); }
   .mx td.src .sep{ color:var(--muted); padding:0 3px; }
-  .mx .mx-empty{ padding:16px; font-size:12.5px; color:var(--muted); }
+  .mx .mx-empty{ padding:16px; font-size:12.5px; color:#c8d1d9; line-height:1.5; }
 
   /* popup modal */
   .pop{ position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center;
@@ -363,7 +378,7 @@
   .section-lead b{ color:var(--yellow); font-weight:800; }
   /* Every section panel pads its content from the section bar by the same
      amount so titles land at identical vertical positions. */
-  .step-panel{ padding-top:28px; }
+  .step-panel{ padding-top:16px; }
 
   /* Mode toggle uses the same modest 6px corner as the tabs for consistency. */
   .mode-segments{ display:inline-flex; border:1px solid var(--line); border-radius:6px;
@@ -386,7 +401,9 @@
   .example-menu.open .example-trigger{ border-color:var(--yellow); color:var(--yellow); }
   .example-list{ position:absolute; top:calc(100% + 6px); left:0; z-index:50;
     background:var(--panel); border:1px solid var(--line); border-radius:8px;
-    min-width:240px; padding:6px 0; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+    min-width:380px; padding:6px 0; box-shadow:0 8px 24px rgba(0,0,0,.4);
+    white-space:nowrap; }
+  .example-list button{ white-space:nowrap; }
   .example-list[hidden]{ display:none; }
   .example-list button{ display:block; width:100%; text-align:left;
     background:none; border:none; padding:9px 16px; cursor:pointer; color:#c8d1d9;
@@ -398,6 +415,121 @@
   /* When a preset is loaded, the trigger button stays yellow-bordered to signal
      the survey is showing an example. */
   .example-menu.has-preset .example-trigger{ border-color:var(--yellow); color:var(--yellow); }
+
+  /* Theme toggle — matches example-trigger pill */
+  .theme-toggle{
+    appearance:none; cursor:pointer; font-family:inherit; font-weight:700;
+    font-size:12.5px; padding:8px 14px; background:var(--panel); color:#c8d1d9;
+    border:1px solid var(--line); border-radius:999px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{ border-color:var(--yellow); color:var(--white); }
+  .theme-toggle .theme-icon{ font-size:13px; line-height:1; }
+
+  /* ============ LIGHT MODE ============
+     Uses tokens sourced from compliance-surface/frontend's akka-console-tokens.css
+     (circuit-yellow / aurora-green / storm-blue / blaze-red / divider rgba). */
+  body.light-mode{
+    --yellow:#f5b60b;
+    --black:#ffffff;
+    --panel:#f4f4f5;
+    --line:rgba(17,17,17,0.12);
+    --muted:#52525b;
+    --white:#1a1a1a;
+    --green:#5aa547;
+    --blue:#02a4a7;
+    --red:#d9331a;
+    --input-bg:#ffffff;
+    --input-bg-focus:#fffaeb;
+    --input-border:rgba(17,17,17,0.18);
+    --input-placeholder:#a1a1aa;
+    background:#ffffff;
+  }
+  body.light-mode::before{
+    background-image:radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+  }
+  body.light-mode html{ background:#ffffff; }
+  /* Hardcoded gray text colors → flip to readable dark gray in light mode */
+  body.light-mode .intro,
+  body.light-mode .orientation,
+  body.light-mode .section-lead,
+  body.light-mode .matrix-row span:not(:first-child),
+  body.light-mode .prop span,
+  body.light-mode .example-trigger,
+  body.light-mode .example-list button,
+  body.light-mode .theme-toggle,
+  body.light-mode .mode-seg{ color:#27272a; }
+  body.light-mode .matrix-card,
+  body.light-mode .prop,
+  body.light-mode .panel,
+  body.light-mode .example-list,
+  body.light-mode .mode-segments{ background:#ffffff; }
+  body.light-mode .matrix-card{ border-color:rgba(17,17,17,0.12); }
+  body.light-mode .qb:focus-within{ background:rgba(245,182,11,0.08); }
+  body.light-mode .qb{ border-bottom-color:rgba(0,0,0,0.1); }
+  body.light-mode .chips label{ background:rgba(245,182,11,0.12); color:#3f3f46; }
+  body.light-mode .chips label:has(input:checked){ color:#1a1a1a; }
+  body.light-mode .lw li{ color:#27272a; background:#fff; }
+  body.light-mode .cond-badge{ background:rgba(2,164,167,0.1); border-color:rgba(2,164,167,0.4); color:#02a4a7; }
+  body.light-mode .scope{ background:#fff; box-shadow:0 8px 30px rgba(0,0,0,0.12); }
+  body.light-mode .scope .mb .mn{ color:#3f3f46; }
+  body.light-mode .scope .fw{ color:#3f3f46; }
+  /* In light mode --black is remapped to #fff, which would make the
+     text on yellow-bg buttons (tabs, step-chips, mode-seg active) invisible.
+     Force the high-contrast text colors directly. */
+  body.light-mode .tab[aria-selected="true"]{ color:#000; }
+  body.light-mode .tab{ color:#27272a; }
+  body.light-mode .step-chip.active .lbl,
+  body.light-mode .step-chip.active:hover .lbl{ color:#000; }
+  body.light-mode .step-chip:not(.active) .lbl,
+  body.light-mode .step-chip:hover .lbl{ color:#27272a; }
+  body.light-mode .mode-seg.active{ color:#000; }
+  body.light-mode .mode-seg:not(.active){ color:#27272a; }
+  body.light-mode .tab-desc-band{ color:#000; }
+  /* Every other yellow-background surface needs black text in light mode */
+  body.light-mode .samples button[aria-pressed="true"]{ color:#000 !important; }
+  body.light-mode .chips label:has(input:checked){ color:#000; }
+  body.light-mode .lw button.add{ color:#000; }
+  body.light-mode .stepbar-legal .sales-link{ color:#000; }
+  /* Outcome callout text was near-white for dark bg; bump to readable dark gray
+     against the soft-yellow tinted background in light mode */
+  body.light-mode .outcome-block{ background:rgba(245,182,11,0.14); border-color:rgba(245,182,11,0.6); }
+  body.light-mode .outcome-block .outcome-text{ color:#27272a; }
+  /* Source-col uses a hardcoded dark panel bg; flip the surface AND the muted
+     italic example text so the "Example: ..." line is readable. */
+  body.light-mode .source-col{
+    background:#ffffff; border-color:rgba(17,17,17,0.12);
+  }
+  body.light-mode .source-col span{ color:#27272a; }
+  body.light-mode .source-col .ex{ color:#52525b; }
+  /* Legal-notice runs inside the .pop-card modal whose bg flips to var(--panel)
+     (= #f4f4f5 in light mode); the body copy and fine print were on near-white. */
+  body.light-mode .legal-notice{ color:#27272a; }
+  body.light-mode .legal-notice h2{ color:#0f0f10; }
+  body.light-mode .legal-notice p.fine{ color:#52525b; }
+  /* The Akka logo SVG is filled white via inline attributes; flip its shapes
+     to black in light mode (CSS fill overrides SVG fill attributes). */
+  body.light-mode .akka-logo polygon,
+  body.light-mode .akka-logo path{ fill:#000; }
+  /* Scope panel inherits color:#e8ecf0 (near-white) on .scope; flip to dark in
+     light mode so "Akka services unreachable" and its small subline are readable. */
+  body.light-mode .scope{ color:#27272a; }
+  body.light-mode .scope .hd .nums small{ color:#52525b; }
+  /* Empty-state row in the live matrix needs a dark color in light mode */
+  body.light-mode .mx .mx-empty{ color:#27272a; }
+  /* The bottom Eval Matrix drawer has a hardcoded near-black background;
+     flip the whole surface in light mode so hovered text and empty-state text
+     are readable. */
+  body.light-mode .mx{ background:#ffffff; border-top-color:#f5b60b; box-shadow:0 -4px 24px rgba(0,0,0,0.08); }
+  body.light-mode .mx-body{ border-top-color:rgba(17,17,17,0.1); }
+  body.light-mode .mx-bar .mx-count,
+  body.light-mode .mx-bar button{ color:#27272a; }
+  body.light-mode .mx-bar button:hover{ color:#000; border-color:#f5b60b; }
+  body.light-mode .mx th{ background:#f4f4f5; color:#52525b; border-bottom-color:rgba(17,17,17,0.1); }
+  body.light-mode .mx td.impl{ color:#3f3f46; }
+  body.light-mode .mx td.ctl .lnk{ color:#1a1a1a; }
+  body.light-mode .mx td.src .lnk{ color:#7a5d00; }
+  body.light-mode .mx tr{ border-color:rgba(17,17,17,0.08); }
 
   /* .orientation legacy alias — supplanted by .section-lead. */
   .orientation{ font-size:16.5px; line-height:1.55; color:#d7d7dc; max-width:860px; margin:0; }
@@ -425,13 +557,17 @@
      and can be opened in any order. The Akka brand sits at the far left. */
   .stepbar{ position:sticky; top:0; z-index:70; background:var(--panel);
     border-bottom:1px solid var(--line); padding:10px 0; }
-  .stepbar-inner{ max-width:1080px; margin:0 auto; padding:0 48px;
-    display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .brand-mark.in-nav{ display:inline-flex; align-items:center; margin:0 22px 0 0;
+  .stepbar-inner{ max-width:1080px; margin:0 auto; padding:0 32px;
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap; row-gap:8px; }
+  /* Force the legal/sales group onto its own row only when the chips would
+     otherwise push it off-screen — keeps "Map my AI system" + copyright +
+     Legal cohesive and always visible. */
+  .stepbar-spacer{ flex-basis:100%; height:0; }
+  .brand-mark.in-nav{ display:inline-flex; align-items:center; margin:0 16px 0 0;
     flex:0 0 auto; }
   .brand-mark.in-nav .akka-logo{ height:18px; width:auto; display:block; }
   .step-chip{ display:inline-flex; align-items:center; cursor:pointer; background:none;
-    border:1px solid var(--line); border-radius:999px; padding:7px 16px;
+    border:1px solid var(--line); border-radius:999px; padding:7px 13px;
     font-family:inherit; color:#c8d1d9; flex:0 0 auto; }
   .step-chip .lbl{ font-size:12.5px; font-weight:700; letter-spacing:.4px; color:#c8d1d9;
     white-space:nowrap; }
@@ -440,11 +576,50 @@
   .step-chip:hover{ border-color:var(--yellow); }
   .step-chip:hover .lbl{ color:var(--white); }
   .step-chip.active:hover .lbl{ color:var(--black); }
+
+  /* Demo embed inside the "See it in action" tab. The iframe sizes to a
+     tall but page-fitting window; the demo's own internal navigation handles
+     stage selection. */
+  .demo-frame{
+    margin-top: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 16px 60px rgba(0,0,0,.4);
+  }
+  /* Wide variant breaks out of the .wrap container (max-width:1080px) and
+     matches the sales-presentation slide layout (max-width:1536px, centered
+     in the viewport). The terminal demo gets the room it needs without
+     expanding edge-to-edge on ultra-wide displays.
+
+     Mechanics: position:relative + left:50% places the element's left edge
+     at the centerline of its parent (.wrap, also centered in the viewport).
+     translateX(-50%) pulls it back by half its own width, centering it in
+     the viewport. width:min(100vw, 1536px) caps the width at 1536px on
+     wide displays and falls back to the full viewport on narrower ones. */
+  .demo-frame--fullbleed{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100vw, 1536px);
+    margin-top: -16px;            /* cancel #step5's .step-panel padding-top */
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: none;
+  }
+  .demo-frame iframe{
+    display: block; width: 100%;
+    height: clamp(640px, calc(100vh - 200px), 1300px);
+    border: 0;
+  }
   /* Hide any legacy step-link separators if present; sections are not ordered. */
   .step-link{ display:none; }
   /* Persistent copyright + Legal link pushed to the far right of the section bar.
      Always visible regardless of which section is active. */
-  .stepbar-spacer{ flex:1 1 auto; }
+  /* (legacy .stepbar-spacer rule retired — the new one at the top of this
+     block uses flex-basis:100% to force the legal cluster onto its own row.) */
   .stepbar-legal{ display:flex; align-items:center; gap:14px; font-size:11.5px;
     color:var(--muted); flex:0 0 auto; }
   .stepbar-legal .copyright{ letter-spacing:.3px; }
@@ -551,24 +726,37 @@
     .source-arr{ transform:rotate(90deg); padding:6px 0; } }
 
   /* full preview Eval Matrix table (step 2) */
+  .em-full-header{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:10px; }
+  .em-full-header h2{ margin:0; }
+  .em-full-hint{ font-size:12.5px; color:var(--muted); font-style:italic; line-height:1.45; }
   .em-full{ border:1px solid var(--line); background:#0a0b0e; overflow-x:auto; margin-bottom:18px; }
-  .em-full table{ width:100%; border-collapse:collapse; min-width:900px; }
+  .em-full table{ width:100%; border-collapse:collapse; table-layout:auto; }
+  .em-full td.src .sep{ color:var(--muted); padding:0 5px; }
+  /* Source citation chips in the step-2 table — same affordance as the
+     bottom drawer: dotted underline + pointer cursor signals click. */
+  .em-full td.src .lnk{
+    color:#d9c87a; cursor:pointer;
+    text-decoration:underline dotted rgba(217,200,122,.65);
+    text-underline-offset:3px;
+  }
+  .em-full td.src .lnk:hover{ color:var(--yellow); text-decoration-color:var(--yellow); }
   .em-full th{ background:#14151b; color:var(--yellow); text-align:left;
     font-size:10px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
-    padding:8px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
-  .em-full td{ font-size:12.5px; line-height:1.5; padding:9px 12px; color:#c8d1d9;
+    padding:7px 9px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  .em-full td{ font-size:12px; line-height:1.5; padding:7px 9px; color:#c8d1d9;
     border-bottom:1px solid #1a1b21; vertical-align:top; }
   .em-full td.id{ color:var(--yellow); font-weight:800; width:48px; white-space:nowrap; }
-  .em-full td.ctl{ color:#e6e8ec; min-width:280px; }
-  .em-full td.mech{ width:140px; font-weight:600; white-space:nowrap; }
+  .em-full td.mech{ font-weight:600; white-space:nowrap; }
   .em-full td.mech.G,.em-full td.mech.H{ color:var(--red); }
+  .em-full td.mech.HR{ color:#7EC8E3; }
   .em-full td.mech.W{ color:var(--blue); }
   .em-full td.mech.P,.em-full td.mech.E{ color:var(--green); }
   .em-full td.mech.B{ color:#c39bf5; }
   .em-full td.mech.K{ color:#ff6ec7; }
-  .em-full td.impl{ color:#aeb4bb; min-width:180px; }
-  .em-full td.enf{ color:var(--muted); width:100px; white-space:nowrap; }
-  .em-full td.src{ color:#d9c87a; min-width:180px; }
+  .em-full td.ctl{ color:#e6e8ec; white-space:nowrap; }
+  .em-full td.impl{ color:#aeb4bb; white-space:nowrap; }
+  .em-full td.enf{ color:var(--muted); white-space:nowrap; }
+  .em-full td.src{ color:#d9c87a; white-space:nowrap; }
   .em-full td.proof{ color:var(--muted); font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size:11px; white-space:nowrap; }
 
@@ -687,11 +875,12 @@
     <button class="step-chip" data-step="1" type="button"><span class="lbl">Define your risk</span></button>
     <button class="step-chip" data-step="2" type="button"><span class="lbl">Identify your controls</span></button>
     <button class="step-chip" data-step="3" type="button"><span class="lbl">Enforce your posture</span></button>
-    <button class="step-chip" data-step="4" type="button"><span class="lbl">Improve your posture</span></button>
+    <button class="step-chip" data-step="4" type="button"><span class="lbl">Improve and adapt</span></button>
+    <button class="step-chip" data-step="5" type="button"><span class="lbl">Demo</span></button>
     <span class="stepbar-spacer"></span>
     <span class="stepbar-legal">
       <a class="sales-link" id="salesLink" href="#talk-to-sales">Map my AI system</a>
-      <span class="copyright">&copy; 2024&ndash;2026 Akka, Inc.</span>
+      <span class="copyright">&copy;2026 Lightbend, Inc. dba Akka</span>
       <a class="legal-link" id="legalLink" href="#legal">Legal</a>
     </span>
   </div>
@@ -729,8 +918,13 @@
         <span class="cc-arrow">&rsaquo;</span>
       </a>
       <a class="cover-row" data-step="4" href="#step-4">
-        <h2>Improve your posture</h2>
-        <p class="def">Detecting changes that matter &mdash; to the system, the regulations, or the evidence &mdash; and using the same evaluation, testing, and replay techniques to continuously improve the system's safety and accuracy.</p>
+        <h2>Improve and adapt</h2>
+        <p class="def">Detecting changes that matter and using the same evaluation, testing, and replay techniques to continuously improve the system's safety and accuracy.</p>
+        <span class="cc-arrow">&rsaquo;</span>
+      </a>
+      <a class="cover-row" data-step="5" href="#step-5">
+        <h2>See it in action</h2>
+        <p class="def">A four-stage walkthrough — same survey, same matrix, same enforcement, same loop — rendered as a live terminal demo.</p>
         <span class="cc-arrow">&rsaquo;</span>
       </a>
     </div>
@@ -743,7 +937,7 @@
     <p class="section-lead">
       Plain-language questions about what your AI system does, what data it touches, what it
       decides, and what could go wrong. Answer in any order, at any level of completeness &mdash;
-      every answer adds rows to your <b>Eval Matrix</b>, the contract that lists the guardrails,
+      each adds to an <b>Eval Matrix</b>, the contract that lists the guardrails,
       human-required decisions, evaluations, and policies your system needs.
     </p>
   </div>
@@ -764,6 +958,9 @@
         <button data-preset="blank" type="button">Blank / start fresh</button>
       </div>
     </div>
+    <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">
+      <span class="theme-icon">☀</span><span class="theme-label">Light</span>
+    </button>
   </div>
 
   <section>
@@ -1423,6 +1620,24 @@
       </div>
 
       <div class="qb" data-survey="full">
+        <span class="q">Is this system deployed by a governmental entity, for example a federal, state, or local government body?</span>
+        <span class="drives cls"><b>Classifies:</b> public-sector-deployer obligations (European Union Digital Services Act Article 24a, United States Office of Management and Budget memorandum M-26-04, Texas Responsible Artificial Intelligence Governance Act).</span>
+        <div class="chips">
+          <label><input type="radio" name="govent" value="yes">Yes &mdash; government deployment</label>
+          <label><input type="radio" name="govent" value="no">No</label>
+        </div>
+      </div>
+
+      <div class="qb" data-survey="full">
+        <span class="q">Is this system participating in a regulator-run sandbox programme, for example the European Union's Article 57 sandbox or a national equivalent?</span>
+        <span class="drives cls"><b>Classifies:</b> European Union Artificial Intelligence Act Article 57 sandbox safe-harbour treatment and reduced enforcement risk.</span>
+        <div class="chips">
+          <label><input type="radio" name="sandbox" value="yes">Yes &mdash; enrolled in a regulator sandbox</label>
+          <label><input type="radio" name="sandbox" value="no">No</label>
+        </div>
+      </div>
+
+      <div class="qb" data-survey="full">
         <span class="q">Has your organization formally signed up to the European Union's voluntary Code of Practice for general-purpose artificial intelligence?</span>
         <span class="drives cls"><b>Classifies:</b> European Union AI Act Article 56 voluntary-code obligations.</span>
         <div class="chips">
@@ -1494,10 +1709,13 @@
   </div>
 
   <div class="step-section">
-    <h2>Your Eval Matrix</h2>
+    <div class="em-full-header">
+      <h2 id="emFullTitle">Your Eval Matrix</h2>
+      <span class="em-full-hint" id="emFullHint" hidden></span>
+    </div>
     <div class="em-full">
       <table>
-        <thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Akka implementation</th><th>Enforcement</th><th>Source</th></tr></thead>
+        <thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Implementation</th><th>Source</th></tr></thead>
         <tbody id="emFullRows"></tbody>
       </table>
     </div>
@@ -1650,9 +1868,9 @@
         <text x="680" y="60" text-anchor="middle" fill="#F5C518" font-weight="800" font-size="10" letter-spacing="1.6" font-family="inherit">AKKA VERIFY</text>
         <line x1="622" y1="78" x2="736" y2="78" stroke="#F5C518" stroke-width="2" marker-end="url(#vf-arrow)"/>
 
-        <!-- Generated Eval Matrix -->
+        <!-- Eval Matrix -->
         <rect x="740" y="40" width="240" height="75" rx="6" fill="#101116" stroke="#F5C518" stroke-width="1.5"/>
-        <text x="860" y="64" text-anchor="middle" fill="#FFFFFF" font-weight="800" font-size="14" font-family="inherit">Generated Eval Matrix</text>
+        <text x="860" y="64" text-anchor="middle" fill="#FFFFFF" font-weight="800" font-size="14" font-family="inherit">Eval Matrix</text>
         <text x="860" y="86" text-anchor="middle" fill="#c8cdd3" font-size="13" font-family="inherit">
           <tspan x="860" dy="0">what the running system</tspan>
           <tspan x="860" dy="16">actually enforces</tspan>
@@ -1757,7 +1975,7 @@
       </div>
       <div class="right">
         <div class="gen-card"><span class="gly">&#8635;</span><div><b>Replay testing</b><span>Re-run a new model, prompt, or threshold against captured past inputs without risking production side effects.</span></div></div>
-        <div class="gen-card"><span class="gly">&#8651;</span><div><b>Akka Verify input</b><span>Reconstruct a Generated Eval Matrix from what the deployed system actually enforces.</span></div></div>
+        <div class="gen-card"><span class="gly">&#8651;</span><div><b>Akka Verify input</b><span>Reconstruct a Eval Matrix from what the deployed system actually enforces.</span></div></div>
         <div class="gen-card"><span class="gly">&#9651;</span><div><b>Drift detection</b><span>Spot behavioural drift against a signed baseline before a regulator or a customer does.</span></div></div>
         <div class="gen-card"><span class="gly">&#10003;</span><div><b>Audit evidence</b><span>Pull the exact records a regulator asks for, with cryptographic provenance attached.</span></div></div>
         <div class="gen-card"><span class="gly">&#8853;</span><div><b>Test dataset generation</b><span>Synthesize EvalKit test cases from real interactions, including the long-tail edge cases your team would never write by hand.</span></div></div>
@@ -1796,26 +2014,33 @@
   </div>
 </div><!-- /#step4 -->
 
+<div id="step5" class="step-panel hidden">
+  <div class="demo-frame demo-frame--fullbleed">
+    <iframe src="governance-demo.html"
+            title="Four-stage governance demo"
+            loading="lazy"
+            referrerpolicy="no-referrer"></iframe>
+  </div>
+</div><!-- /#step5 -->
+
 
 </div>
 
 <!-- generated Eval Matrix preview drawer -->
 <aside class="mx" id="mx">
   <div class="mx-bar" id="mxBar">
-    <span class="mx-title">Generated Eval Matrix</span>
+    <span class="mx-title">Eval Matrix</span>
     <span class="mx-count" id="mxCount">0 rows</span>
-    <span class="mx-hint">each row is a control your AI system must have in place — click a control or source citation for detail</span>
+    <span class="mx-hint" id="mxHint">each row is a control your AI system must have in place — click a control or source citation for detail</span>
     <button id="mxToggle">expand ▴</button>
-    <button id="mxHide" title="hide">✕</button>
   </div>
   <div class="mx-body">
     <table>
-      <thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Akka implementation</th><th>Enforcement</th><th>Source</th></tr></thead>
+      <thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Implementation</th><th>Source</th></tr></thead>
       <tbody id="mxRows"></tbody>
     </table>
   </div>
 </aside>
-<button class="mx-restore hidden" id="mxRestore">Show Eval Matrix</button>
 
 <!-- popup modal (shared by control + citation popups) -->
 <div class="pop" id="pop">
@@ -1829,7 +2054,7 @@
 <aside class="scope" id="scope">
   <div class="hd" id="scopeHd">
     <span class="tog" id="scopeTog">show detail ▾</span>
-    <div class="lbl">Derived Eval Matrix</div>
+    <div class="lbl">Eval Matrix</div>
     <div class="nums" id="scopeNums">0 regulations &middot; 0 controls</div>
   </div>
   <div class="list" id="scopeList"><div class="empty">Answer the survey — especially data, decisions, and
@@ -2298,6 +2523,27 @@ function applyPreset(key){
   }
   recompute();
 }
+(function wireThemeToggle(){
+  var btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  var iconEl = btn.querySelector('.theme-icon');
+  var labelEl = btn.querySelector('.theme-label');
+  try {
+    if(localStorage.getItem('gov-theme') === 'light') document.body.classList.add('light-mode');
+  } catch(e){}
+  function repaint(){
+    var light = document.body.classList.contains('light-mode');
+    if(iconEl) iconEl.textContent = light ? '☾' : '☀';
+    if(labelEl) labelEl.textContent = light ? 'Dark' : 'Light';
+  }
+  repaint();
+  btn.addEventListener('click', function(){
+    document.body.classList.toggle('light-mode');
+    try { localStorage.setItem('gov-theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); } catch(e){}
+    repaint();
+  });
+})();
+
 (function wireExampleMenu(){
   var menu = document.getElementById('exampleMenu');
   var trigger = document.getElementById('exampleTrigger');
@@ -2432,8 +2678,23 @@ function probe(i){
 }
 function toProfile(f){
   function arr(o){ return Object.keys(o).filter(function(k){ return o[k]; }); }
-  return { j: arr(f.j), s: arr(f.s), dt: arr(f.dt), dc: arr(f.dc), cap: arr(f.cap), vol: arr(f.vol),
+  /* `dc` (broad decision categories) and `conseq` (narrower regulator-aligned
+     life domains) both feed the canonical `decisions.life_domains` fact;
+     the classification service unions the two on receipt. See
+     `specs/platform/risksurvey.md` §"Fact consolidation — 2026-06-15". */
+  var profile = { j: arr(f.j), s: arr(f.s), dt: arr(f.dt), dc: arr(f.dc), conseq: arr(f.conseq),
+    cap: arr(f.cap), vol: arr(f.vol),
     role: arr(f.role), aff: arr(f.aff), adv: arr(f.adv), autonomy: f.aut, topology: f.topology };
+  /* Canonical fact-path projections — surveyed form fields normalized to the
+     names the corpus `applies_when` predicates key on. Added 2026-06-15 to
+     clear ORPHAN findings from auditor 14 (survey-fact-coverage). */
+  if(f.topology) profile['third_party.topology'] = f.topology;
+  if(f.attested) profile['third_party.vendor_attested'] = f.attested;
+  var apiKinds = arr(f.api || {});
+  if(apiKinds.length) profile['third_party.api_kind'] = apiKinds;
+  if(f.govent === 'yes' || f.govent === 'no') profile['deployer.is_governmental_entity'] = (f.govent === 'yes');
+  if(f.sandbox === 'yes' || f.sandbox === 'no') profile['governance.sandbox_participation'] = (f.sandbox === 'yes');
+  return profile;
 }
 var classifyTimer = null, classifySeq = 0;
 function applyClassifyResponse(j){
@@ -2511,10 +2772,11 @@ function F(){ /* facts snapshot — every survey input lands here */
     function(li){ return { a: li.dataset.a || '', b: li.dataset.b || '', stake: li.dataset.stake || '' }; }); }
   function txt(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
   var f = {
-    j:set('j'), s:set('s'), dt:set('dt'), dc:set('dc'), cap:set('cap'), vol:set('vol'),
+    j:set('j'), s:set('s'), dt:set('dt'), dc:set('dc'), conseq:set('conseq'), cap:set('cap'), vol:set('vol'),
     chan:set('chan'), sys:set('sys'), out:set('out'), resid:set('resid'), aff:set('aff'),
     adv:set('adv'), env:set('env'), page:set('page'), api:set('api'), role:set('role'), aud:set('aud'),
     aut:radio('autonomy'), topology:radio('topology'), attested:radio('attested'),
+    govent:radio('govent'), sandbox:radio('sandbox'),
     retention:radio('retention'), quality:radio('quality'), tenancy:radio('tenancy'),
     volume:radio('volume'), latency:radio('latency'), rollout:radio('rollout'), life:radio('life'),
     gatepos:radio('gatepos'), gatefail:radio('gatefail'),
@@ -2538,9 +2800,194 @@ function F(){ /* facts snapshot — every survey input lands here */
    and arrives from the classify API as a derived row with its exact
    control id. genRows() therefore emits ONLY the eight narrative patterns
    below — each row carries unique text from the survey. */
-var MECH = { G:['Guardrail','Blocking'], H:['Guardrail \u2192 HOTL','Blocking'], W:['HITL workflow','Blocking (flow)'],
-             P:['Periodic eval','Non-blocking'], E:['Event eval','Non-blocking'], B:['CI gate','Build-gate'],
-             K:['Halt capability','System-level intervention'] };
+var MECH = { G:['Guardrail','Blocking'], W:['HITL','Blocking (flow)'],
+             P:['Evaluation - periodic','Non-blocking'], E:['Evaluation - event','Non-blocking'],
+             HR:['HOOTL','Non-blocking \u00b7 governance'],
+             B:['CI gate','Build-gate'], K:['Halt','System-level'],
+             /* Legacy alias retained so any corpus row still tagged H displays.
+                The H family is retired; HOTL is now a G add-on. */
+             H:['Guardrail \u00b7 addon hotl','Blocking'] };
+
+/* Detail content shown when a Mechanism cell is clicked. */
+var MECH_DETAIL = {
+  G: {
+    title: 'Guardrail',
+    what: 'A blocking, in-flight check that fires at one of six agent-lifecycle hook points (before/after \u00d7 agent, LLM, tool). The agent suspends until the guardrail returns PASS / BLOCK / ERROR.',
+    akka: 'Implemented as an Akka SDK guardrail bound to an annotated hook (`@before-agent-invocation`, `@before-agent-response`, `@before-llm-call`, `@after-llm-response`, `@before-tool-call`, `@after-tool-call`). Optional add-ons attach to the hook to handle transformation (PII / secret / sector sanitizers) or human authorization (HOTL \u2192 reviewer queue). Every decision is recorded as a `GuardrailDecisionRecorded` evidence event.'
+  },
+  W: {
+    title: 'HITL',
+    what: 'Human-In-The-Loop. The customer\'s application workflow pauses for a human\'s domain decision and resumes with the human\'s feedback. The control logic lives in the customer\'s Workflow, outside the agent.',
+    akka: 'Implemented as an Akka Workflow that calls `pause()` and resumes on a signal carrying the human\'s feedback payload. Akka generates the reviewer UI, the durable suspension, the audit trail, and the SLA / escalation chain. Recorded as `HumanDecisionRecorded` evidence events.'
+  },
+  P: {
+    title: 'Evaluation - periodic',
+    what: 'A scheduled, automated evaluation that runs against live production state on a cadence (nightly, hourly, monthly). Emits observations; alerts on threshold breach; may mutate runtime state on breach.',
+    akka: 'Implemented as an Akka Timer that triggers an Evaluation against a View of recent production records. The Evaluation emits an observation; on-breach actions can hot-update runtime configuration (e.g. freeze auto-approval) via the policy update endpoint. Recorded as `PeriodicEvaluationRecorded` evidence events.'
+  },
+  E: {
+    title: 'Evaluation - event',
+    what: 'An automated evaluation triggered by a runtime or domain event \u2014 an incident detection, an adverse decision, a model/data change, a customer appeal. Non-blocking; produces an observation that may drive downstream workflows.',
+    akka: 'Implemented as an Akka Consumer subscribed to the relevant event stream (e.g. `@IncidentDetected`, `@ApplicantAppealed`). The Consumer runs an Evaluation and emits an observation; for regulator-clock obligations (EU AI Act Art. 72), the Consumer also schedules a Timed Action enforcing the 72-hour window. Recorded as `OnlineEvaluationRecorded` evidence events.'
+  },
+  HR: {
+    title: 'HOOTL \u2014 Human Out Of The Loop',
+    what: 'Live-runtime governance review by a person in a risk / legal / compliance role. The reviewer observes AI outputs and pushes runtime-state feedback \u2014 policy edits, threshold tweaks, allowlist changes \u2014 without redeploying. The agent does not wait; the human is asynchronous. Distinct from HITL (application workflow) and HOTL (boundary-blocking guardrail add-on).',
+    akka: 'Implemented as the Deployer Dashboard (or DSA-style trusted-flagger queue UI) plus the runtime policy hot-update endpoint. The reviewer\'s dispositions adjust guardrail policy, eval thresholds, or refusal rules live, and are logged as `HootlDispositionRecorded` evidence events with full attribution.'
+  },
+  B: {
+    title: 'CI gate',
+    what: 'A build-time gate that blocks deploy. Covers test gates (eval suites must pass), documentation gates (DPIA / technical file on file and current), attestation gates (named role signed off within freshness window), configuration gates (deploy config matches policy), and periodic recertification gates (annual retrain & re-validation within window).',
+    akka: 'Implemented as an Akka EvalKit suite that runs in CI/CD against the deployment artifact. Each gate is a discrete check returning PASS / FAIL; FAIL blocks the build. Documentation and attestation gates verify the presence and freshness of governance artifacts in the project repository. Recorded as gate-decision evidence in the audit trail.'
+  },
+  K: {
+    title: 'Halt',
+    what: 'A registered, exercisable system-level intervention point that brings the AI system to a halt in a safe state. Three flavors: operator/regulator stop (manual kill switch \u2014 EU AI Act Art. 14.4(e)), automatic safety halt (system self-detects unsafe behavior), and graceful degradation (downgrade to a safe-fallback mode instead of full stop).',
+    akka: 'Implemented as a registered halt endpoint exposed via an Akka HTTP endpoint, plus the runtime state machine that transitions the AI system to a halted / degraded mode and preserves evidence. The endpoint is authenticated to authorized operators / regulators. Halts are recorded as `HaltInvoked` evidence events with operator attribution.'
+  },
+  H: {
+    title: 'Guardrail \u00b7 addon hotl (retired top-level mechanism)',
+    what: 'Legacy top-level mechanism. Replaced by the Guardrail mechanism with the `hotl` add-on attached to a specific hook (typically `before-tool-call`). Existing corpus rows tagged with H migrate during Phase 2.',
+    akka: 'See Guardrail. The `hotl` add-on dispatches the in-flight call to a human reviewer queue and waits on the verdict before the agent resumes.'
+  }
+};
+
+/* Detail content for the Implementation cell \u2014 keyed by the flavor /
+   hook / addon string used in the SAMPLE_MATRIX `impl` field. */
+var IMPL_DETAIL = {
+  /* Guardrail hooks */
+  'before-agent-invocation': { title:'Guardrail \u00b7 before-agent-invocation', what:'Fires when input arrives, before the agent processes it. Used for input screening, jailbreak / prompt-injection detection, request-rate gating.', akka:'`@before-agent-invocation` annotated guardrail binding. Receives the inbound request; returns PASS / BLOCK / ERROR. Blocked requests never reach the LLM.' },
+  'before-agent-response':   { title:'Guardrail \u00b7 before-agent-response',   what:'Fires before the agent\'s response leaves. Used for output screening, refusal-rule checks, response-content policy enforcement.', akka:'`@before-agent-response` annotated guardrail. Inspects (and may transform via add-ons) the response before the caller sees it.' },
+  'before-llm-call':         { title:'Guardrail \u00b7 before-llm-call',         what:'Fires before the model receives the prompt. Used for prompt-construction safety, PII / secret redaction before the LLM sees it, prompt-injection defense.', akka:'`@before-llm-call` annotated guardrail. Receives the assembled prompt; can sanitize via add-ons before the model is invoked.' },
+  'after-llm-response':      { title:'Guardrail \u00b7 after-llm-response',      what:'Fires after the model responds, before the agent acts on it. Used for hallucination detection, schema-conformance checks on structured outputs.', akka:'`@after-llm-response` annotated guardrail. Inspects the raw model output and may block / transform before the agent proceeds.' },
+  'before-tool-call':        { title:'Guardrail \u00b7 before-tool-call',        what:'Fires before a tool is invoked. Used for tool authorization, argument sanitization, side-effect gating, dangerous-action authorization.', akka:'`@before-tool-call` annotated guardrail. Receives the tool-call payload; can block, transform args, or (with the `hotl` add-on) dispatch to a human reviewer queue.' },
+  'after-tool-call':         { title:'Guardrail \u00b7 after-tool-call',         what:'Fires after the tool returns. Used for result-schema verification, post-call redaction, anomaly detection in tool outputs.', akka:'`@after-tool-call` annotated guardrail. Inspects the tool result before the agent consumes it.' },
+  /* Guardrail add-ons */
+  'addon sanitizer-pii':           { title:'Add-on \u00b7 sanitizer-pii',           what:'Transforms / redacts PII (names, emails, phones, IDs) in the payload before the agent resumes. The guardrail BLOCKS the original payload and PASSES the sanitized one.', akka:'Sanitizer component invoked from a guardrail hook (typically `before-llm-call` or `before-agent-response`). Configured by `.akka/sanitizers/pii.yaml`; emits a `SanitizerRedactionRecorded` event with the redacted classes (never the redacted content).' },
+  'addon sanitizer-special-category': { title:'Add-on \u00b7 sanitizer-special-category', what:'Redacts GDPR Art. 9 special-category data (health, religion, sexual orientation, biometric, etc.).', akka:'Sanitizer with a special-category detector. Emits `SanitizerRedactionRecorded` events tagged `art-9`.' },
+  'addon sanitizer-secret':        { title:'Add-on \u00b7 sanitizer-secret',        what:'Masks secrets and credentials (API keys, tokens, passwords) detected in the payload.', akka:'Sanitizer with a secret-detector pattern set. Emits redaction events tagged with the secret class but never the value.' },
+  'addon sanitizer-sector':        { title:'Add-on \u00b7 sanitizer-sector',        what:'Sector-specific masking \u2014 PHI (HIPAA), PAN (PCI), financial account fields.', akka:'Sanitizer configured per sector profile (HIPAA / PCI / GLBA). Emits sector-tagged redaction events.' },
+  'addon hotl':                    { title:'Add-on \u00b7 hotl', what:'Dispatches the in-flight call to a reviewer queue and waits on a human verdict (APPROVE / REJECT). Reserved for boundary-blocking human authorization required by regulation \u2014 dangerous tool calls, clinical-alert thresholds, OWASP LLM08 excessive-agency cases.', akka:'HOTL add-on invoked from a guardrail hook (almost always `before-tool-call`). The agent\'s in-flight call suspends; the queue routes to the configured reviewer role with the configured SLA. Verdict recorded as `HumanDecisionRecorded`.' },
+  /* HITL flavors */
+  'pre-decision-pause':            { title:'HITL workflow \u00b7 pre-decision-pause',   what:'The application workflow pauses BEFORE the decision is finalized. The agent has drafted; the workflow holds until a human signs off, then resumes with the human\'s feedback.', akka:'Akka Workflow `pause()` / `resume()` around a generated reviewer UI. The human\'s feedback payload signals the resume.' },
+  'post-decision-review':          { title:'HITL workflow \u00b7 post-decision-review', what:'The application proceeds with the agent\'s draft; the workflow flags the case for a human to review and override after the fact.', akka:'Akka Workflow records the draft outcome and emits a review task; the human\'s override (if any) is applied via a compensating step.' },
+  /* Periodic eval flavors */
+  'continuous-accuracy':           { title:'Periodic eval \u00b7 continuous-accuracy',  what:'Live runtime monitor of accuracy / robustness over rolling production samples. Alerts on breach.', akka:'Akka Timer + Evaluation against a `DecisionsView`. Schedule e.g. hourly. Recorded as `PeriodicEvaluationRecorded`.' },
+  'drift-fairness-watch':          { title:'Periodic eval \u00b7 drift-fairness-watch', what:'Demographic-parity / accuracy-drift monitor over rolling production samples. EU AI Act Art. 10.2(f) anchor.', akka:'Akka Timer + fairness Evaluation against the protected-class projection. Breach can hot-update the auto-approval policy.' },
+  'performance-monitor':           { title:'Periodic eval \u00b7 performance-monitor',  what:'Live monitor of operational metrics (latency, cost, throughput) over a rolling window.', akka:'Akka Timer + Evaluation against an operational metrics View.' },
+  /* Event eval flavors */
+  'on-incident-reporter':          { title:'Event eval \u00b7 on-incident-reporter',   what:'Serious-incident detection triggers a regulator-routing workflow with a clock (EU AI Act Art. 72 \u2014 72 hours; GDPR Art. 33-34).', akka:'Akka Consumer `@IncidentDetected` \u2192 Workflow that schedules the regulator-notification step with a Timed Action enforcing the deadline.' },
+  'on-decision-eval':              { title:'Event eval \u00b7 on-decision-eval',       what:'Every adverse decision runs an explanation-quality check (GDPR Art. 22; EU AI Act Art. 86).', akka:'Akka Consumer on the decision-event stream; LLM-judge Evaluation scores the explanation against rubric.' },
+  'on-change-revalidation':        { title:'Event eval \u00b7 on-change-revalidation', what:'Model / tool / data change triggers a re-validation pipeline (EU AI Act Art. 43 substantial modification).', akka:'Akka Consumer on the change-event stream; runs an EvalKit regression against the candidate.' },
+  'on-appeal-reexamination':       { title:'Event eval \u00b7 on-appeal-reexamination', what:'Customer challenge triggers a re-examination of the decision (EU AI Act Art. 86; consumer-protection regs).', akka:'Akka Consumer `@ApplicantAppealed` \u2192 replay Evaluation against the case with the latest model.' },
+  /* HOOTL flavors */
+  'trusted-flagger-queue':         { title:'HOOTL \u00b7 trusted-flagger-queue',         what:'DSA Art. 22 trusted-flagger queue. Reviewers inspect live AI moderation outputs and file dispositions that adjust moderation policy in near-real-time.', akka:'Akka Workflow per disposition + runtime policy hot-update endpoint. Dispositions recorded as `HootlDispositionRecorded`.' },
+  'vlop-systemic-risk-review':     { title:'HOOTL \u00b7 vlop-systemic-risk-review',     what:'DSA Art. 34-35 VLOP risk team continuously reviews systemic-risk indicators and pushes immediate mitigations.', akka:'Risk-team dashboard + policy hot-update endpoint with mitigation-pack templates.' },
+  'deployer-runtime-monitoring':   { title:'HOOTL \u00b7 deployer-runtime-monitoring',   what:'EU AI Act Art. 26 deployer-side runtime monitoring with adjustment authority. Deployer observes live outputs and can push immediate threshold or prompt adjustments.', akka:'Deployer Dashboard surface bound to the runtime policy hot-update endpoint. Adjustments take effect without redeploy.' },
+  'post-market-surveillance':      { title:'HOOTL \u00b7 post-market-surveillance',      what:'Medical device IVDR Art. 83 / FDA SaMD \u2014 manufacturer continuously samples real-world performance and pushes immediate threshold or labeling updates.', akka:'Surveillance dashboard + field-update endpoint plus a Consumer over real-world performance evidence.' },
+  'live-compliance-review':        { title:'HOOTL \u00b7 live-compliance-review',        what:'Sector compliance / pre-trade review \u2014 compliance personnel inspect flagged AI-generated trades or recommendations live and push immediate constraints.', akka:'Compliance dashboard + runtime constraint hot-update endpoint.' },
+  /* CI gate flavors */
+  'test-gate':                     { title:'CI gate \u00b7 test-gate',                  what:'Automated EvalKit suite that must pass to deploy. EU AI Act Art. 15 evaluation obligations; release governance.', akka:'EvalKit suite run in CI/CD; FAIL blocks the build. Each test maps to one or more matrix rows.' },
+  'documentation-gate':            { title:'CI gate \u00b7 documentation-gate',         what:'Required document must exist, be signed, and be current within a freshness window. DPIA (GDPR Art. 35), technical file (EU AI Act Art. 11).', akka:'EvalKit document-presence + freshness check against the project repository. FAIL blocks the build.' },
+  'attestation-gate':              { title:'CI gate \u00b7 attestation-gate',           what:'A named role must have signed off within a freshness window. DPO (GDPR Art. 35.11, Art. 39), QMS reviewer (EU AI Act Art. 17), independent auditor (DSA Art. 37), model validator (Federal Reserve SR 11-7).', akka:'EvalKit signature-freshness check against the attestation artifact registry.' },
+  'configuration-gate':            { title:'CI gate \u00b7 configuration-gate',         what:'Deploy configuration must match policy \u2014 allowlisted tools, model version, region constraints.', akka:'EvalKit configuration-policy check against the deploy descriptor.' },
+  'periodic-recertification-gate': { title:'CI gate \u00b7 periodic-recertification-gate', what:'Retrain & re-validation must have occurred within the policy window; corpus version must be current.', akka:'EvalKit version-currency + retrain-evidence check.' },
+  /* Halt flavors */
+  'operator-regulator-stop':       { title:'Halt \u00b7 operator-regulator-stop',       what:'Manual kill switch \u2014 EU AI Act Art. 14.4(e) "stop button" and Art. 79 market-surveillance suspension. Authorized operator or regulator triggers; system enters halted state and preserves evidence.', akka:'Registered halt HTTP endpoint authenticated to operator / regulator role. State machine transitions the system to a halted mode; in-flight requests drain. Halt recorded as `HaltInvoked`.' },
+  'automatic-safety-halt':         { title:'Halt \u00b7 automatic-safety-halt',         what:'System self-detects unsafe behavior (e.g. exceeded refusal-rate threshold, model anomaly) and halts itself. EU AI Act Art. 9 risk management.', akka:'Watchdog Periodic eval that triggers the halt endpoint internally on breach. No human in the path; the halt is logged with the triggering metric.' },
+  'graceful-degradation':          { title:'Halt \u00b7 graceful-degradation',          what:'Downgrade to a safe-fallback mode instead of full stop. Used for medical device fail-safe, financial trading circuit breakers, FAA-style degraded operation.', akka:'State machine transitions the system to a degraded mode that disables high-risk capabilities while continuing to serve safe ones. Degradation recorded as `DegradationInvoked` with the new mode label.' }
+};
+
+/* Illustrative sample Eval Matrix \u2014 one row per mechanism family. Shown when
+   the live Akka governance services aren't reachable, so visitors can still
+   see the shape an Eval Matrix takes for their AI system. */
+var SAMPLE_MATRIX = [
+  /* Guardrails — 6 rows showing the 6 hooks plus the hotl and sanitizer add-ons. */
+  { fam:'G', txt:'Block prompt injection in user input',
+    impl:'before-agent-invocation', src:'OWASP LLM01' },
+  { fam:'G', txt:'Redact PII before the model sees it',
+    impl:'before-llm-call · addon sanitizer-pii', src:'GDPR Art. 5(1)(b)–(c)' },
+  { fam:'G', txt:'Block protected attributes in response',
+    impl:'before-agent-response', src:'EU AI Act Art. 10(2)(f)' },
+  { fam:'G', txt:'Refuse postal-code-primary decisions',
+    impl:'before-tool-call', src:'corporate' },
+  { fam:'G', txt:'Authorize high-impact tool calls',
+    impl:'before-tool-call · addon hotl', src:'EU AI Act Art. 14(4)(c)' },
+  { fam:'G', txt:'Verify tool output schema',
+    impl:'after-tool-call', src:'OWASP LLM Top 10' },
+  /* HITL */
+  { fam:'W', txt:'Human approval on loans over €5000',
+    impl:'pre-decision-pause', src:'corporate' },
+  /* Evaluation - periodic — live runtime monitors */
+  { fam:'P', txt:'Demographic-parity drift watch, monthly',
+    impl:'drift-fairness-watch', src:'EU AI Act Art. 10(2)(f)' },
+  { fam:'P', txt:'Refusal-rate and accuracy monitor',
+    impl:'continuous-accuracy', src:'EU AI Act Art. 15' },
+  /* Evaluation - event — event-triggered */
+  { fam:'E', txt:'Serious incidents reported in 72h',
+    impl:'on-incident-reporter', src:'EU AI Act Art. 72' },
+  { fam:'E', txt:'Customer challenge triggers re-eval',
+    impl:'on-appeal-reexamination', src:'EU AI Act Art. 86(1)' },
+  /* HOOTL — live governance review with runtime-state feedback */
+  { fam:'HR', txt:'Trusted-flagger review queue',
+    impl:'trusted-flagger-queue', src:'DSA Art. 22' },
+  { fam:'HR', txt:'Deployer monitors and adjusts policy live',
+    impl:'deployer-runtime-monitoring', src:'EU AI Act Art. 26' },
+  /* CI gates */
+  { fam:'B', txt:'All evals must pass to deploy',
+    impl:'test-gate', src:'corporate' },
+  { fam:'B', txt:'DPIA signed and current to deploy',
+    impl:'documentation-gate', src:'EU AI Act Art. 11' },
+  { fam:'B', txt:'DPO re-attests DPIA within 365 days',
+    impl:'attestation-gate', src:'GDPR Art. 35(11)' },
+  { fam:'B', txt:'Annual retrain & re-validation current',
+    impl:'periodic-recertification-gate', src:'EU AI Act Art. 17(1)' },
+  /* Halt */
+  { fam:'K', txt:'Operator stop button',
+    impl:'operator-regulator-stop', src:'EU AI Act Art. 14(4)(e)' }
+];
+var HINT_LIVE   = 'each row is a control your AI system must have in place \u2014 click a control or source citation for detail';
+var HINT_SAMPLE = 'One illustrative control for each control type. Contact Akka for live derivation of controls.';
+function setMxHint(text){
+  var h = document.getElementById('mxHint');
+  if(h) h.textContent = text;
+}
+function sampleMatrixHTML(){
+  var n = {};
+  return SAMPLE_MATRIX.map(function(r){
+    n[r.fam] = (n[r.fam] || 0) + 1;
+    var rid = r.fam + n[r.fam];
+    var m = MECH[r.fam];
+    return '<tr><td class="id">' + rid + '</td>' +
+      '<td class="ctl"><span>' + esc(r.txt) + '</span></td>' +
+      '<td class="mech ' + r.fam + '"><span class="lnk" data-mech="' + r.fam + '">' + m[0] + '</span></td>' +
+      '<td class="impl">' + implLinks(r.impl) + '</td>' +
+      '<td class="src">' + srcLinks(r.src) + '</td></tr>';
+  }).join('');
+}
+/* Turn the impl string into a series of clickable spans. Splits on " · " so
+   "before-tool-call · addon hotl" becomes two link spans, each opening its
+   own IMPL_DETAIL popup. */
+function implLinks(impl){
+  if(!impl) return '';
+  return impl.split(' · ').map(function(seg){
+    var key = seg.trim();
+    var hit = IMPL_DETAIL[key];
+    if(!hit) return esc(seg);
+    return '<span class="lnk" data-impl="' + esc(key) + '">' + esc(seg) + '</span>';
+  }).join('<span class="sep"> · </span>');
+}
+function renderSampleMatrix(){
+  mxCount.textContent = 'sample \u00b7 ' + SAMPLE_MATRIX.length + ' controls across 7 mechanisms';
+  setMxHint(HINT_SAMPLE);
+  mxRows.innerHTML = sampleMatrixHTML();
+}
+function noLiveDerivation(){
+  /* No live Eval Matrix is available \u2014 either the API was probed and is
+     genuinely unreachable, or a preset is loaded against the offline stub. */
+  return (typeof akkaProbed !== 'undefined' && akkaProbed && !akkaBase)
+      || (typeof STUB_ACTIVE !== 'undefined' && STUB_ACTIVE);
+}
 function keys(o){ return Object.keys(o).filter(function(k){ return o[k]; }); }
 function genRows(f){
   var rows = [];
@@ -2589,14 +3036,14 @@ function genRows(f){
 var scope = document.getElementById('scope'), nums = document.getElementById('scopeNums'),
     list = document.getElementById('scopeList'), tog = document.getElementById('scopeTog');
 document.getElementById('scopeHd').addEventListener('click', function(){
+  if(scope.classList.contains('no-detail')) return;
   scope.classList.toggle('open');
   tog.textContent = scope.classList.contains('open') ? 'hide detail ▴' : 'show detail ▾';
 });
 
 /* ---------- Eval Matrix drawer ---------- */
 var mx = document.getElementById('mx'), mxRows = document.getElementById('mxRows'),
-    mxCount = document.getElementById('mxCount'), mxToggle = document.getElementById('mxToggle'),
-    mxHide = document.getElementById('mxHide'), mxRestore = document.getElementById('mxRestore');
+    mxCount = document.getElementById('mxCount'), mxToggle = document.getElementById('mxToggle');
 function mxSetOpen(open){
   mx.classList.toggle('open', open);
   document.body.classList.toggle('mxopen', open);
@@ -2604,12 +3051,8 @@ function mxSetOpen(open){
 }
 document.getElementById('mxBar').addEventListener('click', function(){ mxSetOpen(!mx.classList.contains('open')); });
 mxToggle.addEventListener('click', function(e){ e.stopPropagation(); mxSetOpen(!mx.classList.contains('open')); });
-mxHide.addEventListener('click', function(e){ e.stopPropagation(); mx.classList.add('hidden');
-  document.body.classList.remove('mxopen'); mxRestore.classList.remove('hidden'); });
-mxRestore.addEventListener('click', function(){ mx.classList.remove('hidden'); mxRestore.classList.add('hidden');
-  document.body.classList.toggle('mxopen', mx.classList.contains('open')); });
 
-var FAM_ORDER = ['G','H','W','P','E','B','K'];
+var FAM_ORDER = ['G','W','P','E','HR','B','K','H'];   // H last (retired legacy)
 function esc(s){ var d = document.createElement('span'); d.textContent = s; return d.innerHTML; }
 
 /* mechanism definitions for the control popup */
@@ -2627,6 +3070,44 @@ var PROOF = { G:'GuardrailDecisionRecorded', H:'HumanDecisionRecorded', W:'Human
   K:'HaltExercised (audit trail of exerciser, scope, reason, timestamp)' };
 
 /* citation knowledge base — quote is the operative regulation text (abridged), why is what it demands */
+/* How each regulation in REG maps to the canonical Eval Matrix (mechanism +
+   hook/addons/flavor). Rendered as a separate section in the openCite popup
+   so the visitor sees exactly which Akka primitive the regulation reduces
+   to. Only entries used in the SAMPLE_MATRIX are populated; the live
+   derivation engine fills the rest. */
+var REG_MAPPING = {
+  'corporate':
+    'Customer-defined controls map to whichever mechanism the customer chooses. Common patterns: refusal rules → Guardrail at `before-tool-call`; approval thresholds → HITL workflow `pre-decision-pause`; release-quality gates → CI gate `test-gate`.',
+  'OWASP LLM01':
+    'Prompt-injection defense lives inline at the input boundary. Maps to **Guardrail · `before-agent-invocation`** — a blocking check that screens the user input before the agent processes it.',
+  'OWASP LLM Top 10':
+    'The OWASP catalog covers several boundary-level threats. For tool-output validation specifically, maps to **Guardrail · `after-tool-call`** — a blocking inspection of the tool result before the agent acts on it.',
+  'EU AI Act Art. 15':
+    'Accuracy and robustness are measured continuously over live production traffic. Maps to **Evaluation - periodic · `continuous-accuracy`** — a scheduled monitor over a rolling production sample that emits observations and alerts on breach.',
+  'EU AI Act Art. 11':
+    'The technical file must exist, be signed by the provider, and stay current. Maps to **CI gate · `documentation-gate`** — a build-time check that blocks deploy if the technical file is missing, expired, or doesn\'t cover the deployed version.',
+  'EU AI Act Art. 14(4)(c)':
+    'Boundary-blocking human authorization on a dangerous tool call. Maps to **Guardrail · `before-tool-call` · addon `hotl`** — the guardrail dispatches the in-flight call to a reviewer queue and waits on the verdict before the agent resumes.',
+  'EU AI Act Art. 14(4)(e)':
+    'Operator must be able to halt the system in a safe state. Maps to **Halt · `operator-regulator-stop`** — a registered, authenticated halt endpoint that brings the system to a safe stop and preserves evidence.',
+  'EU AI Act Art. 10(2)(f)':
+    'Bias examination has two enforcement points (1:1 invariant splits them into two Controls): inline per-response check maps to **Guardrail · `before-agent-response`**; trailing-window aggregate parity maps to **Evaluation - periodic · `drift-fairness-watch`**.',
+  'EU AI Act Art. 72':
+    'Serious-incident reporting carries a regulator clock. Maps to **Evaluation - event · `on-incident-reporter`** — an event-triggered evaluation that opens a regulator-routing workflow with a 72-hour timer.',
+  'EU AI Act Art. 86(1)':
+    'Affected persons have a right to a re-examined decision with a meaningful explanation. Maps to **Evaluation - event · `on-appeal-reexamination`** — an event-triggered re-eval of the case with the latest model and explanation.',
+  'EU AI Act Art. 26':
+    'Deployer must monitor live system operation and may push runtime adjustments. Maps to **HOOTL · `deployer-runtime-monitoring`** — a governance-role human observes live outputs and pushes runtime-state feedback (policy edits, threshold tweaks) without redeploying.',
+  'EU AI Act Art. 17(1)':
+    'The provider\'s QMS includes a periodic re-validation cadence. Maps to **CI gate · `periodic-recertification-gate`** — a build-time check that blocks deploy if the documented retrain & re-validation is older than the policy window.',
+  'GDPR Art. 5(1)(b)–(c)':
+    'Data minimisation requires that personal data not flow further than necessary. Maps to **Guardrail · `before-llm-call` · addon `sanitizer-pii`** — the sanitizer redacts PII in the payload before the model receives the prompt.',
+  'GDPR Art. 35(11)':
+    'The DPIA must be reviewed when risk changes and signed by the DPO within a freshness window. Maps to **CI gate · `attestation-gate`** — a build-time check that blocks deploy if the DPO\'s sign-off on the current DPIA has expired.',
+  'DSA Art. 22':
+    'Trusted-flagger notices must be processed with priority and without undue delay. Maps to **HOOTL · `trusted-flagger-queue`** — designated reviewers dispose of flagged outputs and their dispositions hot-update the moderation policy without redeploying.'
+};
+
 var REG = {
   'corporate': { n:'Custom — your declaration', q:null,
     w:'This control comes from your own survey answers — a refusal, gate condition, watch pattern, or worst-case you wrote. It needs a custom implementation specific to your domain, application, or company; the application owner or Akka builds it (in the service, in workflow, in CI, or as an operational process). Custom controls carry the same mechanisms and enforcement as regulation-derived controls.' },
@@ -2644,6 +3125,8 @@ var REG = {
     w:'Oversight must be able to actually prevent harm — so the agent may draft but not finalize; commit authority lives with the human-owned workflow.' },
   'EU AI Act Art. 14(4)(b)': { n:'EU AI Act — Article 14(4)(b): Automation bias', q:'…to remain aware of the possible tendency of automatically relying or over-relying on the output produced by a high-risk AI system (automation bias).',
     w:'Oversight that rubber-stamps is not oversight — requires monitoring reviewer behavior (review durations, no-edit streaks, approval anomalies).' },
+  'EU AI Act Art. 14(4)(c)': { n:'EU AI Act — Article 14(4)(c): Correctly interpret and use the output', q:'…to correctly interpret the high-risk AI system\'s output, taking into account, for example, the interpretation tools and methods available.',
+    w:'For dangerous or irreversible actions (a tool call that transfers funds, dispenses medication, files legal action) the overseer must be able to interpret AND authorize before the action commits — implemented as a boundary-blocking HOTL add-on at the `@before-tool-call` hook.' },
   'EU AI Act Art. 14(4)(d)': { n:'EU AI Act — Article 14(4)(d): Power to disregard or reverse', q:'…to decide, in any particular situation, not to use the high-risk AI system or to otherwise disregard, override or reverse the output of the high-risk AI system.',
     w:'A human must own the consequential outcome — implemented as a workflow pause where the reviewer can approve, deny, or edit before anything commits.' },
   'EU AI Act Art. 14(4)(e)': { n:'EU AI Act — Article 14(4)(e): Power to intervene or halt', q:'…to intervene in the operation of the high-risk AI system or interrupt the system through a “stop” button or a similar procedure that allows the system to come to a halt in a safe state.',
@@ -2686,6 +3169,10 @@ var REG = {
     w:'Biometric identification needs an explicit lawful basis — consent and retention schedules are enforced at the boundary.' },
   'GDPR Art. 22(3)': { n:'GDPR — Article 22(3): Automated decisions — safeguards', q:'…the data controller shall implement suitable measures to safeguard the data subject’s rights… at least the right to obtain human intervention on the part of the controller, to express his or her point of view and to contest the decision.',
     w:'Fully automated consequential decisions require a human-intervention path — a workflow pause a contesting person can reach.' },
+  'GDPR Art. 35(11)': { n:'GDPR — Article 35(11): DPIA review', q:'Where necessary, the controller shall carry out a review to assess if processing is performed in accordance with the data protection impact assessment at least when there is a change of the risk represented by processing operations.',
+    w:'The DPIA is a living document that must be reviewed and re-signed when risk profile changes — implemented as a CI attestation-gate that blocks deploy if the DPO sign-off on the DPIA has expired.' },
+  'DSA Art. 22': { n:'EU Digital Services Act — Article 22: Trusted flaggers', q:'Providers of online platforms shall take the necessary technical and organisational measures to ensure that notices submitted by trusted flaggers… are given priority and are processed and decided upon without undue delay.',
+    w:'Designated reviewers must be able to inspect AI moderation outputs and push corrective dispositions in near-real-time — implemented as a HOOTL reviewer queue whose dispositions hot-update the moderation policy without redeploy.' },
   'GDPR Art. 32': { n:'GDPR — Article 32: Security of processing', q:'…the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk.',
     w:'Security must match risk — data-exfiltration screens are a technical measure against unauthorized disclosure.' },
   'GDPR Ch. V (Art. 44)': { n:'GDPR — Chapter V, Article 44: Transfers', q:'Any transfer of personal data… to a third country… shall take place only if the conditions laid down in this Chapter are complied with.',
@@ -2733,25 +3220,19 @@ function srcLinks(src){
 function renderMatrix(rows){
   lastRows = [];
   if(STUB_ACTIVE){
-    /* API genuinely unreachable. Surface that classification IS possible
-       (show the count) but replace the row table with a "contact your rep"
-       message — never expose the stubbed archetype rows here. */
-    mxCount.textContent = rows.length + ' controls would apply · contact your Akka rep for access to Akka’s governance services that map your Risk Survey to AI regulations';
-    mxRows.innerHTML = '<tr><td colspan="6" class="mx-empty" style="text-align:center;padding:36px 16px">' +
-      '<div style="font-size:15px;font-weight:800;letter-spacing:0.3px;color:var(--white);margin-bottom:10px">' +
-      'Akka can generate an Eval Matrix — contact your Akka representative</div>' +
-      '<div style="font-size:13px;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.6">' +
-      'For this survey, ' + rows.length + ' controls would be derived live from the Akka governance corpus. ' +
-      'The derivation engine isn\'t reachable from this page right now — ask your Akka representative about enabling the governance services to see the full Eval Matrix here.' +
-      '</div></td></tr>';
+    /* API genuinely unreachable. Show an illustrative sample Eval Matrix so
+       visitors get a sense of the shape; the banner row tells them to contact
+       their Akka rep for the live derivation. */
+    renderSampleMatrix();
     return;
   }
+  setMxHint(HINT_LIVE);
   var dn = rows.filter(function(r){ return r.d; }).length;
   var cn = rows.length - dn;
   mxCount.textContent = rows.length + ' rows · ' +
     dn + ' from regulation · ' + cn + ' custom';
   if(!rows.length){
-    mxRows.innerHTML = '<tr><td colspan="6" class="mx-empty">No controls required yet — answer the survey to see what your AI system needs.</td></tr>';
+    mxRows.innerHTML = '<tr><td colspan="5" class="mx-empty">No controls required yet — answer the survey to see what your AI system needs.</td></tr>';
     return;
   }
   var sorted = rows.slice().sort(function(a, b){ return FAM_ORDER.indexOf(a.fam) - FAM_ORDER.indexOf(b.fam); });
@@ -2762,8 +3243,8 @@ function renderMatrix(rows){
     lastRows.push(r);
     var m = MECH[r.fam];
     return '<tr><td class="id">' + r.rid + '</td><td class="ctl" title="' + esc(r.txt) + '"><span class="lnk" data-row="' + i + '">' + esc(r.txt) +
-      '</span></td><td class="mech ' + r.fam + '">' + m[0] + '</td><td class="impl" title="' + esc(r.impl) + '">' + esc(r.impl) +
-      '</td><td class="enf">' + m[1] + '</td><td class="src">' + srcLinks(r.src) + '</td></tr>';
+      '</span></td><td class="mech ' + r.fam + '"><span class="lnk" data-mech="' + r.fam + '">' + m[0] + '</span></td><td class="impl" title="' + esc(r.impl) + '">' + implLinks(r.impl) +
+      '</td><td class="src">' + srcLinks(r.src) + '</td></tr>';
   }).join('');
   renderEmFull(lastRows);
 }
@@ -2791,29 +3272,35 @@ function renderEmFull(rows){
      on whether the survey has been filled out yet. */
   var el = document.getElementById('emFullRows');
   if(!el) return;
+  var titleEl = document.getElementById('emFullTitle');
+  var hintEl  = document.getElementById('emFullHint');
   var src = rows || [];
+  /* Default to live-mode header; sample branches below will override. */
+  if(titleEl) titleEl.textContent = 'Your Eval Matrix';
+  if(hintEl){ hintEl.hidden = true; hintEl.textContent = ''; }
   if(!src.length){
-    if(surveyHasAnswers()){
-      el.innerHTML = '<tr><td colspan="6" class="mx-empty" style="text-align:center;padding:36px 24px">' +
-        '<div style="font-size:15px;font-weight:800;letter-spacing:0.3px;color:var(--white);margin-bottom:10px">' +
-        'Akka can generate your Eval Matrix</div>' +
-        '<div style="font-size:13px;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.6">' +
-        'Contact your Akka rep for access to Akka’s governance services that map your Risk Survey to AI regulations. ' +
-        'Once connected, this table will list every guardrail, human-required decision, evaluation, ' +
-        'and policy your system needs &mdash; with the exact citation and runtime binding for each.' +
-        '</div></td></tr>';
+    /* No derived rows yet — always show the sample matrix so visitors see
+       what an Eval Matrix looks like. The hint copy explains why this is
+       a sample (unreachable / unanswered / pending). */
+    var hintCopy;
+    if(noLiveDerivation()){
+      hintCopy = 'One illustrative control for each control type. Contact Akka for derivation of controls.';
+    } else if(!surveyHasAnswers()){
+      hintCopy = 'One illustrative control for each control type. Answer the Risk Survey on the previous step to derive an Eval Matrix for your AI system.';
     } else {
-      el.innerHTML = '<tr><td colspan="6" class="mx-empty" style="padding:18px;color:var(--muted)">Answer the Risk Survey to populate your Eval Matrix.</td></tr>';
+      hintCopy = 'One illustrative control for each control type. Contact Akka to enable the governance services that derive an Eval Matrix from your Risk Survey answers.';
     }
+    if(titleEl) titleEl.textContent = 'Sample Eval Matrix';
+    if(hintEl){ hintEl.textContent = hintCopy; hintEl.hidden = false; }
+    el.innerHTML = sampleMatrixHTML();
     return;
   }
   el.innerHTML = src.map(function(r){
     var m = MECH[r.fam] || ['',''];
     return '<tr><td class="id">' + esc(r.rid || '') + '</td>' +
       '<td class="ctl">' + esc(r.txt || '') + '</td>' +
-      '<td class="mech ' + r.fam + '">' + m[0] + '</td>' +
-      '<td class="impl">' + esc(r.impl || '') + '</td>' +
-      '<td class="enf">' + m[1] + '</td>' +
+      '<td class="mech ' + r.fam + '"><span class="lnk" data-mech="' + esc(r.fam || '') + '">' + m[0] + '</span></td>' +
+      '<td class="impl">' + implLinks(r.impl || '') + '</td>' +
       '<td class="src">' + srcLinks(r.src || '') + '</td></tr>';
   }).join('');
 }
@@ -2822,9 +3309,9 @@ function renderEmFull(rows){
 var ACTIVE_STEP = 0;
 function setStep(n){
   n = parseInt(n, 10);
-  if(isNaN(n) || n < 0 || n > 4) n = 0;
+  if(isNaN(n) || n < 0 || n > 5) n = 0;
   ACTIVE_STEP = n;
-  for(var i = 0; i <= 4; i++){
+  for(var i = 0; i <= 5; i++){
     var p = document.getElementById('step' + i);
     if(p) p.classList.toggle('hidden', i !== n);
   }
@@ -2834,15 +3321,13 @@ function setStep(n){
     c.classList.toggle('done', s < n);
   });
   if(n === 2) renderEmFull(lastRows);
-  /* "Derived Eval Matrix" side panel, Eval Matrix preview drawer, and its
+  /* "Eval Matrix" side panel, Eval Matrix preview drawer, and its
      restore button all belong to the Risk Survey only. Hide on the cover
      and on the other sections. */
   var scopeEl = document.getElementById('scope');
   var mxEl = document.getElementById('mx');
-  var mxRestoreEl = document.getElementById('mxRestore');
   if(scopeEl) scopeEl.classList.toggle('step-hidden', n !== 1);
   if(mxEl) mxEl.classList.toggle('step-hidden', n !== 1);
-  if(mxRestoreEl) mxRestoreEl.classList.toggle('step-hidden', n !== 1);
   try { history.replaceState(null, '', '#step-' + n); } catch(e){}
   window.scrollTo({ top:0, behavior:'instant' in window ? 'instant' : 'auto' });
 }
@@ -2874,17 +3359,17 @@ document.getElementById('popClose').addEventListener('click', popHide);
    Always reachable from the section-bar copyright cluster. */
 var LEGAL_NOTICE_HTML = '<div class="legal-notice">' +
   '<h2>Legal Notice</h2>' +
-  '<p>&copy; 2024&ndash;2026 Akka, Inc. All rights reserved. ' +
-  '&ldquo;Akka,&rdquo; &ldquo;Eval Matrix,&rdquo; and the Akka logo are trademarks of Akka, Inc.</p>' +
+  '<p>&copy;2026 Lightbend, Inc. dba Akka. All rights reserved. ' +
+  '&ldquo;Akka,&rdquo; &ldquo;Eval Matrix,&rdquo; and the Akka logo are trademarks of Lightbend, Inc.</p>' +
   '<p>The AI regulation corpus indexed on this site &mdash; including the selection, classification, ' +
-  'applicability predicates, and accompanying analysis &mdash; is proprietary to Akka and is protected ' +
-  'as a copyrightable compilation under 17 U.S.C. &sect; 103 and as a database under EU Directive ' +
-  '96/9/EC.</p>' +
-  '<p>Akka&rsquo;s methods for automated risk identification, regulatory control derivation, runtime ' +
-  'enforcement, and re-assessment constitute Akka&rsquo;s confidential and proprietary trade secrets.</p>' +
+  'applicability predicates, and accompanying analysis &mdash; is proprietary to Lightbend, Inc. dba Akka ' +
+  'and is protected as a copyrightable compilation under 17 U.S.C. &sect; 103 and as a database under ' +
+  'EU Directive 96/9/EC.</p>' +
+  '<p>Lightbend&rsquo;s methods for automated risk identification, regulatory control derivation, runtime ' +
+  'enforcement, and re-assessment constitute confidential and proprietary trade secrets of Lightbend, Inc.</p>' +
   '<p>Unauthorized reproduction, redistribution, scraping, reverse engineering, or use of this content ' +
   'to develop competing products is prohibited. Access to and use of this site is governed by ' +
-  'Akka&rsquo;s Terms of Service.</p>' +
+  'Lightbend&rsquo;s Terms of Service.</p>' +
   '<p class="fine">Nothing on this site constitutes legal advice. Customers remain responsible for ' +
   'determining the regulations applicable to their own systems.</p>' +
   '</div>';
@@ -2933,6 +3418,14 @@ function openCite(citeKey){
       '<div class="pop-title">' + esc(r.n) + '</div>';
     if(r.q) html += '<div class="pop-quote">“' + esc(r.q) + '”<span class="qsrc">' + esc(citeKey) + ' — abridged</span></div>';
     html += '<div class="pop-body"><p>' + esc(r.w) + '</p></div>';
+    var mapping = REG_MAPPING[citeKey];
+    if(mapping){
+      /* Convert **bold** markdown to <strong> so we can highlight the
+         mechanism + hook/addons/flavor binding inline. */
+      var mappingHtml = esc(mapping).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      html += '<div class="pop-kicker" style="margin-top:14px">How this maps in Akka</div>' +
+              '<div class="pop-body"><p>' + mappingHtml + '</p></div>';
+    }
     if(citeKey !== 'corporate') html += '<div class="pop-note">Quotes are abridged for readability. Each regulation-derived control in the Eval Matrix is locked to its exact corpus entry and corpus version; the full source text and applicability rationale travel with the row.</div>';
     popOpen(html);
     return;
@@ -2999,7 +3492,7 @@ function openCite(citeKey){
       var mechLabel = (row && MECH[row.fam]) ? MECH[row.fam][0] : d.mechanism;
       parts.push('<dt>Mechanism</dt><dd>' + esc(mechLabel) + (d.mechanism !== mechLabel ? ' (' + esc(d.mechanism) + ')' : '') + '</dd>');
     }
-    if(row && row.impl) parts.push('<dt>Akka implementation</dt><dd>' + esc(row.impl) + '</dd>');
+    if(row && row.impl) parts.push('<dt>Implementation</dt><dd>' + esc(row.impl) + '</dd>');
     if(d.trigger) parts.push('<dt>Trigger</dt><dd>' + esc(d.trigger) + '</dd>');
     if(d.obligationType) parts.push('<dt>Obligation type</dt><dd>' + esc(d.obligationType) + '</dd>');
     if(d.appliesTo && d.appliesTo.length) parts.push('<dt>Applies to</dt><dd>' + d.appliesTo.map(esc).join(', ') + '</dd>');
@@ -3102,7 +3595,7 @@ function openControl(i){
     '<div class="pop-title">' + esc(r.txt) + '</div>' +
     '<dl class="pop-grid">' +
     '<dt>Mechanism</dt><dd><b>' + m[0] + '</b> — ' + MECHDEF[r.fam] + '</dd>' +
-    '<dt>Akka implementation</dt><dd>' + esc(r.impl) + '</dd>' +
+    '<dt>Implementation</dt><dd>' + esc(r.impl) + '</dd>' +
     '<dt>How it works</dt><dd>' + esc(r.how) + '</dd>' +
     '<dt>Enforcement</dt><dd>' + m[1] + '</dd>' +
     '<dt>Proof</dt><dd><code style="background:#1a1c23;padding:1px 6px;border-radius:3px;font-size:12px">' + esc(PROOF[r.fam]) + '</code></dd>' +
@@ -3115,11 +3608,29 @@ function openControl(i){
      'in the production runtime, blocking the action until the check passes.') + '</div>';
   popOpen(html);
 }
+function openMech(fam){
+  var d = MECH_DETAIL[fam];
+  if(!d) return;
+  var html = '<div class="pop-kicker">Mechanism · ' + esc(fam) + '</div>' +
+    '<div class="pop-title">' + esc(d.title) + '</div>' +
+    '<div class="pop-body"><p>' + esc(d.what) + '</p></div>';
+  popOpen(html);
+}
+function openImpl(key){
+  var d = IMPL_DETAIL[key];
+  if(!d) return;
+  var html = '<div class="pop-kicker">Implementation</div>' +
+    '<div class="pop-title">' + esc(d.title) + '</div>' +
+    '<div class="pop-body"><p>' + esc(d.what) + '</p></div>';
+  popOpen(html);
+}
 document.addEventListener('click', function(e){
   var lnk = e.target.closest('.lnk');
   if(!lnk) return;
   if(lnk.dataset.row !== undefined){ openControl(parseInt(lnk.dataset.row, 10)); }
   else if(lnk.dataset.cite){ openCite(lnk.dataset.cite); }
+  else if(lnk.dataset.mech){ openMech(lnk.dataset.mech); }
+  else if(lnk.dataset.impl){ openImpl(lnk.dataset.impl); }
 });
 
 function renderAll(f){
@@ -3138,19 +3649,21 @@ function renderAll(f){
       renderMatrix(derivedRows().concat(genRows(f)));
       return;
     }
-    nums.innerHTML = 'Akka services unreachable<small>contact your Akka rep for access to Akka’s governance services that map your Risk Survey to AI regulations</small>';
+    nums.innerHTML = 'Akka services unreachable<small>Contact your Akka rep for access to Akka’s governance services that map your Risk Survey to AI regulations.</small>';
     list.innerHTML = '<div class="empty">' + OFFLINE_MSG + '</div>';
-    mxCount.textContent = '—';
-    mxRows.innerHTML = '<tr><td colspan="6" class="mx-empty">Connect to the compliance-surface API to see derived controls.</td></tr>';
+    scope.classList.add('no-detail'); scope.classList.remove('open');
+    renderSampleMatrix();
     return;
   }
   if(!akkaBase){
     nums.innerHTML = 'Connecting…<small>reaching Akka’s governance services for live counts</small>';
     list.innerHTML = '<div class="empty">Connecting to Akka’s governance services…</div>';
     mxCount.textContent = '…';
-    mxRows.innerHTML = '<tr><td colspan="6" class="mx-empty">Connecting to Akka’s governance services…</td></tr>';
+    mxRows.innerHTML = '<tr><td colspan="5" class="mx-empty">Connecting to Akka’s governance services…</td></tr>';
+    scope.classList.add('no-detail'); scope.classList.remove('open');
     return;
   }
+  scope.classList.remove('no-detail');
   var fws = derived.frameworks;
   nums.innerHTML = fws.length + ' regulation' + (fws.length === 1 ? '' : 's') + ' &middot; ' +
     '<span class="lk" title="open the generated Eval Matrix">' + derived.controls.length +
@@ -3186,7 +3699,6 @@ function recompute(){
 nums.addEventListener('click', function(e){
   if(!e.target.closest('.lk')) return;
   e.stopPropagation();
-  mx.classList.remove('hidden'); mxRestore.classList.add('hidden');
   mxSetOpen(true);
 });
 document.addEventListener('change', function(e){ if(e.target.matches('input, select, textarea')) recompute(); });
