@@ -813,12 +813,28 @@ body {
    Columns: track-label | plain-language input | signed artifact | AKKA SPECIFY hub | generated/run merge */
 .spec-flow {
   display: grid;
-  grid-template-columns: 140px 240px 250px 180px 1fr;
+  grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr;
+  grid-template-areas:
+    "blabel barrow bart hub merge"
+    "glabel garrow gart hub merge";
   grid-template-rows: 1fr 1fr;
-  gap: 14px 18px;
+  gap: 56px 18px;
   align-items: stretch;
   opacity: 0;
   transition: opacity .55s ease;
+}
+.spec-track--build > .spec-track-label  { grid-area: blabel; }
+.spec-track--build > .spec-track-arrow  { grid-area: barrow; }
+.spec-track--build > .spec-artifact     { grid-area: bart; }
+.spec-track--govern > .spec-track-label { grid-area: glabel; }
+.spec-track--govern > .spec-track-arrow { grid-area: garrow; }
+.spec-track--govern > .spec-artifact    { grid-area: gart; }
+
+.spec-track-arrow {
+  width: 100%;
+  height: 16px;
+  align-self: center;
+  overflow: visible;
 }
 .spec-flow.visible { opacity: 1; }
 
@@ -906,6 +922,15 @@ body {
   letter-spacing: -0.01em;
   margin-bottom: 8px;
 }
+.spec-artifact-quote {
+  font-size: clamp(13px, 1.0vw, 15px);
+  color: #cfcfcf;
+  line-height: 1.5;
+  margin: 4px 0 12px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(245,197,24,0.35);
+  font-weight: 500;
+}
 .spec-artifact-meta {
   font-size: 10px;
   letter-spacing: 1.2px;
@@ -914,10 +939,9 @@ body {
   margin-top: auto;
 }
 
-/* Akka Specify Hub — spans both rows in column 4, between artifacts and the merge */
+/* Akka Specify Hub — assigned via grid-template-areas (between artifacts and the merge) */
 .spec-hub {
-  grid-column: 4 / 5;
-  grid-row: 1 / 3;
+  grid-area: hub;
   display: flex; align-items: center; justify-content: center;
   border: 2px solid var(--yellow);
   background: rgba(245,197,24,0.06);
@@ -964,8 +988,7 @@ body {
 
 /* Merge column */
 .spec-merge {
-  grid-column: 5 / 6;
-  grid-row: 1 / 3;
+  grid-area: merge;
   display: flex; align-items: stretch;
   gap: 0;
   position: relative;
@@ -1074,8 +1097,7 @@ body {
 .spec-loop {
   margin-top: 16px;
   padding-top: 4px;
-  display: flex; flex-direction: column;
-  align-items: center;
+  position: relative;
   opacity: 0;
   transition: opacity .55s ease;
 }
@@ -1100,11 +1122,15 @@ body {
   to { stroke-dashoffset: 0; }
 }
 .spec-loop-label {
-  margin-top: 8px;
-  padding: 0;
+  /* Centered on the horizontal arrow midpoint: (1265+70)/2 = 667.5 of 1500 viewBox = 44.5% */
+  position: absolute;
+  left: 44.5%;
+  top: calc(44px + 8px);
+  transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center;
   gap: 6px;
   text-align: center;
+  white-space: nowrap;
 }
 .spec-loop-tag {
   font-size: 12px;
@@ -3255,7 +3281,7 @@ body {
 <div id="st-wrapper">
   <div id="st-sticky">
     <div class="st-header">
-      <div class="st-eyebrow">The proof</div>
+      <div class="st-eyebrow">Our track record</div>
       <div class="st-title">The world's systems have relied on Akka for 18&nbsp;years.</div>
       <div class="st-dots" id="stDots"></div>
     </div>
@@ -3266,7 +3292,7 @@ body {
 
 <div id="s2-wrapper">
   <div id="s2-sticky">
-    <div class="s2-eyebrow" data-s2="0">The challenge</div>
+    <div class="s2-eyebrow" data-s2="0">The challenge with agentic AI</div>
     <div class="s2-headline" data-s2="0"><span class="accent">Agentic&nbsp;AI</span> amplifies production complexity.</div>
     <div class="s2-sub" data-s2="0">To ship a single production agent, teams must deliver dozens of components &mdash; and stitching them together evenly is on you.</div>
 
@@ -3425,7 +3451,7 @@ body {
 <div id="s4-wrapper">
 <section id="s4">
   <div class="s4-layout s4-reveal">
-    <div class="s4-eyebrow">The platform</div>
+    <div class="s4-eyebrow">Our platform</div>
     <div class="s4-headline">Akka is an <span class="accent">Agentic AI Platform</span> &mdash;<br>pre-integrated to maximize org change velocity.</div>
     <div class="s4-image">
       <img src="images/akka-platform.png" alt="Akka Agentic AI Platform">
@@ -3451,13 +3477,14 @@ body {
           <span class="spec-track-name">Build</span>
           <span class="spec-track-personas">PM &middot; Dev<br>ML Eng<br>Citizen Dev</span>
         </div>
-        <div class="spec-input">
-          <div class="spec-input-tag">Plain language</div>
-          <div class="spec-input-body">&ldquo;Build a triage agent that ranks incoming ER patients by acuity using vitals and chief complaint, and routes the top three to an available clinician.&rdquo;</div>
-        </div>
+        <svg class="spec-track-arrow" viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="8" x2="92" y2="8" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          <polygon points="100,8 92,2 92,14" fill="#F5C518" />
+        </svg>
         <div class="spec-artifact">
           <div class="spec-artifact-tag">Dev Spec</div>
           <div class="spec-artifact-title">Functional contract</div>
+          <div class="spec-artifact-quote">&ldquo;Build a triage agent that ranks incoming ER patients by acuity using vitals and chief complaint, and routes the top three to an available clinician.&rdquo;</div>
           <div class="spec-artifact-meta">v1.4 &middot; versioned &middot; tracked</div>
         </div>
       </div>
@@ -3476,13 +3503,14 @@ body {
           <span class="spec-track-name">Govern</span>
           <span class="spec-track-personas">Risk &middot; Security &middot; Compliance</span>
         </div>
-        <div class="spec-input">
-          <div class="spec-input-tag">Plain language</div>
-          <div class="spec-input-body">&ldquo;Block prohibited practices under EU AI Act Article 5. Notify regulators within 24 hours of any safety incident&hellip;&rdquo;</div>
-        </div>
+        <svg class="spec-track-arrow" viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="8" x2="92" y2="8" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+          <polygon points="100,8 92,2 92,14" fill="#F5C518" />
+        </svg>
         <div class="spec-artifact">
           <div class="spec-artifact-tag">Eval Matrix</div>
           <div class="spec-artifact-title">Safeguard contract</div>
+          <div class="spec-artifact-quote">&ldquo;Block prohibited practices under EU AI Act Article 5. Notify regulators within 24 hours of any safety incident&hellip;&rdquo;</div>
           <div class="spec-artifact-meta">v1.4 &middot; versioned &middot; tracked</div>
         </div>
       </div>
@@ -3503,7 +3531,7 @@ body {
           <div class="spec-merge-list">
             <span class="spec-merge-item">Agents, tools, orchestrations, integrations, memory, APIs, streaming, and UI</span>
             <span class="spec-merge-plus" aria-hidden="true">+</span>
-            <span class="spec-merge-item">Guardrails, sanitizers, HITL, HOTL,<br>evaluations, traces, and harnesses</span>
+            <span class="spec-merge-item">Guardrails, sanitizers, HITL, HOTL,<br>evaluations, halts, and harnesses</span>
             <span class="spec-merge-plus" aria-hidden="true">+</span>
             <span class="spec-merge-item">Interaction, evidence and causal logging</span>
           </div>
@@ -3516,13 +3544,13 @@ body {
     <div class="spec-loop" data-spec="2">
       <svg class="spec-loop-svg" viewBox="0 0 1500 60" preserveAspectRatio="none" aria-hidden="true">
         <g stroke="#F5C518" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke">
-          <path class="spec-loop-path" pathLength="100" d="M1430,0 V40 H70 V12" />
+          <path class="spec-loop-path" pathLength="100" d="M1265,0 V40 H70 V12" />
         </g>
         <polygon class="spec-loop-arrowhead" points="70,0 62,16 78,16" fill="#F5C518" />
       </svg>
       <div class="spec-loop-label">
         <span class="spec-loop-tag">Akka Verify</span>
-        <span class="spec-loop-text">Validate what&rsquo;s running and fine-tune AI from production data.</span>
+        <span class="spec-loop-text">Validate what&rsquo;s running and fine-tune AI from your production data.</span>
       </div>
     </div>
 
