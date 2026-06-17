@@ -252,14 +252,16 @@
     display: inline-block; padding: 2px 6px; border-radius: 3px;
     font-size: 10px; font-weight: 600; white-space: nowrap;
   }
-  .gd-mx-kind.guardrail   { background: rgba(91,163,245,0.15); color: var(--blue); }
-  .gd-mx-kind.hitl        { background: rgba(245,197,24,0.15); color: var(--yellow); }
-  .gd-mx-kind.eval        { background: rgba(40,200,64,0.15); color: var(--green); }
-  .gd-mx-kind.sanitizer   { background: rgba(199,146,234,0.15); color: #c792ea; }
-  .gd-mx-kind.hotl        { background: rgba(255,107,107,0.15); color: var(--red); }
-  .gd-mx-kind.hootl       { background: rgba(126,200,227,0.15); color: #7EC8E3; }
-  .gd-mx-kind.halt        { background: rgba(255,110,199,0.15); color: #ff6ec7; }
-  .gd-mx-kind.doc         { background: rgba(150,150,150,0.15); color: #aaa; }
+  .gd-mx-kind.guardrail     { background: rgba(91,163,245,0.15); color: var(--blue); }
+  .gd-mx-kind.hitl          { background: rgba(245,197,24,0.15); color: var(--yellow); }
+  .gd-mx-kind.eval          { background: rgba(40,200,64,0.15); color: var(--green); }
+  .gd-mx-kind.eval-periodic { background: rgba(40,200,64,0.15); color: var(--green); }
+  .gd-mx-kind.eval-event    { background: rgba(126,200,227,0.15); color: #7EC8E3; }
+  .gd-mx-kind.sanitizer     { background: rgba(199,146,234,0.15); color: #c792ea; }
+  .gd-mx-kind.hotl          { background: rgba(255,107,107,0.15); color: var(--red); }
+  .gd-mx-kind.ci-gate       { background: rgba(150,150,150,0.15); color: #aaa; }
+  .gd-mx-kind.halt          { background: rgba(255,110,199,0.15); color: #ff6ec7; }
+  .gd-mx-kind.doc           { background: rgba(150,150,150,0.15); color: #aaa; }
   /* .gd-erow-sub retired — subtitle removed from row headers to compress rows. */
   .gd-mx-src {
     font-family: 'SF Mono', Consolas, monospace;
@@ -571,18 +573,18 @@
     { type:'ok',  text:'[matrix] Deriving Eval Matrix v1 from survey + corpus...' },
     { type:'blank' },
 
-    { type:'matrix-add', row: ['sanitizer', 'Strip PII before model sees it',          'GDPR Art. 5',                     'guardrail · before-llm-call · sanitizer-pii'] },
-    { type:'matrix-add', row: ['guardrail', 'Block protected-characteristic mentions', 'eu-ai-act.art10.2.f-inline',      'guardrail · after-llm-response'] },
-    { type:'matrix-add', row: ['guardrail', 'Refuse postal-code-primary decisions',    'Acme refusal rules',              'guardrail · before-tool-call'] },
-    { type:'matrix-add', row: ['hotl',      'Authorize high-impact tool calls',        'eu-ai-act.art14.4.c',             'guardrail · before-tool-call · addon hotl'] },
-    { type:'matrix-add', row: ['hitl',      'Human approval for loans > €5000',        'Acme policy',                     'hitl-workflow · pre-decision-pause'] },
-    { type:'matrix-add', row: ['eval',      'Demographic-parity drift watch, monthly', 'eu-ai-act.art10.2.f-aggregate',   'periodic-eval · drift-fairness-watch'] },
-    { type:'matrix-add', row: ['eval',      'Serious-incident detection',              'eu-ai-act.art73.detection',       'event-eval · on-incident-reporter'] },
-    { type:'matrix-add', row: ['doc',       'Incident reporting workflow (72h SLA)',   'eu-ai-act.art73.reporting-workflow','ci-gate · documentation-gate'] },
-    { type:'matrix-add', row: ['hootl',     'Deployer monitors and adjusts policy live','eu-ai-act.art26.1',              'hootl · deployer-runtime-monitoring'] },
-    { type:'matrix-add', row: ['doc',       'DPIA on file, refreshed annually',        'GDPR Art. 35',                    'ci-gate · documentation-gate'] },
-    { type:'matrix-add', row: ['halt',      'Operator stop button',                    'eu-ai-act.art14.4.e',             'halt-capability · operator-regulator-stop'] },
-    { type:'matrix-add', row: ['halt',      'Graceful degradation on threshold breach','Acme threshold',                  'halt-capability · graceful-degradation'] },
+    { type:'matrix-add', row: ['sanitizer',     'Strip PII before model sees it',          'GDPR Art. 5',                     'sanitizer · PII flavor · before-llm-call'] },
+    { type:'matrix-add', row: ['guardrail',     'Block protected-characteristic mentions', 'eu-ai-act.art10.2.f-inline',      'guardrail · after-llm-response'] },
+    { type:'matrix-add', row: ['guardrail',     'Refuse postal-code-primary decisions',    'Acme refusal rules',              'guardrail · before-tool-call'] },
+    { type:'matrix-add', row: ['hitl',          'Authorize high-impact tool calls',        'eu-ai-act.art14.4.c',             'HITL · guardrail flavor · before-tool-call'] },
+    { type:'matrix-add', row: ['hitl',          'Human approval for loans > €5000',        'Acme policy',                     'HITL · application flavor · pre-decision-pause'] },
+    { type:'matrix-add', row: ['eval-periodic', 'Demographic-parity drift watch, monthly', 'eu-ai-act.art10.2.f-aggregate',   'eval-periodic · drift-fairness-watch'] },
+    { type:'matrix-add', row: ['eval-event',    'Serious-incident detection',              'eu-ai-act.art73.detection',       'eval-event · on-incident-reporter'] },
+    { type:'matrix-add', row: ['doc',           'Incident reporting workflow (72h SLA)',   'eu-ai-act.art73.reporting-workflow','ci-gate · documentation-gate'] },
+    { type:'matrix-add', row: ['hotl',          'Deployer monitors and adjusts policy live','eu-ai-act.art26.1',              'hotl · deployer-runtime-monitoring'] },
+    { type:'matrix-add', row: ['doc',           'DPIA on file, refreshed annually',        'GDPR Art. 35',                    'ci-gate · documentation-gate'] },
+    { type:'matrix-add', row: ['halt',          'Operator stop button',                    'eu-ai-act.art14.4.e',             'halt · operator-regulator-stop'] },
+    { type:'matrix-add', row: ['halt',          'Graceful degradation on threshold breach','Acme threshold',                  'halt · graceful-degradation'] },
 
     { type:'blank' },
     { type:'warn', text:'✨ Eval Matrix v1 ready for sign-off · 12 controls' },
@@ -597,23 +599,23 @@
     { type:'ok',  text:'[scaffold] Injecting 9 enforcement points across 7 mechanisms...' },
     { type:'blank' },
 
-    { type:'code-hit', line: 'sanitizer',   note: 'guardrail · before-llm-call · addon sanitizer-pii' },
-    { type:'ok',  text:'[scaffold] ✔ PII sanitizer add-on wired at before-llm-call' },
+    { type:'code-hit', line: 'sanitizer',   note: 'sanitizer · PII flavor · before-llm-call' },
+    { type:'ok',  text:'[scaffold] ✔ PII sanitizer wired at before-llm-call' },
     { type:'code-hit', line: 'guardrail',   note: 'guardrail · before-tool-call · Acme refusal' },
     { type:'ok',  text:'[scaffold] ✔ refusal guardrail attached at before-tool-call' },
-    { type:'code-hit', line: 'hotl',        note: 'guardrail · before-tool-call · addon hotl' },
-    { type:'ok',  text:'[scaffold] ✔ HOTL add-on wired → agent suspends inline pending authorization' },
-    { type:'code-hit', line: 'hitl',        note: 'hitl-workflow · pre-decision-pause' },
+    { type:'code-hit', line: 'hotl',        note: 'HITL · guardrail flavor · before-tool-call' },
+    { type:'ok',  text:'[scaffold] ✔ HITL (guardrail flavor) wired → agent suspends inline pending authorization' },
+    { type:'code-hit', line: 'hitl',        note: 'HITL · application flavor · pre-decision-pause' },
     { type:'ok',  text:'[scaffold] ✔ HITL workflow pause inserted → reviewer queue auto-generated' },
-    { type:'code-hit', line: 'eval',        note: 'periodic-eval · drift-fairness-watch' },
+    { type:'code-hit', line: 'eval',        note: 'eval-periodic · drift-fairness-watch' },
     { type:'ok',  text:'[scaffold] ✔ periodic drift watch generated → monthly schedule registered' },
-    { type:'code-hit', line: 'event',       note: 'event-eval · on-incident-reporter' },
+    { type:'code-hit', line: 'event',       note: 'eval-event · on-incident-reporter' },
     { type:'ok',  text:'[scaffold] ✔ incident-reporter event consumer → 72h SLA timer' },
-    { type:'code-hit', line: 'hootl',       note: 'hootl · deployer-runtime-monitoring' },
-    { type:'ok',  text:'[scaffold] ✔ HOOTL surface generated → live runtime feedback, no redeploy' },
+    { type:'code-hit', line: 'hotl-runtime', note: 'hotl · deployer-runtime-monitoring' },
+    { type:'ok',  text:'[scaffold] ✔ HOTL surface generated → live runtime feedback, no redeploy' },
     { type:'code-hit', line: 'doc',         note: 'ci-gate · documentation-gate' },
     { type:'ok',  text:'[scaffold] ✔ DPIA documentation gate wired into CI' },
-    { type:'code-hit', line: 'halt',        note: 'halt-capability · operator-regulator-stop' },
+    { type:'code-hit', line: 'halt',        note: 'halt · operator-regulator-stop' },
     { type:'ok',  text:'[scaffold] ✔ operator stop button registered as system-level halt' },
 
     { type:'blank' },
@@ -774,13 +776,14 @@
       key: 'sanitizer',
       kind: 'sanitizer',
       title: 'Redact PII before the model sees it',
-      subtitle: 'Guardrail · before-llm-call · addon sanitizer-pii',
+      subtitle: 'Sanitizer · PII flavor · before-llm-call',
       cite: 'GDPR Art. 5',
-      filename: '.akka/guardrails/pii-sanitizer.yaml  (configuration)',
+      filename: '.akka/sanitizers/pii-sanitizer.yaml  (configuration)',
       body:
-'<span class="com"># guardrail addon — sanitizer-pii at before-llm-call</span>\n' +
+'<span class="com"># sanitizer · PII flavor · runs at before-llm-call</span>\n' +
+'<span class="key">mechanism</span>: sanitizer\n' +
+'<span class="key">flavor</span>: pii\n' +
 '<span class="key">hook</span>: before-llm-call\n' +
-'<span class="key">addon</span>: sanitizer-pii\n' +
 '<span class="key">detect</span>:\n' +
 '  - email\n' +
 '  - iban\n' +
@@ -822,31 +825,32 @@
     },
     {
       key: 'hotl',
-      kind: 'hotl',
+      kind: 'hitl',
       title: 'Authorize high-impact tool calls',
-      subtitle: 'Guardrail · before-tool-call · addon hotl',
+      subtitle: 'HITL · guardrail flavor · before-tool-call',
       cite: 'EU AI Act Art. 14(4)(c)',
-      filename: '.akka/guardrails/hotl-authorize.yaml  (HOTL guardrail addon)',
+      filename: '.akka/hitl/authorize-tool.yaml  (HITL · guardrail flavor)',
       body:
-'<span class="com"># HOTL addon — agent suspends inline until reviewer responds</span>\n' +
+'<span class="com"># HITL · guardrail flavor — agent suspends inline until reviewer responds</span>\n' +
+'<span class="key">mechanism</span>: hitl\n' +
+'<span class="key">flavor</span>: guardrail\n' +
 '<span class="key">hook</span>: before-tool-call\n' +
-'<span class="key">addon</span>: hotl\n' +
 '<span class="key">applies-when</span>: tool.impact == high\n' +
 '<span class="key">reviewer-queue</span>: high-impact-tools@acme.com\n' +
 '<span class="key">sla</span>: 30m\n' +
 '<span class="key">on-timeout</span>: deny\n' +
 '<span class="key">evidence</span>:\n' +
-'  emit: guardrail.hotl.decision\n'
+'  emit: hitl.guardrail.decision\n'
     },
     {
       key: 'hitl',
       kind: 'hitl',
       title: 'Human approval for loans > €5000',
-      subtitle: 'HITL-workflow · pre-decision-pause',
+      subtitle: 'HITL · application flavor · pre-decision-pause',
       cite: 'Acme policy',
       filename: 'LoanAdjudicationWorkflow.assess()  (workflow injection)',
       body:
-'<span class="com">// hitl-workflow · pre-decision-pause — injected into Step("assess")</span>\n' +
+'<span class="com">// hitl · pre-decision-pause — injected into Step("assess")</span>\n' +
 '<span class="kw">var</span> draft = agent.draftDecision(safe);\n' +
 '\n' +
 '<span class="kw">if</span> (draft.amount &gt; 5000) {\n' +
@@ -859,20 +863,19 @@
     },
     {
       key: 'eval',
-      kind: 'eval',
+      kind: 'eval-periodic',
       title: 'Demographic-parity drift watch, monthly',
-      subtitle: 'Evaluation - periodic · drift-fairness-watch',
+      subtitle: 'Eval - periodic · drift-fairness-watch',
       cite: 'EU AI Act Art. 10(2)(f)',
-      filename: 'DemographicParityWatch.java  (periodic-eval)',
+      filename: 'DemographicParityWatch.java  (eval-periodic)',
       body:
 '<span class="ann">@ComplianceControl</span>(\n' +
 '    id = <span class="str">"eu-ai-act.art10.2.f-aggregate"</span>,\n' +
 '    framework = Framework.<span class="typ">EU_AI_ACT</span>,\n' +
-'    mechanism = <span class="str">"periodic-eval"</span>,\n' +
+'    mechanism = <span class="str">"eval-periodic"</span>,\n' +
 '    hook = <span class="str">""</span>,\n' +
-'    addons = {},\n' +
 '    flavor = <span class="str">"drift-fairness-watch"</span>)\n' +
-'<span class="ann">@PeriodicEval</span>(schedule = <span class="str">"monthly"</span>)\n' +
+'<span class="ann">@EvalPeriodic</span>(schedule = <span class="str">"monthly"</span>)\n' +
 '<span class="kw">public class</span> <span class="typ">DemographicParityWatch</span> {\n' +
 '\n' +
 '  <span class="ann">@Eval</span>\n' +
@@ -886,13 +889,13 @@
     },
     {
       key: 'event',
-      kind: 'eval',
+      kind: 'eval-event',
       title: 'Serious incidents reported in 72h',
-      subtitle: 'Evaluation - event · on-incident-reporter',
+      subtitle: 'Eval - event · on-incident-reporter',
       cite: 'EU AI Act Art. 72',
-      filename: 'IncidentReporter.java  (event-eval consumer)',
+      filename: 'IncidentReporter.java  (eval-event consumer)',
       body:
-'<span class="ann">@EventEval</span>(flavor = <span class="str">"on-incident-reporter"</span>)\n' +
+'<span class="ann">@EvalEvent</span>(flavor = <span class="str">"on-incident-reporter"</span>)\n' +
 '<span class="kw">public class</span> <span class="typ">IncidentReporter</span>\n' +
 '    <span class="kw">implements</span> <span class="typ">Consumer</span>&lt;SeriousIncident&gt; {\n' +
 '\n' +
@@ -906,14 +909,15 @@
 '}\n'
     },
     {
-      key: 'hootl',
-      kind: 'hootl',
+      key: 'hotl-runtime',
+      kind: 'hotl',
       title: 'Deployer monitors and adjusts policy live',
-      subtitle: 'HOOTL · deployer-runtime-monitoring (no redeploy)',
+      subtitle: 'HOTL · deployer-runtime-monitoring (no redeploy)',
       cite: 'EU AI Act Art. 26',
-      filename: '.akka/hootl/deployer-monitor.yaml  (runtime feedback)',
+      filename: '.akka/hotl/deployer-monitor.yaml  (runtime feedback)',
       body:
-'<span class="com"># HOOTL · agent does NOT wait — feedback updates runtime state</span>\n' +
+'<span class="com"># HOTL · agent does NOT wait — feedback updates runtime state</span>\n' +
+'<span class="key">mechanism</span>: hotl\n' +
 '<span class="key">flavor</span>: deployer-runtime-monitoring\n' +
 '<span class="key">surface</span>:\n' +
 '  dashboard: /governance/live\n' +
@@ -924,7 +928,7 @@
 '  - <span class="key">name</span>: freeze-auto-approval\n' +
 '    <span class="key">hot-update</span>: workflows/loan.yaml\n' +
 '<span class="key">evidence</span>:\n' +
-'  emit: hootl.runtime-adjustment\n'
+'  emit: hotl.runtime-adjustment\n'
     },
     {
       key: 'doc',
@@ -950,7 +954,7 @@
       title: 'Operator stop button',
       subtitle: 'Halt · operator-regulator-stop',
       cite: 'EU AI Act Art. 14(4)(e)',
-      filename: 'OperatorHaltEndpoint.java  (halt-capability)',
+      filename: 'OperatorHaltEndpoint.java  (halt)',
       body:
 '<span class="ann">@HaltCapability</span>(flavor = <span class="str">"operator-regulator-stop"</span>)\n' +
 '<span class="ann">@HttpEndpoint</span>(<span class="str">"/governance/halt"</span>)\n' +

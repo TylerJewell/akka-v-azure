@@ -373,10 +373,10 @@ body {
 .s2-headline .accent { color:var(--yellow); }
 
 .s2-sub {
-  font-size: clamp(16px, 1.4vw, 20px);
-  color: #999; line-height: 1.4;
+  font-size: clamp(17px, 1.5vw, 22px);
+  color: #b8b8b8; line-height: 1.45;
   width: 100%; max-width: 1500px;
-  margin-bottom: 76px;
+  margin-bottom: 88px;
   position: relative; z-index: 1;
   opacity:0; transform: translateY(16px);
   transition: opacity .55s ease .1s, transform .55s cubic-bezier(0.16,1,0.3,1) .1s;
@@ -407,7 +407,7 @@ body {
 .s2-grid.visible { opacity: 1; }
 
 .s2-pillar {
-  padding: 18px 28px 18px 32px;
+  padding: 22px 28px 24px 32px;
   border-left: 1px solid #1F1F1F;
   position: relative;
   opacity: 0; transform: translateY(20px);
@@ -421,28 +421,28 @@ body {
 .s2-grid.visible .s2-pillar:nth-child(4) { transition-delay: .54s; }
 
 .s2-name {
-  font-size: clamp(30px, 3vw, 46px);
+  font-size: clamp(32px, 3.2vw, 48px);
   font-weight: 700; letter-spacing: -0.03em;
   color: var(--white);
   line-height: 1;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .s2-rule {
-  width: 40px; height: 3px; background: var(--yellow);
+  width: 42px; height: 3px; background: var(--yellow);
   margin-bottom: 18px;
 }
 .s2-qs {
   list-style: none; margin: 0; padding: 0;
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 11px;
 }
 .s2-qs li {
-  font-size: clamp(14px, 1.05vw, 17px);
-  color: #d4d4d4; line-height: 1.3;
+  font-size: clamp(14px, 1.1vw, 18px);
+  color: #d4d4d4; line-height: 1.35;
   font-weight: 400;
 }
 
 .s2-converge {
-  width: 100%; max-width: 1500px;
+  width: 100%; max-width: none;
   display: flex; flex-direction: column; align-items: center;
   position: relative; z-index: 1;
   margin-top: 12px;
@@ -451,10 +451,11 @@ body {
 .s2-arrow-wrap {
   position: relative;
   width: 100%;
+  max-width: 1500px;
 }
 .s2-arrows {
   width: 100%;
-  height: clamp(70px, 9vh, 95px);
+  height: clamp(70px, 10vh, 110px);
   display: block;
   overflow: visible;
 }
@@ -466,28 +467,29 @@ body {
 .s2-arrow-label {
   position: absolute;
   left: 50%;
-  top: 60%;
+  top: 50%;
   transform: translate(-50%, -50%);
   background: var(--black);
-  color: var(--yellow);
-  font-size: 11px;
+  color: #E74C3C;
+  font-size: clamp(14px, 1.2vw, 17px);
   text-transform: uppercase;
-  letter-spacing: 2.5px;
-  font-weight: 600;
+  letter-spacing: 3px;
+  font-weight: 800;
   white-space: nowrap;
-  padding: 3px 14px;
+  padding: 5px 18px;
+  border: 1px solid rgba(231,76,60,0.45);
   z-index: 2;
   opacity: 0;
 }
 
-.s2-converge.visible .s2-arrow {
-  animation: s2-draw .3s ease-out 1s forwards;
+.s2-arrow-wrap.visible .s2-arrow {
+  animation: s2-draw .35s ease-out .2s forwards;
 }
-.s2-converge.visible .s2-arrowhead {
-  animation: s2-fade .1s ease-out 1.3s forwards;
+.s2-arrow-wrap.visible .s2-arrowhead {
+  animation: s2-fade .1s ease-out .55s forwards;
 }
-.s2-converge.visible .s2-arrow-label {
-  animation: s2-fade .15s ease-out 1.375s forwards;
+.s2-arrow-wrap.visible .s2-arrow-label {
+  animation: s2-fade .15s ease-out .6s forwards;
 }
 .s2-converge.visible .s2-step {
   animation: s2-fade .22s ease-out forwards;
@@ -558,6 +560,101 @@ body {
   z-index: -1;
 }
 
+/* ── 5-column complexity matrix (replaces 8-step stack) ────────────────────── */
+.s2-matrix {
+  width: 100%;
+  max-width: 1500px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 6px;
+  position: relative; z-index: 1;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+.s2-matrix.visible { opacity: 1; }
+
+.s2-mcol {
+  display: flex; flex-direction: column;
+  padding: 16px 14px 14px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1F1F1F;
+  border-top: 2px solid var(--yellow);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+}
+.s2-matrix.visible .s2-mcol { opacity: 1; transform: none; }
+.s2-matrix.visible .s2-mcol:nth-child(1) { transition-delay: 0.10s; }
+.s2-matrix.visible .s2-mcol:nth-child(2) { transition-delay: 0.22s; }
+.s2-matrix.visible .s2-mcol:nth-child(3) { transition-delay: 0.34s; }
+.s2-matrix.visible .s2-mcol:nth-child(4) { transition-delay: 0.46s; }
+.s2-matrix.visible .s2-mcol:nth-child(5) { transition-delay: 0.58s; }
+
+.s2-mcol-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(245,197,24,0.15);
+}
+.s2-mcol-icon {
+  width: clamp(24px, 2.4vw, 32px);
+  height: clamp(24px, 2.4vw, 32px);
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+.s2-mcol-name {
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  text-align: center;
+}
+
+.s2-mcol-items {
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 6px;
+}
+.s2-mitem {
+  display: inline-flex;
+  align-items: center;
+  color: #d4d4d4;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2A2A2A;
+  border-radius: 999px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  font-weight: 500;
+}
+/* Three weight tiers create the word-cloud feel */
+.s2-mitem--lg {
+  font-size: clamp(13px, 1.15vw, 17px);
+  padding: 8px 14px;
+  color: #ffffff;
+  font-weight: 700;
+  border-color: rgba(245,197,24,0.55);
+  background: rgba(245,197,24,0.10);
+}
+.s2-mitem--md {
+  font-size: clamp(11px, 0.95vw, 14px);
+  padding: 6px 12px;
+  color: #e0e0e0;
+}
+.s2-mitem--sm {
+  font-size: clamp(10px, 0.8vw, 12px);
+  padding: 4px 10px;
+  color: #999;
+  background: rgba(255,255,255,0.025);
+}
+
 
 /* ── 04-platform ── */
 #s4-wrapper {
@@ -597,23 +694,20 @@ body {
 .s4-headline {
   font-size: clamp(30px, 4vw, 58px); font-weight:700;
   line-height:1.08; letter-spacing:-0.03em; color:var(--white);
-  max-width: 900px; margin-bottom: 48px;
+  max-width: 1400px; margin-bottom: 40px;
 }
 .s4-headline .accent { color:var(--yellow); }
 
-/* Two-column layout: header+image left, value props right */
+/* Single-column: eyebrow + headline left-aligned, image centered below */
 .s4-layout {
-  display: flex; gap: 0; align-items: flex-start;
+  display: flex; flex-direction: column;
   width: 100%;
 }
 
-.s4-left {
-  flex: 1.4; min-width: 0;
-}
-
 .s4-image {
-  margin-left: calc(-1 * var(--pad-3) - 40px);
-  margin-top: 50px;
+  width: 85%;
+  max-width: 1190px;
+  margin: 25px auto 0;
 }
 .s4-image img {
   width: 100%;
@@ -657,7 +751,412 @@ body {
   font-size: 12px; color: #888; line-height: 1.45;
 }
 
-/* ── 05-platform-use-cases ── */
+/* ── 05-specifications ── */
+#spec-wrapper {
+  height: 320vh;
+  position: relative;
+}
+#spec-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#spec-sticky::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+
+#spec-sticky > * {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 1500px;
+  margin-left: auto; margin-right: auto;
+}
+
+/* Head */
+.spec-head { margin-bottom: 88px; }
+.spec-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-eyebrow.visible { opacity: 1; transform: none; }
+.spec-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.spec-headline {
+  font-size: clamp(34px, 4.5vw, 60px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-headline.visible { opacity: 1; transform: none; }
+.spec-headline .accent { color: var(--yellow); }
+.spec-sub {
+  font-size: clamp(17px, 1.5vw, 22px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1100px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s;
+}
+.spec-sub.visible { opacity: 1; transform: none; }
+
+/* Flow grid: two track rows + hub spanning both rows.
+   Columns: track-label | plain-language input | signed artifact | AKKA SPECIFY hub | generated/run merge */
+.spec-flow {
+  display: grid;
+  grid-template-columns: 140px 240px 250px 180px 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px 18px;
+  align-items: stretch;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+.spec-flow.visible { opacity: 1; }
+
+/* Tracks */
+.spec-track {
+  display: contents;
+}
+.spec-track-label {
+  display: flex; flex-direction: column; justify-content: center;
+  border-left: 2px solid var(--yellow);
+  padding: 6px 0 6px 14px;
+}
+.spec-track-name {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.spec-track-personas {
+  font-size: clamp(11px, 0.95vw, 13px);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  font-weight: 500;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* Input card */
+.spec-input {
+  display: flex; flex-direction: column;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid #1F1F1F;
+  border-left: 2px solid #444;
+  border-radius: 3px;
+}
+.spec-input-tag {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #777;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.spec-input-body {
+  font-size: clamp(13px, 1.0vw, 15px);
+  color: #cfcfcf;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Artifact card (sealed-document feel via clipped corner) */
+.spec-artifact {
+  display: flex; flex-direction: column;
+  padding: 14px 18px;
+  background: rgba(245,197,24,0.04);
+  border: 1px solid rgba(245,197,24,0.3);
+  border-left: 3px solid var(--yellow);
+  border-radius: 3px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  position: relative;
+}
+.spec-artifact::after {
+  content: ''; position: absolute;
+  top: 0; right: 0;
+  width: 12px; height: 12px;
+  background: linear-gradient(135deg, transparent 50%, rgba(245,197,24,0.3) 50%);
+}
+.spec-artifact-tag {
+  font-size: 11px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.spec-artifact-title {
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--white);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.spec-artifact-meta {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: #888;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  margin-top: auto;
+}
+
+/* Akka Specify Hub — spans both rows in column 4, between artifacts and the merge */
+.spec-hub {
+  grid-column: 4 / 5;
+  grid-row: 1 / 3;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-radius: 4px;
+  position: relative;
+}
+.spec-hub::before, .spec-hub::after {
+  content: ''; position: absolute;
+  left: -10px; width: 10px; height: 1px;
+  background: var(--yellow);
+}
+.spec-hub::before { top: 30%; }
+.spec-hub::after  { top: 70%; }
+.spec-hub-inner {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 18px 14px;
+  text-align: center;
+  width: 100%;
+}
+.spec-hub-tag {
+  font-size: 10px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+}
+.spec-hub-name {
+  font-size: clamp(22px, 2.1vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  line-height: 1;
+  text-align: center;
+}
+.spec-hub-foot {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Merge column */
+.spec-merge {
+  grid-column: 5 / 6;
+  grid-row: 1 / 3;
+  display: flex; align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+.spec-merge-arrows {
+  width: 60px; height: 100%;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.spec-merge-arrows .spec-arrow {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.spec-merge-arrows .spec-arrowhead { opacity: 0; }
+
+.spec-flow.visible .spec-merge-arrows .spec-arrow {
+  animation: spec-draw .55s ease-out forwards;
+}
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(1) { animation-delay: 1.0s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(2) { animation-delay: 1.05s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(3) { animation-delay: 1.45s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrowhead {
+  animation: spec-fade .15s ease-out 1.85s forwards;
+}
+
+.spec-merge-card {
+  flex: 1 1 auto;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 18px 22px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+  border: 1px solid var(--yellow);
+  border-radius: 3px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+  transition-delay: 1.7s;
+}
+.spec-flow.visible .spec-merge-card {
+  opacity: 1; transform: none;
+}
+.spec-merge-tag {
+  font-size: 11px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.spec-merge-title {
+  font-size: clamp(22px, 2.1vw, 30px);
+  color: var(--white);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.spec-merge-list {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: #e4e4e4;
+  line-height: 1.4;
+}
+.spec-merge-item {
+  padding: 0;
+}
+.spec-merge-plus {
+  display: block;
+  text-align: center;
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 700;
+  color: var(--yellow);
+  line-height: 1;
+  padding: 2px 0;
+  letter-spacing: 0;
+}
+
+/* Track row stagger */
+.spec-flow.visible .spec-track--build > * { animation: spec-rise .5s ease-out forwards; }
+.spec-flow.visible .spec-track--build > .spec-track-label  { animation-delay: 0.15s; }
+.spec-flow.visible .spec-track--build > .spec-input        { animation-delay: 0.30s; }
+.spec-flow.visible .spec-track--build > .spec-artifact     { animation-delay: 0.65s; }
+.spec-flow.visible .spec-track--govern > * { animation: spec-rise .5s ease-out forwards; }
+.spec-flow.visible .spec-track--govern > .spec-track-label { animation-delay: 0.30s; }
+.spec-flow.visible .spec-track--govern > .spec-input       { animation-delay: 0.45s; }
+.spec-flow.visible .spec-track--govern > .spec-artifact    { animation-delay: 0.80s; }
+
+.spec-flow .spec-track > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.spec-flow.visible .spec-hub {
+  animation: spec-pop .5s ease-out 0.55s forwards;
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+@keyframes spec-rise { to { opacity: 1; transform: none; } }
+@keyframes spec-pop  { to { opacity: 1; transform: scale(1); } }
+@keyframes spec-draw { to { stroke-dashoffset: 0; } }
+@keyframes spec-fade { to { opacity: 1; } }
+
+/* Verify loop */
+.spec-loop {
+  margin-top: 16px;
+  padding-top: 4px;
+  display: flex; flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+.spec-loop.visible { opacity: 1; }
+.spec-loop-svg {
+  width: 100%; height: 44px;
+  display: block;
+  overflow: visible;
+}
+.spec-loop-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.spec-loop.visible .spec-loop-path {
+  animation: spec-loop-trace .9s ease-out 0.1s forwards;
+}
+.spec-loop-arrowhead { opacity: 0; }
+.spec-loop.visible .spec-loop-arrowhead {
+  animation: spec-fade .15s ease-out 0.95s forwards;
+}
+@keyframes spec-loop-trace {
+  to { stroke-dashoffset: 0; }
+}
+.spec-loop-label {
+  margin-top: 8px;
+  padding: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.spec-loop-tag {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.spec-loop-text {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #d4d4d4;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Tagline */
+.spec-tagline {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #1F1F1F;
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px;
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: #d4d4d4;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-tagline.visible { opacity: 1; transform: none; }
+.spec-tagline .accent {
+  color: var(--yellow);
+  font-weight: 700;
+}
+.spec-dot {
+  width: 5px; height: 5px;
+  background: var(--yellow);
+  display: inline-block;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 1100px) {
+  .spec-flow {
+    grid-template-columns: 120px 1fr 90px 200px 0.9fr;
+    gap: 10px 12px;
+  }
+}
+
+
+/* ── 06-platform-use-cases ── */
 ﻿#platform-pattern-wrapper {
   height: 180vh;
   position: relative;
@@ -859,7 +1358,7 @@ body {
 .pp-row.visible .pp-counter-word { opacity: 1; transform: none; }
 
 
-/* ── 06-hyperscalers ── */
+/* ── 07-framework ── */
 #s6b-wrapper {
   height: 180vh;
   position: relative;
@@ -1020,8 +1519,9 @@ body {
 
 .s6b-them-card {
   display: flex;
-  align-items: baseline;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   padding: 12px 18px;
   border: 1px solid rgba(231,76,60,0.28);
   border-left: 3px solid #E74C3C;
@@ -1034,9 +1534,8 @@ body {
   color: #E74C3C;
   text-transform: uppercase;
   font-weight: 700;
-  flex-shrink: 0;
 }
-.s6b-them-content { flex: 1; min-width: 0; }
+.s6b-them-content { width: 100%; }
 .s6b-them-title {
   font-size: 14px;
   color: #E74C3C;
@@ -1062,7 +1561,7 @@ body {
 }
 
 
-/* ── 07-innovations ── */
+/* ── 08-innovations ── */
 #s13-wrapper {
   height: 180vh;
   position: relative;
@@ -1270,7 +1769,7 @@ body {
 }
 
 
-/* ── 08-devzero ── */
+/* ── 09-devzero ── */
 #s5-wrapper {
   height: 140vh;
   position: relative;
@@ -1492,7 +1991,7 @@ body {
   .s5-props { flex-direction: column; gap: 12px; }
 }
 
-/* ── 09-resilience ── */
+/* ── 10-resilience ── */
 #s6-wrapper {
   height: 140vh;
   position: relative;
@@ -1668,7 +2167,7 @@ body {
     #s6-rf .tab-btn.active { color: var(--fg); border-bottom-color: var(--yellow); }
   
 
-/* ── 10-governance ── */
+/* ── 11-governance ── */
 /* ── Phase 1: The Problem ── */
 #s7-problem {
   height: 140vh;
@@ -1748,7 +2247,7 @@ body {
 }
 
 
-/* ── 11-customers ── */
+/* ── 12-customers ── */
 #cust-wrapper {
   height: 200vh; /* 5 customers, ~4 clicks each */
   position: relative;
@@ -1895,7 +2394,7 @@ body {
   color: #333; z-index: 10;
 }
 
-/* ── 12-packages ── */
+/* ── 13-packages ── */
 #pkg-wrapper {
   height: calc(100vh + 300px);
   position: relative;
@@ -2201,7 +2700,7 @@ body {
 .pkg-reveal-d8 { transition-delay: .8s; }
 
 
-/* ── 13-delivery ── */
+/* ── 14-delivery ── */
 #s10-delivery-wrapper {
   height: 140vh;
   position: relative;
@@ -2473,7 +2972,7 @@ body {
 }
 
 
-/* ── 14-partners ── */
+/* ── 15-partners ── */
 #s9-wrapper {
   height: 140vh;
   position: relative;
@@ -2603,7 +3102,7 @@ body {
 }
 
 
-/* ── 16-closing ── */
+/* ── 17-closing ── */
 #closing {
   height: 100vh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -2769,7 +3268,7 @@ body {
   <div id="s2-sticky">
     <div class="s2-eyebrow" data-s2="0">The challenge</div>
     <div class="s2-headline" data-s2="0"><span class="accent">Agentic&nbsp;AI</span> amplifies production complexity.</div>
-    <div class="s2-sub" data-s2="0">Enterprise AI breaks where governance breaks &mdash; in policy, oversight, evals, and evidence.</div>
+    <div class="s2-sub" data-s2="0">To ship a single production agent, teams must deliver dozens of components &mdash; and stitching them together evenly is on you.</div>
 
     <div class="s2-grid" data-s2="1">
       <div class="s2-pillar">
@@ -2813,89 +3312,111 @@ body {
       </div>
     </div>
 
-    <div class="s2-converge" data-s2="2">
-      <div class="s2-arrow-wrap">
-        <svg class="s2-arrows" viewBox="0 0 1500 180" preserveAspectRatio="none" aria-hidden="true">
-          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
-            <path class="s2-arrow" pathLength="100" d="M187.5,0 V52 H750" />
-            <path class="s2-arrow" pathLength="100" d="M562.5,0 V52 H750" />
-            <path class="s2-arrow" pathLength="100" d="M937.5,0 V52 H750" />
-            <path class="s2-arrow" pathLength="100" d="M1312.5,0 V52 H750" />
-            <path class="s2-arrow" pathLength="100" d="M750,52 V168" />
-          </g>
-          <polygon class="s2-arrowhead" points="750,180 741,164 759,164" fill="#F5C518" />
-        </svg>
-        <span class="s2-arrow-label">delivered as</span>
-      </div>
-
-      <div class="s2-stack">
-        <div class="s2-step" style="--i:0">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Foundation</div>
-            <div class="s2-step-name">Data &amp; Context</div>
-            <div class="s2-step-desc">Docs, DBs, APIs, knowledge.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:1">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Understand</div>
-            <div class="s2-step-name">Retrieval</div>
-            <div class="s2-step-desc">Get relevant, trusted context.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:2">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Evaluate</div>
-            <div class="s2-step-name">Evals</div>
-            <div class="s2-step-desc">Quality, safety, groundedness.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:3">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Execute</div>
-            <div class="s2-step-name">Orchestration</div>
-            <div class="s2-step-desc">Steps, traceable logic.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:4">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Record</div>
-            <div class="s2-step-name">Tracing</div>
-            <div class="s2-step-desc">Log to explain &amp; audit.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:5">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Govern</div>
-            <div class="s2-step-name">Policy</div>
-            <div class="s2-step-desc">Codify constraints.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:6">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Oversee</div>
-            <div class="s2-step-name">Human Oversight</div>
-            <div class="s2-step-desc">Review, approve, escalate.</div>
-          </div>
-        </div>
-        <div class="s2-step" style="--i:7">
-          <div class="s2-step-box">
-            <div class="s2-step-stage">Observe</div>
-            <div class="s2-step-name">Monitoring</div>
-            <div class="s2-step-desc">Detect and respond.</div>
-          </div>
-        </div>
-        <svg class="s2-loop" viewBox="0 0 1000 280" preserveAspectRatio="none" aria-hidden="true">
-          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-dasharray="5 5" vector-effect="non-scaling-stroke">
-            <path d="M 999 228 H 1014 V 275 H -15 V 32" />
-          </g>
-          <polygon points="0,32 -15,25 -15,39" fill="#F5C518" />
-        </svg>
-      </div>
+    <div class="s2-arrow-wrap" data-s2="2">
+      <svg class="s2-arrows" viewBox="0 0 1500 200" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+          <path class="s2-arrow" pathLength="100" d="M187.5,0 V100 H750" />
+          <path class="s2-arrow" pathLength="100" d="M562.5,0 V100 H750" />
+          <path class="s2-arrow" pathLength="100" d="M937.5,0 V100 H750" />
+          <path class="s2-arrow" pathLength="100" d="M1312.5,0 V100 H750" />
+          <path class="s2-arrow" pathLength="100" d="M750,100 V190" />
+        </g>
+        <polygon class="s2-arrowhead" points="750,200 741,184 759,184" fill="#F5C518" />
+      </svg>
+      <span class="s2-arrow-label">unevenly delivered</span>
     </div>
 
-    <div class="s2-bridge" data-s2="2">
-      Of these eight, <span class="accent">governance</span> is the one most teams do unevenly &mdash; and that unevenness is the bottleneck to AI in production.
+    <div class="s2-matrix" data-s2="2">
+      <div class="s2-mcol s2-mcol--app">
+        <div class="s2-mcol-head">
+          <svg class="s2-mcol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+          <span class="s2-mcol-name">AI App</span>
+        </div>
+        <div class="s2-mcol-items">
+          <span class="s2-mitem s2-mitem--lg">Agents</span>
+          <span class="s2-mitem s2-mitem--md">APIs</span>
+          <span class="s2-mitem s2-mitem--lg">Orchestration</span>
+          <span class="s2-mitem s2-mitem--sm">Tools</span>
+          <span class="s2-mitem s2-mitem--md">Memory</span>
+          <span class="s2-mitem s2-mitem--md">Context</span>
+          <span class="s2-mitem s2-mitem--md">Streaming</span>
+          <span class="s2-mitem s2-mitem--md">Models</span>
+          <span class="s2-mitem s2-mitem--md">Integration</span>
+          <span class="s2-mitem s2-mitem--sm">Messaging</span>
+          <span class="s2-mitem s2-mitem--sm">Web / Mobile UI</span>
+        </div>
+      </div>
+
+      <div class="s2-mcol s2-mcol--safe">
+        <div class="s2-mcol-head">
+          <svg class="s2-mcol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span class="s2-mcol-name">Safeguards</span>
+        </div>
+        <div class="s2-mcol-items">
+          <span class="s2-mitem s2-mitem--lg">Guardrails</span>
+          <span class="s2-mitem s2-mitem--md">Attestations</span>
+          <span class="s2-mitem s2-mitem--lg">Evals</span>
+          <span class="s2-mitem s2-mitem--md">HITL</span>
+          <span class="s2-mitem s2-mitem--sm">Tracing</span>
+          <span class="s2-mitem s2-mitem--md">HOTL</span>
+          <span class="s2-mitem s2-mitem--md">Sanitizers</span>
+          <span class="s2-mitem s2-mitem--sm">Tokens</span>
+        </div>
+      </div>
+
+      <div class="s2-mcol s2-mcol--rel">
+        <div class="s2-mcol-head">
+          <svg class="s2-mcol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span class="s2-mcol-name">Reliability</span>
+        </div>
+        <div class="s2-mcol-items">
+          <span class="s2-mitem s2-mitem--lg">Resilience</span>
+          <span class="s2-mitem s2-mitem--md">Durable execution</span>
+          <span class="s2-mitem s2-mitem--lg">HA / DR</span>
+          <span class="s2-mitem s2-mitem--sm">Retries</span>
+          <span class="s2-mitem s2-mitem--md">At least once</span>
+          <span class="s2-mitem s2-mitem--md">SSE</span>
+          <span class="s2-mitem s2-mitem--md">Fallbacks</span>
+          <span class="s2-mitem s2-mitem--md">Compensation</span>
+          <span class="s2-mitem s2-mitem--sm">Backpressure</span>
+          <span class="s2-mitem s2-mitem--sm">App State</span>
+        </div>
+      </div>
+
+      <div class="s2-mcol s2-mcol--impr">
+        <div class="s2-mcol-head">
+          <svg class="s2-mcol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M20.49 15a9 9 0 01-14.85 3.36L1 14"/></svg>
+          <span class="s2-mcol-name">Improvement</span>
+        </div>
+        <div class="s2-mcol-items">
+          <span class="s2-mitem s2-mitem--lg">Drift detection</span>
+          <span class="s2-mitem s2-mitem--md">Test harnesses</span>
+          <span class="s2-mitem s2-mitem--lg">Agent tuning</span>
+          <span class="s2-mitem s2-mitem--md">Replay</span>
+          <span class="s2-mitem s2-mitem--sm">Prompt tuning</span>
+          <span class="s2-mitem s2-mitem--md">Model tuning</span>
+          <span class="s2-mitem s2-mitem--sm">Attestation</span>
+        </div>
+      </div>
+
+      <div class="s2-mcol s2-mcol--cloud">
+        <div class="s2-mcol-head">
+          <svg class="s2-mcol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 18a5 5 0 000-10 8 8 0 10-15 4 5 5 0 005 6h10z"/></svg>
+          <span class="s2-mcol-name">Stack</span>
+        </div>
+        <div class="s2-mcol-items">
+          <span class="s2-mitem s2-mitem--lg">Kubernetes</span>
+          <span class="s2-mitem s2-mitem--md">Compute</span>
+          <span class="s2-mitem s2-mitem--md">Storage</span>
+          <span class="s2-mitem s2-mitem--lg">Observability</span>
+          <span class="s2-mitem s2-mitem--md">Registry</span>
+          <span class="s2-mitem s2-mitem--sm">Secrets</span>
+          <span class="s2-mitem s2-mitem--md">Logging</span>
+          <span class="s2-mitem s2-mitem--lg">Inference</span>
+          <span class="s2-mitem s2-mitem--sm">Service mesh</span>
+          <span class="s2-mitem s2-mitem--lg">Gateways</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2904,46 +3425,110 @@ body {
 <div id="s4-wrapper">
 <section id="s4">
   <div class="s4-layout s4-reveal">
-    <div class="s4-left">
-      <div class="s4-eyebrow">The answer</div>
-      <div class="s4-headline">Akka is an <span class="accent">Agentic AI Platform</span><br>that optimizes your AI SLA &mdash; and proves it.</div>
-      <div class="s4-image">
-        <img src="images/akka-platform.png" alt="Akka Agentic AI Platform">
-      </div>
-    </div>
-    <div class="s4-props">
-      <div class="s4-prop">
-        <div class="s4-prop-num">LOWER</div>
-        <div class="s4-prop-text">
-          <div class="s4-prop-title">Infra &amp; Tokens</div>
-          <div class="s4-prop-desc">Akka's durable, actor-based runtime and shared context cut model, tool, I/O, and core spend.</div>
-        </div>
-      </div>
-      <div class="s4-prop">
-        <div class="s4-prop-num">99.9999%</div>
-        <div class="s4-prop-text">
-          <div class="s4-prop-title">Availability</div>
-          <div class="s4-prop-desc">Active-active HA/DR keeps long-running agents alive through failures.</div>
-        </div>
-      </div>
-      <div class="s4-prop">
-        <div class="s4-prop-num">MAX</div>
-        <div class="s4-prop-text">
-          <div class="s4-prop-title">Velocity</div>
-          <div class="s4-prop-desc">Spec-driven workflow, golden-path SDLC, internal platform APIs.</div>
-        </div>
-      </div>
-      <div class="s4-prop">
-        <div class="s4-prop-num">PROVEN</div>
-        <div class="s4-prop-text">
-          <div class="s4-prop-title">Governance</div>
-          <div class="s4-prop-desc">Repeatable as development. 186 regulations, 710 controls &mdash; automatically integrated.</div>
-        </div>
-      </div>
+    <div class="s4-eyebrow">The platform</div>
+    <div class="s4-headline">Akka is an <span class="accent">Agentic AI Platform</span> &mdash;<br>pre-integrated to maximize org change velocity.</div>
+    <div class="s4-image">
+      <img src="images/akka-platform.png" alt="Akka Agentic AI Platform">
     </div>
   </div>
 </section>
 </div>
+
+<div id="spec-wrapper">
+  <div id="spec-sticky">
+
+    <div class="spec-head">
+      <div class="spec-eyebrow" data-spec="0">Two lifecycles. One platform.</div>
+      <div class="spec-headline" data-spec="0">Two specifications. <span class="accent">One certified system.</span></div>
+      <div class="spec-sub" data-spec="0">Continuous build. Continuous governance. Akka certifies and runs the AI system that satisfies both.</div>
+    </div>
+
+    <div class="spec-flow" data-spec="1">
+
+      <!-- BUILD TRACK -->
+      <div class="spec-track spec-track--build">
+        <div class="spec-track-label">
+          <span class="spec-track-name">Build</span>
+          <span class="spec-track-personas">PM &middot; Dev<br>ML Eng<br>Citizen Dev</span>
+        </div>
+        <div class="spec-input">
+          <div class="spec-input-tag">Plain language</div>
+          <div class="spec-input-body">&ldquo;Build a triage agent that ranks incoming ER patients by acuity using vitals and chief complaint, and routes the top three to an available clinician.&rdquo;</div>
+        </div>
+        <div class="spec-artifact">
+          <div class="spec-artifact-tag">Dev Spec</div>
+          <div class="spec-artifact-title">Functional contract</div>
+          <div class="spec-artifact-meta">v1.4 &middot; versioned &middot; tracked</div>
+        </div>
+      </div>
+
+      <!-- AKKA SPECIFY HUB (spans both tracks) -->
+      <div class="spec-hub">
+        <div class="spec-hub-inner">
+          <span class="spec-hub-name">Akka Specify</span>
+          <span class="spec-hub-foot">AI&#8209;assisted authoring</span>
+        </div>
+      </div>
+
+      <!-- GOVERN TRACK -->
+      <div class="spec-track spec-track--govern">
+        <div class="spec-track-label">
+          <span class="spec-track-name">Govern</span>
+          <span class="spec-track-personas">Risk &middot; Security &middot; Compliance</span>
+        </div>
+        <div class="spec-input">
+          <div class="spec-input-tag">Plain language</div>
+          <div class="spec-input-body">&ldquo;Block prohibited practices under EU AI Act Article 5. Notify regulators within 24 hours of any safety incident&hellip;&rdquo;</div>
+        </div>
+        <div class="spec-artifact">
+          <div class="spec-artifact-tag">Eval Matrix</div>
+          <div class="spec-artifact-title">Safeguard contract</div>
+          <div class="spec-artifact-meta">v1.4 &middot; versioned &middot; tracked</div>
+        </div>
+      </div>
+
+      <!-- MERGE COLUMN -->
+      <div class="spec-merge">
+        <svg class="spec-merge-arrows" viewBox="0 0 80 200" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="spec-arrow" pathLength="100" d="M0,42 H50 V100" />
+            <path class="spec-arrow" pathLength="100" d="M0,158 H50 V100" />
+            <path class="spec-arrow" pathLength="100" d="M50,100 H80" />
+          </g>
+          <polygon class="spec-arrowhead" points="80,100 70,92 70,108" fill="#F5C518" />
+        </svg>
+        <div class="spec-merge-card">
+          <div class="spec-merge-tag">Akka generates &middot; tests &middot; runs</div>
+          <div class="spec-merge-title">One certified AI service</div>
+          <div class="spec-merge-list">
+            <span class="spec-merge-item">Agents, tools, orchestrations, integrations, memory, APIs, streaming, and UI</span>
+            <span class="spec-merge-plus" aria-hidden="true">+</span>
+            <span class="spec-merge-item">Guardrails, sanitizers, HITL, HOTL,<br>evaluations, traces, and harnesses</span>
+            <span class="spec-merge-plus" aria-hidden="true">+</span>
+            <span class="spec-merge-item">Interaction, evidence and causal logging</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VERIFY LOOP -->
+    <div class="spec-loop" data-spec="2">
+      <svg class="spec-loop-svg" viewBox="0 0 1500 60" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="#F5C518" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke">
+          <path class="spec-loop-path" pathLength="100" d="M1430,0 V40 H70 V12" />
+        </g>
+        <polygon class="spec-loop-arrowhead" points="70,0 62,16 78,16" fill="#F5C518" />
+      </svg>
+      <div class="spec-loop-label">
+        <span class="spec-loop-tag">Akka Verify</span>
+        <span class="spec-loop-text">Validate what&rsquo;s running and fine-tune AI from production data.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 
 <div id="platform-pattern-wrapper">
 <section id="platform-pattern">
@@ -2951,7 +3536,7 @@ body {
     <div class="pp-head">
       <div class="pp-eyebrow">Platform Use Cases</div>
       <div class="pp-headline"><span class="accent">One platform.</span> Every AI use case.</div>
-      <div class="pp-subhead">AI apps, dynamic automation, multi-project AI &mdash; same operating model, same playbook.</div>
+      <div class="pp-subhead">AI apps, dynamic automation, multi-project AI &mdash; repeatable, scalable, reusable.</div>
     </div>
 
     <div class="pp-rows">
@@ -3014,70 +3599,70 @@ body {
 <section id="s6b">
   <div class="s6b-inner">
     <div class="s6b-head">
-      <div class="s6b-eyebrow s6b-reveal">Akka vs. Hyperscaler</div>
+      <div class="s6b-eyebrow s6b-reveal">Akka vs. The Other Guys</div>
       <div class="s6b-headline s6b-reveal">
-        <span class="accent">Akka delivers the system.</span><br>Hyperscalers sell you metered parts.
+        <span class="accent">Akka delivers the system.</span><br>Frameworks and hyperscalers sell you parts.
       </div>
-      <div class="s6b-vendor-line s6b-reveal">AWS Bedrock &middot; Azure AI Foundry &middot; Gemini Enterprise Agent Platform</div>
+      <div class="s6b-vendor-line s6b-reveal">AWS Bedrock &middot; Azure AI Foundry &middot; Google Vertex AI &middot; Gemini Enterprise &middot; LangChain &middot; CrewAI &middot; LlamaIndex</div>
     </div>
 
     <div class="s6b-rows s6b-reveal">
 
-      <!-- Row 1 -->
+      <!-- Row 1: Integrated Runtime -->
       <div class="s6b-row">
-        <div class="s6b-theme">Cloud<br>Freedom</div>
+        <div class="s6b-theme">Integrated<br>Runtime</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">Deploy in any datacenter with a sovereign cloud option, specs enable agent portability, and BSL licensing to control your future.</div>
+          <div class="s6b-us-body"><span class="s6b-num">One platform. One runtime. One deploy.</span> Pre-integrated, not assembled. Akka owns the reliability SLA &mdash; <span class="s6b-num">99.9999%</span> availability, <span class="s6b-num">&lt;1 min RTO</span>, <span class="s6b-num">24/7</span> SRE, active-active replication.</div>
           <div class="s6b-them-card">
-            <div class="s6b-them-tag">Hyperscalers</div>
+            <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
-              <span class="s6b-them-title">Structural lock-in</span>
-              <span class="s6b-them-body">&mdash; proprietary schemas, identity, billing. One cloud, one region model.</span>
+              <span class="s6b-them-title">Components you wire yourself</span>
+              <span class="s6b-them-body">&mdash; agents, memory, guardrails, observability, evals. The SLA lives with your team.</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Row 2 -->
+      <!-- Row 2: Predictable Pricing -->
       <div class="s6b-row">
-        <div class="s6b-theme">Predictable<br>Fees</div>
+        <div class="s6b-theme">Predictable<br>Pricing</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">One platform, one invoice. Shared compute drives <span class="s6b-num">70&ndash;90%</span> lower infrastructure TCO than the hyperscaler patchwork &mdash; a single line item, not eight.</div>
+          <div class="s6b-us-body">One platform, one invoice. Shared compute, no surprise tokens. <span class="s6b-num">70&ndash;90%</span> lower infra TCO than the framework + hyperscaler patchwork &mdash; finance can forecast it.</div>
           <div class="s6b-them-card">
-            <div class="s6b-them-tag">Hyperscalers</div>
+            <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
-              <span class="s6b-them-title">Unpredictable fees</span>
+              <span class="s6b-them-title">Unpredictable spend</span>
               <span class="s6b-them-body">&mdash; per-call, per-token, per-service. Six to eight line items finance can't forecast.</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Row 3 -->
+      <!-- Row 3: Uniform Governance -->
       <div class="s6b-row">
-        <div class="s6b-theme">Integrated<br>AI</div>
+        <div class="s6b-theme">Uniform<br>Governance</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">Akka delivers the system, not parts. We guarantee outcomes: <span class="s6b-num">99.9999%</span> availability, <span class="s6b-num">&lt;1 min RTO</span>, <span class="s6b-num">24/7</span> SRE, active-active resilience.</div>
+          <div class="s6b-us-body">Aspect-woven safeguards &mdash; controls injected into your agents. <span class="s6b-num">Akka Verify</span> proves conformance from the running system.</div>
           <div class="s6b-them-card">
-            <div class="s6b-them-tag">Hyperscalers</div>
+            <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
-              <span class="s6b-them-title">Services you integrate</span>
-              <span class="s6b-them-body">&mdash; your team wires agents, memory, guardrails, observability, evals.</span>
+              <span class="s6b-them-title">Hand-rolled per project</span>
+              <span class="s6b-them-body">&mdash; you write verification yourself, in separate tools, with nothing reusable across projects.</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Row 4 -->
+      <!-- Row 4: Cloud Freedom -->
       <div class="s6b-row">
-        <div class="s6b-theme">Uniform<br>Governance</div>
+        <div class="s6b-theme">Cloud<br>Freedom</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">One signed control plane &mdash; <span class="s6b-num">Define, Identify, Enforce, Improve</span>. <span class="s6b-num">186</span> regulations, <span class="s6b-num">704</span> controls pre-mapped. <span class="s6b-num">Akka Verify</span> proves conformance from the running system.</div>
+          <div class="s6b-us-body">Deploy in any datacenter with a sovereign cloud option, specs enable agent portability, and BSL licensing to control your future.</div>
           <div class="s6b-them-card">
-            <div class="s6b-them-tag">Hyperscalers</div>
+            <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
-              <span class="s6b-them-title">Per-team assembly</span>
-              <span class="s6b-them-body">&mdash; teams wire policy, evals, audit separately. Governance drifts.</span>
+              <span class="s6b-them-title">Structural lock-in</span>
+              <span class="s6b-them-body">&mdash; proprietary schemas, identity, billing. One cloud, one region model.</span>
             </div>
           </div>
         </div>
@@ -3094,7 +3679,7 @@ body {
 <section id="s13">
   <div class="s13-eyebrow s13-reveal">The architecture</div>
   <div class="s13-headline s13-reveal">Three <span class="accent">core innovations</span></div>
-  <div class="s13-subhead s13-reveal">Structural within the Akka runtime — embedded in every agentic microservice.</div>
+  <div class="s13-subhead s13-reveal">The runtime substrate that lets Akka pre-integrate what frameworks make you assemble &mdash; embedded in every agentic microservice.</div>
 
   <div class="s13-grid s13-reveal">
 
@@ -3298,7 +3883,7 @@ body {
 <section id="s6">
   <div class="s6-top">
     <div class="s6-top-left">
-      <div class="s6-eyebrow s6-reveal">Resilience built in</div>
+      <div class="s6-eyebrow s6-reveal">Akka owns the SLA</div>
       <div class="s6-headline s6-reveal">Agentic AI that <span class="accent">never goes down.</span></div>
     </div>
     <div class="s6-stats s6-reveal">
@@ -4755,8 +5340,8 @@ body {
 
 ﻿<div id="s7-problem">
   <div id="s7-problem-sticky">
-    <div class="s7-eyebrow" data-s7="0">Akka Governance Platform</div>
-    <div class="s7-problem-headline" data-s7="0">Evaluation is not <span class="accent">control.</span></div>
+    <div class="s7-eyebrow" data-s7="0">AI Governance</div>
+    <div class="s7-problem-headline" data-s7="0">AI regulations are <span class="accent">costly and imposing.</span></div>
     <div class="s7-problems">
       <div class="s7-prob" data-s7="0">
         <div class="s7-prob-stat">&euro;35M Penalties</div>
@@ -4862,7 +5447,7 @@ body {
 <div class="pkg-inner">
   <div class="pkg-eyebrow pkg-reveal">The packages</div>
   <div class="pkg-headline pkg-reveal pkg-reveal-d1">One platform. <span class="accent">Any cloud.</span></div>
-  <div class="pkg-sub pkg-reveal pkg-reveal-d2">Every configuration runs the full Akka platform — the same runtime, the same APIs, the same developer experience. You choose where it runs and how much you need.</div>
+  <div class="pkg-sub pkg-reveal pkg-reveal-d2">Every configuration runs the full Akka platform &mdash; the same runtime, the same APIs, the same developer experience, the same governance lifecycle. You choose where it runs and how much you need.</div>
 
   <!-- Infrastructure bar -->
   <div class="pkg-infra pkg-reveal pkg-reveal-d3">
@@ -5275,7 +5860,17 @@ const s4observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('#s4 .s4-reveal').forEach(el => s4observer.observe(el));
 
-/* ── 05-platform-use-cases ── */
+/* ── 05-specifications ── */
+/* ── Slide 04 specifications ──────────────────────── */
+const specRevealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-spec="0"], [data-spec="1"], [data-spec="2"], [data-spec="3"]').forEach(el => specRevealObs.observe(el));
+
+
+/* ── 06-platform-use-cases ── */
 (function() {
   function countUp(el, target, duration) {
     var start = performance.now();
@@ -5315,7 +5910,7 @@ document.querySelectorAll('#s4 .s4-reveal').forEach(el => s4observer.observe(el)
 })();
 
 
-/* ── 06-hyperscalers ── */
+/* ── 07-framework ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -5326,7 +5921,7 @@ document.querySelectorAll('#s4 .s4-reveal').forEach(el => s4observer.observe(el)
 })();
 
 
-/* ── 07-innovations ── */
+/* ── 08-innovations ── */
 const s13observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -5336,7 +5931,7 @@ const s13observer = new IntersectionObserver(entries => {
 document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(el));
 
 
-/* ── 08-devzero ── */
+/* ── 09-devzero ── */
 (function() {
   var script = [
     { type:'cmd', text:'/akka:specify "Customer loyalty program with points, tiers, and rewards"', phase:'specify' },
@@ -5677,7 +6272,7 @@ document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(
 })();
 
 
-/* ── 09-resilience ── */
+/* ── 10-resilience ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -5699,7 +6294,7 @@ document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(
 })();
 
 
-/* ── 10-governance ── */
+/* ── 11-governance ── */
 /* ── Phase 1: scroll-driven problem reveals ── */
 const s7wrapper = document.getElementById('s7-problem');
 const s7els     = document.querySelectorAll('[data-s7]');
@@ -5721,7 +6316,7 @@ window.addEventListener('scroll', updateS7, { passive: true });
 updateS7();
 
 
-/* ── 11-customers ── */
+/* ── 12-customers ── */
 const custWrapper = document.getElementById('cust-wrapper');
 const slides  = document.querySelectorAll('.cust-slide');
 const dotsEl  = document.getElementById('custDots');
@@ -5753,7 +6348,7 @@ function updateSlides() {
 window.addEventListener('scroll', updateSlides, { passive: true });
 updateSlides();
 
-/* ── 12-packages ── */
+/* ── 13-packages ── */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -5762,7 +6357,7 @@ const observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('#pkg .pkg-reveal, #pkg .pkg-tier').forEach(el => observer.observe(el));
 
-/* ── 13-delivery ── */
+/* ── 14-delivery ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -5805,7 +6400,7 @@ document.querySelectorAll('#pkg .pkg-reveal, #pkg .pkg-tier').forEach(el => obse
 })();
 
 
-/* ── 14-partners ── */
+/* ── 15-partners ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -5815,7 +6410,7 @@ document.querySelectorAll('#pkg .pkg-reveal, #pkg .pkg-tier').forEach(el => obse
   document.querySelectorAll('#s9 .s9-reveal').forEach(function(el) { revObs.observe(el); });
 })();
 
-/* ── 16-closing ── */
+/* ── 17-closing ── */
 const closingObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -5832,6 +6427,7 @@ const views = [
     document.getElementById('st-wrapper'),
     document.getElementById('s2-wrapper'),
     document.getElementById('s4-wrapper'),
+    document.getElementById('spec-wrapper'),
     document.getElementById('platform-pattern-wrapper'),
     document.getElementById('s6b-wrapper'),
     document.getElementById('s13-wrapper'),

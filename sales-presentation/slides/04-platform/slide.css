@@ -35,23 +35,20 @@
 .s4-headline {
   font-size: clamp(30px, 4vw, 58px); font-weight:700;
   line-height:1.08; letter-spacing:-0.03em; color:var(--white);
-  max-width: 900px; margin-bottom: 48px;
+  max-width: 1400px; margin-bottom: 40px;
 }
 .s4-headline .accent { color:var(--yellow); }
 
-/* Two-column layout: header+image left, value props right */
+/* Single-column: eyebrow + headline left-aligned, image centered below */
 .s4-layout {
-  display: flex; gap: 0; align-items: flex-start;
+  display: flex; flex-direction: column;
   width: 100%;
 }
 
-.s4-left {
-  flex: 1.4; min-width: 0;
-}
-
 .s4-image {
-  margin-left: calc(-1 * var(--pad-3) - 40px);
-  margin-top: 50px;
+  width: 85%;
+  max-width: 1190px;
+  margin: 25px auto 0;
 }
 .s4-image img {
   width: 100%;

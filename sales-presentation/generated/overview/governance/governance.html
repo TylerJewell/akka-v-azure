@@ -294,12 +294,13 @@
   .mx td.id{ color:var(--yellow); font-weight:800; width:42px; }
   .mx td.ctl{ color:#e6e8ec; white-space:nowrap; }
   .mx td.mech{ font-weight:600; white-space:nowrap; }
-  .mx td.mech.G,.mx td.mech.H{ color:var(--red); }
-  .mx td.mech.W{ color:var(--blue); }
-  .mx td.mech.P,.mx td.mech.E{ color:var(--green); }
-  .mx td.mech.HR{ color:#7EC8E3; }    /* HOOTL — softer blue to distinguish from W */
-  .mx td.mech.B{ color:#c39bf5; }
-  .mx td.mech.K{ color:#ff6ec7; }
+  .mx td.mech.G,.mx td.mech.H,.mx td.mech.guardrail{ color:var(--red); }
+  .mx td.mech.W,.mx td.mech.hitl{ color:var(--blue); }
+  .mx td.mech.sanitizer{ color:#ff9d6c; }       /* sanitizer — orange */
+  .mx td.mech.P,.mx td.mech.E,.mx td.mech.eval-periodic,.mx td.mech.eval-event{ color:var(--green); }
+  .mx td.mech.HR,.mx td.mech.hotl{ color:#7EC8E3; }    /* HOTL — softer blue to distinguish from HITL */
+  .mx td.mech.B,.mx td.mech.ci-gate{ color:#c39bf5; }
+  .mx td.mech.K,.mx td.mech.halt{ color:#ff6ec7; }
   /* magenta — system-halt; distinct from B's softer lavender */
   .mx td.impl{ color:#aeb4bb; white-space:nowrap; }
   .mx td.enf{ color:var(--muted); white-space:nowrap; }
@@ -577,8 +578,8 @@
   .step-chip:hover .lbl{ color:var(--white); }
   .step-chip.active:hover .lbl{ color:var(--black); }
 
-  /* Demo embed inside the "See it in action" tab. The iframe sizes to a
-     tall but page-fitting window; the demo's own internal navigation handles
+  /* Demo embed inside the Demo tab. The iframe sizes to a tall but
+     page-fitting window; the demo's own internal navigation handles
      stage selection. */
   .demo-frame{
     margin-top: 8px;
@@ -590,14 +591,7 @@
   }
   /* Wide variant breaks out of the .wrap container (max-width:1080px) and
      matches the sales-presentation slide layout (max-width:1536px, centered
-     in the viewport). The terminal demo gets the room it needs without
-     expanding edge-to-edge on ultra-wide displays.
-
-     Mechanics: position:relative + left:50% places the element's left edge
-     at the centerline of its parent (.wrap, also centered in the viewport).
-     translateX(-50%) pulls it back by half its own width, centering it in
-     the viewport. width:min(100vw, 1536px) caps the width at 1536px on
-     wide displays and falls back to the full viewport on narrower ones. */
+     in the viewport). */
   .demo-frame--fullbleed{
     position: relative;
     left: 50%;
@@ -892,13 +886,13 @@
     <div class="section-hero">
       <h1 class="section-title">Governance for Agentic AI</h1>
       <p class="section-lead">
-        AI governance is the discipline of demonstrating that an agentic AI system does what it was
-        authorized to do &mdash; in the ways it was authorized, with the evidence to prove it.
+        Agentic AI governance demonstrates that an AI system does what it was authorized to do &mdash;
+        with the evidence to prove it.
       </p>
     </div>
     <div class="cover-stats">
-      <div class="stat-card"><span class="stat-num">186</span><span class="stat-lbl">AI regulations indexed</span></div>
-      <div class="stat-card"><span class="stat-num">704</span><span class="stat-lbl">Controls in the corpus</span></div>
+      <div class="stat-card"><span class="stat-num">183</span><span class="stat-lbl">AI regulations indexed</span></div>
+      <div class="stat-card"><span class="stat-num">877</span><span class="stat-lbl">Controls in the corpus</span></div>
       <div class="stat-card"><span class="stat-num">98</span><span class="stat-lbl">Regulations that carry financial penalties</span></div>
     </div>
     <div class="cover-rows">
@@ -909,7 +903,7 @@
       </a>
       <a class="cover-row" data-step="2" href="#step-2">
         <h2>Identify your controls</h2>
-        <p class="def">Translating the risk picture into the specific safeguards your system must implement and prove. Akka maps your risk across 186 AI regulations.</p>
+        <p class="def">Translating the risk picture into the specific safeguards your system must implement and prove. Akka maps your risk across 183 AI regulations.</p>
         <span class="cc-arrow">&rsaquo;</span>
       </a>
       <a class="cover-row" data-step="3" href="#step-3">
@@ -920,11 +914,6 @@
       <a class="cover-row" data-step="4" href="#step-4">
         <h2>Improve and adapt</h2>
         <p class="def">Detecting changes that matter and using the same evaluation, testing, and replay techniques to continuously improve the system's safety and accuracy.</p>
-        <span class="cc-arrow">&rsaquo;</span>
-      </a>
-      <a class="cover-row" data-step="5" href="#step-5">
-        <h2>See it in action</h2>
-        <p class="def">A four-stage walkthrough — same survey, same matrix, same enforcement, same loop — rendered as a live terminal demo.</p>
         <span class="cc-arrow">&rsaquo;</span>
       </a>
     </div>
@@ -1360,7 +1349,7 @@
 
       <div class="qb" data-survey="full">
         <span class="q">Which patterns or trends should alert someone after the fact &mdash; even if no single case is bad?</span>
-        <span class="drives dec"><b>Declares:</b> each pattern becomes a periodic-eval row.</span>
+        <span class="drives dec"><b>Declares:</b> each pattern becomes an eval-periodic row.</span>
         <div class="lw" data-list="watch">
           <div class="row"><input type="text" placeholder="e.g. approval rate drifts more than 10% week over week"><button class="add">Add</button></div>
           <ul></ul>
@@ -1686,7 +1675,7 @@
     <div class="sources">
       <div class="source-col">
         <b>From regulations</b>
-        <span>Auto-derived from the corpus of about 700 controls across 186 frameworks worldwide, using
+        <span>Auto-derived from the corpus of 877 controls across 183 frameworks worldwide, using
           your survey answers. Each row arrives with the exact citation and evidence requirement attached.</span>
         <span class="ex">Example: Italian AI Law Article 4 — workforce consultation before workplace AI deployment.</span>
       </div>
@@ -1755,7 +1744,7 @@
         <div class="gen-card"><span class="gly">&#128065;</span><div><b>Watch points</b><span>Rolling-window monitors that fire when patterns drift &mdash; trip-rate, approval rate, segment outcome distribution.</span></div></div>
         <div class="gen-card"><span class="gly">&#128226;</span><div><b>Incident reporters</b><span>Detection rules, regulator-specific clocks (72 hours, 15 days, whatever the law requires), and routing workflows.</span></div></div>
         <div class="gen-card"><span class="gly">&#128203;</span><div><b>Documentation gates</b><span>Continuous-integration checks that fail the deploy if a required document is missing, expired, or doesn't cover the deployed version.</span></div></div>
-        <div class="gen-card"><span class="gly">&#128274;</span><div><b>Sanitizers</b><span>Personal-data redaction, prompt-injection protection, secret detection &mdash; running on every interaction.</span></div></div>
+        <div class="gen-card"><span class="gly">&#128274;</span><div><b>Sanitizers</b><span>Personal-data redaction, special-category protection, sector-specific PHI/PAN/financial scrubbing, secret detection, and children's-data handling &mdash; five flavors running on every interaction at the LLM, tool-call, response, or post-hoc hook.</span></div></div>
         <div class="gen-card"><span class="gly">&#9851;</span><div><b>Evaluation test harness</b><span>Every row compiles to one or more test cases that run in continuous integration, gate deployments, and re-run on a scheduled cadence.</span></div></div>
       </div>
     </div>
@@ -1800,7 +1789,7 @@
     before notifying the applicant.
 
 <span class="cm">Source:</span>     corporate
-<span class="cm">Mechanism:</span>  hitl-workflow (Blocking-flow)
+<span class="cm">Mechanism:</span>  hitl (Blocking-flow)
 <span class="cm">Proof:</span>      HumanDecisionRecorded</pre>
       </div>
       <div class="pane">
@@ -2021,7 +2010,6 @@
             referrerpolicy="no-referrer"></iframe>
   </div>
 </div><!-- /#step5 -->
-
 
 </div>
 
@@ -2602,13 +2590,13 @@ var STUB_RESULTS = {
     { id:'G1', control:'European Union Artificial Intelligence Act Article 5(1)(a) — prohibited subliminal/manipulative techniques', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-act.art5.1.a', proof:'GuardrailDecisionRecorded', framework:'eu-ai-act' },
     { id:'G2', control:'European Union Artificial Intelligence Act Article 50(2) — machine-readable marking of synthetic content', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-act.art50.2', proof:'GuardrailDecisionRecorded', framework:'eu-ai-act' },
     { id:'G3', control:'European Union AI Omnibus Article 1 — non-consensual intimate imagery prohibition', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-omnibus.art1.ncii-prohibition', proof:'GuardrailDecisionRecorded', framework:'eu-ai-omnibus' },
-    { id:'W1', control:'European Union Artificial Intelligence Act Article 55(1)(a) — systemic-risk model evaluation (rolling window)', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art55.1.a', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
-    { id:'E1', control:'European Union Artificial Intelligence Act Article 55(1)(c) — serious-incident reporting for systemic-risk GPAI', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art55.1.c', proof:'OnlineEvaluationRecorded', framework:'eu-ai-act' },
-    { id:'E2', control:'California Senate Bill 53 §22757.12 — critical safety incident reporting to OES', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'ca-sb53.s22757-12.incident-reporting', proof:'OnlineEvaluationRecorded', framework:'ca-sb53' },
-    { id:'E3', control:'New York RAISE Act — critical-incident reporting within seventy-two hours', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'ny-raise-act.art1.critical-incident-72h-reporting', proof:'OnlineEvaluationRecorded', framework:'ny-raise-act' },
-    { id:'P1', control:'New York RAISE Act — annual Safety and Security Protocol review', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'ny-raise-act.art1.annual-ssp-review', proof:'PeriodicEvaluationRecorded', framework:'ny-raise-act' },
-    { id:'P2', control:'NIST AI Risk Management Framework — Govern function', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'nist-ai-rmf.govern.1', proof:'PeriodicEvaluationRecorded', framework:'nist-ai-rmf' },
-    { id:'P3', control:'NIST AI Risk Management Framework — Manage function', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'nist-ai-rmf.manage.1', proof:'PeriodicEvaluationRecorded', framework:'nist-ai-rmf' },
+    { id:'W1', control:'European Union Artificial Intelligence Act Article 55(1)(a) — systemic-risk model evaluation (rolling window)', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art55.1.a', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
+    { id:'E1', control:'European Union Artificial Intelligence Act Article 55(1)(c) — serious-incident reporting for systemic-risk GPAI', mechanism:'eval-event', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art55.1.c', proof:'OnlineEvaluationRecorded', framework:'eu-ai-act' },
+    { id:'E2', control:'California Senate Bill 53 §22757.12 — critical safety incident reporting to OES', mechanism:'eval-event', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'ca-sb53.s22757-12.incident-reporting', proof:'OnlineEvaluationRecorded', framework:'ca-sb53' },
+    { id:'E3', control:'New York RAISE Act — critical-incident reporting within seventy-two hours', mechanism:'eval-event', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'ny-raise-act.art1.critical-incident-72h-reporting', proof:'OnlineEvaluationRecorded', framework:'ny-raise-act' },
+    { id:'P1', control:'New York RAISE Act — annual Safety and Security Protocol review', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'ny-raise-act.art1.annual-ssp-review', proof:'PeriodicEvaluationRecorded', framework:'ny-raise-act' },
+    { id:'P2', control:'NIST AI Risk Management Framework — Govern function', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'nist-ai-rmf.govern.1', proof:'PeriodicEvaluationRecorded', framework:'nist-ai-rmf' },
+    { id:'P3', control:'NIST AI Risk Management Framework — Manage function', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'nist-ai-rmf.manage.1', proof:'PeriodicEvaluationRecorded', framework:'nist-ai-rmf' },
     { id:'A1', control:'California Senate Bill 53 §22757.10 — Frontier AI Framework publication', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'ca-sb53.s22757-10.framework-publication', proof:'CiGateRecorded', framework:'ca-sb53' },
     { id:'A2', control:'New York RAISE Act — Safety and Security Protocol publication', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'ny-raise-act.art1.ssp-publication', proof:'CiGateRecorded', framework:'ny-raise-act' },
     { id:'A3', control:'ISO/IEC 42001 clause 6.1 — planning to address risks and opportunities', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'iso-42001.cl6.1', proof:'CiGateRecorded', framework:'iso-42001' }
@@ -2616,34 +2604,34 @@ var STUB_RESULTS = {
   loan: [
     { id:'G1', control:'European Union Artificial Intelligence Act Article 9(2)(a) — identification of known and foreseeable risks', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-act.art9.2.a', proof:'GuardrailDecisionRecorded', framework:'eu-ai-act' },
     { id:'G2', control:'European Union Artificial Intelligence Act Article 15(1) — accuracy, robustness, cybersecurity', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-act.art15.1', proof:'GuardrailDecisionRecorded', framework:'eu-ai-act' },
-    { id:'G3', control:'GDPR Article 22(1) — prohibition on solely automated decisions with legal effect', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'gdpr-art22.art22.1', proof:'GuardrailDecisionRecorded', framework:'gdpr-art22' },
-    { id:'H1', control:'European Union Artificial Intelligence Act Article 14(1) — human oversight by design', mechanism:'hitl-workflow', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'eu-ai-act.art14.1', proof:'HumanDecisionRecorded', framework:'eu-ai-act' },
-    { id:'H2', control:'Colorado Senate Bill 26-189 §4 — consumer right to human appeal', mechanism:'hitl-workflow', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'colorado-sb26-189.sec4.right-to-appeal', proof:'HumanDecisionRecorded', framework:'colorado-sb26-189' },
-    { id:'W1', control:'European Union Artificial Intelligence Act Article 10(2)(f) — bias examination on protected characteristics', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art10.2.f', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
-    { id:'W2', control:'FCRA/ECOA Regulation B §202.6 — ongoing disparate-impact monitoring', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.ecoa-r-202-6.disparate-impact', proof:'PeriodicEvaluationRecorded', framework:'fcra-ecoa' },
-    { id:'P1', control:'Colorado Senate Bill 26-189 §5 — annual public report on consequential decisions', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'colorado-sb26-189.sec5.annual-public-report', proof:'PeriodicEvaluationRecorded', framework:'colorado-sb26-189' },
-    { id:'P2', control:'European Union Artificial Intelligence Act Article 12(1) — automatic event logging across the system lifetime', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art12.1', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
-    { id:'E1', control:'Fair Credit Reporting Act §615 — adverse-action notice on credit denial', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.fcra-s615.adverse-action', proof:'OnlineEvaluationRecorded', framework:'fcra-ecoa' },
-    { id:'E2', control:'Equal Credit Opportunity Act Regulation B §202.9 — specific reasons for adverse action', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.ecoa-r-202-9.specific-reasons', proof:'OnlineEvaluationRecorded', framework:'fcra-ecoa' },
-    { id:'E3', control:'India DPDP Rules 2025 Article 7 — personal-data breach notification', mechanism:'event-eval', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'india-dpdp-rules-2025.art7.breach-notification', proof:'OnlineEvaluationRecorded', framework:'india-dpdp-rules-2025' },
+    { id:'G3', control:'GDPR Article 22(1) — prohibition on solely automated decisions with legal effect', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'gdpr-art22.art22.1-realtime', proof:'GuardrailDecisionRecorded', framework:'gdpr-art22' },
+    { id:'H1', control:'European Union Artificial Intelligence Act Article 14(1) — human oversight by design', mechanism:'hitl', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'eu-ai-act.art14.1', proof:'HumanDecisionRecorded', framework:'eu-ai-act' },
+    { id:'H2', control:'Colorado Senate Bill 26-189 §4 — consumer right to human appeal', mechanism:'hitl', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'colorado-sb26-189.sec4.right-to-appeal', proof:'HumanDecisionRecorded', framework:'colorado-sb26-189' },
+    { id:'W1', control:'European Union Artificial Intelligence Act Article 10(2)(f) — bias examination on protected characteristics', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art10.2.f-aggregate', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
+    { id:'W2', control:'FCRA/ECOA Regulation B §202.6 — ongoing disparate-impact monitoring', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.ecoa-r-202-6.disparate-impact', proof:'PeriodicEvaluationRecorded', framework:'fcra-ecoa' },
+    { id:'P1', control:'Colorado Senate Bill 26-189 §5 — annual public report on consequential decisions', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'colorado-sb26-189.sec5.annual-public-report', proof:'PeriodicEvaluationRecorded', framework:'colorado-sb26-189' },
+    { id:'P2', control:'European Union Artificial Intelligence Act Article 12(1) — automatic event logging across the system lifetime', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art12.1', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
+    { id:'E1', control:'Fair Credit Reporting Act §615 — adverse-action notice on credit denial', mechanism:'eval-event', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.fcra-s615.adverse-action', proof:'OnlineEvaluationRecorded', framework:'fcra-ecoa' },
+    { id:'E2', control:'Equal Credit Opportunity Act Regulation B §202.9 — specific reasons for adverse action', mechanism:'eval-event', akkaImplementation:'Akka event handler + EvalKit suite', enforcement:'Non-blocking', source:'fcra-ecoa.ecoa-r-202-9.specific-reasons', proof:'OnlineEvaluationRecorded', framework:'fcra-ecoa' },
+    { id:'E3', control:'India DPDP Rules 2025 Article 7 — personal-data breach notification', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (test-gate, 72h notification workflow contract test)', enforcement:'Build-gate', source:'india-dpdp-rules-2025.art7.breach-notification', proof:'CiGateRecorded', framework:'india-dpdp-rules-2025' },
     { id:'A1', control:'European Union Artificial Intelligence Act Article 13(1) — transparency and instructions for use', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'eu-ai-act.art13.1', proof:'CiGateRecorded', framework:'eu-ai-act' },
     { id:'A2', control:'India DPDP Rules 2025 Article 4 — Significant Data Fiduciary additional obligations', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'india-dpdp-rules-2025.art4.sdf-additional-obligations', proof:'CiGateRecorded', framework:'india-dpdp-rules-2025' }
   ],
   claims: [
     { id:'G1', control:'NAIC Model Bulletin — adverse-action notice and explanation for AI-driven insurance decisions', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'naic-ai.s4.adverseaction', proof:'GuardrailDecisionRecorded', framework:'naic-ai' },
-    { id:'G2', control:'GDPR Article 22(1) — prohibition on solely automated decisions with legal effect', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'gdpr-art22.art22.1', proof:'GuardrailDecisionRecorded', framework:'gdpr-art22' },
-    { id:'H1', control:'Solvency II Article 41 — system of governance over outsourced/automated decisioning', mechanism:'hitl-workflow', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'solvency-2.art41.governance', proof:'HumanDecisionRecorded', framework:'solvency-2' },
-    { id:'W1', control:'European Union Artificial Intelligence Act Article 10(2)(f) — bias examination on protected characteristics', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art10.2.f', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
-    { id:'W2', control:'MHPAEA §712 — non-quantitative treatment limitations parity monitoring', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'mhpaea.s712.parity-monitoring', proof:'PeriodicEvaluationRecorded', framework:'mhpaea' },
-    { id:'P1', control:'NAIC Model Bulletin §4 — AI governance program documentation and review', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'naic-ai.s4.governance', proof:'PeriodicEvaluationRecorded', framework:'naic-ai' },
+    { id:'G2', control:'GDPR Article 22(1) — prohibition on solely automated decisions with legal effect', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'gdpr-art22.art22.1-realtime', proof:'GuardrailDecisionRecorded', framework:'gdpr-art22' },
+    { id:'H1', control:'Solvency II Article 41 — system of governance over outsourced/automated decisioning', mechanism:'hitl', akkaImplementation:'Workflow pause()/resume()', enforcement:'Blocking-flow', source:'solvency-2.art41.governance', proof:'HumanDecisionRecorded', framework:'solvency-2' },
+    { id:'W1', control:'European Union Artificial Intelligence Act Article 10(2)(f) — bias examination on protected characteristics', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'eu-ai-act.art10.2.f-aggregate', proof:'PeriodicEvaluationRecorded', framework:'eu-ai-act' },
+    { id:'W2', control:'MHPAEA §712 — non-quantitative treatment limitations parity monitoring', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'mhpaea.s712.parity-monitoring', proof:'PeriodicEvaluationRecorded', framework:'mhpaea' },
+    { id:'P1', control:'NAIC Model Bulletin §4 — AI governance program documentation and review', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'naic-ai.s4.governance', proof:'PeriodicEvaluationRecorded', framework:'naic-ai' },
     { id:'A1', control:'NAIC Model Bulletin §4 — third-party AI vendor diligence and attestation', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'naic-ai.s4.thirdparty', proof:'CiGateRecorded', framework:'naic-ai' },
     { id:'A2', control:'GDPR — controller technical and organisational measures attestation', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'gdpr-core.attestation', proof:'CiGateRecorded', framework:'gdpr-core' }
   ],
   support: [
     { id:'G1', control:'European Union Artificial Intelligence Act Article 50(1) — disclose interaction with an AI system', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'eu-ai-act.art50.1', proof:'GuardrailDecisionRecorded', framework:'eu-ai-act' },
     { id:'G2', control:'CCPA/CPRA §1798.106 — honor consumer opt-out and deletion rights', mechanism:'guardrail', akkaImplementation:'LLM guardrail @before-agent-response · fail-closed', enforcement:'Blocking', source:'ccpa-cpra.s1798-106.opt-out', proof:'GuardrailDecisionRecorded', framework:'ccpa-cpra' },
-    { id:'P1', control:'UK FCA Consumer Duty Cross-cutting Outcome 3 — consumer understanding monitoring', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'uk-fca-consumer-duty.c3.outcomes', proof:'PeriodicEvaluationRecorded', framework:'uk-fca-consumer-duty' },
-    { id:'P2', control:'UK FCA Consumer Duty Cross-cutting Outcome 5 — ongoing outcomes monitoring', mechanism:'periodic-eval', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'uk-fca-consumer-duty.c5.monitoring', proof:'PeriodicEvaluationRecorded', framework:'uk-fca-consumer-duty' },
+    { id:'P1', control:'UK FCA Consumer Duty Cross-cutting Outcome 3 — consumer understanding monitoring', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'uk-fca-consumer-duty.c3.outcomes', proof:'PeriodicEvaluationRecorded', framework:'uk-fca-consumer-duty' },
+    { id:'P2', control:'UK FCA Consumer Duty Cross-cutting Outcome 5 — ongoing outcomes monitoring', mechanism:'eval-periodic', akkaImplementation:'Akka Timer + EvalKit suite', enforcement:'Non-blocking', source:'uk-fca-consumer-duty.c5.monitoring', proof:'PeriodicEvaluationRecorded', framework:'uk-fca-consumer-duty' },
     { id:'A1', control:'UK FCA Consumer Duty Cross-cutting Outcome 4 — consumer support attestation', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'uk-fca-consumer-duty.c4.consumer-support', proof:'CiGateRecorded', framework:'uk-fca-consumer-duty' },
     { id:'A2', control:'GDPR — controller technical and organisational measures attestation', mechanism:'ci-gate', akkaImplementation:'EvalKit CI check (document-presence + freshness)', enforcement:'Build-gate', source:'gdpr-core.attestation', proof:'CiGateRecorded', framework:'gdpr-core' }
   ]
@@ -2733,14 +2721,30 @@ function scheduleClassify(f){
     });
   }, 350);
 }
-var FAMOF = { 'guardrail':'G', 'guardrail-hotl':'H', 'hitl-workflow':'W', 'periodic-eval':'P', 'event-eval':'E', 'ci-gate':'B', 'halt-capability':'K' };
-var IMPLOF = { G:'Tool/LLM guardrail at the runtime boundary · fail-closed',
-  H:'Tool guardrail → human-sourced eval (reviewer queue)',
-  W:'Workflow pause()/resume() around the human task',
-  P:'Akka Timer + View over aggregate state',
-  E:'Akka Consumer on runtime/domain event',
-  B:'EvalKit check at build/deploy',
-  K:'Registered halt capability with exercise endpoint and oversight-persona binding' };
+/* FAMOF — mechanism-kind → mechanism-kind identity map (with legacy
+   aliases folded for backward compatibility with any corpus row still
+   tagged with the pre-8-mechanism taxonomy). The 'fam' field on SAMPLE_MATRIX
+   and derived rows is now the kind value itself. */
+var FAMOF = {
+  'guardrail':'guardrail',
+  'hitl':'hitl',
+  'hotl':'hotl',
+  'sanitizer':'sanitizer',
+  'eval-periodic':'eval-periodic',
+  'eval-event':'eval-event',
+  'ci-gate':'ci-gate',
+  'halt':'halt'
+};
+var IMPLOF = {
+  'guardrail':'Tool/LLM guardrail at the runtime boundary · fail-closed',
+  'hitl':'Workflow pause()/resume() around the human task',
+  'hotl':'Live governance review with runtime-state feedback',
+  'sanitizer':'Transforming guardrail (data-class redaction)',
+  'eval-periodic':'Akka Timer + View over aggregate state',
+  'eval-event':'Akka Consumer on runtime/domain event',
+  'ci-gate':'EvalKit check at build/deploy',
+  'halt':'Registered halt capability with exercise endpoint and oversight-persona binding'
+};
 function derivedRows(){
   return (derived.evalMatrixRows && derived.evalMatrixRows.length
     ? derived.evalMatrixRows : derived.controls).map(function(c){
@@ -2748,8 +2752,7 @@ function derivedRows(){
        - new: { id, control, mechanism, source, akkaImplementation, framework, ... }
        - legacy: { id, title, mechanism, frameworkName } */
     var mech = c.mechanism;
-    var fam = FAMOF[mech] || (c.id && /^[GHWPEBKA]/.test(c.id) ? c.id.charAt(0) : 'B');
-    if(fam === 'A') fam = 'B'; /* fold A (attestation) into B for legacy MECH mapping */
+    var fam = FAMOF[mech] || 'ci-gate';
     var ctlTxt = c.control || c.title || '';
     var src = c.source || c.id;
     var fwName = c.frameworkName || c.framework || '';
@@ -2799,55 +2802,58 @@ function F(){ /* facts snapshot — every survey input lands here */
    and arrives from the classify API as a derived row with its exact
    control id. genRows() therefore emits ONLY the eight narrative patterns
    below — each row carries unique text from the survey. */
-var MECH = { G:['Guardrail','Blocking'], W:['HITL','Blocking (flow)'],
-             P:['Evaluation - periodic','Non-blocking'], E:['Evaluation - event','Non-blocking'],
-             HR:['HOOTL','Non-blocking \u00b7 governance'],
-             B:['CI gate','Build-gate'], K:['Halt','System-level'],
-             /* Legacy alias retained so any corpus row still tagged H displays.
-                The H family is retired; HOTL is now a G add-on. */
-             H:['Guardrail \u00b7 addon hotl','Blocking'] };
+var MECH = {
+  'guardrail':     ['Guardrail',       'Blocking'],
+  'hitl':          ['HITL',            'Blocking (flow)'],
+  'hotl':          ['HOTL',            'Non-blocking \u00b7 governance'],
+  'sanitizer':     ['Sanitizer',       'Blocking \u00b7 transforming'],
+  'eval-periodic': ['Eval - periodic', 'Non-blocking'],
+  'eval-event':    ['Eval - event',    'Non-blocking'],
+  'ci-gate':       ['CI gate',         'Build-gate'],
+  'halt':          ['Halt',            'System-level']
+};
 
 /* Detail content shown when a Mechanism cell is clicked. */
 var MECH_DETAIL = {
-  G: {
+  'guardrail': {
     title: 'Guardrail',
     what: 'A blocking, in-flight check that fires at one of six agent-lifecycle hook points (before/after \u00d7 agent, LLM, tool). The agent suspends until the guardrail returns PASS / BLOCK / ERROR.',
-    akka: 'Implemented as an Akka SDK guardrail bound to an annotated hook (`@before-agent-invocation`, `@before-agent-response`, `@before-llm-call`, `@after-llm-response`, `@before-tool-call`, `@after-tool-call`). Optional add-ons attach to the hook to handle transformation (PII / secret / sector sanitizers) or human authorization (HOTL \u2192 reviewer queue). Every decision is recorded as a `GuardrailDecisionRecorded` evidence event.'
+    akka: 'Implemented as an Akka SDK guardrail bound to an annotated hook (`@before-agent-invocation`, `@before-agent-response`, `@before-llm-call`, `@after-llm-response`, `@before-tool-call`, `@after-tool-call`). Every decision is recorded as a `GuardrailDecisionRecorded` evidence event.'
   },
-  W: {
-    title: 'HITL',
-    what: 'Human-In-The-Loop. The customer\'s application workflow pauses for a human\'s domain decision and resumes with the human\'s feedback. The control logic lives in the customer\'s Workflow, outside the agent.',
-    akka: 'Implemented as an Akka Workflow that calls `pause()` and resumes on a signal carrying the human\'s feedback payload. Akka generates the reviewer UI, the durable suspension, the audit trail, and the SLA / escalation chain. Recorded as `HumanDecisionRecorded` evidence events.'
+  'hitl': {
+    title: 'HITL \u2014 Human In The Loop',
+    what: 'A human is in the flow. Two flavors: `application` \u2014 the application workflow pauses for a domain decision and resumes with the human\'s feedback; `guardrail` \u2014 a boundary-blocking authorization on a dangerous in-flight call (the legacy "HOTL add-on" pattern), where the agent\'s call suspends until a reviewer verdict returns.',
+    akka: 'Application flavor: Akka Workflow `pause()` / `resume()` around a generated reviewer UI. Guardrail flavor: a guardrail hook (almost always `before-tool-call`) that dispatches to a reviewer queue and waits on APPROVE / REJECT. Both record `HumanDecisionRecorded` evidence events with full attribution.'
   },
-  P: {
-    title: 'Evaluation - periodic',
+  'hotl': {
+    title: 'HOTL \u2014 Human Out Of The Loop',
+    what: 'Live-runtime governance review by a person in a risk / legal / compliance role. The reviewer observes AI outputs and pushes runtime-state feedback \u2014 policy edits, threshold tweaks, allowlist changes \u2014 without redeploying. The agent does not wait; the human is asynchronous. Distinct from HITL (in-flow human authority).',
+    akka: 'Implemented as the Deployer Dashboard (or DSA-style trusted-flagger queue UI) plus the runtime policy hot-update endpoint. The reviewer\'s dispositions adjust guardrail policy, eval thresholds, or refusal rules live, and are logged as `HotlDispositionRecorded` evidence events with full attribution.'
+  },
+  'sanitizer': {
+    title: 'Sanitizer',
+    what: 'A transforming, blocking check that redacts or masks one of four data classes \u2014 PII, GDPR Art. 9 special-category, secrets, or sector-specific (PHI / PAN / financial) \u2014 in an in-flight payload. The original payload is blocked; the sanitized payload passes. The injection point (which lifecycle hook, which direction) is an implementation detail captured in the corpus, not in the mechanism itself.',
+    akka: 'Implemented as a Sanitizer component invoked from a guardrail hook (typically `before-llm-call` or `before-agent-response`). Configured per data class via `.akka/sanitizers/<class>.yaml`. Emits `SanitizerRedactionRecorded` events with the redacted classes (never the redacted content).'
+  },
+  'eval-periodic': {
+    title: 'Eval - periodic',
     what: 'A scheduled, automated evaluation that runs against live production state on a cadence (nightly, hourly, monthly). Emits observations; alerts on threshold breach; may mutate runtime state on breach.',
     akka: 'Implemented as an Akka Timer that triggers an Evaluation against a View of recent production records. The Evaluation emits an observation; on-breach actions can hot-update runtime configuration (e.g. freeze auto-approval) via the policy update endpoint. Recorded as `PeriodicEvaluationRecorded` evidence events.'
   },
-  E: {
-    title: 'Evaluation - event',
-    what: 'An automated evaluation triggered by a runtime or domain event \u2014 an incident detection, an adverse decision, a model/data change, a customer appeal. Non-blocking; produces an observation that may drive downstream workflows.',
+  'eval-event': {
+    title: 'Eval - event',
+    what: 'An automated evaluation triggered by an event the agent itself detects at runtime \u2014 e.g. an incident detection, an adverse decision, or an agent-visible model/data change. External arrivals (complaints, regulator actions, calendar cycles) are CI Gates, not eval-event mechanisms. Non-blocking; produces an observation that may drive downstream workflows.',
     akka: 'Implemented as an Akka Consumer subscribed to the relevant event stream (e.g. `@IncidentDetected`, `@ApplicantAppealed`). The Consumer runs an Evaluation and emits an observation; for regulator-clock obligations (EU AI Act Art. 72), the Consumer also schedules a Timed Action enforcing the 72-hour window. Recorded as `OnlineEvaluationRecorded` evidence events.'
   },
-  HR: {
-    title: 'HOOTL \u2014 Human Out Of The Loop',
-    what: 'Live-runtime governance review by a person in a risk / legal / compliance role. The reviewer observes AI outputs and pushes runtime-state feedback \u2014 policy edits, threshold tweaks, allowlist changes \u2014 without redeploying. The agent does not wait; the human is asynchronous. Distinct from HITL (application workflow) and HOTL (boundary-blocking guardrail add-on).',
-    akka: 'Implemented as the Deployer Dashboard (or DSA-style trusted-flagger queue UI) plus the runtime policy hot-update endpoint. The reviewer\'s dispositions adjust guardrail policy, eval thresholds, or refusal rules live, and are logged as `HootlDispositionRecorded` evidence events with full attribution.'
-  },
-  B: {
+  'ci-gate': {
     title: 'CI gate',
     what: 'A build-time gate that blocks deploy. Covers test gates (eval suites must pass), documentation gates (DPIA / technical file on file and current), attestation gates (named role signed off within freshness window), configuration gates (deploy config matches policy), and periodic recertification gates (annual retrain & re-validation within window).',
     akka: 'Implemented as an Akka EvalKit suite that runs in CI/CD against the deployment artifact. Each gate is a discrete check returning PASS / FAIL; FAIL blocks the build. Documentation and attestation gates verify the presence and freshness of governance artifacts in the project repository. Recorded as gate-decision evidence in the audit trail.'
   },
-  K: {
+  'halt': {
     title: 'Halt',
     what: 'A registered, exercisable system-level intervention point that brings the AI system to a halt in a safe state. Three flavors: operator/regulator stop (manual kill switch \u2014 EU AI Act Art. 14.4(e)), automatic safety halt (system self-detects unsafe behavior), and graceful degradation (downgrade to a safe-fallback mode instead of full stop).',
     akka: 'Implemented as a registered halt endpoint exposed via an Akka HTTP endpoint, plus the runtime state machine that transitions the AI system to a halted / degraded mode and preserves evidence. The endpoint is authenticated to authorized operators / regulators. Halts are recorded as `HaltInvoked` evidence events with operator attribution.'
-  },
-  H: {
-    title: 'Guardrail \u00b7 addon hotl (retired top-level mechanism)',
-    what: 'Legacy top-level mechanism. Replaced by the Guardrail mechanism with the `hotl` add-on attached to a specific hook (typically `before-tool-call`). Existing corpus rows tagged with H migrate during Phase 2.',
-    akka: 'See Guardrail. The `hotl` add-on dispatches the in-flight call to a human reviewer queue and waits on the verdict before the agent resumes.'
   }
 };
 
@@ -2861,30 +2867,31 @@ var IMPL_DETAIL = {
   'after-llm-response':      { title:'Guardrail \u00b7 after-llm-response',      what:'Fires after the model responds, before the agent acts on it. Used for hallucination detection, schema-conformance checks on structured outputs.', akka:'`@after-llm-response` annotated guardrail. Inspects the raw model output and may block / transform before the agent proceeds.' },
   'before-tool-call':        { title:'Guardrail \u00b7 before-tool-call',        what:'Fires before a tool is invoked. Used for tool authorization, argument sanitization, side-effect gating, dangerous-action authorization.', akka:'`@before-tool-call` annotated guardrail. Receives the tool-call payload; can block, transform args, or (with the `hotl` add-on) dispatch to a human reviewer queue.' },
   'after-tool-call':         { title:'Guardrail \u00b7 after-tool-call',         what:'Fires after the tool returns. Used for result-schema verification, post-call redaction, anomaly detection in tool outputs.', akka:'`@after-tool-call` annotated guardrail. Inspects the tool result before the agent consumes it.' },
-  /* Guardrail add-ons */
-  'addon sanitizer-pii':           { title:'Add-on \u00b7 sanitizer-pii',           what:'Transforms / redacts PII (names, emails, phones, IDs) in the payload before the agent resumes. The guardrail BLOCKS the original payload and PASSES the sanitized one.', akka:'Sanitizer component invoked from a guardrail hook (typically `before-llm-call` or `before-agent-response`). Configured by `.akka/sanitizers/pii.yaml`; emits a `SanitizerRedactionRecorded` event with the redacted classes (never the redacted content).' },
-  'addon sanitizer-special-category': { title:'Add-on \u00b7 sanitizer-special-category', what:'Redacts GDPR Art. 9 special-category data (health, religion, sexual orientation, biometric, etc.).', akka:'Sanitizer with a special-category detector. Emits `SanitizerRedactionRecorded` events tagged `art-9`.' },
-  'addon sanitizer-secret':        { title:'Add-on \u00b7 sanitizer-secret',        what:'Masks secrets and credentials (API keys, tokens, passwords) detected in the payload.', akka:'Sanitizer with a secret-detector pattern set. Emits redaction events tagged with the secret class but never the value.' },
-  'addon sanitizer-sector':        { title:'Add-on \u00b7 sanitizer-sector',        what:'Sector-specific masking \u2014 PHI (HIPAA), PAN (PCI), financial account fields.', akka:'Sanitizer configured per sector profile (HIPAA / PCI / GLBA). Emits sector-tagged redaction events.' },
-  'addon hotl':                    { title:'Add-on \u00b7 hotl', what:'Dispatches the in-flight call to a reviewer queue and waits on a human verdict (APPROVE / REJECT). Reserved for boundary-blocking human authorization required by regulation \u2014 dangerous tool calls, clinical-alert thresholds, OWASP LLM08 excessive-agency cases.', akka:'HOTL add-on invoked from a guardrail hook (almost always `before-tool-call`). The agent\'s in-flight call suspends; the queue routes to the configured reviewer role with the configured SLA. Verdict recorded as `HumanDecisionRecorded`.' },
+  /* Sanitizer flavors (standalone mechanism \u2014 injection point lives in the corpus) */
+  'sanitizer-pii':             { title:'Sanitizer \u00b7 pii',             what:'Transforms / redacts PII (names, emails, phones, IDs) in the in-flight payload. Blocks the original payload and passes the sanitized one.', akka:'Sanitizer component invoked from a guardrail hook (typically `before-llm-call` or `before-agent-response`). Configured by `.akka/sanitizers/pii.yaml`; emits `SanitizerRedactionRecorded` events with the redacted classes (never the redacted content).' },
+  'sanitizer-special-category':{ title:'Sanitizer \u00b7 special-category', what:'Redacts GDPR Art. 9 special-category data (health, religion, sexual orientation, biometric, etc.).', akka:'Sanitizer with a special-category detector. Emits `SanitizerRedactionRecorded` events tagged `art-9`.' },
+  'sanitizer-secret':          { title:'Sanitizer \u00b7 secret',          what:'Masks secrets and credentials (API keys, tokens, passwords) detected in the payload.', akka:'Sanitizer with a secret-detector pattern set. Emits redaction events tagged with the secret class but never the value.' },
+  'sanitizer-sector':          { title:'Sanitizer \u00b7 sector',          what:'Sector-specific masking \u2014 PHI (HIPAA), PAN (PCI), financial account fields.', akka:'Sanitizer configured per sector profile (HIPAA / PCI / GLBA). Emits sector-tagged redaction events.' },
   /* HITL flavors */
-  'pre-decision-pause':            { title:'HITL workflow \u00b7 pre-decision-pause',   what:'The application workflow pauses BEFORE the decision is finalized. The agent has drafted; the workflow holds until a human signs off, then resumes with the human\'s feedback.', akka:'Akka Workflow `pause()` / `resume()` around a generated reviewer UI. The human\'s feedback payload signals the resume.' },
-  'post-decision-review':          { title:'HITL workflow \u00b7 post-decision-review', what:'The application proceeds with the agent\'s draft; the workflow flags the case for a human to review and override after the fact.', akka:'Akka Workflow records the draft outcome and emits a review task; the human\'s override (if any) is applied via a compensating step.' },
-  /* Periodic eval flavors */
-  'continuous-accuracy':           { title:'Periodic eval \u00b7 continuous-accuracy',  what:'Live runtime monitor of accuracy / robustness over rolling production samples. Alerts on breach.', akka:'Akka Timer + Evaluation against a `DecisionsView`. Schedule e.g. hourly. Recorded as `PeriodicEvaluationRecorded`.' },
-  'drift-fairness-watch':          { title:'Periodic eval \u00b7 drift-fairness-watch', what:'Demographic-parity / accuracy-drift monitor over rolling production samples. EU AI Act Art. 10.2(f) anchor.', akka:'Akka Timer + fairness Evaluation against the protected-class projection. Breach can hot-update the auto-approval policy.' },
-  'performance-monitor':           { title:'Periodic eval \u00b7 performance-monitor',  what:'Live monitor of operational metrics (latency, cost, throughput) over a rolling window.', akka:'Akka Timer + Evaluation against an operational metrics View.' },
-  /* Event eval flavors */
-  'on-incident-reporter':          { title:'Event eval \u00b7 on-incident-reporter',   what:'Serious-incident detection triggers a regulator-routing workflow with a clock (EU AI Act Art. 72 \u2014 72 hours; GDPR Art. 33-34).', akka:'Akka Consumer `@IncidentDetected` \u2192 Workflow that schedules the regulator-notification step with a Timed Action enforcing the deadline.' },
-  'on-decision-eval':              { title:'Event eval \u00b7 on-decision-eval',       what:'Every adverse decision runs an explanation-quality check (GDPR Art. 22; EU AI Act Art. 86).', akka:'Akka Consumer on the decision-event stream; LLM-judge Evaluation scores the explanation against rubric.' },
-  'on-change-revalidation':        { title:'Event eval \u00b7 on-change-revalidation', what:'Model / tool / data change triggers a re-validation pipeline (EU AI Act Art. 43 substantial modification).', akka:'Akka Consumer on the change-event stream; runs an EvalKit regression against the candidate.' },
-  'on-appeal-reexamination':       { title:'Event eval \u00b7 on-appeal-reexamination', what:'Customer challenge triggers a re-examination of the decision (EU AI Act Art. 86; consumer-protection regs).', akka:'Akka Consumer `@ApplicantAppealed` \u2192 replay Evaluation against the case with the latest model.' },
-  /* HOOTL flavors */
-  'trusted-flagger-queue':         { title:'HOOTL \u00b7 trusted-flagger-queue',         what:'DSA Art. 22 trusted-flagger queue. Reviewers inspect live AI moderation outputs and file dispositions that adjust moderation policy in near-real-time.', akka:'Akka Workflow per disposition + runtime policy hot-update endpoint. Dispositions recorded as `HootlDispositionRecorded`.' },
-  'vlop-systemic-risk-review':     { title:'HOOTL \u00b7 vlop-systemic-risk-review',     what:'DSA Art. 34-35 VLOP risk team continuously reviews systemic-risk indicators and pushes immediate mitigations.', akka:'Risk-team dashboard + policy hot-update endpoint with mitigation-pack templates.' },
-  'deployer-runtime-monitoring':   { title:'HOOTL \u00b7 deployer-runtime-monitoring',   what:'EU AI Act Art. 26 deployer-side runtime monitoring with adjustment authority. Deployer observes live outputs and can push immediate threshold or prompt adjustments.', akka:'Deployer Dashboard surface bound to the runtime policy hot-update endpoint. Adjustments take effect without redeploy.' },
-  'post-market-surveillance':      { title:'HOOTL \u00b7 post-market-surveillance',      what:'Medical device IVDR Art. 83 / FDA SaMD \u2014 manufacturer continuously samples real-world performance and pushes immediate threshold or labeling updates.', akka:'Surveillance dashboard + field-update endpoint plus a Consumer over real-world performance evidence.' },
-  'live-compliance-review':        { title:'HOOTL \u00b7 live-compliance-review',        what:'Sector compliance / pre-trade review \u2014 compliance personnel inspect flagged AI-generated trades or recommendations live and push immediate constraints.', akka:'Compliance dashboard + runtime constraint hot-update endpoint.' },
+  'hitl-application':              { title:'HITL \u00b7 application',                  what:'The application workflow pauses for a human\'s domain decision and resumes with their feedback. The agent has drafted; the workflow holds until a human signs off.', akka:'Akka Workflow `pause()` / `resume()` around a generated reviewer UI. The human\'s feedback payload signals the resume. Recorded as `HumanDecisionRecorded`.' },
+  'hitl-guardrail':                { title:'HITL \u00b7 guardrail',                    what:'Boundary-blocking human authorization on a dangerous in-flight call (formerly the "HOTL add-on" pattern). The agent\'s call suspends until a reviewer verdict (APPROVE / REJECT) returns. Reserved for cases regulation requires it \u2014 dangerous tool calls, clinical-alert thresholds, OWASP LLM08 excessive-agency.', akka:'A guardrail hook (almost always `before-tool-call`) that dispatches to a reviewer queue and waits on the verdict. Recorded as `HumanDecisionRecorded`.' },
+  'pre-decision-pause':            { title:'HITL \u00b7 application \u00b7 pre-decision-pause',   what:'The application workflow pauses BEFORE the decision is finalized. The agent has drafted; the workflow holds until a human signs off, then resumes with the human\'s feedback.', akka:'Akka Workflow `pause()` / `resume()` around a generated reviewer UI. The human\'s feedback payload signals the resume.' },
+  'post-decision-review':          { title:'HITL \u00b7 application \u00b7 post-decision-review', what:'The application proceeds with the agent\'s draft; the workflow flags the case for a human to review and override after the fact.', akka:'Akka Workflow records the draft outcome and emits a review task; the human\'s override (if any) is applied via a compensating step.' },
+  /* Eval - periodic flavors */
+  'continuous-accuracy':           { title:'Eval - periodic \u00b7 continuous-accuracy',  what:'Live runtime monitor of accuracy / robustness over rolling production samples. Alerts on breach.', akka:'Akka Timer + Evaluation against a `DecisionsView`. Schedule e.g. hourly. Recorded as `PeriodicEvaluationRecorded`.' },
+  'drift-fairness-watch':          { title:'Eval - periodic \u00b7 drift-fairness-watch', what:'Demographic-parity / accuracy-drift monitor over rolling production samples. EU AI Act Art. 10.2(f) anchor.', akka:'Akka Timer + fairness Evaluation against the protected-class projection. Breach can hot-update the auto-approval policy.' },
+  'performance-monitor':           { title:'Eval - periodic \u00b7 performance-monitor',  what:'Live monitor of operational metrics (latency, cost, throughput) over a rolling window.', akka:'Akka Timer + Evaluation against an operational metrics View.' },
+  /* Eval - event flavors */
+  'on-incident-reporter':          { title:'Eval - event \u00b7 on-incident-reporter',   what:'Serious-incident detection triggers a regulator-routing workflow with a clock (EU AI Act Art. 72 \u2014 72 hours; GDPR Art. 33-34).', akka:'Akka Consumer `@IncidentDetected` \u2192 Workflow that schedules the regulator-notification step with a Timed Action enforcing the deadline.' },
+  'on-decision-eval':              { title:'Eval - event \u00b7 on-decision-eval',       what:'Every adverse decision runs an explanation-quality check (GDPR Art. 22; EU AI Act Art. 86).', akka:'Akka Consumer on the decision-event stream; LLM-judge Evaluation scores the explanation against rubric.' },
+  'on-change-revalidation':        { title:'Eval - event \u00b7 on-change-revalidation', what:'Model / tool / data change triggers a re-validation pipeline (EU AI Act Art. 43 substantial modification).', akka:'Akka Consumer on the change-event stream; runs an EvalKit regression against the candidate.' },
+  'on-appeal-reexamination':       { title:'Eval - event \u00b7 on-appeal-reexamination (RETIRED)', what:'RETIRED \u2014 the sole consumer (EU AI Act Art. 86(1) appeal) was reclassified as a CI Gate \u00b7 test-gate. Appeal arrival is external, not agent-detected.', akka:'See ci-gate \u00b7 test-gate.' },
+  /* HOTL flavors */
+  'trusted-flagger-queue':         { title:'HOTL \u00b7 trusted-flagger-queue',         what:'DSA Art. 22 trusted-flagger queue. Reviewers inspect live AI moderation outputs and file dispositions that adjust moderation policy in near-real-time.', akka:'Akka Workflow per disposition + runtime policy hot-update endpoint. Dispositions recorded as `HotlDispositionRecorded`.' },
+  'vlop-systemic-risk-review':     { title:'HOTL \u00b7 vlop-systemic-risk-review',     what:'DSA Art. 34-35 VLOP risk team continuously reviews systemic-risk indicators and pushes immediate mitigations.', akka:'Risk-team dashboard + policy hot-update endpoint with mitigation-pack templates.' },
+  'deployer-runtime-monitoring':   { title:'HOTL \u00b7 deployer-runtime-monitoring',   what:'EU AI Act Art. 26 deployer-side runtime monitoring with adjustment authority. Deployer observes live outputs and can push immediate threshold or prompt adjustments.', akka:'Deployer Dashboard surface bound to the runtime policy hot-update endpoint. Adjustments take effect without redeploy.' },
+  'post-market-surveillance':      { title:'HOTL \u00b7 post-market-surveillance',      what:'Medical device IVDR Art. 83 / FDA SaMD \u2014 manufacturer continuously samples real-world performance and pushes immediate threshold or labeling updates.', akka:'Surveillance dashboard + field-update endpoint plus a Consumer over real-world performance evidence.' },
+  'live-compliance-review':        { title:'HOTL \u00b7 live-compliance-review',        what:'Sector compliance / pre-trade review \u2014 compliance personnel inspect flagged AI-generated trades or recommendations live and push immediate constraints.', akka:'Compliance dashboard + runtime constraint hot-update endpoint.' },
   /* CI gate flavors */
   'test-gate':                     { title:'CI gate \u00b7 test-gate',                  what:'Automated EvalKit suite that must pass to deploy. EU AI Act Art. 15 evaluation obligations; release governance.', akka:'EvalKit suite run in CI/CD; FAIL blocks the build. Each test maps to one or more matrix rows.' },
   'documentation-gate':            { title:'CI gate \u00b7 documentation-gate',         what:'Required document must exist, be signed, and be current within a freshness window. DPIA (GDPR Art. 35), technical file (EU AI Act Art. 11).', akka:'EvalKit document-presence + freshness check against the project repository. FAIL blocks the build.' },
@@ -2901,48 +2908,49 @@ var IMPL_DETAIL = {
    the live Akka governance services aren't reachable, so visitors can still
    see the shape an Eval Matrix takes for their AI system. */
 var SAMPLE_MATRIX = [
-  /* Guardrails — 6 rows showing the 6 hooks plus the hotl and sanitizer add-ons. */
-  { fam:'G', txt:'Block prompt injection in user input',
+  /* Guardrails — 5 rows showing 5 of the 6 hooks (sanitizer is its own mechanism now). */
+  { fam:'guardrail', txt:'Block prompt injection in user input',
     impl:'before-agent-invocation', src:'OWASP LLM01' },
-  { fam:'G', txt:'Redact PII before the model sees it',
-    impl:'before-llm-call · addon sanitizer-pii', src:'GDPR Art. 5(1)(b)–(c)' },
-  { fam:'G', txt:'Block protected attributes in response',
+  { fam:'guardrail', txt:'Block protected attributes in response',
     impl:'before-agent-response', src:'EU AI Act Art. 10(2)(f)' },
-  { fam:'G', txt:'Refuse postal-code-primary decisions',
+  { fam:'guardrail', txt:'Refuse postal-code-primary decisions',
     impl:'before-tool-call', src:'corporate' },
-  { fam:'G', txt:'Authorize high-impact tool calls',
-    impl:'before-tool-call · addon hotl', src:'EU AI Act Art. 14(4)(c)' },
-  { fam:'G', txt:'Verify tool output schema',
+  { fam:'guardrail', txt:'Verify tool output schema',
     impl:'after-tool-call', src:'OWASP LLM Top 10' },
-  /* HITL */
-  { fam:'W', txt:'Human approval on loans over €5000',
-    impl:'pre-decision-pause', src:'corporate' },
-  /* Evaluation - periodic — live runtime monitors */
-  { fam:'P', txt:'Demographic-parity drift watch, monthly',
+  /* Sanitizer — standalone mechanism */
+  { fam:'sanitizer', txt:'Redact PII before the model sees it',
+    impl:'sanitizer-pii', src:'GDPR Art. 5(1)(b)–(c)' },
+  /* HITL — application + guardrail flavors */
+  { fam:'hitl', txt:'Human approval on loans over €5000',
+    impl:'hitl-application', src:'corporate' },
+  { fam:'hitl', txt:'Authorize high-impact tool calls',
+    impl:'hitl-guardrail', src:'EU AI Act Art. 14(4)(c)' },
+  /* Eval - periodic — live runtime monitors */
+  { fam:'eval-periodic', txt:'Demographic-parity drift watch, monthly',
     impl:'drift-fairness-watch', src:'EU AI Act Art. 10(2)(f)' },
-  { fam:'P', txt:'Refusal-rate and accuracy monitor',
+  { fam:'eval-periodic', txt:'Refusal-rate and accuracy monitor',
     impl:'continuous-accuracy', src:'EU AI Act Art. 15' },
-  /* Evaluation - event — event-triggered */
-  { fam:'E', txt:'Serious incidents reported in 72h',
+  /* Eval - event — event-triggered */
+  { fam:'eval-event', txt:'Serious incidents reported in 72h',
     impl:'on-incident-reporter', src:'EU AI Act Art. 72' },
-  { fam:'E', txt:'Customer challenge triggers re-eval',
-    impl:'on-appeal-reexamination', src:'EU AI Act Art. 86(1)' },
-  /* HOOTL — live governance review with runtime-state feedback */
-  { fam:'HR', txt:'Trusted-flagger review queue',
+  { fam:'ci-gate', txt:'Appeal-handling workflow tested at build time',
+    impl:'test-gate', src:'EU AI Act Art. 86(1)' },
+  /* HOTL — live governance review with runtime-state feedback */
+  { fam:'hotl', txt:'Trusted-flagger review queue',
     impl:'trusted-flagger-queue', src:'DSA Art. 22' },
-  { fam:'HR', txt:'Deployer monitors and adjusts policy live',
+  { fam:'hotl', txt:'Deployer monitors and adjusts policy live',
     impl:'deployer-runtime-monitoring', src:'EU AI Act Art. 26' },
   /* CI gates */
-  { fam:'B', txt:'All evals must pass to deploy',
+  { fam:'ci-gate', txt:'All evals must pass to deploy',
     impl:'test-gate', src:'corporate' },
-  { fam:'B', txt:'DPIA signed and current to deploy',
+  { fam:'ci-gate', txt:'DPIA signed and current to deploy',
     impl:'documentation-gate', src:'EU AI Act Art. 11' },
-  { fam:'B', txt:'DPO re-attests DPIA within 365 days',
+  { fam:'ci-gate', txt:'DPO re-attests DPIA within 365 days',
     impl:'attestation-gate', src:'GDPR Art. 35(11)' },
-  { fam:'B', txt:'Annual retrain & re-validation current',
+  { fam:'ci-gate', txt:'Annual retrain & re-validation current',
     impl:'periodic-recertification-gate', src:'EU AI Act Art. 17(1)' },
   /* Halt */
-  { fam:'K', txt:'Operator stop button',
+  { fam:'halt', txt:'Operator stop button',
     impl:'operator-regulator-stop', src:'EU AI Act Art. 14(4)(e)' }
 ];
 var HINT_LIVE   = 'each row is a control your AI system must have in place \u2014 click a control or source citation for detail';
@@ -2965,7 +2973,7 @@ function sampleMatrixHTML(){
   }).join('');
 }
 /* Turn the impl string into a series of clickable spans. Splits on " · " so
-   "before-tool-call · addon hotl" becomes two link spans, each opening its
+   "sanitizer-pii" / "hitl-guardrail" become link spans that open their
    own IMPL_DETAIL popup. */
 function implLinks(impl){
   if(!impl) return '';
@@ -2977,7 +2985,7 @@ function implLinks(impl){
   }).join('<span class="sep"> · </span>');
 }
 function renderSampleMatrix(){
-  mxCount.textContent = 'sample \u00b7 ' + SAMPLE_MATRIX.length + ' controls across 7 mechanisms';
+  mxCount.textContent = 'sample \u00b7 ' + SAMPLE_MATRIX.length + ' controls across 8 mechanisms';
   setMxHint(HINT_SAMPLE);
   mxRows.innerHTML = sampleMatrixHTML();
 }
@@ -2992,41 +3000,41 @@ function genRows(f){
   var rows = [];
   function add(fam, txt, impl, how){ rows.push({ fam:fam, txt:txt, src:'corporate', impl:impl, how:how }); }
   f.variants.forEach(function(v){
-    add('B', 'Scenario coverage: ' + v.a,
+    add('ci-gate', 'Scenario coverage: ' + v.a,
         'EvalKit scenario suite',
         'This declared variant becomes a scenario case run on every pull request and pre-deploy. Proof: EvalKit run report.');
   });
   f.refusals.forEach(function(v){
-    add('G', 'Refuse: ' + v.a,
+    add('guardrail', 'Refuse: ' + v.a,
         'LLM guardrail @before-agent-response \u00b7 fail-closed',
         'Every candidate response is screened; matching requests return a refusal instead. Proof: GuardrailDecisionRecorded.');
   });
   f.decisions.forEach(function(d){
-    if(d.stake === 'high') add('H', 'Human judgment for high-stakes decision: ' + d.a,
-        'Tool guardrail @before-tool-call \u2192 human-sourced eval (queue)',
+    if(d.stake === 'high') add('hitl', 'Human judgment for high-stakes decision: ' + d.a,
+        'HITL \u00b7 guardrail flavor @before-tool-call \u2192 reviewer queue',
         'Commit blocks until a reviewer observation returns; timeout escalates, fail-closed. Proof: HumanDecisionRecorded.');
   });
   f.precond.forEach(function(v){
-    add('G', 'Require evidence before deciding: ' + v.a,
+    add('guardrail', 'Require evidence before deciding: ' + v.a,
         'Tool guardrail @before-tool-call \u00b7 fail-closed',
         'The decision tool refuses to run unless this declared evidence is present and fresh. Proof: GuardrailDecisionRecorded.');
   });
   f.worst.forEach(function(v){
-    add('G', 'Never: ' + v.a,
+    add('guardrail', 'Never: ' + v.a,
         'Tool/LLM guardrail \u00b7 fail-closed + red-team scenario',
         'A blocking screen for this worst case, plus a red-team scenario in CI proving the screen holds. Proof: GuardrailDecisionRecorded.');
   });
   f.gates.forEach(function(g){
-    add('W', 'Pause \u201c' + (g.b || 'the decision') + '\u201d when ' + g.a,
-        'Workflow pause()/resume() at the declared condition',
+    add('hitl', 'Pause \u201c' + (g.b || 'the decision') + '\u201d when ' + g.a,
+        'HITL \u00b7 application flavor \u2014 Workflow pause()/resume() at the declared condition',
         'Akka generates the pause hook at this exact point; the workflow suspends durably until a human resumes it. Developers define what the reviewer sees and what feedback is collected. Proof: HumanDecisionRecorded.');
   });
   f.watch.forEach(function(v){
-    add('P', 'Watch: ' + v.a,
+    add('eval-periodic', 'Watch: ' + v.a,
         'Akka Timer + View',
         'This declared pattern is computed on schedule; breach alerts the owning queue. Proof: PeriodicEvaluationRecorded.');
   });
-  if(f.secondline) add('H', 'Escalation second line: ' + f.secondline,
+  if(f.secondline) add('hitl', 'Escalation second line: ' + f.secondline,
       'Escalation policy on the review queue',
       'Reviewer timeouts route to this second line before any fail-closed outcome. Proof: HumanDecisionRecorded.');
   return rows;
@@ -3051,22 +3059,30 @@ function mxSetOpen(open){
 document.getElementById('mxBar').addEventListener('click', function(){ mxSetOpen(!mx.classList.contains('open')); });
 mxToggle.addEventListener('click', function(e){ e.stopPropagation(); mxSetOpen(!mx.classList.contains('open')); });
 
-var FAM_ORDER = ['G','W','P','E','HR','B','K','H'];   // H last (retired legacy)
+var FAM_ORDER = ['guardrail','hitl','sanitizer','hotl','eval-periodic','eval-event','ci-gate','halt'];
 function esc(s){ var d = document.createElement('span'); d.textContent = s; return d.innerHTML; }
 
 /* mechanism definitions for the control popup */
 var MECHDEF = {
-  G:'An inline, fully automated check at a tool or LLM boundary. Returns PASS / BLOCK / ERROR before the action proceeds; fail-closed unless declared otherwise.',
-  H:'A boundary guardrail that needs human judgment. It escalates to a human-sourced evaluation (a reviewer queue) and blocks until the observation returns; timeouts escalate, fail-closed.',
-  W:'The orchestrating Akka Workflow calls pause()/resume() around a human task. The control logic lives in the workflow, outside the agent — the flow is durably suspended until a human resumes it.',
-  P:'A scheduled evaluation over aggregate state (Akka Timer + View). Emits an observation and alerts on breach; it does not block individual transactions.',
-  E:'An evaluation triggered by a runtime or domain event (Akka Consumer). Non-blocking; routes findings to review queues.',
-  B:'An EvalKit run at build or deploy time. Fails the build or blocks promotion; never runs in production. Also carries document-presence checks for attestation obligations.',
-  K:'A registered, exercisable system-level intervention. Sits above per-call boundaries: when oversight personnel exercise the halt, all in-flight and future tool/LLM calls cease and the system transitions to a defined safe state. Not a guardrail (per-call) and not a HITL workflow (per-step) — it is system-wide.'
+  'guardrail':'An inline, fully automated check at a tool or LLM boundary. Returns PASS / BLOCK / ERROR before the action proceeds; fail-closed unless declared otherwise.',
+  'hitl':'A human is in the flow. Either the application Workflow pauses for a domain decision (`hitl-application`) or a guardrail dispatches a dangerous in-flight call to a reviewer queue (`hitl-guardrail`). Both block until the human verdict returns.',
+  'hotl':'Live-runtime governance review by a person in a risk / legal / compliance role. The reviewer observes AI outputs and pushes runtime-state feedback (policy edits, threshold tweaks) without redeploying. The agent does not wait.',
+  'sanitizer':'A transforming, blocking check that redacts or masks a declared data class (PII, GDPR Art. 9 special-category, secrets, or sector-specific PHI / PAN / financial) in an in-flight payload. The original payload is blocked; the sanitized payload passes.',
+  'eval-periodic':'A scheduled evaluation over aggregate state (Akka Timer + View). Emits an observation and alerts on breach; it does not block individual transactions.',
+  'eval-event':'An evaluation triggered by a runtime or domain event (Akka Consumer). Non-blocking; routes findings to review queues.',
+  'ci-gate':'An EvalKit run at build or deploy time. Fails the build or blocks promotion; never runs in production. Also carries document-presence checks for attestation obligations.',
+  'halt':'A registered, exercisable system-level intervention. Sits above per-call boundaries: when oversight personnel exercise the halt, all in-flight and future tool/LLM calls cease and the system transitions to a defined safe state. Not a guardrail (per-call) and not a HITL workflow (per-step) — it is system-wide.'
 };
-var PROOF = { G:'GuardrailDecisionRecorded', H:'HumanDecisionRecorded', W:'HumanDecisionRecorded',
-  P:'PeriodicEvaluationRecorded', E:'OnlineEvaluationRecorded', B:'EvalKit run report (versioned, hash-chained)',
-  K:'HaltExercised (audit trail of exerciser, scope, reason, timestamp)' };
+var PROOF = {
+  'guardrail':'GuardrailDecisionRecorded',
+  'hitl':'HumanDecisionRecorded',
+  'hotl':'HotlDispositionRecorded',
+  'sanitizer':'SanitizerRedactionRecorded',
+  'eval-periodic':'PeriodicEvaluationRecorded',
+  'eval-event':'OnlineEvaluationRecorded',
+  'ci-gate':'EvalKit run report (versioned, hash-chained)',
+  'halt':'HaltExercised (audit trail of exerciser, scope, reason, timestamp)'
+};
 
 /* citation knowledge base — quote is the operative regulation text (abridged), why is what it demands */
 /* How each regulation in REG maps to the canonical Eval Matrix (mechanism +
@@ -3076,35 +3092,35 @@ var PROOF = { G:'GuardrailDecisionRecorded', H:'HumanDecisionRecorded', W:'Human
    derivation engine fills the rest. */
 var REG_MAPPING = {
   'corporate':
-    'Customer-defined controls map to whichever mechanism the customer chooses. Common patterns: refusal rules → Guardrail at `before-tool-call`; approval thresholds → HITL workflow `pre-decision-pause`; release-quality gates → CI gate `test-gate`.',
+    'Customer-defined controls map to whichever mechanism the customer chooses. Common patterns: refusal rules → Guardrail at `before-tool-call`; approval thresholds → HITL `application` flavor; release-quality gates → CI gate `test-gate`.',
   'OWASP LLM01':
     'Prompt-injection defense lives inline at the input boundary. Maps to **Guardrail · `before-agent-invocation`** — a blocking check that screens the user input before the agent processes it.',
   'OWASP LLM Top 10':
     'The OWASP catalog covers several boundary-level threats. For tool-output validation specifically, maps to **Guardrail · `after-tool-call`** — a blocking inspection of the tool result before the agent acts on it.',
   'EU AI Act Art. 15':
-    'Accuracy and robustness are measured continuously over live production traffic. Maps to **Evaluation - periodic · `continuous-accuracy`** — a scheduled monitor over a rolling production sample that emits observations and alerts on breach.',
+    'Accuracy and robustness are measured continuously over live production traffic. Maps to **Eval - periodic · `continuous-accuracy`** — a scheduled monitor over a rolling production sample that emits observations and alerts on breach.',
   'EU AI Act Art. 11':
     'The technical file must exist, be signed by the provider, and stay current. Maps to **CI gate · `documentation-gate`** — a build-time check that blocks deploy if the technical file is missing, expired, or doesn\'t cover the deployed version.',
   'EU AI Act Art. 14(4)(c)':
-    'Boundary-blocking human authorization on a dangerous tool call. Maps to **Guardrail · `before-tool-call` · addon `hotl`** — the guardrail dispatches the in-flight call to a reviewer queue and waits on the verdict before the agent resumes.',
+    'Boundary-blocking human authorization on a dangerous tool call. Maps to **HITL · `guardrail`** — a guardrail dispatches the in-flight call to a reviewer queue and waits on the verdict before the agent resumes.',
   'EU AI Act Art. 14(4)(e)':
     'Operator must be able to halt the system in a safe state. Maps to **Halt · `operator-regulator-stop`** — a registered, authenticated halt endpoint that brings the system to a safe stop and preserves evidence.',
   'EU AI Act Art. 10(2)(f)':
-    'Bias examination has two enforcement points (1:1 invariant splits them into two Controls): inline per-response check maps to **Guardrail · `before-agent-response`**; trailing-window aggregate parity maps to **Evaluation - periodic · `drift-fairness-watch`**.',
+    'Bias examination has two enforcement points (1:1 invariant splits them into two Controls): inline per-response check maps to **Guardrail · `before-agent-response`**; trailing-window aggregate parity maps to **Eval - periodic · `drift-fairness-watch`**.',
   'EU AI Act Art. 72':
-    'Serious-incident reporting carries a regulator clock. Maps to **Evaluation - event · `on-incident-reporter`** — an event-triggered evaluation that opens a regulator-routing workflow with a 72-hour timer.',
+    'Serious-incident reporting carries a regulator clock. Maps to **Eval - event · `on-incident-reporter`** — an event-triggered evaluation that opens a regulator-routing workflow with a 72-hour timer.',
   'EU AI Act Art. 86(1)':
-    'Affected persons have a right to a re-examined decision with a meaningful explanation. Maps to **Evaluation - event · `on-appeal-reexamination`** — an event-triggered re-eval of the case with the latest model and explanation.',
+    'Affected persons have a right to a re-examined decision with a meaningful explanation. Maps to **CI gate · `test-gate`** — a build-time contract test that verifies the appeal-handling workflow executes correctly against archived decisions. (Appeal arrival is external to the agent, so the obligation is enforced as a tested workflow, not a runtime eval-event.)',
   'EU AI Act Art. 26':
-    'Deployer must monitor live system operation and may push runtime adjustments. Maps to **HOOTL · `deployer-runtime-monitoring`** — a governance-role human observes live outputs and pushes runtime-state feedback (policy edits, threshold tweaks) without redeploying.',
+    'Deployer must monitor live system operation and may push runtime adjustments. Maps to **HOTL · `deployer-runtime-monitoring`** — a governance-role human observes live outputs and pushes runtime-state feedback (policy edits, threshold tweaks) without redeploying.',
   'EU AI Act Art. 17(1)':
     'The provider\'s QMS includes a periodic re-validation cadence. Maps to **CI gate · `periodic-recertification-gate`** — a build-time check that blocks deploy if the documented retrain & re-validation is older than the policy window.',
   'GDPR Art. 5(1)(b)–(c)':
-    'Data minimisation requires that personal data not flow further than necessary. Maps to **Guardrail · `before-llm-call` · addon `sanitizer-pii`** — the sanitizer redacts PII in the payload before the model receives the prompt.',
+    'Data minimisation requires that personal data not flow further than necessary. Maps to **Sanitizer · `pii`** — a transforming sanitizer redacts PII in the payload before the model receives the prompt.',
   'GDPR Art. 35(11)':
     'The DPIA must be reviewed when risk changes and signed by the DPO within a freshness window. Maps to **CI gate · `attestation-gate`** — a build-time check that blocks deploy if the DPO\'s sign-off on the current DPIA has expired.',
   'DSA Art. 22':
-    'Trusted-flagger notices must be processed with priority and without undue delay. Maps to **HOOTL · `trusted-flagger-queue`** — designated reviewers dispose of flagged outputs and their dispositions hot-update the moderation policy without redeploying.'
+    'Trusted-flagger notices must be processed with priority and without undue delay. Maps to **HOTL · `trusted-flagger-queue`** — designated reviewers dispose of flagged outputs and their dispositions hot-update the moderation policy without redeploying.'
 };
 
 var REG = {
@@ -3125,7 +3141,7 @@ var REG = {
   'EU AI Act Art. 14(4)(b)': { n:'EU AI Act — Article 14(4)(b): Automation bias', q:'…to remain aware of the possible tendency of automatically relying or over-relying on the output produced by a high-risk AI system (automation bias).',
     w:'Oversight that rubber-stamps is not oversight — requires monitoring reviewer behavior (review durations, no-edit streaks, approval anomalies).' },
   'EU AI Act Art. 14(4)(c)': { n:'EU AI Act — Article 14(4)(c): Correctly interpret and use the output', q:'…to correctly interpret the high-risk AI system\'s output, taking into account, for example, the interpretation tools and methods available.',
-    w:'For dangerous or irreversible actions (a tool call that transfers funds, dispenses medication, files legal action) the overseer must be able to interpret AND authorize before the action commits — implemented as a boundary-blocking HOTL add-on at the `@before-tool-call` hook.' },
+    w:'For dangerous or irreversible actions (a tool call that transfers funds, dispenses medication, files legal action) the overseer must be able to interpret AND authorize before the action commits — implemented as a boundary-blocking HITL · `guardrail` flavor at the `@before-tool-call` hook.' },
   'EU AI Act Art. 14(4)(d)': { n:'EU AI Act — Article 14(4)(d): Power to disregard or reverse', q:'…to decide, in any particular situation, not to use the high-risk AI system or to otherwise disregard, override or reverse the output of the high-risk AI system.',
     w:'A human must own the consequential outcome — implemented as a workflow pause where the reviewer can approve, deny, or edit before anything commits.' },
   'EU AI Act Art. 14(4)(e)': { n:'EU AI Act — Article 14(4)(e): Power to intervene or halt', q:'…to intervene in the operation of the high-risk AI system or interrupt the system through a “stop” button or a similar procedure that allows the system to come to a halt in a safe state.',
@@ -3171,7 +3187,7 @@ var REG = {
   'GDPR Art. 35(11)': { n:'GDPR — Article 35(11): DPIA review', q:'Where necessary, the controller shall carry out a review to assess if processing is performed in accordance with the data protection impact assessment at least when there is a change of the risk represented by processing operations.',
     w:'The DPIA is a living document that must be reviewed and re-signed when risk profile changes — implemented as a CI attestation-gate that blocks deploy if the DPO sign-off on the DPIA has expired.' },
   'DSA Art. 22': { n:'EU Digital Services Act — Article 22: Trusted flaggers', q:'Providers of online platforms shall take the necessary technical and organisational measures to ensure that notices submitted by trusted flaggers… are given priority and are processed and decided upon without undue delay.',
-    w:'Designated reviewers must be able to inspect AI moderation outputs and push corrective dispositions in near-real-time — implemented as a HOOTL reviewer queue whose dispositions hot-update the moderation policy without redeploy.' },
+    w:'Designated reviewers must be able to inspect AI moderation outputs and push corrective dispositions in near-real-time — implemented as a HOTL reviewer queue whose dispositions hot-update the moderation policy without redeploy.' },
   'GDPR Art. 32': { n:'GDPR — Article 32: Security of processing', q:'…the controller and the processor shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk.',
     w:'Security must match risk — data-exfiltration screens are a technical measure against unauthorized disclosure.' },
   'GDPR Ch. V (Art. 44)': { n:'GDPR — Chapter V, Article 44: Transfers', q:'Any transfer of personal data… to a third country… shall take place only if the conditions laid down in this Chapter are complied with.',
@@ -3380,7 +3396,7 @@ document.getElementById('legalLink').addEventListener('click', function(e){
 /* "Map my AI system" CTA — opens a sales-contact modal in the same shell. */
 var SALES_MODAL_HTML = '<div class="legal-notice">' +
   '<h2>Map your AI system</h2>' +
-  '<p>See your AI system mapped to the regulations that apply, the controls you owe, and the safeguards Akka can generate &mdash; live, in 30 minutes with our team.</p>' +
+  '<p>See your AI system mapped to the regulations that apply, the controls that result, and the safeguards Akka can generate &mdash; live, in 30 minutes with our team.</p>' +
   '<p style="margin-top:18px"><b style="color:var(--yellow)">Email:</b> ' +
   '<a href="mailto:sales@akka.io" style="color:var(--yellow)">sales@akka.io</a></p>' +
   '<p class="fine">Or reach out through your existing Akka contact &mdash; we will route to the right team.</p>' +
@@ -3601,9 +3617,9 @@ function openControl(i){
     '<dt>Source</dt><dd>' + srcLinks(r.src) + '</dd>' +
     '</dl>' +
     '<div class="pop-note">Akka generates this control into the system and enforces it ' +
-    (r.fam === 'B' ? 'at build and deploy time — it never runs in production.' :
-     r.fam === 'P' || r.fam === 'E' ? 'in the production runtime as a non-blocking monitor.' :
-     r.fam === 'K' ? 'as a registered system-level intervention — exercising it halts all in-flight and future calls and transitions the system to its declared safe state.' :
+    (r.fam === 'ci-gate' ? 'at build and deploy time — it never runs in production.' :
+     r.fam === 'eval-periodic' || r.fam === 'eval-event' || r.fam === 'hotl' ? 'in the production runtime as a non-blocking monitor.' :
+     r.fam === 'halt' ? 'as a registered system-level intervention — exercising it halts all in-flight and future calls and transitions the system to its declared safe state.' :
      'in the production runtime, blocking the action until the check passes.') + '</div>';
   popOpen(html);
 }
@@ -3674,11 +3690,12 @@ function renderAll(f){
   } else {
     var mechCounts = {};
     derived.controls.forEach(function(c){ mechCounts[c.mechanism] = (mechCounts[c.mechanism] || 0) + 1; });
-    var order = ['guardrail','guardrail-hotl','hitl-workflow','halt-capability','periodic-eval','event-eval','ci-gate'];
+    var order = ['guardrail','hitl','sanitizer','hotl','halt','eval-periodic','eval-event','ci-gate'];
     var mechHtml = '<div class="grp">By mechanism</div>' +
       order.map(function(m){
-        var n = mechCounts[m] || 0, fam = FAMOF[m], cls = 'mb ' + fam + (n === 0 ? ' zero' : '');
-        return '<div class="' + cls + '"><span class="mn"><span class="l">' + fam + '</span>' + esc(MECH[fam][0]) +
+        var n = mechCounts[m] || 0, fam = FAMOF[m] || m, cls = 'mb ' + fam + (n === 0 ? ' zero' : '');
+        var label = (MECH[fam] && MECH[fam][0]) || m;
+        return '<div class="' + cls + '"><span class="mn"><span class="l">' + esc(fam) + '</span>' + esc(label) +
           '</span><span class="n">' + n + '</span></div>';
       }).join('');
     var sortedF = fws.slice().sort(function(a, b){ return b.controlCount - a.controlCount; });

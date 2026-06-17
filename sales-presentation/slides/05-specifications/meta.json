@@ -1,0 +1,27 @@
+{
+  "id": "05-specifications",
+  "nav_id": "spec-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "320vh"
+  },
+  "reveals": {
+    "scroll_progress": {
+      "attribute": "data-spec",
+      "max_steps": 4
+    },
+    "intersection": [
+      {
+        "selector": "[data-spec]",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}
