@@ -345,7 +345,7 @@
   padding-top: 4px;
   position: relative;
   opacity: 0;
-  transition: opacity .55s ease;
+  transition: opacity .55s ease 1.9s;
 }
 .spec-loop.visible { opacity: 1; }
 .spec-loop-svg {
@@ -358,11 +358,11 @@
   stroke-dashoffset: 100;
 }
 .spec-loop.visible .spec-loop-path {
-  animation: spec-loop-trace .9s ease-out 0.1s forwards;
+  animation: spec-loop-trace .9s ease-out 2.0s forwards;
 }
 .spec-loop-arrowhead { opacity: 0; }
 .spec-loop.visible .spec-loop-arrowhead {
-  animation: spec-fade .15s ease-out 0.95s forwards;
+  animation: spec-fade .15s ease-out 2.85s forwards;
 }
 @keyframes spec-loop-trace {
   to { stroke-dashoffset: 0; }

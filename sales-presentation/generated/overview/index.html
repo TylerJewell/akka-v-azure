@@ -694,9 +694,15 @@ body {
 .s4-headline {
   font-size: clamp(30px, 4vw, 58px); font-weight:700;
   line-height:1.08; letter-spacing:-0.03em; color:var(--white);
-  max-width: 1400px; margin-bottom: 40px;
+  max-width: 1400px; margin-bottom: 14px;
 }
 .s4-headline .accent { color:var(--yellow); }
+
+.s4-sub {
+  font-size: clamp(17px, 1.5vw, 22px);
+  color: #b8b8b8; line-height: 1.45;
+  max-width: 1400px; margin-bottom: 40px;
+}
 
 /* Single-column: eyebrow + headline left-aligned, image centered below */
 .s4-layout {
@@ -1099,7 +1105,7 @@ body {
   padding-top: 4px;
   position: relative;
   opacity: 0;
-  transition: opacity .55s ease;
+  transition: opacity .55s ease 1.9s;
 }
 .spec-loop.visible { opacity: 1; }
 .spec-loop-svg {
@@ -1112,11 +1118,11 @@ body {
   stroke-dashoffset: 100;
 }
 .spec-loop.visible .spec-loop-path {
-  animation: spec-loop-trace .9s ease-out 0.1s forwards;
+  animation: spec-loop-trace .9s ease-out 2.0s forwards;
 }
 .spec-loop-arrowhead { opacity: 0; }
 .spec-loop.visible .spec-loop-arrowhead {
-  animation: spec-fade .15s ease-out 0.95s forwards;
+  animation: spec-fade .15s ease-out 2.85s forwards;
 }
 @keyframes spec-loop-trace {
   to { stroke-dashoffset: 0; }
@@ -3294,7 +3300,7 @@ body {
   <div id="s2-sticky">
     <div class="s2-eyebrow" data-s2="0">The challenge with agentic AI</div>
     <div class="s2-headline" data-s2="0"><span class="accent">Agentic&nbsp;AI</span> amplifies production complexity.</div>
-    <div class="s2-sub" data-s2="0">To ship a single production agent, teams must deliver dozens of components &mdash; and stitching them together evenly is on you.</div>
+    <div class="s2-sub" data-s2="0">To ship an agentic agent, teams must deliver dozens of components &mdash; and stitching them together evenly is on you.</div>
 
     <div class="s2-grid" data-s2="1">
       <div class="s2-pillar">
@@ -3452,7 +3458,8 @@ body {
 <section id="s4">
   <div class="s4-layout s4-reveal">
     <div class="s4-eyebrow">Our platform</div>
-    <div class="s4-headline">Akka is an <span class="accent">Agentic AI Platform</span> &mdash;<br>pre-integrated to maximize org change velocity.</div>
+    <div class="s4-headline">Akka is an <span class="accent">Agentic AI Platform</span>.</div>
+    <div class="s4-sub">Pre-integrated to lower costs and maximize velocity.</div>
     <div class="s4-image">
       <img src="images/akka-platform.png" alt="Akka Agentic AI Platform">
     </div>
@@ -3501,7 +3508,7 @@ body {
       <div class="spec-track spec-track--govern">
         <div class="spec-track-label">
           <span class="spec-track-name">Govern</span>
-          <span class="spec-track-personas">Risk &middot; Security &middot; Compliance</span>
+          <span class="spec-track-personas">Risk &middot; Security<br>Compliance</span>
         </div>
         <svg class="spec-track-arrow" viewBox="0 0 100 16" preserveAspectRatio="none" aria-hidden="true">
           <line x1="0" y1="8" x2="92" y2="8" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke" />
@@ -3564,7 +3571,7 @@ body {
     <div class="pp-head">
       <div class="pp-eyebrow">Platform Use Cases</div>
       <div class="pp-headline"><span class="accent">One platform.</span> Every AI use case.</div>
-      <div class="pp-subhead">AI apps, dynamic automation, multi-project AI &mdash; repeatable, scalable, reusable.</div>
+      <div class="pp-subhead">Citizen devs, scaling AI, multi-team AI &mdash; repeatable, scalable, reusable.</div>
     </div>
 
     <div class="pp-rows">
@@ -3576,7 +3583,7 @@ body {
           <div class="pp-stat-rule"></div>
         </div>
         <div class="pp-row-body">
-          <div class="pp-row-tag">AI Apps</div>
+          <div class="pp-row-tag">Citizen Devs</div>
           <div class="pp-row-customer">
             <div class="pp-customer-photo" style="background-image:url('images/customers/dojo.png')"></div>
             <div class="pp-customer-mark">Dojo</div>
@@ -3592,7 +3599,7 @@ body {
           <div class="pp-stat-rule"></div>
         </div>
         <div class="pp-row-body">
-          <div class="pp-row-tag">Dynamic Automation</div>
+          <div class="pp-row-tag">Scaling AI</div>
           <div class="pp-row-customer">
             <div class="pp-customer-photo" style="background-image:url('images/customers/tubi.jpg')"></div>
             <div class="pp-customer-mark">Fox</div>
@@ -3608,7 +3615,7 @@ body {
           <div class="pp-stat-rule"></div>
         </div>
         <div class="pp-row-body">
-          <div class="pp-row-tag">Multi-Project AI</div>
+          <div class="pp-row-tag">Multi-Team AI</div>
           <div class="pp-row-customer">
             <div class="pp-customer-photo" style="background-image:url('images/customers/manulife.jpg')"></div>
             <div class="pp-customer-mark">Manulife</div>
@@ -3640,7 +3647,7 @@ body {
       <div class="s6b-row">
         <div class="s6b-theme">Integrated<br>Runtime</div>
         <div class="s6b-right">
-          <div class="s6b-us-body"><span class="s6b-num">One platform. One runtime. One deploy.</span> Pre-integrated, not assembled. Akka owns the reliability SLA &mdash; <span class="s6b-num">99.9999%</span> availability, <span class="s6b-num">&lt;1 min RTO</span>, <span class="s6b-num">24/7</span> SRE, active-active replication.</div>
+          <div class="s6b-us-body"><span class="s6b-num">One pre-integrated platform. One runtime. One deploy.</span> Akka owns the reliability SLA &mdash; <span class="s6b-num">99.9999%</span> availability, <span class="s6b-num">&lt;1 min RTO</span>, <span class="s6b-num">24/7</span> SRE with active-active replication.</div>
           <div class="s6b-them-card">
             <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
@@ -3655,7 +3662,7 @@ body {
       <div class="s6b-row">
         <div class="s6b-theme">Predictable<br>Pricing</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">One platform, one invoice. Shared compute, no surprise tokens. <span class="s6b-num">70&ndash;90%</span> lower infra TCO than the framework + hyperscaler patchwork &mdash; finance can forecast it.</div>
+          <div class="s6b-us-body">Fixed annual fees with a single invoice. Shared compute, no surprise tokens. <span class="s6b-num">70&ndash;90%</span> lower infra TCO than the framework + hyperscaler patchwork.</div>
           <div class="s6b-them-card">
             <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
@@ -5632,7 +5639,7 @@ body {
     <label class="s10d-stage govern" for="s10d-govern">
       <div class="s10d-stage-num">02</div>
       <div class="s10d-stage-title">Govern</div>
-      <div class="s10d-stage-copy">Define autonomy thresholds, guardrails, approvals, retention, and audit obligations.</div>
+      <div class="s10d-stage-copy">Author the Eval Matrix &mdash; autonomy thresholds, guardrails, approvals, and the evidence model that's continuously enforced.</div>
     </label>
     <div class="s10d-arrow"></div>
     <label class="s10d-stage specify" for="s10d-specify">
@@ -5650,7 +5657,7 @@ body {
     <label class="s10d-stage improve" for="s10d-improve">
       <div class="s10d-stage-num">05</div>
       <div class="s10d-stage-title">Improve</div>
-      <div class="s10d-stage-copy">Use feedback loops, behavior metrics, and token analysis to improve outcomes and cost.</div>
+      <div class="s10d-stage-copy">Use Akka Verify to validate the running system against its specs and fine-tune from production data.</div>
     </label>
   </div>
 
@@ -5666,7 +5673,7 @@ body {
         <div class="s10d-output"><div class="s10d-output-label">Plan</div><div class="s10d-output-main">Milestones, owners, acceptance criteria</div></div>
       </div>
       <div class="s10d-output-set govern">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Control matrix, autonomy policy, risk model</div></div>
+        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Eval Matrix, autonomy policy, risk model</div></div>
         <div class="s10d-output"><div class="s10d-output-label">Approvals</div><div class="s10d-output-main">Decision rights, sign-off recipe, HITL gates</div></div>
         <div class="s10d-output"><div class="s10d-output-label">Evidence</div><div class="s10d-output-main">Retention plan, audit plan, policy record</div></div>
       </div>
