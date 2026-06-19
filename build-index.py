@@ -94,7 +94,6 @@ ordered_briefs = sorted(BATTLECARDS, key=lambda b: last_commit_epoch(b["link"]),
 briefs = "\n".join(render_brief(b) for b in ordered_briefs)
 briefs_section = ('''
   <h1 style="margin-top: 40px;">Competitive briefs</h1>
-  <p class="intro">Akka vs. the field — fact-based comparisons.</p>
   <ul>
 %s
   </ul>''' % briefs) if BATTLECARDS else ""
@@ -123,7 +122,6 @@ PAGE = """<!DOCTYPE html>
 </head>
 <body>
   <h1>Presentations</h1>
-  <p class="intro">Akka decks, rendered for sharing.</p>
   <ul>
 %s
   </ul>%s
