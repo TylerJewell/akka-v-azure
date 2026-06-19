@@ -1,0 +1,23 @@
+{
+  "id": "02b-taxonomy",
+  "nav_id": "stax-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "250vh"
+  },
+  "reveals": {
+    "intersection": [
+      {
+        "selector": "[data-stax]",
+        "threshold": 0.12
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

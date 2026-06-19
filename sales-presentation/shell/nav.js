@@ -2,6 +2,7 @@ const views = [
     document.getElementById('title'),
     document.getElementById('hero-wrapper'),
     document.getElementById('st-wrapper'),
+    document.getElementById('stax-wrapper'),
     document.getElementById('s2-wrapper'),
     document.getElementById('s4-wrapper'),
     document.getElementById('spec-wrapper'),

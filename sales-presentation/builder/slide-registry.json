@@ -3,6 +3,7 @@
     { "id": "00-title",                "folder": "slides/00-title" },
     { "id": "01-hero",                 "folder": "slides/01-hero" },
     { "id": "02-types",                "folder": "slides/02-types" },
+    { "id": "02b-taxonomy",            "folder": "slides/02b-taxonomy" },
     { "id": "03-complexity",           "folder": "slides/03-complexity" },
     { "id": "04-platform",             "folder": "slides/04-platform" },
     { "id": "05-specifications",       "folder": "slides/05-specifications" },
