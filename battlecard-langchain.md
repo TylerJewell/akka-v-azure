@@ -131,7 +131,7 @@ These are observability and evaluation capabilities: LangSmith records, evaluate
 
 ### How Akka governs
 
-Akka indexes 186 AI regulations and 877 controls, 98 of which carry financial penalties, and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging.
+Akka indexes 186 AI regulations and 877 controls, 288 of which carry financial penalties, and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging.
 
 | EU AI Act requirement | LangSmith (LangChain) | Akka |
 |-------------|-----------|------|
@@ -246,6 +246,6 @@ Time to a prototype and time to production are different measures. Production re
 - LangSmith Shared Responsibility Model — docs.langchain.com/langsmith/shared-responsibility-model (customer owns application-level HA/DR)
 - LangChain on the EU AI Act — langchain.com/blog/langsmith-langchain-oss-eu-ai-act (tracing/logging, evaluators, LangGraph interrupt for human oversight, EU/BYOC/self-hosted residency)
 - LangSmith trace data masking — docs.langchain.com/langsmith/mask-inputs-outputs (client-side PII masking of trace data)
-- Akka platform — 99.9999% availability with active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 186 regulations / 877 controls / 98 with financial penalties; 100,000+ deployments over 18 years
+- Akka platform — 99.9999% availability with active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 186 regulations / 877 controls / 288 with financial penalties; 100,000+ deployments over 18 years
 
 *LangChain claims are drawn from LangChain's own documentation, pricing pages, and public issues. Akka claims reflect Akka's published platform capabilities.*

@@ -202,7 +202,7 @@ Akka's policy enforcement engine is **aspect-woven into the runtime** — guardr
 - **Human intervention**: Humans can pause, discontinue, override, review, or nudge an ongoing agentic process
 - **Immutable interaction logging**: The runtime witnesses and records every interaction
 - **PII scrubbing with explainability**: The runtime makes the decision, scrubs PII, and produces the explanation atomically
-- **Pre-deployment classification**: Classify AI systems against 186 AI regulations and 704 controls (98 carrying financial penalties) to derive the exact obligation set before a single line of production code ships
+- **Pre-deployment classification**: Classify AI systems against 186 AI regulations and 877 controls (288 carrying financial penalties) to derive the exact obligation set before a single line of production code ships
 - **Two specifications, one certified system**: A Dev Spec (function) and an Eval Matrix (safeguards) merge into one certified service — agents, tools, memory, and APIs alongside guardrails, sanitizers, HITL/HOTL gates, and hash-chained evidence logging
 - **Akka Verify**: Proves conformance continuously from the running system — not a post-hoc dashboard, but evidence drawn from what actually executed
 - **Multi-persona sign-off workflows**: Declarative recipe engine routes change events to the right reviewers with dossiers, carry-forward rules, and quorum logic — not email chains and spreadsheets
