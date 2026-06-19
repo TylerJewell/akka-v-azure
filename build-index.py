@@ -33,6 +33,14 @@ BATTLECARDS = [
     {"link": "battlecard-aws-bedrock.html",               "label": "Akka vs. AWS Bedrock"},
     {"link": "battlecard-google-gemini-enterprise.html",  "label": "Akka vs. Google Gemini Enterprise Agent Platform"},
     {"link": "battlecard-nvidia.html",                    "label": "Akka vs. NVIDIA"},
+    {"link": "battlecard-databricks.html",                "label": "Akka vs. Databricks"},
+    {"link": "battlecard-salesforce-agentforce.html",     "label": "Akka vs. Salesforce Agentforce"},
+    {"link": "battlecard-crewai.html",                    "label": "Akka vs. CrewAI"},
+    {"link": "battlecard-llamaindex.html",                "label": "Akka vs. LlamaIndex"},
+    {"link": "battlecard-n8n.html",                       "label": "Akka vs. n8n"},
+    {"link": "battlecard-vercel-ai-sdk.html",             "label": "Akka vs. Vercel AI SDK"},
+    {"link": "battlecard-pydantic-ai.html",               "label": "Akka vs. PydanticAI"},
+    {"link": "battlecard-orkes.html",                     "label": "Akka vs. Orkes (Conductor)"},
 ]
 
 
