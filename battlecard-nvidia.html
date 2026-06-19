@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka vs. NVIDIA: A Comparison for Teams Building Production Agentic AI</title>
+<meta name="description" content="Akka vs. NVIDIA for agentic AI — NIM, NeMo, the NeMo Agent toolkit, AI Enterprise, and Blueprints are an inference + microservice-toolkit layer tied to NVIDIA GPUs and CUDA; Akka is the governed agentic application platform that runs above it. Compare scope, availability/SLA, durable state, governance, and cost.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://akka.io/compare/akka-vs-nvidia">
+<script type="application/ld+json">
+{ "@context":"https://schema.org","@graph":[
+  {"@type":"TechArticle","headline":"Akka vs. NVIDIA: A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-06-19","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","NVIDIA NIM","NVIDIA NeMo","NeMo Agent toolkit","NVIDIA AI Enterprise","agentic AI","model serving","AI governance"]},
+  {"@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"We already run NVIDIA NIM and AI Enterprise. Why add Akka?","acceptedAnswer":{"@type":"Answer","text":"NIM and AI Enterprise are an excellent serving layer, and Akka runs above them. NIM serves the model; Akka runs the agentic application that uses it — native agents, durable memory, streaming, APIs, an operated 99.9999% availability SLA, and runtime governance. Akka calls your NIM endpoints rather than replacing them."}},
+    {"@type":"Question","name":"Isn't the NeMo Agent toolkit NVIDIA's agent platform?","acceptedAnswer":{"@type":"Answer","text":"The NeMo Agent toolkit is an open-source library, first released in March 2025 (renamed from the Agent Intelligence toolkit / AIQ), for connecting and profiling teams of agents across frameworks like LangChain, LlamaIndex, and CrewAI. It is code-level instrumentation you host and operate, not a hosted runtime with an availability SLA, durable state, HA/DR, or governance enforcement. Akka is the governed runtime; the toolkit can sit inside an application Akka runs."}},
+    {"@type":"Question","name":"Does NVIDIA AI Enterprise give us an uptime SLA?","acceptedAnswer":{"@type":"Answer","text":"AI Enterprise includes a support-response SLA — a 4-hour initial response, 8x5, plus security patches and maintenance branches. It does not include an availability or uptime SLA, because you run the software in your own infrastructure; the running system's uptime, RTO, and RPO are owned by the customer. Akka operates the runtime and guarantees 99.9999% availability with sub-1-minute RTO and zero-byte RPO."}},
+    {"@type":"Question","name":"Can we add governance on top of the NVIDIA stack?","acceptedAnswer":{"@type":"Answer","text":"NeMo Guardrails gives you content and topic rails. The EU AI Act expects more: enforcement inline to the runtime, immutable records witnessed as they happen, human override on running processes, pre-deployment classification, and a sealed audit artifact. Akka embeds all of this — classification against 186 regulations and 877 controls before a system ships — rather than leaving it to the customer to assemble."}}
+  ]}
+]}
+</script>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: letter; margin: 0.55in 0.65in 0.5in 0.65in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9pt; line-height: 1.45; color: #1A1A1A; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .header { background: #000; color: #fff; padding: 14px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .header .logo svg { height: 22px; width: auto; }
+  .header .tagline { font-size: 8.5pt; font-weight: 400; color: #ccc; text-align: right; }
+  .title-block { margin-top: 16px; margin-bottom: 12px; border-bottom: 3px solid #F5C518; padding-bottom: 10px; }
+  .title-block h1 { font-size: 17pt; font-weight: 700; color: #000; line-height: 1.2; margin-bottom: 2px; }
+  .title-block .subtitle { font-size: 9.5pt; color: #4E4E4E; font-weight: 500; }
+  .title-block .meta { font-size: 7.5pt; color: #888; margin-top: 4px; }
+  .oneliner { background: #FFF3C4; border-left: 4px solid #F5C518; border-radius: 0 4px 4px 0; padding: 9px 14px; margin-bottom: 12px; font-size: 9pt; line-height: 1.4; color: #1A1A1A; }
+  .oneliner strong { color: #000; }
+  .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 8pt; }
+  .summary-table th { background: #000; color: #fff; text-align: left; padding: 5px 8px; font-weight: 600; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  .summary-table th:first-child { border-radius: 3px 0 0 0; } .summary-table th:last-child { border-radius: 0 3px 0 0; }
+  .summary-table td { padding: 5px 8px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+  .summary-table tr:nth-child(even) td { background: #FAFAFA; }
+  .summary-table td:first-child { font-weight: 600; white-space: nowrap; }
+  .summary-table .comp-col { color: #555; } .summary-table .akka-col { color: #000; font-weight: 500; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 12px; }
+  .section { margin-bottom: 13px; }
+  .section h2 { font-size: 11pt; font-weight: 700; color: #000; border-left: 4px solid #F5C518; padding-left: 8px; margin-bottom: 6px; line-height: 1.3; }
+  .section h3 { font-size: 9pt; font-weight: 600; color: #333; margin-bottom: 3px; margin-top: 6px; }
+  .section p, .section li { font-size: 8.5pt; color: #333; line-height: 1.4; }
+  .section ul { padding-left: 14px; margin-bottom: 4px; } .section li { margin-bottom: 2px; }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 6px 0; }
+  .cmp-table th { background: #F5F5F5; font-weight: 600; text-align: left; padding: 4px 6px; border-bottom: 2px solid #F5C518; font-size: 7.5pt; }
+  .cmp-table td { padding: 3px 6px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .cmp-table .bad { color: #C0392B; font-weight: 500; } .cmp-table .good { color: #1A7A3A; font-weight: 500; } .cmp-table td:first-child { font-weight: 600; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+  .stat-card { background: #000; color: #fff; border-radius: 4px; padding: 8px 10px; text-align: center; }
+  .stat-card .number { font-size: 16pt; font-weight: 700; color: #F5C518; line-height: 1.1; }
+  .stat-card .label { font-size: 7pt; text-transform: uppercase; letter-spacing: 0.4px; color: #ccc; margin-top: 2px; }
+  .penalty-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 6px 0; }
+  .penalty-table th { background: #C0392B; color: #fff; text-align: left; padding: 4px 8px; font-weight: 600; font-size: 7.5pt; }
+  .penalty-table td { padding: 4px 8px; border-bottom: 1px solid #eee; } .penalty-table td:last-child { font-weight: 600; color: #C0392B; }
+  .proof-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0; }
+  .proof-card { background: #FAFAFA; border: 1px solid #e5e5e5; border-top: 3px solid #F5C518; border-radius: 3px; padding: 7px 8px; }
+  .proof-card .co { font-weight: 700; font-size: 8pt; color: #000; } .proof-card .stat { font-size: 11pt; font-weight: 700; color: #000; line-height: 1.15; margin: 1px 0; } .proof-card .desc { font-size: 6.8pt; color: #555; line-height: 1.3; }
+  .objection { margin-bottom: 6px; } .objection .q { font-weight: 600; font-size: 8.5pt; color: #000; } .objection .a { font-size: 8pt; color: #444; margin-top: 1px; }
+  .footer { margin-top: 8px; padding-top: 6px; border-top: 2px solid #000; display: flex; justify-content: space-between; font-size: 7pt; color: #888; }
+  .page-break { page-break-before: always; break-before: page; margin-top: 0; padding-top: 12px; }
+  .spec-graphic { border: 1px solid #e5e5e5; border-radius: 5px; padding: 10px 12px; margin: 8px 0; background: #FAFAFA; }
+  .spec-row { display: flex; align-items: stretch; gap: 7px; }
+  .spec-inputs { display: flex; flex-direction: column; gap: 6px; flex: 1.1; }
+  .spec-box { background: #fff; border: 1px solid #ddd; border-left: 3px solid #F5C518; border-radius: 3px; padding: 5px 7px; }
+  .spec-box .tag { font-size: 7pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #000; }
+  .spec-box .ttl { font-size: 7.5pt; color: #555; font-style: italic; }
+  .spec-box .who { font-size: 6.5pt; color: #888; margin-top: 1px; }
+  .spec-box .track { font-size: 6pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #9A7B0A; }
+  .spec-box .meta { font-size: 6pt; color: #999; margin-top: 2px; }
+  .spec-arrow { align-self: center; color: #F5C518; font-weight: 700; font-size: 14pt; }
+  .spec-hub { align-self: center; background: #000; color: #fff; border-radius: 4px; padding: 8px 10px; text-align: center; flex: 0 0 auto; }
+  .spec-hub .name { font-size: 9pt; font-weight: 700; color: #F5C518; display: block; }
+  .spec-hub .foot { font-size: 6.5pt; color: #ccc; }
+  .spec-out { background: #fff; border: 1px solid #ddd; border-top: 3px solid #F5C518; border-radius: 3px; padding: 5px 7px; flex: 1.5; }
+  .spec-out .tag { font-size: 6.5pt; font-weight: 700; text-transform: uppercase; color: #1A7A3A; }
+  .spec-out .ttl { font-size: 8.5pt; font-weight: 700; color: #000; margin-bottom: 2px; }
+  .spec-out ul { margin: 0; padding-left: 12px; } .spec-out li { font-size: 7pt; color: #444; line-height: 1.35; }
+  .spec-verify { margin-top: 7px; border-top: 1px dashed #F5C518; padding-top: 5px; font-size: 7.5pt; color: #444; }
+  .spec-verify strong { color: #000; }
+  @media screen { body { max-width: 8.5in; margin: 0 auto; padding: 0.55in 0.65in; } }
+  strong.accent { color: #000; background: #FFF3C4; padding: 0 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_344_191)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="white"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="white"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="white"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="white"/></g><defs><clipPath id="clip0_344_191"><rect width="109" height="25" fill="white"/></clipPath></defs></svg></div>
+  <div class="tagline">Reliable AI for Every Industry<br>The Agentic Systems Platform</div>
+</div>
+
+<div class="title-block">
+  <h1>Akka vs. NVIDIA</h1>
+  <div class="subtitle">A comparison for teams building agentic AI</div>
+  <div class="meta">NIM &middot; NeMo &middot; NeMo Agent toolkit &middot; AI Enterprise &middot; Blueprints &nbsp;|&nbsp; June 2026</div>
+</div>
+
+<div class="oneliner">
+  <strong>NVIDIA's agentic stack serves and assembles AI; Akka governs and runs the agentic application above it.</strong> NIM, NeMo, the NeMo Agent toolkit, AI Enterprise, and Blueprints are an inference-and-microservice layer tied to NVIDIA GPUs and CUDA &mdash; software you self-host, assemble, and operate. Akka is the governed agentic application platform that runs on top of that serving layer, with a contractual availability SLA, durable agent state, and runtime governance.
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="number">None</div><div class="label">Self-Hosted Uptime SLA</div></div>
+  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka Availability SLA</div></div>
+  <div class="stat-card"><div class="number">4ms</div><div class="label">Akka Durable-State Reads</div></div>
+  <div class="stat-card"><div class="number">Mar 2025</div><div class="label">NeMo Agent Toolkit 1.0</div></div>
+</div>
+
+<table class="summary-table">
+  <tr><th>Dimension</th><th>NVIDIA (NIM / NeMo / NeMo Agent toolkit / AI Enterprise / Blueprints)</th><th>Akka</th></tr>
+  <tr><td>What it is</td><td class="comp-col">An inference + microservice-and-toolkit layer: containerized model serving, model customization, and an open-source agent library, packaged as self-hosted software</td><td class="akka-col">A governed agentic application platform that runs on one runtime</td></tr>
+  <tr><td>Layer</td><td class="comp-col">The serving and assembly layer; you integrate and operate the application around it</td><td class="akka-col">The application layer above model serving &mdash; agents, memory, streaming, APIs, governance pre-integrated</td></tr>
+  <tr><td>Availability SLA</td><td class="comp-col">Support-response SLA only (4-hour initial response, 8x5); no uptime/availability SLA &mdash; you run the software in your own infrastructure</td><td class="akka-col">99.9999% uptime &mdash; entire platform, backed by indemnities, Akka-operated</td></tr>
+  <tr><td>RTO / RPO</td><td class="comp-col">Owned by the customer; no published RTO/RPO</td><td class="akka-col">Sub-1-minute RTO; zero-byte RPO, active-active across regions</td></tr>
+  <tr><td>Durable agent state / memory</td><td class="comp-col">Not provided as managed infrastructure; customer sources and operates a state/vector store</td><td class="akka-col">Durable in-memory, 4ms reads / sub-10ms writes, replayable from the event journal</td></tr>
+  <tr><td>Agent toolkit maturity</td><td class="comp-col">NeMo Agent toolkit: open-source library first released March 2025 (renamed from AIQ / Agent Intelligence toolkit); framework-agnostic glue for LangChain/LlamaIndex/CrewAI &mdash; not a hosted runtime</td><td class="akka-col">Production runtime, 18 years, 100,000+ deployments</td></tr>
+  <tr><td>Governance / EU AI Act</td><td class="comp-col">NeMo Guardrails provides content/topic rails; no inline runtime enforcement, immutable audit ledger, pre-deployment classification, or sealed posture</td><td class="akka-col">Aspect-woven runtime enforcement + full pre-production governance</td></tr>
+  <tr><td>Hardware coupling</td><td class="comp-col">Optimized for and dependent on NVIDIA GPUs and CUDA</td><td class="akka-col">Runs on any hardware, any cloud, on-prem; no GPU/CUDA dependency for the application layer</td></tr>
+  <tr><td>Cost model</td><td class="comp-col">AI Enterprise at $4,500 per GPU per year (or per-GPU-per-hour cloud) for the serving layer; you provision and operate everything above it</td><td class="akka-col">Shared compute; up to 90% lower infrastructure for the same agentic workload, fixed annual fee</td></tr>
+  <tr><td>Certifications</td><td class="comp-col">AI Enterprise production-branch support, monthly CVE patching, security notifications, SBOM/VEX</td><td class="akka-col">19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF)</td></tr>
+</table>
+
+<div class="section">
+  <h2>1. A Serving-and-Toolkit Layer, Not a Governed Application Platform</h2>
+  <p>NVIDIA's agentic stack is five pieces of software the customer assembles and operates: <strong>NIM</strong> containers serve models, <strong>NeMo</strong> customizes them, the <strong>NeMo Agent toolkit</strong> wires agents together in code, <strong>Blueprints</strong> are reference samples to copy, and <strong>NVIDIA AI Enterprise</strong> is the licensed, security-maintained bundle that ships them. Each is real and well-built. Together they are a serving and assembly layer &mdash; not a governed agentic application platform with one runtime and one SLA.</p>
+  <table class="cmp-table">
+    <tr><th style="width:38%;">Capability</th><th>NVIDIA stack</th><th>Akka</th></tr>
+    <tr><td>Model inference / serving</td><td class="good">Yes &mdash; NIM (best in class)</td><td>Not provided (calls NIM or any endpoint)</td></tr>
+    <tr><td>Model fine-tuning / customization</td><td class="good">Yes &mdash; NeMo Customizer</td><td>Not provided</td></tr>
+    <tr><td>Native agent runtime with durable execution</td><td class="bad">NeMo Agent toolkit is a library you host and operate</td><td class="good">Built in</td></tr>
+    <tr><td>Durable agent memory as managed infrastructure</td><td class="bad">Customer sources and operates</td><td class="good">Built in, 4ms / sub-10ms</td></tr>
+    <tr><td>Real-time streaming engine</td><td class="bad">Customer provisions separately</td><td class="good">Built in, backpressured, petabyte-scale</td></tr>
+    <tr><td>HTTP / gRPC API layer</td><td class="bad">Customer builds</td><td class="good">Built in</td></tr>
+    <tr><td>Inline governance / policy enforcement</td><td class="bad">Content rails (NeMo Guardrails) only</td><td class="good">Inline, runtime-embedded</td></tr>
+    <tr><td>Pre-production governance</td><td class="bad">None</td><td class="good">Classification, sign-offs, sealed posture</td></tr>
+    <tr><td>Operated runtime with an availability SLA</td><td class="bad">No &mdash; you self-host the software</td><td class="good">Yes &mdash; Akka operates it at 99.9999%</td></tr>
+  </table>
+  <p>NVIDIA serves and accelerates the model. Akka runs the application that uses it.</p>
+</div>
+
+<div class="section">
+  <h2>2. Availability: A Support SLA Is Not an Uptime SLA</h2>
+  <p>NVIDIA AI Enterprise includes a <strong>support-response SLA</strong> &mdash; Business Standard Support with a 4-hour initial response time, 8am&ndash;5pm local business hours, plus software updates, maintenance branches, and security notifications. That is support for software you run yourself. Because you operate NIM, NeMo, and your agents in your own infrastructure, <strong>the availability of the running system is owned by the customer</strong> &mdash; there is no published uptime SLA, no RTO, and no RPO for the application. (NVIDIA's 99% Service Availability target applies only to its hosted DGX Cloud, a separate product.)</p>
+  <table class="cmp-table">
+    <tr><th>Metric</th><th>NVIDIA stack</th><th>Akka</th></tr>
+    <tr><td>Availability (uptime) SLA</td><td class="bad">None &mdash; customer-owned</td><td class="good">99.9999%</td></tr>
+    <tr><td>Support-response SLA</td><td>4-hour initial response, 8x5 (Business Standard)</td><td class="good">24/7 SRE, plus the uptime guarantee</td></tr>
+    <tr><td>Allowed downtime / year</td><td class="bad">Customer-determined</td><td class="good">~31 seconds</td></tr>
+    <tr><td>RTO</td><td class="bad">Customer-owned</td><td class="good">Sub-1 minute</td></tr>
+    <tr><td>RPO</td><td class="bad">Customer-owned</td><td class="good">Zero byte</td></tr>
+    <tr><td>Who operates the runtime</td><td class="bad">The customer</td><td class="good">Akka</td></tr>
+  </table>
+  <p>NVIDIA guarantees how fast it answers a support ticket; Akka guarantees that the system stays up and loses no data, and backs that with contractual indemnities.</p>
+</div>
+
+<!-- ════════ PAGE 2 ════════ -->
+<div class="page-break"></div>
+
+<div class="two-col">
+  <div class="section">
+    <h2>3. Durable State the Runtime Holds</h2>
+    <p>The NVIDIA stack serves models statelessly; durable agent state &mdash; conversation memory, in-flight task state, long-running plans &mdash; is not provided as managed infrastructure. The customer selects, wires, and operates a state store and a vector database, and owns their failure modes and latency.</p>
+    <p style="margin-top:4px;">Akka holds durable agent state in-memory at <strong>4ms reads / sub-10ms writes</strong>, sharded and replayable from its event journal, with no external store to provision. Akka is explicitly not a vector database or semantic knowledge layer; it is the durable execution substrate that holds the agent's working state across failures.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Cost</h2>
+    <p>AI systems built with Akka are up to <strong>90% cheaper to operate</strong> than the equivalent Python-based stack &mdash; a function of the infrastructure required to run the same agentic transaction volume, not list price. The drivers are actor concurrency (~10T tokens/core/year vs ~2T; ~80% less compute than Python frameworks; Manulife: up to 300% more concurrency, 30&ndash;50% faster processing after porting from Python), shared compute, and micro-checkpointing.</p>
+    <p style="margin-top:4px;">NVIDIA AI Enterprise lists at <strong>$4,500 per GPU per year</strong> (or per-GPU-per-hour cloud) for the serving layer. That is the price of the inference-and-microservice bundle; the application layer above it &mdash; agent runtime, durable memory, streaming, APIs, observability, and governance &mdash; is provisioned and operated separately. Akka delivers that layer on one shared-compute runtime at a fixed annual fee.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>5. Governance and the EU AI Act</h2>
+  <p>NeMo Guardrails provides programmable content and topic rails &mdash; keeping a model on-topic, filtering unsafe outputs. That is content moderation, not governance enforcement. The NVIDIA stack publishes no inline runtime policy enforcement, no decision explainability, no human pause/override of a running process witnessed as it happens, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.</p>
+  <div class="two-col" style="margin-top:6px;">
+    <div>
+      <h3>The penalties are enforceable now</h3>
+      <table class="penalty-table">
+        <tr><th>Violation</th><th>Maximum Fine</th></tr>
+        <tr><td>Prohibited AI practices (Art. 5)</td><td>EUR 35M or 7% global turnover</td></tr>
+        <tr><td>High-risk obligations (Art. 9-15)</td><td>EUR 15M or 3% global turnover</td></tr>
+      </table>
+      <p style="margin-top:4px;">High-risk AI carries a 10-year logging-retention obligation (Art. 72).</p>
+    </div>
+    <div>
+      <h3>How Akka governs</h3>
+      <p>At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against 186 regulations and 877 controls (288 carrying a financial penalty) before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance the NVIDIA stack leaves to the customer, Akka enforces inline.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>6. Two Lifecycles, One Certified System</h2>
+  <p>Building on the NVIDIA stack means engineers wiring NIM endpoints, NeMo jobs, and toolkit code; there is no path for a product manager, domain expert, or risk officer to contribute, and no built-in governance lifecycle. Akka runs two independent lifecycles on one platform via <strong>Akka Specify</strong>:</p>
+  <div class="spec-graphic">
+    <div class="spec-row">
+      <div class="spec-inputs">
+        <div class="spec-box">
+          <div class="track">Build lifecycle</div>
+          <div class="tag">Functional contract</div>
+          <div class="ttl">"Rank incoming ER patients by acuity and route the top three to a clinician."</div>
+          <div class="who">Product &middot; developers &middot; ML engineers &middot; domain experts</div>
+          <div class="meta">v1.4 &middot; versioned &middot; tested</div>
+        </div>
+        <div class="spec-box">
+          <div class="track">Govern lifecycle</div>
+          <div class="tag">Safeguard contract</div>
+          <div class="ttl">"Block prohibited practices under EU AI Act Article 5; notify regulators within 24h of any incident."</div>
+          <div class="who">Risk &middot; security &middot; compliance</div>
+          <div class="meta">v2.1 &middot; versioned &amp; tested independent of the build</div>
+        </div>
+      </div>
+      <div class="spec-arrow">&rarr;</div>
+      <div class="spec-hub">
+        <span class="name">Akka Specify</span>
+        <div class="foot">AI-assisted authoring<br>generates &middot; tests &middot; runs</div>
+      </div>
+      <div class="spec-arrow">&rarr;</div>
+      <div class="spec-out">
+        <div class="tag">One certified AI service</div>
+        <div class="ttl">Built, governed, and running</div>
+        <ul>
+          <li>Agents, tools, orchestration, memory, APIs, streaming, UI</li>
+          <li>Guardrails, sanitizers, HITL/HOTL, evaluations, halts</li>
+          <li>Interaction, evidence, and causal logging</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spec-verify"><strong>Akka Verify &#8635;</strong> validates the running system against both specs and fine-tunes the AI from production data.</div>
+  </div>
+  <p>The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences &mdash; an audience and a workflow the NVIDIA stack has no equivalent for.</p>
+</div>
+
+<div class="section">
+  <h2>7. Real-Time Streaming at Petabyte Scale</h2>
+  <p>The NVIDIA stack has no application streaming engine; real-time agent feedback loops and high-throughput pipelines are provisioned separately. Akka's streaming is built into the runtime &mdash; continuous, backpressured, <strong>petabyte-scale, in-memory</strong>, with no external broker &mdash; powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second).</p>
+</div>
+
+<div class="section">
+  <h2>8. For the Buyer: Maturity, Hardware, and Accountability</h2>
+  <table class="cmp-table">
+    <tr><th style="width:18%;">Buyer concern</th><th>NVIDIA stack</th><th>Akka</th></tr>
+    <tr><td>Agent-platform maturity</td><td class="bad">NeMo Agent toolkit first released March 2025 (renamed from AIQ / Agent Intelligence toolkit), ~15 months old; a framework-agnostic glue layer over LangChain, LlamaIndex, and CrewAI &mdash; code-level instrumentation, not a hosted runtime</td><td class="good">A production runtime: 18 years, 100,000+ deployments, 52 banks; 2 billion+ people touch an Akka-powered app daily</td></tr>
+    <tr><td>Hardware / cloud lock-in</td><td class="bad">Optimized for and dependent on NVIDIA GPUs and CUDA</td><td class="good">Runs on any hardware, any cloud, on-prem, or sovereign cloud; portable specs, no GPU/CUDA dependency for the application layer</td></tr>
+    <tr><td>Scope of accountability</td><td class="bad">The serving layer; you integrate and operate the application, and own its uptime</td><td class="good">One platform, one SLA, 24/7 SRE &mdash; Akka owns the running system</td></tr>
+    <tr><td>Risk transfer</td><td class="bad">Software support entitlements; availability is customer-owned</td><td class="good">Availability and data-integrity guarantees backed by contractual indemnities</td></tr>
+    <tr><td>Certifications &amp; audits</td><td class="bad">AI Enterprise production-branch support, monthly CVE patching, security notifications, SBOM/VEX</td><td class="good">19 standards &mdash; SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF &mdash; plus annual pen tests, SBOMs, 40+ policies (trust.akka.io)</td></tr>
+    <tr><td>Budget predictability</td><td class="bad">Per-GPU licensing plus separately provisioned application infrastructure</td><td class="good">Fixed annual fee finance can forecast</td></tr>
+  </table>
+  <p style="margin-top:4px;">The NVIDIA agent-toolkit story is recent and code-level; its product maturity as an <em>application platform</em> is early, even though NVIDIA's serving products are mature and dominant. The decision is altitude and accountability: NVIDIA gives you the best serving layer to build an application around; Akka gives you the governed application platform that runs above it.</p>
+</div>
+
+<div class="section">
+  <h2>Akka Complements NVIDIA Inference</h2>
+  <p>This is not a replacement story for inference. NVIDIA is the leading model-serving and acceleration layer, and Akka is not model serving, inference, RL, or a GPU runtime. An Akka agentic application can call NIM endpoints, use NeMo-customized models, and run on NVIDIA GPUs for the model tier &mdash; while Akka provides the governed application layer above it: native agents, durable state, streaming, APIs, the availability SLA, and runtime governance. The two fit together; they do not compete.</p>
+</div>
+
+<div class="section">
+  <h2>Customers Running Agentic and Real-Time Systems on Akka</h2>
+  <div class="proof-bar">
+    <div class="proof-card"><div class="co">Manulife</div><div class="stat">2,000</div><div class="desc">developers across 100 projects on one governed platform</div></div>
+    <div class="proof-card"><div class="co">Tubi</div><div class="stat">5B tok/s</div><div class="desc">real-time hyper-personalization engine</div></div>
+    <div class="proof-card"><div class="co">Swiggy</div><div class="stat">71ms</div><div class="desc">order-assignment AI, ~50% latency reduction</div></div>
+    <div class="proof-card"><div class="co">John Deere</div><div class="stat">1,000+</div><div class="desc">tractor sensors turned into real-time insight</div></div>
+    <div class="proof-card"><div class="co">Verizon</div><div class="stat">750%</div><div class="desc">order-processing capacity gain; 6s &rarr; 2.4s response</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Common Questions</h2>
+  <div class="two-col" style="gap:14px;">
+    <div>
+      <div class="objection">
+        <div class="q">We already run NVIDIA NIM and AI Enterprise. Why add Akka?</div>
+        <div class="a">NIM and AI Enterprise are an excellent serving layer, and Akka runs above them. NIM serves the model; Akka runs the agentic application that uses it &mdash; native agents, durable memory, streaming, APIs, an operated 99.9999% availability SLA, and runtime governance. Akka calls your NIM endpoints rather than replacing them.</div>
+      </div>
+      <div class="objection">
+        <div class="q">Isn't the NeMo Agent toolkit NVIDIA's agent platform?</div>
+        <div class="a">The NeMo Agent toolkit is an open-source library, first released in March 2025 (renamed from the Agent Intelligence toolkit / AIQ), for connecting and profiling teams of agents across frameworks like LangChain, LlamaIndex, and CrewAI. It is code-level instrumentation you host and operate, not a hosted runtime with an availability SLA, durable state, HA/DR, or governance enforcement. Akka is the governed runtime; the toolkit can sit inside an application Akka runs.</div>
+      </div>
+    </div>
+    <div>
+      <div class="objection">
+        <div class="q">Does NVIDIA AI Enterprise give us an uptime SLA?</div>
+        <div class="a">AI Enterprise includes a support-response SLA &mdash; a 4-hour initial response, 8x5, plus security patches and maintenance branches. It does not include an availability or uptime SLA, because you run the software in your own infrastructure; the running system's uptime, RTO, and RPO are owned by the customer. Akka operates the runtime and guarantees 99.9999% availability with sub-1-minute RTO and zero-byte RPO.</div>
+      </div>
+      <div class="objection">
+        <div class="q">Can we add governance on top of the NVIDIA stack?</div>
+        <div class="a">NeMo Guardrails gives you content and topic rails. The EU AI Act expects more: enforcement inline to the runtime, immutable records witnessed as they happen, human override on running processes, pre-deployment classification, and a sealed audit artifact. Akka embeds all of this &mdash; classification against 186 regulations and 877 controls before a system ships &mdash; rather than leaving it to the customer to assemble.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 10px;">
+  <h2>Sources</h2>
+  <p style="font-size: 7pt; color: #666; line-height: 1.55; columns: 2; column-gap: 18px;">
+    <strong>NVIDIA NIM:</strong> nvidia.com/en-us/ai-data-science/products/nim-microservices; developer.nvidia.com/nim &mdash; containerized GPU-accelerated inference microservices (TensorRT-LLM / vLLM / SGLang; OpenAI-compatible API); part of AI Enterprise; CUDA compute capability &gt; 7.0 required<br>
+    <strong>NVIDIA NeMo:</strong> nvidia.com/en-us/ai-data-science/products/nemo; developer.nvidia.com/blog/simplify-custom-generative-ai-development-with-nvidia-nemo-microservices &mdash; open-source generative-AI framework; microservices: Customizer, Evaluator, Guardrails, Retriever, Curator (built on CUDA-X)<br>
+    <strong>NeMo Agent toolkit:</strong> github.com/NVIDIA/NeMo-Agent-Toolkit; developer.nvidia.com/nemo-agent-toolkit &mdash; open-source library, Apache-2.0 ("AS IS, WITHOUT WARRANTIES"); framework-agnostic (LangChain, LlamaIndex, CrewAI, Semantic Kernel, Google ADK); first release v1.0.0 March 2025<br>
+    <strong>NeMo Agent toolkit history:</strong> forums.developer.nvidia.com/t/335881; infoworld.com/article/3851326 &mdash; renamed from Agent Intelligence toolkit / AIQ; launched March/April 2025<br>
+    <strong>NVIDIA Blueprints:</strong> blogs.nvidia.com/blog/nim-agent-blueprints; nvidianews.nvidia.com (NIM Agent Blueprints launch) &mdash; reference AI workflows: sample apps + reference code + Helm charts; deployed in production via AI Enterprise<br>
+    <strong>NVIDIA AI Enterprise pricing &amp; support:</strong> docs.nvidia.com/ai-enterprise/planning-resource/licensing-guide/latest/pricing.html; dell.com SKU ac566091 ($4,500/GPU/year, includes Standard 8x5 support; also per-GPU-per-hour cloud); nvidia.com/en-us/support/enterprise (Business Standard: 4-business-hour Sev-1 response) &mdash; support-response SLA, not an uptime SLA; 99% target applies only to hosted DGX Cloud<br>
+    <strong>NVIDIA AI Enterprise lifecycle/security:</strong> docs.nvidia.com/ai-enterprise/lifecycle/latest/choosing-a-branch.html &mdash; production branch, monthly CVE patches, SBOM/VEX, container/model signing<br>
+    <strong>Akka platform, governance, trust &amp; performance:</strong> per akka-facts.md &mdash; trust.akka.io; akka.io/blog/go-slow-to-go-fast; 99.9999% availability, sub-1-min RTO, zero-byte RPO (contractual indemnities); 4ms / sub-10ms state; 186 regulations / 877 controls / 288 with financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+  </p>
+  <p style="font-size:7pt; color:#888; margin-top:4px;">NVIDIA claims are drawn from NVIDIA's own documentation, blog, and newsroom, and NVIDIA AI Enterprise licensing material. Akka claims reflect Akka's published capabilities. NVIDIA is the leading model-serving and inference layer; Akka operates as the governed application platform above it and does not provide inference or model serving. &middot; June 2026</p>
+</div>
+
+<div class="footer">
+  <div style="display:flex; align-items:center; gap:8px;"><svg width="65" height="15" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip1)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="#1A1A1A"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="#1A1A1A"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="#1A1A1A"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="#1A1A1A"/></g><defs><clipPath id="clip1"><rect width="109" height="25" fill="white"/></clipPath></defs></svg> <span>Reliable AI for Every Industry &nbsp;|&nbsp; akka.ai</span></div>
+  <div>June 2026</div>
+</div>
+
+</body>
+</html>

@@ -27,8 +27,12 @@ PRESENTATIONS = [
 
 # Standalone competitive briefs (single HTML files at the repo root).
 BATTLECARDS = [
-    {"link": "battlecard-langchain.html", "label": "Akka vs. LangChain"},
-    {"link": "battlecard-temporal.html",  "label": "Akka vs. Temporal"},
+    {"link": "battlecard-langchain.html",                 "label": "Akka vs. LangChain"},
+    {"link": "battlecard-temporal.html",                  "label": "Akka vs. Temporal"},
+    {"link": "battlecard-azure-ai-foundry.html",          "label": "Akka vs. Azure AI Foundry"},
+    {"link": "battlecard-aws-bedrock.html",               "label": "Akka vs. AWS Bedrock"},
+    {"link": "battlecard-google-gemini-enterprise.html",  "label": "Akka vs. Google Gemini Enterprise Agent Platform"},
+    {"link": "battlecard-nvidia.html",                    "label": "Akka vs. NVIDIA"},
 ]
 
 
