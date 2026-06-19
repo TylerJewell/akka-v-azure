@@ -1,8 +1,8 @@
 # Competitive Battlecard: Akka vs. Microsoft Azure AI Foundry
 
-**For:** NTT Data — Enterprise Agentic Grid sales teams
+**For:** AI teams evaluating agentic AI platforms
 **Use:** Customer-facing competitive positioning when Azure AI Foundry is the incumbent or alternative
-**Last updated:** 2026-04-24
+**Last updated:** 2026-06-19
 
 ---
 
@@ -14,7 +14,18 @@
 | **HA/DR** | No SLA on Agent Service; no automatic failover; total state loss on region failure | 99.9999% availability; active-active HA/DR; sub-1 min RTO, zero byte RPO |
 | **Lock-in** | Tight coupling to Azure identity, compute, orchestration, and data services | Deploy on any cloud, on-prem, or Akka's cloud; no proprietary lock-in |
 | **Sovereign cloud** | Feature-lagged, limited AI service availability, control plane metadata may leave region | Full-parity sovereign cloud with data isolation, networking isolation, local SREs |
-| **Governance / EU AI Act** | Fragmented across 5+ services; no inline explainability; no human override dashboard; no pre-deployment classification | Embedded runtime governance + full pre-production governance platform: classify against 175 frameworks, multi-persona sign-offs, Governance Posture Packages |
+| **Governance / EU AI Act** | Fragmented across 5+ services; no inline explainability; no human override dashboard; no pre-deployment classification | Aspect-woven runtime governance + full pre-production platform: classify against 186 regulations / 704 controls, multi-persona sign-offs, Governance Posture Packages |
+
+---
+
+## The Frame: Akka Delivers the System; Azure Sells You Parts
+
+In the agent taxonomy, Azure AI Foundry sits in the **process-attached** column alongside Akka, Bedrock, and Vertex — durable agents that run unattended on their own identity. But a hyperscaler delivers that as a *kit*: 6–8 separately billed services you wire together and operate, with the reliability SLA, the governance, and the integration all left to your team. Akka delivers it as one pre-integrated system. The four pillars below carry every Azure conversation:
+
+- **Integrated runtime** — *Akka* owns the 99.9999% SLA, sub-1 min RTO, 24/7 SRE. With Azure, the SLA lives with your team (and the Agent Service has none — see §2).
+- **Predictable pricing** — fixed annual fee on shared compute, 70–90% lower TCO, vs. 6–8 line items finance can't forecast (§1).
+- **Uniform governance** — aspect-woven into the runtime and proven by Akka Verify, vs. governance fragmented across 5+ Azure services (§5).
+- **Cloud freedom** — any cloud, sovereign option, portable specs, BSL licensing, vs. structural Azure lock-in (§3–4).
 
 ---
 
@@ -183,7 +194,7 @@ Five critical failures of bolt-on governance:
 
 ### Akka's Embedded Governance
 
-Akka's policy enforcement engine is **embedded directly in the runtime** — not a bolt-on, not a gateway interceptor, not a log reader:
+Akka's policy enforcement engine is **aspect-woven into the runtime** — guardrails, sanitizers, and evidence logging injected into the agents themselves, not a bolt-on, not a gateway interceptor, not a log reader:
 
 - **Real-time policy enforcement**: Guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline within the runtime
 - **Self-explanation**: Every deployment produces decision explanations as a property of the runtime
@@ -191,7 +202,9 @@ Akka's policy enforcement engine is **embedded directly in the runtime** — not
 - **Human intervention**: Humans can pause, discontinue, override, review, or nudge an ongoing agentic process
 - **Immutable interaction logging**: The runtime witnesses and records every interaction
 - **PII scrubbing with explainability**: The runtime makes the decision, scrubs PII, and produces the explanation atomically
-- **Pre-deployment classification**: Classify AI systems against 175 regulatory frameworks and 600 controls to derive the exact obligation set before a single line of production code ships
+- **Pre-deployment classification**: Classify AI systems against 186 AI regulations and 704 controls (98 carrying financial penalties) to derive the exact obligation set before a single line of production code ships
+- **Two specifications, one certified system**: A Dev Spec (function) and an Eval Matrix (safeguards) merge into one certified service — agents, tools, memory, and APIs alongside guardrails, sanitizers, HITL/HOTL gates, and hash-chained evidence logging
+- **Akka Verify**: Proves conformance continuously from the running system — not a post-hoc dashboard, but evidence drawn from what actually executed
 - **Multi-persona sign-off workflows**: Declarative recipe engine routes change events to the right reviewers with dossiers, carry-forward rules, and quorum logic — not email chains and spreadsheets
 - **Governance Posture Package**: Every deployment produces a tamper-evident audit artifact containing the full record of every classification decision, sign-off, and approval — ready for regulatory handoff without scrambling
 - **19+ InfoSec certifications** including EU AI Act, ISO 42001, SOC 2
@@ -241,4 +254,4 @@ Use these to substantiate claims in customer conversations:
 
 ---
 
-*Prepared for NTT Data Enterprise Agentic Grid sales teams. All Azure claims substantiated with Microsoft's own documentation.*
+*All Azure claims substantiated with Microsoft's own documentation.*
