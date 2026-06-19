@@ -25,6 +25,12 @@ PRESENTATIONS = [
     {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
 ]
 
+# Standalone competitive briefs (single HTML files at the repo root).
+BATTLECARDS = [
+    {"link": "battlecard-langchain.html", "label": "Akka vs. LangChain"},
+    {"link": "battlecard-temporal.html",  "label": "Akka vs. Temporal"},
+]
+
 
 def slide_text(path, tag, cls):
     """Decoded, tag-stripped text of <tag ... class="cls" ...>...</tag>."""
@@ -70,9 +76,28 @@ def render_item(p):
     )
 
 
+def render_brief(b):
+    date = last_commit_date(b["link"])
+    return (
+        "    <li>\n"
+        '      <a href="%s">%s</a>\n'
+        '      <div class="desc">Last updated %s.</div>\n'
+        "    </li>" % (html.escape(b["link"]), html.escape(b["label"]), html.escape(date))
+    )
+
+
 # Order decks latest-updated first (by last commit on the linked file).
 ordered = sorted(PRESENTATIONS, key=lambda p: last_commit_epoch(p["link"]), reverse=True)
 items = "\n".join(render_item(p) for p in ordered)
+
+ordered_briefs = sorted(BATTLECARDS, key=lambda b: last_commit_epoch(b["link"]), reverse=True)
+briefs = "\n".join(render_brief(b) for b in ordered_briefs)
+briefs_section = ('''
+  <h1 style="margin-top: 40px;">Competitive briefs</h1>
+  <p class="intro">Akka vs. the field — fact-based comparisons.</p>
+  <ul>
+%s
+  </ul>''' % briefs) if BATTLECARDS else ""
 
 PAGE = """<!DOCTYPE html>
 <html lang="en">
@@ -101,10 +126,10 @@ PAGE = """<!DOCTYPE html>
   <p class="intro">Akka decks, rendered for sharing.</p>
   <ul>
 %s
-  </ul>
+  </ul>%s
 </body>
 </html>
-""" % items
+""" % (items, briefs_section)
 
 with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
     f.write(PAGE)
