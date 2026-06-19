@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka vs. Databricks (Mosaic AI / Agent Bricks): A Comparison for Teams Building Production Agentic AI</title>
+<meta name="description" content="Akka vs. Databricks for agentic AI — Databricks is a lakehouse with an agent layer attached (Mosaic AI, Agent Bricks); its governance is data governance (Unity Catalog), not runtime EU AI Act enforcement. Akka is the governed agentic runtime. Compare scope, availability/SLA, agent state, governance, and cost.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://akka.io/compare/akka-vs-databricks">
+<script type="application/ld+json">
+{ "@context":"https://schema.org","@graph":[
+  {"@type":"TechArticle","headline":"Akka vs. Databricks (Mosaic AI / Agent Bricks): A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-06-19","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","Databricks","Mosaic AI","Agent Bricks","Unity Catalog","agentic AI","data lakehouse","runtime governance"]},
+  {"@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"We already run Databricks. Why add Akka?","acceptedAnswer":{"@type":"Answer","text":"Keep it. Databricks is a strong lakehouse, and Akka complements it — Akka is not a vector DB, model-serving, or semantic layer. The gap is the agentic runtime: durable in-memory agent state, a six-nines platform SLA, active-active failover, and inline EU AI Act enforcement. Run your governed data and models on Databricks and the governed agentic system on Akka above it."}},
+    {"@type":"Question","name":"Agent Bricks is governed. Isn't that the same governance?","acceptedAnswer":{"@type":"Answer","text":"Agent Bricks governs agents, tools, and models as Unity Catalog assets — that is data governance: access control, lineage, and audit, with on-behalf-of permissions. The EU AI Act expects runtime enforcement: prohibited practices blocked inline, immutable records witnessed as decisions happen, human override of running processes, pre-deployment classification, and a sealed evidence trail. Akka enforces these in the runtime; Unity Catalog governs the data the agent reads."}},
+    {"@type":"Question","name":"Doesn't Databricks have agent memory now?","acceptedAnswer":{"@type":"Answer","text":"Databricks agents are stateless and externalize state to Lakebase (managed Postgres), re-reading session history from a central database at the start of every turn. Akka holds agent state in durable sharded in-memory storage — 4ms reads, sub-10ms writes, replayable from its event journal — so working memory survives failover without a per-turn database round trip."}},
+    {"@type":"Question","name":"Is Databricks cheaper because we already pay for it?","acceptedAnswer":{"@type":"Answer","text":"Databricks bills on DBU consumption — pay-per-token plus provisioned-throughput DBUs for serving — so the agent meter scales with load and each layer consumes separately. Akka runs the whole agentic system on one shared-compute runtime, up to 90% cheaper to operate for the same workload, on a fixed annual fee."}}
+  ]}
+]}
+</script>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: letter; margin: 0.55in 0.65in 0.5in 0.65in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9pt; line-height: 1.45; color: #1A1A1A; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .header { background: #000; color: #fff; padding: 14px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .header .logo svg { height: 22px; width: auto; }
+  .header .tagline { font-size: 8.5pt; font-weight: 400; color: #ccc; text-align: right; }
+  .title-block { margin-top: 16px; margin-bottom: 12px; border-bottom: 3px solid #F5C518; padding-bottom: 10px; }
+  .title-block h1 { font-size: 17pt; font-weight: 700; color: #000; line-height: 1.2; margin-bottom: 2px; }
+  .title-block .subtitle { font-size: 9.5pt; color: #4E4E4E; font-weight: 500; }
+  .title-block .meta { font-size: 7.5pt; color: #888; margin-top: 4px; }
+  .oneliner { background: #FFF3C4; border-left: 4px solid #F5C518; border-radius: 0 4px 4px 0; padding: 9px 14px; margin-bottom: 12px; font-size: 9pt; line-height: 1.4; color: #1A1A1A; }
+  .oneliner strong { color: #000; }
+  .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 8pt; }
+  .summary-table th { background: #000; color: #fff; text-align: left; padding: 5px 8px; font-weight: 600; font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.5px; }
+  .summary-table th:first-child { border-radius: 3px 0 0 0; } .summary-table th:last-child { border-radius: 0 3px 0 0; }
+  .summary-table td { padding: 5px 8px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+  .summary-table tr:nth-child(even) td { background: #FAFAFA; }
+  .summary-table td:first-child { font-weight: 600; white-space: nowrap; }
+  .summary-table .comp-col { color: #555; } .summary-table .akka-col { color: #000; font-weight: 500; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 12px; }
+  .section { margin-bottom: 13px; }
+  .section h2 { font-size: 11pt; font-weight: 700; color: #000; border-left: 4px solid #F5C518; padding-left: 8px; margin-bottom: 6px; line-height: 1.3; }
+  .section h3 { font-size: 9pt; font-weight: 600; color: #333; margin-bottom: 3px; margin-top: 6px; }
+  .section p, .section li { font-size: 8.5pt; color: #333; line-height: 1.4; }
+  .section ul { padding-left: 14px; margin-bottom: 4px; } .section li { margin-bottom: 2px; }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 6px 0; }
+  .cmp-table th { background: #F5F5F5; font-weight: 600; text-align: left; padding: 4px 6px; border-bottom: 2px solid #F5C518; font-size: 7.5pt; }
+  .cmp-table td { padding: 3px 6px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .cmp-table .bad { color: #C0392B; font-weight: 500; } .cmp-table .good { color: #1A7A3A; font-weight: 500; } .cmp-table td:first-child { font-weight: 600; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+  .stat-card { background: #000; color: #fff; border-radius: 4px; padding: 8px 10px; text-align: center; }
+  .stat-card .number { font-size: 16pt; font-weight: 700; color: #F5C518; line-height: 1.1; }
+  .stat-card .label { font-size: 7pt; text-transform: uppercase; letter-spacing: 0.4px; color: #ccc; margin-top: 2px; }
+  .penalty-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 6px 0; }
+  .penalty-table th { background: #C0392B; color: #fff; text-align: left; padding: 4px 8px; font-weight: 600; font-size: 7.5pt; }
+  .penalty-table td { padding: 4px 8px; border-bottom: 1px solid #eee; } .penalty-table td:last-child { font-weight: 600; color: #C0392B; }
+  .proof-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0; }
+  .proof-card { background: #FAFAFA; border: 1px solid #e5e5e5; border-top: 3px solid #F5C518; border-radius: 3px; padding: 7px 8px; }
+  .proof-card .co { font-weight: 700; font-size: 8pt; color: #000; } .proof-card .stat { font-size: 11pt; font-weight: 700; color: #000; line-height: 1.15; margin: 1px 0; } .proof-card .desc { font-size: 6.8pt; color: #555; line-height: 1.3; }
+  .objection { margin-bottom: 6px; } .objection .q { font-weight: 600; font-size: 8.5pt; color: #000; } .objection .a { font-size: 8pt; color: #444; margin-top: 1px; }
+  .footer { margin-top: 8px; padding-top: 6px; border-top: 2px solid #000; display: flex; justify-content: space-between; font-size: 7pt; color: #888; }
+  .page-break { page-break-before: always; break-before: page; margin-top: 0; padding-top: 12px; }
+  .spec-graphic { border: 1px solid #e5e5e5; border-radius: 5px; padding: 10px 12px; margin: 8px 0; background: #FAFAFA; }
+  .spec-row { display: flex; align-items: stretch; gap: 7px; }
+  .spec-inputs { display: flex; flex-direction: column; gap: 6px; flex: 1.1; }
+  .spec-box { background: #fff; border: 1px solid #ddd; border-left: 3px solid #F5C518; border-radius: 3px; padding: 5px 7px; }
+  .spec-box .tag { font-size: 7pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #000; }
+  .spec-box .ttl { font-size: 7.5pt; color: #555; font-style: italic; }
+  .spec-box .who { font-size: 6.5pt; color: #888; margin-top: 1px; }
+  .spec-box .track { font-size: 6pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #9A7B0A; }
+  .spec-box .meta { font-size: 6pt; color: #999; margin-top: 2px; }
+  .spec-arrow { align-self: center; color: #F5C518; font-weight: 700; font-size: 14pt; }
+  .spec-hub { align-self: center; background: #000; color: #fff; border-radius: 4px; padding: 8px 10px; text-align: center; flex: 0 0 auto; }
+  .spec-hub .name { font-size: 9pt; font-weight: 700; color: #F5C518; display: block; }
+  .spec-hub .foot { font-size: 6.5pt; color: #ccc; }
+  .spec-out { background: #fff; border: 1px solid #ddd; border-top: 3px solid #F5C518; border-radius: 3px; padding: 5px 7px; flex: 1.5; }
+  .spec-out .tag { font-size: 6.5pt; font-weight: 700; text-transform: uppercase; color: #1A7A3A; }
+  .spec-out .ttl { font-size: 8.5pt; font-weight: 700; color: #000; margin-bottom: 2px; }
+  .spec-out ul { margin: 0; padding-left: 12px; } .spec-out li { font-size: 7pt; color: #444; line-height: 1.35; }
+  .spec-verify { margin-top: 7px; border-top: 1px dashed #F5C518; padding-top: 5px; font-size: 7.5pt; color: #444; }
+  .spec-verify strong { color: #000; }
+  @media screen { body { max-width: 8.5in; margin: 0 auto; padding: 0.55in 0.65in; } }
+  strong.accent { color: #000; background: #FFF3C4; padding: 0 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_344_191)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="white"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="white"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="white"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="white"/></g><defs><clipPath id="clip0_344_191"><rect width="109" height="25" fill="white"/></clipPath></defs></svg></div>
+  <div class="tagline">Reliable AI for Every Industry<br>The Agentic Systems Platform</div>
+</div>
+
+<div class="title-block">
+  <h1>Akka vs. Databricks</h1>
+  <div class="subtitle">Mosaic AI / Agent Bricks &mdash; a comparison for teams building agentic AI</div>
+  <div class="meta">June 2026</div>
+</div>
+
+<div class="oneliner">
+  Databricks is a lakehouse with an agent layer attached &mdash; the data, feature, and model tier, <strong>not a governed agentic runtime</strong>. Mosaic AI and Agent Bricks build agents that read your Lakehouse and run on stateless serving endpoints; their governance is <em>data</em> governance (Unity Catalog), not <em>runtime</em> EU AI Act enforcement. Akka is the governed agentic runtime &mdash; durable in-memory state, a six-nines SLA, inline enforcement &mdash; and complements the lakehouse beneath it.
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="number">99.9%</div><div class="label">Databricks Control-Plane SLA</div></div>
+  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka Platform SLA</div></div>
+  <div class="stat-card"><div class="number">4ms</div><div class="label">Akka State Reads</div></div>
+  <div class="stat-card"><div class="number">877</div><div class="label">Controls Enforced Pre-Deploy</div></div>
+</div>
+
+<table class="summary-table">
+  <tr><th>Dimension</th><th>Databricks (Mosaic AI / Agent Bricks)</th><th>Akka</th></tr>
+  <tr><td>What it is</td><td class="comp-col">A data intelligence platform (lakehouse) with an agent layer &mdash; Agent Bricks, Mosaic AI Agent Framework, Model Serving, Vector Search, Genie</td><td class="akka-col">A full-stack agentic systems platform &mdash; agents, orchestration, memory, streaming, APIs, and governance on one runtime</td></tr>
+  <tr><td>Primary role</td><td class="comp-col">The data, feature, and model tier agents read from</td><td class="akka-col">The runtime agents run on</td></tr>
+  <tr><td>Agent state</td><td class="comp-col">Stateless serving endpoints; session/long-term memory externalized to Lakebase (managed Postgres), re-read each turn</td><td class="akka-col">Durable sharded in-memory &mdash; 4ms reads / sub-10ms writes, replayable from the event journal</td></tr>
+  <tr><td>Availability SLA</td><td class="comp-col">99.9% control plane; Model Serving rides the Databricks SLA, no published six-nines agent-tier number</td><td class="akka-col">99.9999% across the entire platform, contractual, backed by indemnities</td></tr>
+  <tr><td>HA / DR</td><td class="comp-col">Customer-architected; typically active-passive; RTO &lt; 1h, RPO &lt; 15min (critical); Model Serving endpoints not in managed DR</td><td class="akka-col">Active-active; sub-1-minute RTO; zero-byte RPO &mdash; Akka owns it</td></tr>
+  <tr><td>Governance / EU AI Act</td><td class="comp-col">Data governance: Unity Catalog lineage, access control, audit; DAGF/DASF frameworks &amp; guidance</td><td class="akka-col">Runtime enforcement: inline guardrails, hash-chained evidence, pre-deploy classification, sealed posture, Akka Verify</td></tr>
+  <tr><td>Coupling</td><td class="comp-col">Agents bound to the Lakehouse, Unity Catalog, and DBU-metered serving</td><td class="akka-col">Deploy anywhere &mdash; Akka cloud, your VPC, your Kubernetes, on-prem, sovereign cloud; portable specs</td></tr>
+  <tr><td>Cost model</td><td class="comp-col">DBU consumption metering (per-token + provisioned-throughput DBUs); scales with load</td><td class="akka-col">Shared compute on one runtime; up to 90% lower infrastructure for the same workload; fixed annual fee</td></tr>
+  <tr><td>Maturity</td><td class="comp-col">Agent Bricks beta Jun 2025; Supervisor Agent GA Feb 2026; evolving quickly</td><td class="akka-col">18 years, 100,000+ production deployments, 52 banks</td></tr>
+</table>
+
+<div class="section">
+  <h2>1. A Data Platform With Agents, Not a Governed Agentic Runtime</h2>
+  <p>Databricks is a lakehouse &mdash; Delta Lake storage, Unity Catalog governance, and Mosaic AI on top &mdash; with an agent layer attached. Agent Bricks, the Mosaic AI Agent Framework, Vector Search, and Genie build agents that read your governed data; Model Serving runs them. That is the data, feature, and model tier. It is not a runtime engineered to <em>run</em> an agentic system with guarantees. The line is structural: a lakehouse optimizes storage, retrieval, lineage, and model access; an agentic runtime optimizes durable execution, in-memory state, failover, and inline policy enforcement on running processes. Databricks delivers the first and attaches agents to it; Akka is the second.</p>
+  <table class="cmp-table">
+    <tr><th style="width:38%;">Capability</th><th>Databricks</th><th>Akka</th></tr>
+    <tr><td>Lakehouse / feature store / model serving</td><td class="good">Yes &mdash; core strength</td><td>Not Akka's layer (complement)</td></tr>
+    <tr><td>Vector search / semantic retrieval</td><td class="good">Yes &mdash; Mosaic AI Vector Search</td><td>Not Akka's layer (complement)</td></tr>
+    <tr><td>Native durable agents with in-memory state</td><td class="bad">Stateless endpoints; state externalized to Postgres</td><td class="good">Built in &mdash; durable sharded in-memory</td></tr>
+    <tr><td>Six-nines platform availability SLA</td><td class="bad">Not published for the agent tier</td><td class="good">99.9999%, contractual</td></tr>
+    <tr><td>Active-active HA/DR, sub-1-min RTO, zero RPO</td><td class="bad">Customer-architected; serving endpoints excluded from managed DR</td><td class="good">Built in &mdash; Akka owns it</td></tr>
+    <tr><td>Inline runtime EU AI Act enforcement</td><td class="bad">Data governance + frameworks/guidance</td><td class="good">Built in &mdash; aspect-woven</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>2. Reliability: Agent State and the SLA That Covers It</h2>
+  <p>Akka publishes a <strong>99.9999%</strong> availability SLA across the entire platform &mdash; contractual and backed by indemnities &mdash; with sub-1-minute RTO, zero-byte RPO, and active-active HA/DR that Akka owns and operates 24/7. Databricks publishes a <a href="https://docs.databricks.com/aws/en/lakehouse-architecture/reliability/best-practices">99.9% control-plane SLA</a>; Model Serving is "backed by the Databricks SLA," but no six-nines number is published for the agent-serving tier. Disaster recovery is <a href="https://docs.databricks.com/aws/en/admin/disaster-recovery">customer-architected</a> &mdash; the documented pattern is active-passive, with targets of RTO under 1 hour and RPO under 15 minutes for critical workloads &mdash; and Model Serving endpoints are <strong>not replicated in Databricks managed disaster recovery</strong>.</p>
+  <p style="margin-top:4px;">The deeper difference is agent state. Databricks agent runtimes are <a href="https://docs.databricks.com/aws/en/generative-ai/agent-framework/stateful-agents">stateless by design</a>: state "must be externalized to a durable store," so the entire session history is retrieved from a central database (Lakebase managed Postgres) at the start of every turn. Akka holds agent state in durable sharded in-memory storage &mdash; 4ms reads, sub-10ms writes, replayable from its event journal &mdash; so working memory survives failover without a per-turn database round trip.</p>
+  <table class="cmp-table">
+    <tr><th>Metric</th><th>Databricks</th><th>Akka</th></tr>
+    <tr><td>Availability SLA</td><td class="bad">99.9% control plane; no published agent-tier six-nines</td><td class="good">99.9999% &mdash; entire platform</td></tr>
+    <tr><td>Allowed downtime / year</td><td class="bad">~8.7 hours (at 99.9%)</td><td class="good">~31 seconds</td></tr>
+    <tr><td>RTO</td><td class="bad">&lt; 1 hour (customer-architected, critical workloads)</td><td class="good">Sub-1 minute</td></tr>
+    <tr><td>RPO</td><td class="bad">&lt; 15 minutes (customer-architected)</td><td class="good">Zero byte</td></tr>
+    <tr><td>HA/DR posture</td><td class="bad">Typically active-passive; serving endpoints not in managed DR</td><td class="good">Active-active, Akka-owned</td></tr>
+    <tr><td>Agent state</td><td class="bad">Stateless; externalized to Postgres, re-read each turn</td><td class="good">Durable in-memory, 4ms / sub-10ms</td></tr>
+  </table>
+</div>
+
+<!-- &#9552;&#9552;&#9552;&#9552; PAGE 2 &#9552;&#9552;&#9552;&#9552; -->
+<div class="page-break"></div>
+
+<div class="two-col">
+  <div class="section">
+    <h2>3. Up to 90% Cheaper to Operate</h2>
+    <p>AI systems built with Akka are up to <strong>90% cheaper to operate</strong> than Python-based systems &mdash; a function of the infrastructure required to run the same agentic transaction volume, not list price. The drivers are actor concurrency (~10T tokens/core/year vs ~2T; ~80% less compute than Python frameworks), shared compute, and micro-checkpointing. Manulife reported up to 300% more concurrency and 30&ndash;50% faster processing after porting from Python.</p>
+    <p style="margin-top:4px;">Databricks bills on <strong>DBU consumption</strong> &mdash; pay-per-token for Foundation Model APIs plus provisioned-throughput DBUs for hosted models and serving &mdash; so the meter moves with load, and the lakehouse, Vector Search, and serving each consume separately. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast.</p>
+  </div>
+
+  <div class="section">
+    <h2>4. Data Governance vs. Runtime Enforcement</h2>
+    <p>Databricks' governance is <strong>data governance</strong>. Unity Catalog enforces access control, captures column-level lineage, logs activity for audit, and now governs agents, tools, and models as catalog assets with on-behalf-of access controls. Databricks also publishes responsible-AI guidance (the AI Governance Framework: 5 pillars, 43 considerations; the AI Security Framework). These govern the data and access plus best practice &mdash; not inline enforcement on the running agent.</p>
+    <p style="margin-top:4px;">The EU AI Act expects enforcement at the runtime: prohibited practices blocked as they occur, immutable records witnessed as decisions happen, human override of running processes, pre-deployment classification, and a retained evidence trail. Akka embeds all of this in the runtime.</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>5. Governance and the EU AI Act</h2>
+  <p>Akka enforces governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; <strong>hash-chained immutable evidence</strong>; HITL/HOTL control; pre-deployment classification against 186 regulations and 877 controls (288 carrying a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify, which proves conformance from the running system. Unity Catalog governs the data the agent reads; Akka governs what the agent <em>does</em>.</p>
+  <div class="two-col" style="margin-top:6px;">
+    <div>
+      <h3>The penalties are enforceable now</h3>
+      <table class="penalty-table">
+        <tr><th>Violation</th><th>Maximum Fine</th></tr>
+        <tr><td>Prohibited AI practices (Art. 5)</td><td>EUR 35M or 7% global turnover</td></tr>
+        <tr><td>High-risk obligations (Art. 9-15)</td><td>EUR 15M or 3% global turnover</td></tr>
+        <tr><td>Incorrect / misleading information</td><td>EUR 7.5M or 1.5% global turnover</td></tr>
+      </table>
+      <p style="margin-top:4px;">High-risk AI carries a 10-year logging-retention obligation (Art. 72), enforceable since Feb 2025 / Aug 2025.</p>
+    </div>
+    <div>
+      <h3>Data governance is not runtime enforcement</h3>
+      <p>Unity Catalog answers <em>who may read which data and where it came from</em>. The EU AI Act asks <em>was a prohibited decision blocked as it happened, was a human able to override the running process, was the system classified before it shipped, and is the evidence sealed and immutable.</em> Frameworks and lineage do not gate a deployment or halt a running agent; Akka enforces that inline.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>6. Two Lifecycles, One Certified System</h2>
+  <p>Building agents on Databricks is a developer-and-data-team workflow: define an agent in Agent Bricks, wire it to Lakehouse context and Unity Catalog permissions, deploy to Model Serving, evaluate. Governance runs as a parallel data-governance and guidance track. Akka runs two independent lifecycles on one platform via <strong>Akka Specify</strong>:</p>
+  <div class="spec-graphic">
+    <div class="spec-row">
+      <div class="spec-inputs">
+        <div class="spec-box">
+          <div class="track">Build lifecycle</div>
+          <div class="tag">Functional contract</div>
+          <div class="ttl">"Rank incoming ER patients by acuity and route the top three to a clinician."</div>
+          <div class="who">Product &middot; developers &middot; ML engineers &middot; domain experts</div>
+          <div class="meta">v1.4 &middot; versioned &middot; tested</div>
+        </div>
+        <div class="spec-box">
+          <div class="track">Govern lifecycle</div>
+          <div class="tag">Safeguard contract</div>
+          <div class="ttl">"Block prohibited practices under EU AI Act Article 5; notify regulators within 24h of any incident."</div>
+          <div class="who">Risk &middot; security &middot; compliance</div>
+          <div class="meta">v2.1 &middot; versioned &amp; tested independent of the build</div>
+        </div>
+      </div>
+      <div class="spec-arrow">&rarr;</div>
+      <div class="spec-hub">
+        <span class="name">Akka Specify</span>
+        <div class="foot">AI-assisted authoring<br>generates &middot; tests &middot; runs</div>
+      </div>
+      <div class="spec-arrow">&rarr;</div>
+      <div class="spec-out">
+        <div class="tag">One certified AI service</div>
+        <div class="ttl">Built, governed, and running</div>
+        <ul>
+          <li>Agents, tools, orchestration, memory, APIs, streaming, UI</li>
+          <li>Guardrails, sanitizers, HITL/HOTL, evaluations, halts</li>
+          <li>Interaction, evidence, and causal logging</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spec-verify"><strong>Akka Verify &#8635;</strong> validates the running system against both specs and fine-tunes the AI from production data.</div>
+  </div>
+  <p>The build and governance lifecycles are versioned and tested independently, by different audiences &mdash; a workflow Databricks runs as data governance plus guidance, not as an enforceable safeguard contract on the running agent.</p>
+</div>
+
+<div class="section">
+  <h2>7. Real-Time Streaming at Petabyte Scale</h2>
+  <p>Akka's streaming is built into the runtime &mdash; continuous, backpressured, <strong>petabyte-scale in-memory</strong>, with no external broker &mdash; powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second). On Databricks, real-time data movement lives in the lakehouse (streaming tables, pipelines); feeding it into the agent layer is an integration the customer assembles across serving endpoints, Vector Search sync, and Lakebase, each metered and operated separately.</p>
+</div>
+
+<div class="section">
+  <h2>8. For the Buyer: Product Maturity, Coupling, and Accountability</h2>
+  <p>The Databricks lakehouse is mature and widely adopted. The question for an agentic-AI decision is the <strong>agent product's</strong> maturity and what standardizing on it commits you to &mdash; not Databricks' viability, which is not in question.</p>
+  <table class="cmp-table">
+    <tr><th style="width:18%;">Buyer concern</th><th>Databricks (Mosaic AI / Agent Bricks)</th><th>Akka</th></tr>
+    <tr><td>Agent product maturity</td><td class="bad">Agent Bricks announced beta Jun 2025; Supervisor Agent GA Feb 2026; capabilities and APIs evolving quickly</td><td class="good">18 years; 100,000+ production deployments; 52 banks</td></tr>
+    <tr><td>Coupling / lock-in</td><td class="bad">Agents bound to the Lakehouse, Unity Catalog, and DBU-metered serving; value compounds as more of the estate sits in Databricks</td><td class="good">Deploy anywhere &mdash; Akka cloud, your VPC, your Kubernetes, on-prem, sovereign cloud; portable specs; BSL licensing</td></tr>
+    <tr><td>Who owns the SLA</td><td class="bad">Customer architects HA/DR; serving endpoints excluded from managed DR</td><td class="good">Akka owns the SLA, 24/7 SRE, one platform</td></tr>
+    <tr><td>Certifications</td><td class="bad">SOC 2 Type II, ISO 27001, ISO 27701, PCI DSS, HIPAA, HITRUST (Azure)</td><td class="good">19 standards &mdash; SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, CCPA, PIPEDA, NIS2, DORA, EU AI Act, NIST AI RMF &mdash; plus annual pen tests, SBOMs, 40+ policies (trust.akka.io)</td></tr>
+    <tr><td>Risk transfer</td><td class="bad">Standard cloud terms</td><td class="good">Availability and data-integrity guarantees backed by contractual indemnities</td></tr>
+    <tr><td>Budget predictability</td><td class="bad">DBU consumption metering that scales with load</td><td class="good">Fixed annual fee finance can forecast</td></tr>
+  </table>
+  <h3>Akka complements your lakehouse</h3>
+  <p>Akka is explicitly <strong>not</strong> a vector database, a semantic knowledge layer, a model-serving / inference engine, or a context graph &mdash; those are exactly what the Databricks lakehouse, Unity Catalog, Vector Search, and Model Serving provide. For those layers Databricks sits <em>beneath</em> Akka, and the two are complementary: keep your governed data and feature/model tier in Databricks, and run the governed agentic system on Akka above it. The competitive overlap is narrow and specific &mdash; Agent Bricks and the Mosaic AI Agent Framework as the agent runtime and governance layer &mdash; and that is where the runtime-versus-data-platform line is drawn.</p>
+</div>
+
+<div class="section">
+  <h2>Customers Running Agentic and Real-Time Systems on Akka</h2>
+  <div class="proof-bar">
+    <div class="proof-card"><div class="co">Manulife</div><div class="stat">2,000</div><div class="desc">developers across 100 projects on one governed platform</div></div>
+    <div class="proof-card"><div class="co">Tubi</div><div class="stat">5B tok/s</div><div class="desc">real-time hyper-personalization engine</div></div>
+    <div class="proof-card"><div class="co">Swiggy</div><div class="stat">71ms</div><div class="desc">order-assignment AI, ~50% latency reduction</div></div>
+    <div class="proof-card"><div class="co">John Deere</div><div class="stat">1,000+</div><div class="desc">tractor sensors turned into real-time insight</div></div>
+    <div class="proof-card"><div class="co">Verizon</div><div class="stat">750%</div><div class="desc">order-processing capacity gain; 6s &rarr; 2.4s response</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Common Questions</h2>
+  <div class="two-col" style="gap:14px;">
+    <div>
+      <div class="objection">
+        <div class="q">We already run Databricks. Why add Akka?</div>
+        <div class="a">Keep it. Databricks is a strong lakehouse, and Akka complements it &mdash; Akka is not a vector DB, model-serving, or semantic layer. The gap is the agentic runtime: durable in-memory agent state, a six-nines platform SLA, active-active failover, and inline EU AI Act enforcement. Run your governed data and models on Databricks and the governed agentic system on Akka above it.</div>
+      </div>
+      <div class="objection">
+        <div class="q">Agent Bricks is "governed." Isn't that the same governance?</div>
+        <div class="a">Agent Bricks governs agents, tools, and models as Unity Catalog assets &mdash; that is data governance: access control, lineage, and audit, with on-behalf-of permissions. The EU AI Act expects runtime enforcement: prohibited practices blocked inline, immutable records witnessed as decisions happen, human override of running processes, pre-deployment classification, and a sealed evidence trail. Akka enforces these in the runtime; Unity Catalog governs the data the agent reads.</div>
+      </div>
+    </div>
+    <div>
+      <div class="objection">
+        <div class="q">Doesn't Databricks have agent memory now?</div>
+        <div class="a">Databricks agents are stateless and externalize state to Lakebase (managed Postgres), re-reading session history from a central database at the start of every turn. Akka holds agent state in durable sharded in-memory storage &mdash; 4ms reads, sub-10ms writes, replayable from its event journal &mdash; so working memory survives failover without a per-turn database round trip.</div>
+      </div>
+      <div class="objection">
+        <div class="q">Is Databricks cheaper because we already pay for it?</div>
+        <div class="a">Databricks bills on DBU consumption &mdash; pay-per-token plus provisioned-throughput DBUs for serving &mdash; so the agent meter scales with load and each layer consumes separately. Akka runs the whole agentic system on one shared-compute runtime, up to 90% cheaper to operate for the same workload, on a fixed annual fee.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 10px;">
+  <h2>Sources</h2>
+  <p style="font-size: 7pt; color: #666; line-height: 1.55; columns: 2; column-gap: 18px;">
+    <strong>Agent Bricks (what / GA):</strong> databricks.com/blog/introducing-agent-bricks (beta, Jun 2025); databricks.com/blog/agent-bricks-supervisor-agent-now-ga-orchestrate-enterprise-agents (Supervisor Agent GA, Feb 10 2026); developers.databricks.com/docs/agents/overview &mdash; agents/tools/models governed via Unity Catalog + on-behalf-of access<br>
+    <strong>Mosaic AI Agent Framework / Model Serving:</strong> databricks.com/product/model-serving; docs.databricks.com/.../agent-framework/deploy-agent &mdash; agents deployed to serving endpoints; "backed by the Databricks SLA," serverless HA<br>
+    <strong>Agent state / memory:</strong> docs.databricks.com/.../agent-framework/stateful-agents; learn.microsoft.com/.../oltp/projects/state-management &mdash; "agent runtimes are typically stateless"; state externalized to Lakebase Postgres, session history retrieved each turn<br>
+    <strong>Unity Catalog / Vector Search / Genie:</strong> databricks.com/product/unity-catalog &mdash; centralized access control, lineage, audit (data governance); learn.microsoft.com/.../vector-search/vector-search<br>
+    <strong>SLA / DR:</strong> docs.databricks.com/.../reliability/best-practices &mdash; 99.9% control-plane SLA; docs.databricks.com/aws/en/admin/disaster-recovery &amp; managed-disaster-recovery &mdash; typically active-passive, RTO &lt; 1h / RPO &lt; 15min (critical), "Model serving endpoints are not replicated in Databricks managed disaster recovery"<br>
+    <strong>Pricing (DBU):</strong> databricks.com pricing; flexera.com/blog/finops/databricks-pricing-guide &mdash; DBU consumption; pay-per-token Foundation Model APIs + provisioned-throughput DBUs for serving<br>
+    <strong>Governance / EU AI Act:</strong> databricks.com/trust/responsibleAI; databricks.com/blog/introducing-databricks-ai-governance-framework &mdash; DAGF (5 pillars, 43 considerations), DASF; committed to EU AI Act compliance<br>
+    <strong>Certifications:</strong> databricks.com/legal/security-addendum; databricks.com/trust/compliance/soc &mdash; SOC 2 Type II, ISO 27001, ISO 27701, PCI DSS, HIPAA; HITRUST (Azure Databricks)<br>
+    <strong>Akka facts (akka-facts.md, verified 2026-06-19):</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO, contractual indemnities; durable in-memory 4ms / sub-10ms, replayable journal; ~10T vs ~2T tokens/core, ~80% less compute, up to 90% cheaper (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30&ndash;50% faster; 186 regulations / 877 controls / 288 with financial penalty; 19 standards (trust.akka.io); 18 years, 100,000+ deployments, 52 banks; profitable, Dell Technologies Capital; Tubi 5B tok/s, Swiggy 71ms, John Deere 1,000+ sensors, Verizon 750%
+  </p>
+</div>
+
+<div class="footer">
+  <div style="display:flex; align-items:center; gap:8px;"><svg width="65" height="15" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip1)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="#1A1A1A"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="#1A1A1A"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="#1A1A1A"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="#1A1A1A"/></g><defs><clipPath id="clip1"><rect width="109" height="25" fill="white"/></clipPath></defs></svg> <span>Reliable AI for Every Industry &nbsp;|&nbsp; akka.ai</span></div>
+  <div>June 2026</div>
+</div>
+
+</body>
+</html>
