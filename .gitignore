@@ -7,3 +7,6 @@
 # Python
 __pycache__/
 *.pyc
+
+# Confidential internal-only doc — never publish to the public Pages site
+battlecard-service-tiers-internal.html
