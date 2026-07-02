@@ -1,0 +1,28 @@
+{
+  "id": "06-platform-use-cases",
+  "nav_id": "platform-pattern-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "180vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".pp-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [
+    "customers/dojo.png",
+    "customers/tubi.jpg",
+    "customers/manulife.jpg"
+  ],
+  "include_in": [
+    "overview",
+    "shareable",
+    "live",
+    "hands-on"
+  ]
+}

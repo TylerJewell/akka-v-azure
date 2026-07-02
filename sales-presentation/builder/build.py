@@ -48,19 +48,23 @@ parser.add_argument('--presenter', default=None,
     help='Presenter JSON file stem in presenters/ (e.g. "tyler")')
 parser.add_argument('--out', default=None,
     help='Output file path (default: generated/<mode>/index.html)')
+parser.add_argument('--registry', default='slide-registry.json',
+    help='Registry JSON filename in builder/ (default: slide-registry.json)')
+parser.add_argument('--nav', default='nav.js',
+    help='Nav JS filename in shell/ (default: nav.js)')
 args = parser.parse_args()
 
 out_path = args.out or os.path.join(GEN, args.mode, 'index.html')
 
 # ── Load registry ─────────────────────────────────────────────────────────────
 
-registry = read_json(os.path.join(BASE, 'slide-registry.json'))
+registry = read_json(os.path.join(BASE, args.registry))
 
 # ── Load shell ────────────────────────────────────────────────────────────────
 
 shell_template = read(os.path.join(SHELL, 'shell.html'))
 shared_css     = read(os.path.join(SHELL, 'shared.css'))
-nav_js         = read(os.path.join(SHELL, 'nav.js'))
+nav_js         = read(os.path.join(SHELL, args.nav))
 kiosk_js       = read(os.path.join(SHELL, 'kiosk.js'))
 
 # ── Load presenter data ───────────────────────────────────────────────────────

@@ -1,0 +1,94 @@
+/* ── Phase 1: The Problem ── */
+#s7-problem {
+  height: 140vh;
+  position: relative;
+}
+#s7-problem-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 8vw;
+  background: var(--black);
+  overflow: hidden;
+}
+#s7-problem-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,60,60,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+
+.s7-eyebrow {
+  font-size:11px; text-transform:uppercase; letter-spacing:3px;
+  color:var(--yellow); font-weight:600; margin-bottom:14px;
+  position:relative; z-index:1;
+  opacity:0; transition: opacity .5s ease;
+}
+.s7-eyebrow.visible { opacity:1; }
+.s7-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
+
+.s7-problem-headline {
+  font-size: clamp(30px, 4vw, 58px); font-weight:700;
+  line-height:1.08; letter-spacing:-0.03em; color:var(--white);
+  max-width: 800px; margin-bottom: 40px;
+  position:relative; z-index:1;
+  opacity:0; transform:translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+}
+.s7-problem-headline.visible { opacity:1; transform:none; }
+.s7-problem-headline .accent { color: #E74C3C; }
+
+.s7-problems {
+  display: flex; gap: 24px;
+  max-width: 1340px;
+  position: relative; z-index: 1;
+  margin-bottom: 40px;
+}
+.s7-prob {
+  flex: 1;
+  padding: 20px 0;
+  border-top: 2px solid #E74C3C;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+}
+.s7-prob.visible { opacity: 1; transform: none; }
+.s7-prob-stat {
+  font-size: clamp(20px, 2vw, 28px); font-weight: 700;
+  color: #E74C3C; letter-spacing: -0.03em; line-height: 1.05;
+  margin-bottom: 8px;
+}
+.s7-prob-text {
+  font-size: 14px; color: #999; line-height: 1.5;
+}
+
+/* ── Phase 2: The Answer ── embedded governance tool ── */
+#s7-answer-frame {
+  height: 100vh;
+  width: 100%;
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 46px var(--pad-6) 24px;
+}
+.s7gov-head { flex-shrink: 0; margin-bottom: 22px; }
+.s7gov-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.s7gov-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--yellow); }
+.s7gov-title {
+  font-size: clamp(30px, 4vw, 52px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+}
+.s7gov-title .accent { color: var(--yellow); }
+.s7gov-demo { flex: 1 1 auto; min-height: 0; }
+#s7-gov-iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #1F1F1F;
+  border-radius: 4px;
+  background: var(--black);
+}

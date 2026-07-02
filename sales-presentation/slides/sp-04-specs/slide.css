@@ -1,0 +1,446 @@
+#spec-wrapper {
+  height: 320vh;
+  position: relative;
+}
+#spec-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#spec-sticky::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+
+#spec-sticky > * {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 1500px;
+  margin-left: auto; margin-right: auto;
+}
+
+/* Head */
+.spec-head { margin-bottom: 88px; }
+.spec-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-eyebrow.visible { opacity: 1; transform: none; }
+.spec-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.spec-headline {
+  font-size: clamp(34px, 4.5vw, 60px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-headline.visible { opacity: 1; transform: none; }
+.spec-headline .accent { color: var(--yellow); }
+.spec-sub {
+  font-size: clamp(17px, 1.5vw, 22px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1100px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s;
+}
+.spec-sub.visible { opacity: 1; transform: none; }
+
+/* Flow grid: two track rows + hub spanning both rows.
+   Columns: track-label | plain-language input | signed artifact | AKKA SPECIFY hub | generated/run merge */
+.spec-flow {
+  display: grid;
+  grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr;
+  grid-template-areas:
+    "blabel barrow bart hub merge"
+    "glabel garrow gart hub merge";
+  grid-template-rows: 1fr 1fr;
+  gap: 56px 18px;
+  align-items: stretch;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+.spec-track--build > .spec-track-label  { grid-area: blabel; }
+.spec-track--build > .spec-track-arrow  { grid-area: barrow; }
+.spec-track--build > .spec-artifact     { grid-area: bart; }
+.spec-track--govern > .spec-track-label { grid-area: glabel; }
+.spec-track--govern > .spec-track-arrow { grid-area: garrow; }
+.spec-track--govern > .spec-artifact    { grid-area: gart; }
+
+.spec-track-arrow {
+  width: 100%;
+  height: 16px;
+  align-self: center;
+  overflow: visible;
+}
+.spec-flow.visible { opacity: 1; }
+
+/* Tracks */
+.spec-track {
+  display: contents;
+}
+.spec-track-label {
+  display: flex; flex-direction: column; justify-content: center;
+  border-left: 2px solid var(--yellow);
+  padding: 6px 0 6px 14px;
+}
+.spec-track-name {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.spec-track-personas {
+  font-size: clamp(11px, 0.95vw, 13px);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  font-weight: 500;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* Input card */
+.spec-input {
+  display: flex; flex-direction: column;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid #1F1F1F;
+  border-left: 2px solid #444;
+  border-radius: 3px;
+}
+.spec-input-tag {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #777;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.spec-input-body {
+  font-size: clamp(13px, 1.0vw, 15px);
+  color: #cfcfcf;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* Artifact card (sealed-document feel via clipped corner) */
+.spec-artifact {
+  display: flex; flex-direction: column;
+  padding: 14px 18px;
+  background: rgba(245,197,24,0.04);
+  border: 1px solid rgba(245,197,24,0.3);
+  border-left: 3px solid var(--yellow);
+  border-radius: 3px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  position: relative;
+}
+.spec-artifact::after {
+  content: ''; position: absolute;
+  top: 0; right: 0;
+  width: 12px; height: 12px;
+  background: linear-gradient(135deg, transparent 50%, rgba(245,197,24,0.3) 50%);
+}
+.spec-artifact-tag {
+  font-size: 11px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.spec-artifact-title {
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--white);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.spec-artifact-quote {
+  font-size: clamp(13px, 1.0vw, 15px);
+  color: #cfcfcf;
+  line-height: 1.5;
+  margin: 4px 0 12px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(245,197,24,0.35);
+  font-weight: 500;
+}
+.spec-artifact-meta {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: #888;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  margin-top: auto;
+}
+.spec-artifact-speclist {
+  display: flex; flex-direction: column; gap: 14px;
+  margin: 4px 0 12px;
+}
+.spec-artifact-specrow {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(245,197,24,0.35);
+}
+.spec-artifact-specname {
+  font-size: clamp(14px, 1.2vw, 16px);
+  font-weight: 700; color: var(--white); line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.spec-artifact-specdesc {
+  font-size: clamp(12px, 0.95vw, 14px);
+  color: #cfcfcf; line-height: 1.35; font-weight: 500;
+}
+
+/* Akka Specify Hub — assigned via grid-template-areas (between artifacts and the merge) */
+.spec-hub {
+  grid-area: hub;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-radius: 4px;
+  position: relative;
+}
+.spec-hub::before, .spec-hub::after {
+  content: ''; position: absolute;
+  left: -10px; width: 10px; height: 1px;
+  background: var(--yellow);
+}
+.spec-hub::before { top: 30%; }
+.spec-hub::after  { top: 70%; }
+.spec-hub-inner {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 18px 14px;
+  text-align: center;
+  width: 100%;
+}
+.spec-hub-tag {
+  font-size: 10px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+}
+.spec-hub-name {
+  font-size: clamp(22px, 2.1vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  line-height: 1;
+  text-align: center;
+}
+.spec-hub-foot {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Merge column */
+.spec-merge {
+  grid-area: merge;
+  display: flex; align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+.spec-merge-arrows {
+  width: 60px; height: 100%;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.spec-merge-arrows .spec-arrow {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.spec-merge-arrows .spec-arrowhead { opacity: 0; }
+
+.spec-flow.visible .spec-merge-arrows .spec-arrow {
+  animation: spec-draw .55s ease-out forwards;
+}
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(1) { animation-delay: 1.0s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(2) { animation-delay: 1.05s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(3) { animation-delay: 1.45s; }
+.spec-flow.visible .spec-merge-arrows .spec-arrowhead {
+  animation: spec-fade .15s ease-out 1.85s forwards;
+}
+
+.spec-merge-card {
+  flex: 1 1 auto;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 18px 22px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+  border: 1px solid var(--yellow);
+  border-radius: 3px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+  transition-delay: 1.7s;
+}
+.spec-flow.visible .spec-merge-card {
+  opacity: 1; transform: none;
+}
+.spec-merge-tag {
+  font-size: 11px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.spec-merge-title {
+  font-size: clamp(22px, 2.1vw, 30px);
+  color: var(--white);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.spec-merge-list {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: #e4e4e4;
+  line-height: 1.4;
+}
+.spec-merge-item {
+  padding: 0;
+}
+.spec-merge-plus {
+  display: block;
+  text-align: center;
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 700;
+  color: var(--yellow);
+  line-height: 1;
+  padding: 2px 0;
+  letter-spacing: 0;
+}
+
+/* Track row stagger */
+.spec-flow.visible .spec-track--build > * { animation: spec-rise .5s ease-out forwards; }
+.spec-flow.visible .spec-track--build > .spec-track-label  { animation-delay: 0.15s; }
+.spec-flow.visible .spec-track--build > .spec-input        { animation-delay: 0.30s; }
+.spec-flow.visible .spec-track--build > .spec-artifact     { animation-delay: 0.65s; }
+.spec-flow.visible .spec-track--govern > * { animation: spec-rise .5s ease-out forwards; }
+.spec-flow.visible .spec-track--govern > .spec-track-label { animation-delay: 0.30s; }
+.spec-flow.visible .spec-track--govern > .spec-input       { animation-delay: 0.45s; }
+.spec-flow.visible .spec-track--govern > .spec-artifact    { animation-delay: 0.80s; }
+
+.spec-flow .spec-track > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.spec-flow.visible .spec-hub {
+  animation: spec-pop .5s ease-out 0.55s forwards;
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+@keyframes spec-rise { to { opacity: 1; transform: none; } }
+@keyframes spec-pop  { to { opacity: 1; transform: scale(1); } }
+@keyframes spec-draw { to { stroke-dashoffset: 0; } }
+@keyframes spec-fade { to { opacity: 1; } }
+
+/* Verify loop */
+.spec-loop {
+  margin-top: 16px;
+  padding-top: 4px;
+  position: relative;
+  opacity: 0;
+  transition: opacity .55s ease 1.9s;
+}
+.spec-loop.visible { opacity: 1; }
+.spec-loop-svg {
+  width: 100%; height: 44px;
+  display: block;
+  overflow: visible;
+}
+.spec-loop-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.spec-loop.visible .spec-loop-path {
+  animation: spec-loop-trace .9s ease-out 2.0s forwards;
+}
+.spec-loop-arrowhead { opacity: 0; }
+.spec-loop.visible .spec-loop-arrowhead {
+  animation: spec-fade .15s ease-out 2.85s forwards;
+}
+@keyframes spec-loop-trace {
+  to { stroke-dashoffset: 0; }
+}
+.spec-loop-label {
+  /* Centered on the horizontal arrow midpoint: (1265+70)/2 = 667.5 of 1500 viewBox = 44.5% */
+  position: absolute;
+  left: 44.5%;
+  top: calc(44px + 8px);
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+.spec-loop-tag {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.spec-loop-text {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #d4d4d4;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Tagline */
+.spec-tagline {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #1F1F1F;
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px;
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: #d4d4d4;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+.spec-tagline.visible { opacity: 1; transform: none; }
+.spec-tagline .accent {
+  color: var(--yellow);
+  font-weight: 700;
+}
+.spec-dot {
+  width: 5px; height: 5px;
+  background: var(--yellow);
+  display: inline-block;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 1100px) {
+  .spec-flow {
+    grid-template-columns: 120px 1fr 90px 200px 0.9fr;
+    gap: 10px 12px;
+  }
+}

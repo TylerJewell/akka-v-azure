@@ -1,5 +1,6 @@
 # Build outputs are git-ignored except the published personalized overview.
 generated/*
 !generated/overview/
+!generated/specify/
 __pycache__/
 *.pyc
