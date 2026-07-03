@@ -1657,6 +1657,7 @@ body {
   z-index: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
   gap: 20px;
 }
@@ -1738,10 +1739,10 @@ body {
 
 /* Rows */
 .s6b-rows {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin-top: 28px;
   min-height: 0;
 }
@@ -1755,18 +1756,18 @@ body {
   border: 1px solid #1F1F1F;
   border-radius: 6px;
   background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-height: 0;
   overflow: hidden;
 }
 
 .s6b-theme {
-  font-size: clamp(28px, 3.2vw, 46px);
+  font-size: clamp(24px, 2.8vw, 40px);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #28C840;
   line-height: 0.95;
-  padding: 18px 28px;
+  padding: 12px 28px;
   display: flex;
   align-items: center;
   background: rgba(40,200,64,0.05);
@@ -1776,9 +1777,9 @@ body {
 .s6b-right {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  padding: 18px 28px;
+  padding: 12px 28px;
 }
 
 .s6b-us-body {
@@ -1792,7 +1793,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  padding: 12px 18px;
+  padding: 8px 16px;
   border: 1px solid rgba(231,76,60,0.28);
   border-left: 3px solid #E74C3C;
   background: rgba(231,76,60,0.04);
@@ -2497,7 +2498,7 @@ body {
   margin-bottom: 8px;
 }
 .s7-prob-text {
-  font-size: 14px; color: #999; line-height: 1.5;
+  font-size: 16.5px; color: #a5a5a5; line-height: 1.55;
 }
 
 /* ── Phase 2: The Answer ── embedded governance tool ── */
@@ -2507,12 +2508,29 @@ body {
   background: var(--black);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 46px var(--pad-6) 24px;
 }
+.s7gov-head { flex-shrink: 0; margin-bottom: 22px; }
+.s7gov-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.s7gov-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--yellow); }
+.s7gov-title {
+  font-size: clamp(30px, 4vw, 52px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+}
+.s7gov-title .accent { color: var(--yellow); }
+.s7gov-demo { flex: 1 1 auto; min-height: 0; }
 #s7-gov-iframe {
   display: block;
   width: 100%;
   height: 100%;
-  border: 0;
+  border: 1px solid #1F1F1F;
+  border-radius: 4px;
   background: var(--black);
 }
 
@@ -2970,407 +2988,86 @@ body {
 .pkg-reveal-d8 { transition-delay: .8s; }
 
 
-/* ── 14-delivery ── */
-#s10-delivery-wrapper {
+/* ── 14-specify ── */
+#spwhat-wrapper {
   height: 140vh;
   position: relative;
 }
-#s10-delivery {
-  background: var(--black);
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 48px var(--pad-8);
-  overflow: hidden;
+#spwhat {
+  height: 100vh; min-height: 680px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-8); position: sticky; top: 0; background: var(--black); overflow: hidden;
 }
-#s10-delivery::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
-  z-index: 0;
-}
-.s10d-reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
-  position: relative;
-  z-index: 1;
-}
-.s10d-reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-.s10d-reveal-d1 { transition-delay: .1s; }
-.s10d-reveal-d2 { transition-delay: .2s; }
-.s10d-reveal-d3 { transition-delay: .3s; }
-.s10d-reveal-d4 { transition-delay: .4s; }
-
-.s10d-kicker {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--yellow);
-  font-weight: 600;
-  margin-bottom: 14px;
-}
-.s10d-kicker::before {
-  content: '';
-  display: inline-block;
-  width: 28px;
-  height: 2px;
-  background: var(--yellow);
-  margin-right: 10px;
-  vertical-align: middle;
-}
-.s10d-headline {
-  font-size: clamp(32px, 4.2vw, 64px);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  color: var(--white);
-  max-width: 1120px;
-  margin-bottom: 14px;
-}
-.s10d-headline .accent {
-  color: var(--yellow);
-}
-.s10d-sub {
-  font-size: clamp(15px, 1.35vw, 20px);
-  color: #B8B8B8;
-  line-height: 1.4;
-  max-width: 820px;
-  margin-bottom: 46px;
-}
-
-.s10d-flow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr);
-  gap: 0;
-  align-items: stretch;
-  max-width: 1340px;
-  min-height: 252px;
-}
-.s10d-stage-control {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.s10d-stage {
-  background: #0A0A0A;
-  border: 1px solid #1C1C1C;
-  border-radius: 10px;
-  padding: 24px 20px 22px;
-  position: relative;
-  overflow: hidden;
-  text-align: left;
-  cursor: pointer;
-  transition: background .25s ease, border-color .25s ease, transform .25s ease;
-}
-.s10d-stage::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #2A2A2A;
-}
-.s10d-stage:hover {
-  border-color: #333;
-  background: #101010;
-}
-#s10d-frame:checked ~ .s10d-flow .s10d-stage.frame,
-#s10d-govern:checked ~ .s10d-flow .s10d-stage.govern,
-#s10d-specify:checked ~ .s10d-flow .s10d-stage.specify,
-#s10d-ship:checked ~ .s10d-flow .s10d-stage.ship,
-#s10d-improve:checked ~ .s10d-flow .s10d-stage.improve {
-  background: rgba(245,197,24,0.06);
-  border-color: rgba(245,197,24,0.55);
-}
-#s10d-frame:checked ~ .s10d-flow .s10d-stage.frame::before,
-#s10d-govern:checked ~ .s10d-flow .s10d-stage.govern::before,
-#s10d-specify:checked ~ .s10d-flow .s10d-stage.specify::before,
-#s10d-ship:checked ~ .s10d-flow .s10d-stage.ship::before,
-#s10d-improve:checked ~ .s10d-flow .s10d-stage.improve::before {
-  background: var(--yellow);
-}
-#s10d-frame:checked ~ .s10d-flow .s10d-stage.frame .s10d-stage-num,
-#s10d-govern:checked ~ .s10d-flow .s10d-stage.govern .s10d-stage-num,
-#s10d-specify:checked ~ .s10d-flow .s10d-stage.specify .s10d-stage-num,
-#s10d-ship:checked ~ .s10d-flow .s10d-stage.ship .s10d-stage-num,
-#s10d-improve:checked ~ .s10d-flow .s10d-stage.improve .s10d-stage-num {
-  border-color: rgba(245,197,24,0.55);
-  background: rgba(245,197,24,0.12);
-}
-.s10d-stage-num {
-  width: 34px;
-  height: 34px;
-  border-radius: 17px;
-  background: #111;
-  border: 1px solid #2A2A2A;
-  color: var(--yellow);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 28px;
-}
-.s10d-stage-title {
-  font-size: 30px;
-  color: var(--white);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  margin-bottom: 14px;
-}
-.s10d-stage-copy {
-  font-size: 13.5px;
-  color: #A5A5A5;
-  line-height: 1.48;
-}
-.s10d-arrow {
-  position: relative;
-  align-self: center;
-  height: 2px;
-  background: #343434;
-}
-.s10d-arrow::after {
-  content: '';
-  position: absolute;
-  right: -1px;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  border-top: 2px solid #343434;
-  border-right: 2px solid #343434;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.s10d-output-row {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr 1fr 1fr;
-  gap: 14px;
-  max-width: 1340px;
-  margin-top: 28px;
-}
-.s10d-output-details {
-  grid-column: span 3;
-}
-.s10d-output-set {
-  display: none;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-#s10d-frame:checked ~ .s10d-output-row .s10d-output-set.frame,
-#s10d-govern:checked ~ .s10d-output-row .s10d-output-set.govern,
-#s10d-specify:checked ~ .s10d-output-row .s10d-output-set.specify,
-#s10d-ship:checked ~ .s10d-output-row .s10d-output-set.ship,
-#s10d-improve:checked ~ .s10d-output-row .s10d-output-set.improve {
-  display: grid;
-}
-.s10d-output {
-  background: #0A0A0A;
-  border: 1px solid #1C1C1C;
-  border-radius: 8px;
-  padding: 18px 20px;
-}
-.s10d-output.hero {
-  border-color: rgba(245,197,24,0.55);
-  background: rgba(245,197,24,0.06);
-}
-.s10d-output-label {
-  font-size: 10px;
-  color: var(--yellow);
-  font-weight: 700;
-  letter-spacing: 2.2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.s10d-output-main {
-  font-size: 15px;
-  color: #CFCFCF;
-  line-height: 1.38;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.s10d-output.hero .s10d-output-main {
-  font-size: 28px;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  color: var(--white);
-  font-weight: 700;
-}
-
-.s10d-thesis {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  max-width: 1340px;
-  margin-top: 22px;
-}
-.s10d-thesis-line {
-  width: 78px;
-  height: 2px;
-  background: var(--yellow);
-  flex-shrink: 0;
-}
-.s10d-thesis-text {
-  font-size: 15px;
-  color: #D2D2D2;
-  line-height: 1.4;
-}
-
-@media (max-width: 1100px) {
-  .s10d-flow {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .s10d-arrow {
-    display: none;
-  }
-  .s10d-output-row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-
-/* ── 15-partners ── */
-#s9-wrapper {
-  height: 140vh;
-  position: relative;
-}
-#s9 {
-  background: var(--black);
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 48px var(--pad-8);
-  overflow: hidden;
-}
-#s9::before {
+#spwhat::before {
   content:''; position:absolute; inset:0;
-  background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
-  background-size: 48px 48px; pointer-events:none; z-index:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
 }
+#spwhat::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 60% 50%, transparent 30%, rgba(0,0,0,0.85) 80%);
+  pointer-events:none; z-index:0;
+}
+.hero-nav {
+  position:absolute; top:0; left:0; right:0;
+  padding:32px var(--pad-8); display:flex; justify-content:space-between; align-items:center; z-index:2;
+}
+.hero-logo svg { height:30px; width:auto; }
+.hero-tagline { font-size:10px; text-transform:uppercase; letter-spacing:2.5px; color:var(--gray); font-weight:500; }
 
-.s9-reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
-  position: relative; z-index: 1;
-}
-.s9-reveal.visible { opacity: 1; transform: none; }
+.hero-body { position:relative; z-index:2; max-width:1000px; }
 
-/* ── Top: The Promise ── */
-.s9-promise {
-  max-width: 1000px;
-  margin-bottom: 56px;
-}
-.s9-eyebrow {
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:10px;
   font-size:11px; text-transform:uppercase; letter-spacing:3px;
-  color:var(--yellow); font-weight:600; margin-bottom:16px;
+  color:var(--yellow); font-weight:600; margin-bottom:28px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .5s ease forwards .4s;
 }
-.s9-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
+.hero-eyebrow::before { content:''; display:block; width:28px; height:2px; background:var(--yellow); }
 
-.s9-headline {
-  font-size: clamp(32px, 4.5vw, 68px); font-weight:700;
-  line-height:1.05; letter-spacing:-0.035em; color:var(--white);
-  margin-bottom: 28px;
+.hero-headline {
+  font-size: clamp(44px, 6.5vw, 96px); font-weight:700;
+  line-height:1.02; letter-spacing:-0.03em; color:var(--white);
 }
-.s9-headline .accent { color:var(--yellow); }
+.hero-headline .line { display:block; overflow:hidden; padding-bottom:4px; }
+.hero-headline .line-inner {
+  display:block; opacity:0; transform:translateY(110%);
+  animation: slideUp .75s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.hero-headline .line:nth-child(1) .line-inner { animation-delay:.55s; }
+.hero-headline .line:nth-child(2) .line-inner { animation-delay:.68s; }
+.hero-headline .line:nth-child(3) .line-inner { animation-delay:.81s; }
+.hero-headline .accent { color:var(--yellow); }
 
-.s9-sub {
-  font-size: clamp(16px, 1.5vw, 21px); color: #999; line-height: 1.5;
-  max-width: 700px;
-}
+.hero-divider { width:56px; height:3px; background:var(--yellow); margin:32px 0; opacity:0; animation:fadeUp .5s ease forwards 1.1s; }
 
-/* ── Bottom: Partner cards + quote ── */
-.s9-bottom {
-  display: flex; gap: 28px; align-items: flex-start;
-  max-width: 1200px;
-}
+.hero-stats { display:flex; gap:52px; flex-wrap:wrap; opacity:0; animation:fadeUp .6s ease forwards 1.25s; }
+.hero-stat-number { font-size:38px; font-weight:700; color:var(--white); letter-spacing:-0.03em; line-height:1; display:flex; align-items:baseline; }
+.hero-stat-number .suffix { color:var(--yellow); font-size:28px; }
+.hero-stat-label { font-size:11px; color:var(--gray); text-transform:uppercase; letter-spacing:1.5px; margin-top:6px; font-weight:500; }
 
-/* Partner cards */
-.s9-partners {
-  display: flex; gap: 16px;
-  flex: 1;
+.spwhat-lower { width: fit-content; max-width: 100%; }
+.spwhat-para {
+  width: 0; min-width: 100%;
+  margin-top:40px;
+  font-size:clamp(15px,1.25vw,19px); line-height:1.65;
+  color:#9a9a9a; font-weight:400;
+  opacity:0; animation:fadeUp .6s ease forwards 1.5s;
 }
-.s9-partner {
-  flex: 1;
-  border-radius: 12px;
-  padding: 24px 20px;
-  display: flex; flex-direction: column;
-  position: relative;
-  overflow: hidden;
-}
-.s9-partner::before {
-  content:''; position:absolute; inset:0;
-  opacity: 0.1; pointer-events:none;
-  background-size: 28px 28px;
-  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-}
-.s9-partner.deloitte {
-  background: linear-gradient(135deg, #0a1a05 0%, #132b0a 50%, #0a0a0a 100%);
-  border: 1px solid rgba(134,188,37,0.2);
-  color: #86BC25;
-}
-.s9-partner.ntt {
-  background: linear-gradient(135deg, #051525 0%, #0a2040 50%, #0a0a0a 100%);
-  border: 1px solid rgba(30,144,255,0.2);
-  color: #1E90FF;
-}
-.s9-partner.avows {
-  background: linear-gradient(135deg, #1a1500 0%, #2a2005 50%, #0a0a0a 100%);
-  border: 1px solid rgba(245,197,24,0.2);
-  color: #F5C518;
-}
-.s9-partner-name {
-  font-size: clamp(22px, 2.2vw, 34px); font-weight: 700;
-  letter-spacing: -0.03em; line-height: 1;
-  margin-bottom: 6px;
-}
-.s9-partner-type {
-  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
-  color: #777; font-weight: 600; margin-bottom: 10px;
-}
-.s9-partner-desc {
-  font-size: 12px; color: #888; line-height: 1.45;
-}
+.spwhat-para b { color:#cfcfcf; font-weight:600; }
 
-/* Quote panel */
-.s9-quote-panel {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
-  padding: 16px 24px;
-  border-left: 3px solid #86BC25;
-  margin-top: 16px;
+.hero-scroll-hint {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px; z-index:2;
+  opacity:0; animation:fadeUp .5s ease forwards 2s;
 }
-.s9-quote-text {
-  font-size: clamp(18px, 1.8vw, 26px); font-weight: 600;
-  color: var(--white); line-height: 1.3;
-  font-style: italic; letter-spacing: -0.02em;
-  margin-bottom: 0;
+.hero-scroll-hint span { font-size:9px; text-transform:uppercase; letter-spacing:3px; color:var(--gray); }
+.scroll-arrow {
+  width:18px; height:18px;
+  border-right:1.5px solid var(--yellow); border-bottom:1.5px solid var(--yellow);
+  transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
 }
-.s9-quote-attr {
-  font-size: 13px; color: #86BC25; font-style: normal; font-weight: 600;
-  text-align: left;
-}
-
-@media (max-width: 1000px) {
-  .s9-bottom { flex-direction: column; }
-  .s9-partners { flex-direction: column; }
-  .s9-quote-panel { width: 100%; border-left: none; border-top: 3px solid #86BC25; padding: 20px 0 0; }
-}
-
 
 /* ── 17-closing ── */
 #closing {
@@ -3883,7 +3580,7 @@ body {
       <div class="spec-hub">
         <div class="spec-hub-inner">
           <span class="spec-hub-name">Akka Specify</span>
-          <span class="spec-hub-foot">AI&#8209;assisted authoring</span>
+          <span class="spec-hub-foot">spec-driven development</span>
         </div>
       </div>
 
@@ -3969,7 +3666,7 @@ body {
           <div class="pp-row-tag">Citizen Devs</div>
           <div class="pp-row-customer">
             <div class="pp-customer-photo" style="background-image:url('images/customers/dojo.png')"></div>
-            <div class="pp-customer-mark">Dojo</div>
+            <div class="pp-customer-mark">Global Payments Processor</div>
           </div>
           <div class="pp-row-story">A team of fresh college graduates delivered a production AI system &mdash; start to ship.</div>
         </div>
@@ -4019,7 +3716,7 @@ body {
     <div class="s6b-head">
       <div class="s6b-eyebrow s6b-reveal">Akka vs. The Other Guys</div>
       <div class="s6b-headline s6b-reveal">
-        <span class="accent">Akka delivers the system.</span><br>Frameworks and hyperscalers sell you parts.
+        <span class="accent">Akka delivers the system.</span><br>Frameworks and hyperscalers sell you parts &mdash; and the army to assemble them.
       </div>
       <div class="s6b-vendor-line s6b-reveal">AWS Bedrock &middot; Azure AI Foundry &middot; Google Vertex AI &middot; Gemini Enterprise &middot; LangChain &middot; CrewAI &middot; LlamaIndex</div>
     </div>
@@ -4043,14 +3740,14 @@ body {
 
       <!-- Row 2: Predictable Pricing -->
       <div class="s6b-row">
-        <div class="s6b-theme">Predictable<br>Pricing</div>
+        <div class="s6b-theme">Total<br>Cost</div>
         <div class="s6b-right">
-          <div class="s6b-us-body">Fixed annual fees with a single invoice. Shared compute, no surprise tokens. <span class="s6b-num">70&ndash;90%</span> lower infra TCO than the framework + hyperscaler patchwork.</div>
+          <div class="s6b-us-body">One fixed fee, a single invoice, <span class="s6b-num">70&ndash;90%</span> lower infra TCO &mdash; and the platform (or Akka Specify) does the assembly. No standing army of engineers to staff.</div>
           <div class="s6b-them-card">
             <div class="s6b-them-tag">Frameworks &amp; Hyperscalers</div>
             <div class="s6b-them-content">
-              <span class="s6b-them-title">Unpredictable spend</span>
-              <span class="s6b-them-body">&mdash; per-call, per-token, per-service. Six to eight line items finance can't forecast.</span>
+              <span class="s6b-them-title">Unbounded spend &mdash; plus an FDE army</span>
+              <span class="s6b-them-body">&mdash; per-call, per-token, per-service bills, plus FDEs you staff for months</span>
             </div>
           </div>
         </div>
@@ -5763,25 +5460,33 @@ body {
     <div class="s7-problems">
       <div class="s7-prob" data-s7="0">
         <div class="s7-prob-stat">&euro;35M Penalties</div>
-        <div class="s7-prob-text">186 AI regulations indexed, 704 controls in the corpus, 98 of them with financial penalties &mdash; and all of them changing. Which ones apply to your agents? How do you re-posture every time they shift? EU AI Act penalties alone reach &euro;35M.</div>
+        <div class="s7-prob-text">186 AI regulations, 704 controls, 98 with financial penalties &mdash; all changing. Which apply to your agents? EU AI Act penalties reach &euro;35M.</div>
       </div>
       <div class="s7-prob" data-s7="0">
         <div class="s7-prob-stat">Outside Looking In</div>
-        <div class="s7-prob-text">Governance tools observe AI from the outside. They can't enforce at agent boundaries, can't gate a deployment, can't link a policy decision to the human who approved it. They produce reports &mdash; not proof.</div>
+        <div class="s7-prob-text">Governance tools watch from outside &mdash; they can't enforce at agent boundaries or gate a deployment. Reports, not proof.</div>
       </div>
       <div class="s7-prob" data-s7="0">
         <div class="s7-prob-stat">PB+</div>
-        <div class="s7-prob-text">Petabyte-scale storage for regulatory holds &mdash; 10-year retention for high-risk AI under EU AI Act Art. 72. Copied logs aren't tamper-proof. When auditors come, you need hash-chains &mdash; not hope. Governance isn't cheap; it has to be built in.</div>
+        <div class="s7-prob-text">Petabyte-scale holds, 10-year retention under EU AI Act Art. 72. Copied logs aren't tamper-proof &mdash; auditors need hash-chains, not hope.</div>
       </div>
       <div class="s7-prob" data-s7="0">
         <div class="s7-prob-stat">Uneven Practices</div>
-        <div class="s7-prob-text">Each team applies governance unevenly &mdash; different skills, processes, sign-offs, documentation, testing. This unevenness is the single biggest bottleneck to getting AI into production. Without a uniform runtime control plane, every project re-litigates what &ldquo;safe enough&rdquo; means.</div>
+        <div class="s7-prob-text">Every team governs differently &mdash; skills, sign-offs, testing. Without a uniform control plane, each project re-litigates what &ldquo;safe enough&rdquo; means.</div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="s7-answer-frame"><iframe id="s7-gov-iframe" src="governance/governance.html" title="Akka Governance Platform" loading="lazy" allow="fullscreen"></iframe></div>
+<div id="s7-answer-frame">
+  <div class="s7gov-head">
+    <div class="s7gov-eyebrow">THE GOVERNANCE PLATFORM</div>
+    <div class="s7gov-title">Governance for <span class="accent">agentic AI.</span></div>
+  </div>
+  <div class="s7gov-demo">
+    <iframe id="s7-gov-iframe" src="governance/governance-specify.html" title="Governance for agentic AI" loading="lazy" allow="fullscreen"></iframe>
+  </div>
+</div>
 
 
 <div id="cust-wrapper">
@@ -5847,13 +5552,13 @@ body {
       <div class="cust-desc">Akka powers John Deere's Precision Ag platform, turning sensor data into actionable intelligence that enhances crop yields and reduces operational costs.</div>
     </div>
 
-    <!-- ═══ SLIDE 5: Dojo ═══ -->
+    <!-- ═══ SLIDE 5: Global Payments Processor ═══ -->
     <div class="cust-slide" data-slide="4">
       <div class="cust-eyebrow">Customer spotlight</div>
-      <div class="cust-name">Dojo</div>
+      <div class="cust-name">Global Payments Processor</div>
       <div class="cust-headline">Agentic AI Accelerates European Expansion</div>
       <div class="cust-divider"></div>
-      <div class="cust-desc">Dojo onboards thousands of merchants monthly by shifting business workflows to agentic architecture using AI-assisted Akka development.</div>
+      <div class="cust-desc">Global Payments Processor onboards thousands of merchants monthly by shifting business workflows to agentic architecture using AI-assisted Akka development.</div>
     </div>
 
   </div>
@@ -5866,6 +5571,7 @@ body {
   <div class="pkg-eyebrow pkg-reveal">The packages</div>
   <div class="pkg-headline pkg-reveal pkg-reveal-d1">One platform. <span class="accent">Any cloud.</span></div>
   <div class="pkg-sub pkg-reveal pkg-reveal-d2">Every configuration runs the full Akka platform &mdash; the same runtime, the same APIs, the same developer experience, the same governance lifecycle. You choose where it runs and how much you need.</div>
+  <div class="pkg-sub pkg-reveal pkg-reveal-d2">These tiers are for building on the platform yourself. Prefer a delivered outcome? Akka Specify is one fixed, all-inclusive price.</div>
 
   <!-- Infrastructure bar -->
   <div class="pkg-infra pkg-reveal pkg-reveal-d3">
@@ -5999,126 +5705,40 @@ body {
 <div style="height:12vh;background:var(--black)"></div>
 
 
-<div style="height:12vh;background:var(--black)"></div>
-<div id="s10-delivery-wrapper">
-<section id="s10-delivery">
-  <div class="s10d-kicker s10d-reveal">How Akka delivers</div>
-  <div class="s10d-headline s10d-reveal s10d-reveal-d1">Akka turns AI strategy into a <span class="accent">system.</span></div>
-  <div class="s10d-sub s10d-reveal s10d-reveal-d2">Akka consulting services move teams from AI idea to production system.</div>
-
-  <input class="s10d-stage-control" type="radio" name="s10d-stage" id="s10d-frame" checked>
-  <input class="s10d-stage-control" type="radio" name="s10d-stage" id="s10d-govern">
-  <input class="s10d-stage-control" type="radio" name="s10d-stage" id="s10d-specify">
-  <input class="s10d-stage-control" type="radio" name="s10d-stage" id="s10d-ship">
-  <input class="s10d-stage-control" type="radio" name="s10d-stage" id="s10d-improve">
-
-  <div class="s10d-flow s10d-reveal s10d-reveal-d3">
-    <label class="s10d-stage frame" for="s10d-frame">
-      <div class="s10d-stage-num">01</div>
-      <div class="s10d-stage-title">Frame</div>
-      <div class="s10d-stage-copy">Pick the first production slice and map systems, roles, and success metrics.</div>
-    </label>
-    <div class="s10d-arrow"></div>
-    <label class="s10d-stage govern" for="s10d-govern">
-      <div class="s10d-stage-num">02</div>
-      <div class="s10d-stage-title">Govern</div>
-      <div class="s10d-stage-copy">Author the Eval Matrix &mdash; autonomy thresholds, guardrails, approvals, and the evidence model that's continuously enforced.</div>
-    </label>
-    <div class="s10d-arrow"></div>
-    <label class="s10d-stage specify" for="s10d-specify">
-      <div class="s10d-stage-num">03</div>
-      <div class="s10d-stage-title">Specify</div>
-      <div class="s10d-stage-copy">Convert the method into executable Akka Specify inputs and acceptance criteria.</div>
-    </label>
-    <div class="s10d-arrow"></div>
-    <label class="s10d-stage ship" for="s10d-ship">
-      <div class="s10d-stage-num">04</div>
-      <div class="s10d-stage-title">Ship</div>
-      <div class="s10d-stage-copy">Deploy the workflow, integrations, review queues, and operational dashboards.</div>
-    </label>
-    <div class="s10d-arrow"></div>
-    <label class="s10d-stage improve" for="s10d-improve">
-      <div class="s10d-stage-num">05</div>
-      <div class="s10d-stage-title">Improve</div>
-      <div class="s10d-stage-copy">Use Akka Verify to validate the running system against its specs and fine-tune from production data.</div>
-    </label>
-  </div>
-
-  <div class="s10d-output-row s10d-reveal s10d-reveal-d4">
-    <div class="s10d-output hero">
-      <div class="s10d-output-label">First milestone</div>
-      <div class="s10d-output-main">Production slice in 4-6 weeks.</div>
-    </div>
-    <div class="s10d-output-details">
-      <div class="s10d-output-set frame">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Use-case brief, system map, role map</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Metrics</div><div class="s10d-output-main">Cycle time, quality, effort saved</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Plan</div><div class="s10d-output-main">Milestones, owners, acceptance criteria</div></div>
+<div id="spwhat-wrapper">
+<section id="spwhat">
+  <div class="hero-body">
+    <div class="hero-eyebrow">OR HAVE IT DELIVERED &middot; AKKA SPECIFY</div>
+    <h1 class="hero-headline">
+      <span class="line"><span class="line-inner">AI,</span></span>
+      <span class="line"><span class="line-inner"><span class="accent">delivered.</span></span></span>
+    </h1>
+    <div class="hero-divider"></div>
+    <div class="spwhat-lower">
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-number"><span>UP</span></div>
+          <div class="hero-stat-label">99.9999% availability</div>
+        </div>
+        <div>
+          <div class="hero-stat-number"><span>SAFE</span></div>
+          <div class="hero-stat-label">Governance enforced</div>
+        </div>
+        <div>
+          <div class="hero-stat-number"><span>SMART</span></div>
+          <div class="hero-stat-label">Improves in production</div>
+        </div>
+        <div>
+          <div class="hero-stat-number"><span>FIXED</span></div>
+          <div class="hero-stat-label">One monthly price</div>
+        </div>
       </div>
-      <div class="s10d-output-set govern">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Eval Matrix, autonomy policy, risk model</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Approvals</div><div class="s10d-output-main">Decision rights, sign-off recipe, HITL gates</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Evidence</div><div class="s10d-output-main">Retention plan, audit plan, policy record</div></div>
-      </div>
-      <div class="s10d-output-set specify">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Functional AI implementation</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Tests</div><div class="s10d-output-main">Scenarios, eval criteria, edge cases</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Build assets</div><div class="s10d-output-main">Services, agents, integrations, ontologies</div></div>
-      </div>
-      <div class="s10d-output-set ship">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Release package, runbook, cutover plan</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Operations</div><div class="s10d-output-main">SLA view, metrics, alerts, dashboards</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Product layer</div><div class="s10d-output-main">Review queues, overrides, feedback capture</div></div>
-      </div>
-      <div class="s10d-output-set improve">
-        <div class="s10d-output"><div class="s10d-output-label">Deliverables</div><div class="s10d-output-main">Feedback loop, tuning backlog, release cadence</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Behavior</div><div class="s10d-output-main">Quality review, drift signals, escalations</div></div>
-        <div class="s10d-output"><div class="s10d-output-label">Cost</div><div class="s10d-output-main">Token analysis, cache strategy, routing plan</div></div>
-      </div>
+      <p class="spwhat-para">Akka Specify delivers production-grade agentic AI systems as a <b>guaranteed outcome</b>: you provide a handful of plain-language specifications, and Akka generates, governs, and runs the entire system for you. What you get is a governed, mission-critical AI system &mdash; delivered <b>in weeks</b> and kept up, safe, and continuously improving &mdash; for <b>one fixed monthly price</b>.</p>
     </div>
   </div>
 
 </section>
 </div>
-
-
-<div style="height:12vh;background:var(--black)"></div>
-<div id="s9-wrapper">
-<section id="s9">
-  <div class="s9-promise s9-reveal">
-    <div class="s9-eyebrow">How we deliver</div>
-    <div class="s9-headline"><span class="accent">Production AI in weeks.</span></div>
-    <div class="s9-sub">The Akka team embeds with yours from pre-sales through ongoing operations. We don't hand off and walk away. We get you live, and we guarantee your SLA.</div>
-  </div>
-
-  <div class="s9-bottom s9-reveal">
-    <div class="s9-partners">
-      <div class="s9-partner deloitte">
-        <div class="s9-partner-name">Deloitte</div>
-        <div class="s9-partner-type">Global Systems Integrator</div>
-        <div class="s9-partner-desc">Enterprise AI transformation at scale across financial services, manufacturing, and government.</div>
-      </div>
-      <div class="s9-partner ntt">
-        <div class="s9-partner-name">NTT DATA</div>
-        <div class="s9-partner-type">Global Technology Partner</div>
-        <div class="s9-partner-desc">Production-proven delivery for mission-critical agentic systems across APAC and EMEA.</div>
-      </div>
-      <div class="s9-partner avows">
-        <div class="s9-partner-name">AVOWS</div>
-        <div class="s9-partner-type">Specialist Delivery Partner</div>
-        <div class="s9-partner-desc">Akka-native engineering. Hands-on implementation, migration, and production ops.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="s9-quote-panel s9-reveal">
-    <div class="s9-quote-text">&ldquo;Akka provides the industry&rsquo;s best way to build agentic AI systems that scale in the enterprise and ensure stability, performance, and outcomes.&rdquo;</div>
-    <div class="s9-quote-attr">&mdash; Anand Nimkar, Partner - AI Practice Lead, Deloitte</div>
-  </div>
-</section>
-</div>
-
-<!-- DEMO_HTML_MARKER -->
 
 
 <section id="closing">
@@ -6785,58 +6405,9 @@ const observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('#pkg .pkg-reveal, #pkg .pkg-tier').forEach(el => observer.observe(el));
 
-/* ── 14-delivery ── */
-(function() {
-  var revObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('#s10-delivery .s10d-reveal').forEach(function(el) { revObs.observe(el); });
+/* ── 14-specify ── */
+/* Static slide — CSS-animated reveal, no JS needed. */
 
-  var wrapper = document.getElementById('s10-delivery-wrapper');
-  var phaseIds = ['s10d-frame', 's10d-govern', 's10d-specify', 's10d-ship', 's10d-improve'];
-
-  function isDeliveryActive() {
-    if (!wrapper) return false;
-    var rect = wrapper.getBoundingClientRect();
-    var midpoint = window.innerHeight / 2;
-    return rect.top <= midpoint && rect.bottom >= midpoint;
-  }
-
-  function currentPhaseIndex() {
-    for (var i = 0; i < phaseIds.length; i++) {
-      var input = document.getElementById(phaseIds[i]);
-      if (input && input.checked) return i;
-    }
-    return 0;
-  }
-
-  function setPhase(idx) {
-    var bounded = Math.max(0, Math.min(idx, phaseIds.length - 1));
-    var input = document.getElementById(phaseIds[bounded]);
-    if (input) input.checked = true;
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (!isDeliveryActive()) return;
-    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-    e.preventDefault();
-    var delta = e.key === 'ArrowDown' ? 1 : -1;
-    setPhase(currentPhaseIndex() + delta);
-  });
-})();
-
-
-/* ── 15-partners ── */
-(function() {
-  var revObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('#s9 .s9-reveal').forEach(function(el) { revObs.observe(el); });
-})();
 
 /* ── 17-closing ── */
 const closingObserver = new IntersectionObserver(entries => {
@@ -6850,52 +6421,29 @@ document.querySelectorAll('#closing .closing-reveal').forEach(el => closingObser
 (function() {
 
 const views = [
-    document.getElementById('title'),
-    document.getElementById('hero-wrapper'),
-    document.getElementById('st-wrapper'),
-    document.getElementById('stax-wrapper'),
-    document.getElementById('s2-wrapper'),
-    document.getElementById('s4-wrapper'),
-    document.getElementById('spec-wrapper'),
-    document.getElementById('platform-pattern-wrapper'),
-    document.getElementById('s6b-wrapper'),
-    document.getElementById('s13-wrapper'),
-    document.getElementById('s5-wrapper'),
-    document.getElementById('s6-wrapper'),
-    document.getElementById('s7-problem'),
-    document.getElementById('s7-answer-frame'),
-    document.getElementById('cust-wrapper'),
-    document.getElementById('pkg-wrapper'),
-    document.getElementById('s10-delivery-wrapper'),
-    document.getElementById('s9-wrapper'),
-    document.getElementById('demo-wrapper'),
-    document.getElementById('closing')
-  ].filter(Boolean);
+    'title','hero-wrapper','st-wrapper','stax-wrapper','s2-wrapper','s4-wrapper',
+    'spec-wrapper','platform-pattern-wrapper','s6b-wrapper','s13-wrapper',
+    's5-wrapper','s6-wrapper','s7-problem','s7-answer-frame','cust-wrapper',
+    'pkg-wrapper','spwhat-wrapper','closing'
+  ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
 
-  function currentViewIndex() {
-    var scrollY = window.scrollY || window.pageYOffset;
+  function docTop(el){
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+  function currentIndex() {
+    var y = (window.scrollY || window.pageYOffset) + 4;
     var best = 0;
     for (var i = 0; i < views.length; i++) {
-      if (views[i].offsetTop <= scrollY + 10) best = i;
+      if (docTop(views[i]) <= y) best = i;
     }
     return best;
   }
-
-  function navNext() {
-    var idx = currentViewIndex();
-    if (idx < views.length - 1) {
-      views[idx + 1].scrollIntoView({ behavior: 'smooth' });
-    }
+  function goTo(i) {
+    if (i < 0 || i >= views.length) return;
+    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
   }
-  function navPrev() {
-    var idx = currentViewIndex();
-    var scrollY = window.scrollY || window.pageYOffset;
-    if (scrollY > views[idx].offsetTop + 10 && idx >= 0) {
-      views[idx].scrollIntoView({ behavior: 'smooth' });
-    } else if (idx > 0) {
-      views[idx - 1].scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+  function navNext() { goTo(currentIndex() + 1); }
+  function navPrev() { goTo(currentIndex() - 1); }
   function handleNavKey(key) {
     if (key === 'ArrowRight' || key === 'PageDown') navNext();
     else if (key === 'ArrowLeft' || key === 'PageUp') navPrev();
@@ -6907,7 +6455,7 @@ const views = [
       handleNavKey(e.key);
     }
   });
-  // Iframe slides (e.g. governance.html) forward nav keys via postMessage
+  // Iframe slides forward nav keys via postMessage
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'akka-deck-nav' && e.data.key) {
       handleNavKey(e.data.key);

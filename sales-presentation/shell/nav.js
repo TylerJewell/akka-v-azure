@@ -1,50 +1,27 @@
 const views = [
-    document.getElementById('title'),
-    document.getElementById('hero-wrapper'),
-    document.getElementById('st-wrapper'),
-    document.getElementById('stax-wrapper'),
-    document.getElementById('s2-wrapper'),
-    document.getElementById('s4-wrapper'),
-    document.getElementById('spec-wrapper'),
-    document.getElementById('platform-pattern-wrapper'),
-    document.getElementById('s6b-wrapper'),
-    document.getElementById('s13-wrapper'),
-    document.getElementById('s5-wrapper'),
-    document.getElementById('s6-wrapper'),
-    document.getElementById('s7-problem'),
-    document.getElementById('s7-answer-frame'),
-    document.getElementById('cust-wrapper'),
-    document.getElementById('pkg-wrapper'),
-    document.getElementById('s10-delivery-wrapper'),
-    document.getElementById('s9-wrapper'),
-    document.getElementById('demo-wrapper'),
-    document.getElementById('closing')
-  ].filter(Boolean);
+    'title','hero-wrapper','st-wrapper','stax-wrapper','s2-wrapper','s4-wrapper',
+    'spec-wrapper','platform-pattern-wrapper','s6b-wrapper','s13-wrapper',
+    's5-wrapper','s6-wrapper','s7-problem','s7-answer-frame','cust-wrapper',
+    'pkg-wrapper','spwhat-wrapper','closing'
+  ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
 
-  function currentViewIndex() {
-    var scrollY = window.scrollY || window.pageYOffset;
+  function docTop(el){
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+  function currentIndex() {
+    var y = (window.scrollY || window.pageYOffset) + 4;
     var best = 0;
     for (var i = 0; i < views.length; i++) {
-      if (views[i].offsetTop <= scrollY + 10) best = i;
+      if (docTop(views[i]) <= y) best = i;
     }
     return best;
   }
-
-  function navNext() {
-    var idx = currentViewIndex();
-    if (idx < views.length - 1) {
-      views[idx + 1].scrollIntoView({ behavior: 'smooth' });
-    }
+  function goTo(i) {
+    if (i < 0 || i >= views.length) return;
+    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
   }
-  function navPrev() {
-    var idx = currentViewIndex();
-    var scrollY = window.scrollY || window.pageYOffset;
-    if (scrollY > views[idx].offsetTop + 10 && idx >= 0) {
-      views[idx].scrollIntoView({ behavior: 'smooth' });
-    } else if (idx > 0) {
-      views[idx - 1].scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+  function navNext() { goTo(currentIndex() + 1); }
+  function navPrev() { goTo(currentIndex() - 1); }
   function handleNavKey(key) {
     if (key === 'ArrowRight' || key === 'PageDown') navNext();
     else if (key === 'ArrowLeft' || key === 'PageUp') navPrev();
@@ -56,7 +33,7 @@ const views = [
       handleNavKey(e.key);
     }
   });
-  // Iframe slides (e.g. governance.html) forward nav keys via postMessage
+  // Iframe slides forward nav keys via postMessage
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'akka-deck-nav' && e.data.key) {
       handleNavKey(e.data.key);

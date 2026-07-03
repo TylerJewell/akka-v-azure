@@ -57,7 +57,7 @@
   margin-bottom: 8px;
 }
 .s7-prob-text {
-  font-size: 14px; color: #999; line-height: 1.5;
+  font-size: 16.5px; color: #a5a5a5; line-height: 1.55;
 }
 
 /* ── Phase 2: The Answer ── embedded governance tool ── */
@@ -67,11 +67,28 @@
   background: var(--black);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 46px var(--pad-6) 24px;
 }
+.s7gov-head { flex-shrink: 0; margin-bottom: 22px; }
+.s7gov-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.s7gov-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--yellow); }
+.s7gov-title {
+  font-size: clamp(30px, 4vw, 52px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+}
+.s7gov-title .accent { color: var(--yellow); }
+.s7gov-demo { flex: 1 1 auto; min-height: 0; }
 #s7-gov-iframe {
   display: block;
   width: 100%;
   height: 100%;
-  border: 0;
+  border: 1px solid #1F1F1F;
+  border-radius: 4px;
   background: var(--black);
 }

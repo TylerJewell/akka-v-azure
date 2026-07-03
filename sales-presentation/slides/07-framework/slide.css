@@ -26,6 +26,7 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   height: 100%;
   gap: 20px;
 }
@@ -107,10 +108,10 @@
 
 /* Rows */
 .s6b-rows {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   margin-top: 28px;
   min-height: 0;
 }
@@ -124,18 +125,18 @@
   border: 1px solid #1F1F1F;
   border-radius: 6px;
   background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
-  flex: 1 1 0;
+  flex: 0 0 auto;
   min-height: 0;
   overflow: hidden;
 }
 
 .s6b-theme {
-  font-size: clamp(28px, 3.2vw, 46px);
+  font-size: clamp(24px, 2.8vw, 40px);
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #28C840;
   line-height: 0.95;
-  padding: 18px 28px;
+  padding: 12px 28px;
   display: flex;
   align-items: center;
   background: rgba(40,200,64,0.05);
@@ -145,9 +146,9 @@
 .s6b-right {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  padding: 18px 28px;
+  padding: 12px 28px;
 }
 
 .s6b-us-body {
@@ -161,7 +162,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  padding: 12px 18px;
+  padding: 8px 16px;
   border: 1px solid rgba(231,76,60,0.28);
   border-left: 3px solid #E74C3C;
   background: rgba(231,76,60,0.04);

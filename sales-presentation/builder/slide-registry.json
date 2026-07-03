@@ -15,9 +15,7 @@
     { "id": "11-governance",           "folder": "slides/11-governance" },
     { "id": "12-customers",            "folder": "slides/12-customers" },
     { "id": "13-packages",             "folder": "slides/13-packages" },
-    { "id": "14-delivery",             "folder": "slides/14-delivery" },
-    { "id": "15-partners",             "folder": "slides/15-partners" },
-    { "id": "16-demo",                 "folder": "slides/16-demo" },
+    { "id": "14-specify",              "folder": "slides/14-specify" },
     { "id": "17-closing",              "folder": "slides/17-closing" }
   ]
 }
