@@ -22,6 +22,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 PRESENTATIONS = [
     {"dir": "gartner-presentation", "link": "gartner-presentation/generated/akka-gartner-deck.html"},
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/overview/"},
+    {"dir": "sales-presentation",   "link": "sales-presentation/generated/specify/",
+     "title_src": "sales-presentation/slides/sp-00-title/slide.html"},
     {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
 ]
 
@@ -76,7 +78,8 @@ def last_commit_epoch(link):
 
 
 def render_item(p):
-    title_html = os.path.join(ROOT, p["dir"], "slides", "00-title", "slide.html")
+    title_html = os.path.join(ROOT, p["title_src"]) if p.get("title_src") \
+        else os.path.join(ROOT, p["dir"], "slides", "00-title", "slide.html")
     title = slide_text(title_html, "h1", "title-headline")
     sub = slide_text(title_html, "div", "title-sub")
     date = last_commit_date(p["link"])
