@@ -6,6 +6,24 @@ GitHub Pages.
 
 **Live index:** https://tylerjewell.github.io/presentations/
 
+## Public vs. internal — one rule
+
+**Everything tracked in this repo is published.** GitHub Pages serves the entire
+committed tree at the Live index URL above — *linked or not*. A file that isn't
+referenced by `index.html` is still reachable by direct URL and is crawlable, and the
+source is visible in the public repo. There is no such thing as an "unlisted, private"
+committed file here.
+
+Therefore: **if it must stay private, it does not belong in the tracked tree.**
+Internal / confidential material — working notes, RFP responses, sales enablement,
+authoring guides/templates, fact sheets, roadmaps, positioning audits — lives under
+**`_internal/`**, which is git-ignored (`/_internal/`) and never published. Keep it
+there; do not copy an internal doc up into the repo root "just to view it."
+
+Bright line for any audit or scan: **tracked ⇒ public; `_internal/` ⇒ private.** Before
+adding a file, ask *"Am I OK with this on the public internet?"* — if no, it goes in
+`_internal/`.
+
 ## Layout
 
 ```

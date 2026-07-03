@@ -10,3 +10,6 @@ __pycache__/
 
 # Confidential internal-only doc — never publish to the public Pages site
 battlecard-service-tiers-internal.html
+
+# Internal / confidential — never published. Anything under here stays out of the public repo.
+/_internal/
