@@ -435,7 +435,7 @@
                 <ServerIcon size={16} /> About Akka Clusters
               </h3>
               <p className="text-xs text-muted" style={{ lineHeight: 1.6 }}>
-                Akka clusters distribute agent workloads and memory across nodes. When a node fails, agents automatically migrate to healthy nodes. State is sharded in-memory across nodes with embedded routing and load balancing. Workflow state is managed with durable execution and memory recovery is from event sourced state. The combination reduces token waste by avoiding full workflow restarts. Akka's largest customers run clusters of 300K nodes with petabytes of data.
+                Akka clusters distribute agent workloads and memory across nodes. When a node fails, agents migrate automatically with no lost state, avoiding full workflow restarts. Akka's largest customers run clusters of 300K nodes with petabytes of data.
               </p>
             </div>
           </div>
