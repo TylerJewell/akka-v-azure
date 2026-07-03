@@ -104,7 +104,7 @@ n8n Enterprise provides audit logs and log streaming — useful operational tele
 | High-risk obligations (Art. 9–15) | €15M or 3% global turnover |
 | Incorrect information (supply) | €7.5M or 1.5% global turnover |
 
-The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **186 regulations and 877 controls** (288 of which carry a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
+The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **189 regulations and 962 controls** (574 controls carrying a financial penalty (across 89 regulations)); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
 
 ## 6. One Certified System — Built, Governed, Delivered, and Run
 
@@ -175,6 +175,6 @@ The n8n engine is source-available under the Sustainable Use License (fair-code,
 - **Akka Specify (spec-driven delivery):** akka.io / akka.io/llms.txt — you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 186 regulations / 877 controls / 288 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
 
 *This comparison reflects publicly available information as of July 2026. Akka figures are sourced from akka.io and trust.akka.io. n8n figures are sourced from n8n's own documentation, pricing, license, and trust center.*

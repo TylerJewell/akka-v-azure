@@ -19,7 +19,7 @@
 | Availability SLA | No contractual uptime SLA; MSA "commercially reasonable efforts," ~99.9% in practice | 99.9999% — entire platform, backed by contractual indemnities |
 | RTO / RPO | Not published for the agent layer | Sub-1-minute RTO; zero-byte RPO; active-active HA/DR |
 | Cost model | Consumption — Flex Credits (20 credits / $0.10 per action) or $2 per conversation | Shared compute; up to 90% lower infrastructure for the same workload |
-| Governance / EU AI Act | Einstein Trust Layer — toxicity/bias detection, masking, audit log, scoped to Salesforce | Aspect-woven runtime enforcement + full pre-production governance against 186 regulations / 877 controls |
+| Governance / EU AI Act | Einstein Trust Layer — toxicity/bias detection, masking, audit log, scoped to Salesforce | Aspect-woven runtime enforcement + full pre-production governance against 189 regulations / 962 controls |
 | Build audience | Salesforce admins/developers in Agentforce Builder / Agent Script | Two independent lifecycles — build (PM/dev/ML/domain) and govern (risk/security/compliance) |
 | Improves after go-live | Not provided | Continuous evaluation, reinforcement learning, and distillation — up to 80% lower token cost over time |
 | Certifications | Salesforce trust/compliance program | 19 standards — SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF |
@@ -98,7 +98,7 @@ The penalties are enforceable now, and they apply to the whole AI system — not
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72). High-risk obligations are enforceable from August 2026.
 
-Akka embeds governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **186 regulations and 877 controls** (288 of them carrying a financial penalty); a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and **Akka Verify**, which proves conformance from the running system. This applies to any agentic workload, not only the part running inside a single SaaS application.
+Akka embeds governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** (574 controls carrying a financial penalty (across 89 regulations)); a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and **Akka Verify**, which proves conformance from the running system. This applies to any agentic workload, not only the part running inside a single SaaS application.
 
 ## 6. One Certified System — Built, Governed, Delivered, and Run
 
@@ -170,7 +170,7 @@ A systems-integration engagement sells effort — time-and-materials work to wir
 Agentforce is excellent for agents that operate inside Salesforce, grounded in your CRM data. If you are building agentic systems that span multiple systems of record, need a contractual availability SLA, or must govern to the EU AI Act across the whole system, those are runtime concerns Agentforce does not cover. Akka runs alongside Salesforce and provides the general-purpose runtime.
 
 **Doesn't Agentforce already handle the EU AI Act with the Einstein Trust Layer?**
-The Einstein Trust Layer provides real safeguards — toxicity and bias detection, masking, a zero-retention gateway, and an audit trail — scoped to the Salesforce ecosystem. The EU AI Act applies to the entire AI system and expects pre-deployment high-risk classification, deployment gating, multi-persona sign-offs, immutable records, and a portable conformance artifact. Akka embeds these inline in the runtime and covers pre-deployment governance against 186 regulations and 877 controls.
+The Einstein Trust Layer provides real safeguards — toxicity and bias detection, masking, a zero-retention gateway, and an audit trail — scoped to the Salesforce ecosystem. The EU AI Act applies to the entire AI system and expects pre-deployment high-risk classification, deployment gating, multi-persona sign-offs, immutable records, and a portable conformance artifact. Akka embeds these inline in the runtime and covers pre-deployment governance against 189 regulations and 962 controls.
 
 **Is Agentforce cheaper because it's part of our Salesforce contract?**
 Agentforce is a consumption add-on: Flex Credits at roughly $0.10 per action (20 credits), or $2 per conversation, on top of the required Salesforce platform and Data Cloud licenses. The meter scales with usage. Akka's shared-compute runtime is up to 90% cheaper to operate for the same agentic transaction volume, on one fixed price.
@@ -190,7 +190,7 @@ Agentforce can call external systems through Flow and API callouts, but the reas
 **Einstein Trust Layer:** salesforce.com/eu/artificial-intelligence/trusted-ai; getgenerative.ai; gettectonic.com — toxicity/bias detection, masking, zero-retention LLM gateway, audit trail logged to Data Cloud; scoped to the Salesforce ecosystem.
 **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core/year; ~80% less compute than Python.
 **Akka Specify (spec-driven delivery):** akka.io / akka.io/llms.txt — you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation (up to 80% lower token cost, higher accuracy).
-**Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 186 regulations / 877 controls / 288 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital largest shareholder.
+**Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital largest shareholder.
 **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies.
 
 *Comparison for teams building agentic AI. Akka — Reliable AI for Every Industry. July 2026.*

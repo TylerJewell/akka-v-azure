@@ -116,7 +116,7 @@ CrewAI provides task guardrails, tracing, audit logging, and RBAC, and holds SOC
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72).
 
-**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; classification against 186 regulations and 877 controls — 288 carrying a financial penalty — before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance CrewAI leaves to a bolt-on, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
+**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; classification against 189 regulations and 962 controls — 574 controls carrying a financial penalty (across 89 regulations) — before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance CrewAI leaves to a bolt-on, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
 
 ---
 
@@ -211,6 +211,6 @@ The core framework is open source, but production CrewAI means CrewAI Enterprise
 - **Akka Specify (spec-driven delivery):** akka.io / akka.io/llms.txt — you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 186 regulations / 877 controls / 288 carrying a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
 
 *July 2026*

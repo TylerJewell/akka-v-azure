@@ -114,7 +114,7 @@ The delivered outcome also compounds: Akka Verify runs continuous evaluation, re
 
 Temporal holds SOC 2 Type II, GDPR, and HIPAA — infrastructure-security compliance. It publishes no AI-governance capability: no real-time policy enforcement, no decision explainability, no human pause/override of a running process, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.
 
-EU AI Act penalties reach **€35M or 7% of global turnover** (Art. 5) and **€15M or 3%** (Art. 9–15), enforceable now, with a 10-year logging-retention obligation (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against 186 regulations and 877 controls before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance Temporal would have to bolt on, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
+EU AI Act penalties reach **€35M or 7% of global turnover** (Art. 5) and **€15M or 3%** (Art. 9–15), enforceable now, with a 10-year logging-retention obligation (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against 189 regulations and 962 controls before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance Temporal would have to bolt on, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
 
 ---
 
@@ -185,6 +185,6 @@ Temporal's core is open source, but production Temporal means Temporal Cloud (pe
 - Temporal Series D — $300M at $5B valuation, Feb 2026 (businesswire / geekwire); 380% YoY revenue growth
 - Temporal security — temporal.io/security (SOC 2 Type II, GDPR, HIPAA)
 - Akka Specify (spec-driven delivery) — akka.io / akka.io/llms.txt (you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy)
-- Akka platform, governance, trust, and performance — per akka-facts.md (trust.akka.io; akka.io/blog/go-slow-to-go-fast; 99.9999% / zero-byte RPO; 186 regulations / 877 controls; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital)
+- Akka platform, governance, trust, and performance — per akka-facts.md (trust.akka.io; akka.io/blog/go-slow-to-go-fast; 99.9999% / zero-byte RPO; 189 regulations / 962 controls; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital)
 
 *Temporal claims are drawn from Temporal's own documentation and public announcements. Akka claims reflect Akka's published capabilities.*

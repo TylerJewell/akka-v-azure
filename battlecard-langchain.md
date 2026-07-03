@@ -24,7 +24,7 @@ Akka is a full-stack agentic systems platform: one runtime that delivers agents,
 | **Who owns & operates it** | The customer's team | Akka — a contractual 99.9999% SLA, 24/7 SRE, sub-1 min RTO, zero byte RPO |
 | **State and memory** | Checkpointed to an external database on every step — tens of ms, up to ~150ms as state grows | Embedded in-memory state, active-active replicated: 4ms reads / sub-10ms writes |
 | **Governance / EU AI Act** | LangSmith provides tracing and evals; inline enforcement, tamper-evident logging, and sign-offs are the customer's responsibility | Guardrails, policy enforcement, and hash-chained evidence logging woven into the runtime |
-| **Pre-production governance** | Not provided | Classify against 186 regulations / 877 controls, multi-persona sign-offs, Governance Posture Packages |
+| **Pre-production governance** | Not provided | Classify against 189 regulations / 962 controls, multi-persona sign-offs, Governance Posture Packages |
 | **Production runtime** | Durable runtime with a limited production track record (LangGraph, stable late 2025); customer-operated | An 18-year-proven runtime across 100,000+ deployments |
 | **Infrastructure footprint** | More compute for the same transaction volume, plus separately provisioned state, streaming, vector, and observability services | Up to 90% less infrastructure for the same agentic transaction volume — actor concurrency + shared compute |
 | **Improves after go-live** | LangSmith detects and alerts on quality; improvement is manual | Continuous evaluation, reinforcement learning, and distillation — up to 80% lower token cost over time |
@@ -152,7 +152,7 @@ These are observability and evaluation capabilities: LangSmith records, evaluate
 
 ### How Akka governs
 
-Akka indexes 186 AI regulations and 877 controls, 288 of which carry financial penalties, and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging. When delivered through Akka Specify, that governed system is deployed and operated for you.
+Akka indexes 189 AI regulations and 962 controls, 574 controls carrying a financial penalty (across 89 regulations), and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging. When delivered through Akka Specify, that governed system is deployed and operated for you.
 
 | EU AI Act requirement | LangSmith (LangChain) | Akka |
 |-------------|-----------|------|
@@ -164,7 +164,7 @@ Akka indexes 186 AI regulations and 877 controls, 288 of which carry financial p
 | Human oversight (Art. 14) | LangGraph `interrupt` (coded into the graph) plus annotation-queue review | Runtime control plane: pause, override, or redirect any running process |
 | PII handling | Client-side masking of trace data | Decision, PII scrub, and explanation produced atomically at runtime |
 | Data residency | EU SaaS, BYOC, self-hosted | Any cloud, on-prem, or sovereign deployment |
-| Pre-deployment risk classification | Not provided | 186 regulations / 877 controls, classified before a system ships |
+| Pre-deployment risk classification | Not provided | 189 regulations / 962 controls, classified before a system ships |
 | Multi-persona sign-off workflows | Not provided | Declarative recipe engine with dossiers and quorum |
 | Sealed audit artifact | Not provided | Governance Posture Package, ready for regulatory handoff |
 
@@ -279,6 +279,6 @@ Time to a prototype and time to production are different measures. Production re
 - Akka trust center — trust.akka.io (19 compliance standards; SOC 2 Type II + public SOC 3; ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF; annual pen tests, SBOMs, 40+ policies)
 - Akka performance & efficiency — akka.io/blog/go-slow-to-go-fast (Manulife: up to 300% more concurrency, 30–50% faster processing after porting Python systems); ~10T tokens/core/year vs ~2T, ~80% less compute than Python-based frameworks
 - Akka Specify (spec-driven delivery) — akka.io / akka.io/llms.txt (you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy)
-- Akka platform — 99.9999% availability with active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 186 regulations / 877 controls / 288 with financial penalties; 100,000+ deployments over 18 years
+- Akka platform — 99.9999% availability with active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments over 18 years
 
 *LangChain claims are drawn from LangChain's own documentation, pricing pages, and public issues. Akka claims reflect Akka's published platform capabilities.*
