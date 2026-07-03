@@ -25,6 +25,8 @@ PRESENTATIONS = [
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/specify/",
      "title_src": "sales-presentation/slides/sp-00-title/slide.html"},
     {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
+    {"link": "case-studies/", "title": "Akka Customer Stories",
+     "sub": "CASE STUDIES", "title_src": None},
 ]
 
 # Standalone competitive briefs (single HTML files at the repo root).
@@ -78,10 +80,13 @@ def last_commit_epoch(link):
 
 
 def render_item(p):
-    title_html = os.path.join(ROOT, p["title_src"]) if p.get("title_src") \
-        else os.path.join(ROOT, p["dir"], "slides", "00-title", "slide.html")
-    title = slide_text(title_html, "h1", "title-headline")
-    sub = slide_text(title_html, "div", "title-sub")
+    if p.get("title"):                                 # explicit title/sub (no title slide to read)
+        title, sub = p["title"], p.get("sub", "")
+    else:
+        title_html = os.path.join(ROOT, p["title_src"]) if p.get("title_src") \
+            else os.path.join(ROOT, p["dir"], "slides", "00-title", "slide.html")
+        title = slide_text(title_html, "h1", "title-headline")
+        sub = slide_text(title_html, "div", "title-sub")
     date = last_commit_date(p["link"])
     kicker = '\n      <div class="kicker">%s</div>' % html.escape(sub) if sub else ""
     return (
