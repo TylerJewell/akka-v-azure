@@ -41,6 +41,7 @@ BATTLECARDS = [
     {"link": "battlecard-vercel-ai-sdk.html",             "label": "Akka vs. Vercel AI SDK"},
     {"link": "battlecard-pydantic-ai.html",               "label": "Akka vs. PydanticAI"},
     {"link": "battlecard-orkes.html",                     "label": "Akka vs. Orkes (Conductor)"},
+    {"link": "battlecard-service-tiers.html",             "label": "Akka Service Tiers & TCO"},
 ]
 
 
