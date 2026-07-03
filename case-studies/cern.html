@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>CERN Keeps the Large Hadron Collider Running on 2.5M+ Signals a Day | Akka Customer Story</title>
+<meta name="description" content="CERN gathers, stores, and analyzes more than 2.5 million signals — about 3.5 TB per day — from the devices that run its seven particle accelerators. The Akka Agentic AI Platform turns that telemetry into agents that predict failures before they interrupt a run.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="case-study.css">
+</head>
+<body>
+
+ <header class="hero">
+ <div class="wrap">
+ <p class="eyebrow">Customer Story</p>
+ <h1>CERN keeps the world's largest machine running on <span class="hl">2.5 million signals a day</span>.</h1>
+ <p class="subtitle">How the laboratory behind the Large Hadron Collider acquires the telemetry that keeps seven particle accelerators reliable — and what the Akka Agentic AI Platform now builds from it.</p>
+ <div class="meta">
+ <span>Industry&nbsp;·&nbsp;<b>Scientific research / high-energy physics</b></span>
+ <span>Offering&nbsp;·&nbsp;<b>Akka Agentic AI Platform</b></span>
+ </div>
+ </div>
+ </header>
+
+ <div class="wrap">
+
+ <p class="lead">CERN gathers, stores, and analyzes <span class="hl">more than 2.5 million signals a day — about 3.5 TB</span> — from the operational devices that run its seven particle accelerators, including the 27-kilometer Large Hadron Collider and its 10,000+ superconducting magnets. That telemetry keeps the accelerators reliable for a scientific community of more than 12,000 researchers, with virtually no data loss.</p>
+
+ <!-- ROI Scorecard -->
+ <div class="scorecard">
+ <p class="sc-kicker">Akka ROI Scorecard</p>
+ <div class="sc-grid">
+ <div class="card">
+ <h3>Speed to Production</h3>
+ <div class="big">weeks</div>
+ <p>to stand up a fault-tolerant acquisition service, not quarters. New data subscriptions are added non-disruptively, with no stop to acquisition from other devices.</p>
+ </div>
+ <div class="card">
+ <h3>Cost to Operate</h3>
+ <div class="big">0</div>
+ <p>data loss during infrastructure maintenance. The cluster shuts itself down and fully recreates itself when the network returns, with no operator intervention.</p>
+ </div>
+ <div class="card">
+ <h3>Scale</h3>
+ <div class="big">2.5M+</div>
+ <p>signals gathered, stored, and analyzed every day — roughly 3.5 TB — across seven accelerators, and built to grow with HL-LHC data volumes.</p>
+ </div>
+ </div>
+ <p class="outcome">Business outcome: near-zero data loss on a mission-critical acquisition layer, running for <b>months</b> without a break.</p>
+ </div>
+
+ <section class="body">
+
+ <h2>The challenge</h2>
+ <p>CERN operates seven large particle accelerators, including the Large Hadron Collider — with a circumference of <span class="num">27 kilometers</span>, the largest machine ever constructed, holding more than <span class="num">10,000 superconducting magnets</span> to accelerate and steer beams of subatomic particles. Keeping them reliable means capturing how hundreds of sub-systems and tens of thousands of devices behave, along with the shape and intensity of the particle beam itself.</p>
+ <p>CERN's earlier relational acquisition system, built in the early 2000s, had scaled well since 2003 but could not keep pace with the need for more complex, long-running analyses. The next-generation system demanded exceptional fault-tolerance to survive process failures with no data loss, even load-balancing of data subscriptions across processes, and the ability to add resources rapidly as new sources of data came online.</p>
+
+ <h2>Why Akka</h2>
+ <p>CERN built its next-generation acquisition layer on Akka. The system spreads workload horizontally across nodes, adds resources dynamically, detects and reports failures, and persists the state of the distributed system to external storage so nothing is lost when a process goes down. It processes on the order of <span class="num">100,000 messages per second</span> across roughly <span class="num">90,000 subscriptions</span>, and isolates any device that suddenly sends excessive data onto its own worker so the wider acquisition layer stays stable.</p>
+ <p>This is the <b>Never Fail</b> guarantee: the Akka Agentic AI Platform handles clustering, resilience, durable state, and workload distribution, so the application does not have to.</p>
+
+ <div class="pullstat">
+ <div class="n">2.5M+</div>
+ <div class="t">signals gathered, stored, and analyzed every day — about 3.5 TB — from the devices that run CERN's accelerators.</div>
+ </div>
+
+ <h2>The results</h2>
+ <p><b>Scale.</b> The acquisition system handles <span class="num">more than 2.5 million signals a day</span> — about 3.5 TB — across seven accelerators, processing roughly <span class="num">100,000 messages per second</span>, and is built to grow with the fast-rising data volumes expected when HL-LHC comes online.</p>
+ <p><b>Cost to operate.</b> During broader infrastructure maintenance the cluster shuts itself down and fully recreates itself when the network is restored, <b>with no loss of data</b> and no manual recovery — cutting the operational overhead of running a system that generates data continuously.</p>
+ <p><b>Speed to production.</b> New data subscriptions are added <b>non-disruptively</b> whenever a new system is commissioned or a new mode of operation begins, without stopping acquisition from other devices — so the team keeps pace with the accelerators instead of scheduling around them.</p>
+ <p><b>Business impact.</b> The acquisition layer is the go-to service for monitoring beam quality and troubleshooting accelerator equipment, with virtually no data loss — supporting some of the world's leading research into fundamental physics.</p>
+
+ <h2>The agentic opportunity</h2>
+ <div class="bridge">
+ <p>The same 2.5-million-signal-a-day telemetry that CERN already captures is exactly what an AI agent needs to act. On the <b>Akka Agentic AI Platform</b>, a monitoring agent reads those signals in real time, predicts when a device, magnet, or sub-system is drifting toward failure, and recommends corrective action before a fault interrupts a run — protecting beam time that is measured in months of continuous operation. The agent runs on the same fault-tolerant substrate CERN's acquisition layer already proved: durable state that survives failure, self-healing recovery, and horizontal scale to match rising data volumes.</p>
+ <p>The platform that acquires the telemetry is the same platform that builds and runs agentic AI on top of it. Organizations build on the <b>Akka Agentic AI Platform</b> directly, or have a system delivered and operated through <b>Akka Specify</b>. Both provide the production guarantees a mission-critical acquisition layer has always required.</p>
+ </div>
+
+ </section>
+ </div>
+
+ <section class="cta">
+ <h2>Let's Build Trust Together</h2>
+ <a class="btn" href="https://akka.io/contact">Talk to Akka <span class="arw">&rarr;</span></a>
+ </section>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>Akka Customer Stories</title>
+<meta name="description" content="Akka customer case studies — production AI outcomes across telecom, finance, retail, healthcare, agriculture, streaming, automotive, research, and life sciences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+    --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+    --gold:#FFCE4A; --gold-deep:#E9B426;
+    --display:"Instrument Sans",system-ui,sans-serif;
+    --text:"Roboto",system-ui,sans-serif;
+    --mono:"Roboto Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--body);font-family:var(--text);
+    font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  .hero{background:var(--black);color:#fff;padding:76px 0 64px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(circle,rgba(255,206,74,.05) 1px,transparent 1px);
+    background-size:44px 44px;pointer-events:none}
+  .hero .wrap{position:relative;z-index:1}
+  .eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;
+    letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 20px;
+    display:flex;align-items:center;gap:12px}
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--gold)}
+  .hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.025em;
+    font-size:clamp(34px,5vw,54px);line-height:1.04;margin:0 0 18px;color:#fff}
+  .hero h1 .hl{color:var(--gold)}
+  .hero p{font-family:var(--display);font-weight:400;font-size:clamp(17px,2vw,21px);
+    color:#C9C9CE;margin:0;max-width:62ch}
+
+  .sect{font-family:var(--display);font-weight:700;letter-spacing:-.01em;
+    font-size:22px;color:var(--ink);margin:56px 0 4px;display:flex;align-items:center;gap:12px}
+  .sect::before{content:"";width:30px;height:3px;background:var(--gold)}
+  .sect-note{font-size:14px;color:var(--muted);margin:0 0 8px 42px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;
+    padding:22px 0 8px}
+  a.card{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);
+    border-radius:12px;padding:26px 24px;text-decoration:none;color:inherit;position:relative;
+    overflow:hidden;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+  a.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);
+    transform:scaleY(0);transform-origin:top;transition:transform .18s ease}
+  a.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.08);border-color:#D9D9DE}
+  a.card:hover::before{transform:scaleY(1)}
+  .co{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;
+    color:var(--ink);margin:0 0 6px}
+  .headline{font-size:15px;color:var(--body);margin:0 0 16px;line-height:1.45}
+  .stat{margin-top:auto;display:flex;align-items:baseline;gap:8px}
+  .stat .n{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.03em;color:var(--ink)}
+  .stat .l{font-size:12px;color:var(--muted)}
+  .pad{padding-bottom:80px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Akka Customer Stories</p>
+      <h1>Production AI, <span class="hl">proven</span>.</h1>
+      <p>Enterprises across telecom, finance, retail, healthcare, agriculture, streaming, automotive, research, and life sciences run production systems on the Akka Agentic AI Platform and Akka Specify.</p>
+    </div>
+  </header>
+
+  <div class="wrap pad">
+
+    <h2 class="sect">Akka Agentic AI Platform</h2>
+    <p class="sect-note">Enterprises building and running production systems on the platform.</p>
+    <div class="grid">
+
+      <a class="card" href="verizon.html">
+        <p class="co">Verizon</p>
+        <p class="headline">Doubles its business on half the hardware.</p>
+        <div class="stat"><span class="n">7.5&times;</span><span class="l">order throughput</span></div>
+      </a>
+      <a class="card" href="capital-one.html">
+        <p class="co">Capital One</p>
+        <p class="headline">Real-time auto-loan decisioning at scale.</p>
+        <div class="stat"><span class="n">~200 ms</span><span class="l">loan decisions</span></div>
+      </a>
+      <a class="card" href="swiggy.html">
+        <p class="co">Swiggy</p>
+        <p class="headline">Order-dispatch AI inside a one-minute SLA.</p>
+        <div class="stat"><span class="n">5,000+/s</span><span class="l">predictions</span></div>
+      </a>
+      <a class="card" href="tubi.html">
+        <p class="co">Fox</p>
+        <p class="headline">Real-time personalization drives ad revenue.</p>
+        <div class="stat"><span class="n">5B/s</span><span class="l">tokens</span></div>
+      </a>
+      <a class="card" href="walmart.html">
+        <p class="co">Walmart</p>
+        <p class="headline">Personalized commerce at peak retail load.</p>
+        <div class="stat"><span class="n">400K/hr</span><span class="l">page views</span></div>
+      </a>
+      <a class="card" href="john-deere.html">
+        <p class="co">John Deere</p>
+        <p class="headline">Sensor telemetry into real-time field decisions.</p>
+        <div class="stat"><span class="n">1,000+</span><span class="l">sensors / machine</span></div>
+      </a>
+      <a class="card" href="doctolib.html">
+        <p class="co">Doctolib</p>
+        <p class="headline">Resilient, secure messaging for 1M+ providers.</p>
+        <div class="stat"><span class="n">1M+</span><span class="l">providers</span></div>
+      </a>
+      <a class="card" href="norwegian.html">
+        <p class="co">Norwegian Cruise Line</p>
+        <p class="headline">Modernized booking to record profits.</p>
+        <div class="stat"><span class="n">3&times;</span><span class="l">peak-season scale</span></div>
+      </a>
+      <a class="card" href="cern.html">
+        <p class="co">CERN</p>
+        <p class="headline">Keeps particle accelerators running reliably.</p>
+        <div class="stat"><span class="n">2.5M+</span><span class="l">signals / day</span></div>
+      </a>
+      <a class="card" href="renault.html">
+        <p class="co">Renault</p>
+        <p class="headline">Global manufacturing on one digital twin.</p>
+        <div class="stat"><span class="n">6&rarr;1</span><span class="l">systems unified</span></div>
+      </a>
+      <a class="card" href="eero.html">
+        <p class="co">Amazon eero</p>
+        <p class="headline">Reliable mesh WiFi managed from the cloud.</p>
+        <div class="stat"><span class="n">10M+</span><span class="l">home networks</span></div>
+      </a>
+
+    </div>
+
+    <h2 class="sect">Akka Specify</h2>
+    <p class="sect-note">Production systems delivered and operated as one commitment.</p>
+    <div class="grid">
+
+      <a class="card" href="deductive-ai.html">
+        <p class="co">DeductiveAI</p>
+        <p class="headline">Agents accelerate root-cause analysis.</p>
+        <div class="stat"><span class="n">up to 90%</span><span class="l">faster RCA</span></div>
+      </a>
+      <a class="card" href="coho-ai.html">
+        <p class="co">Coho AI</p>
+        <p class="headline">Delivered production AI, faster to market.</p>
+        <div class="stat"><span class="n">75%</span><span class="l">faster to market</span></div>
+      </a>
+      <a class="card" href="trust1team.html">
+        <p class="co">Trust1Team</p>
+        <p class="headline">Spec-driven delivery triples development speed.</p>
+        <div class="stat"><span class="n">3&times;</span><span class="l">development speed</span></div>
+      </a>
+      <a class="card" href="esdiac.html">
+        <p class="co">Esdiac</p>
+        <p class="headline">Lower infrastructure cost for AI workloads.</p>
+        <div class="stat"><span class="n">65%</span><span class="l">infra cost cut</span></div>
+      </a>
+      <a class="card" href="yields.html">
+        <p class="co">Yields</p>
+        <p class="headline">Governed financial-model management.</p>
+        <div class="stat"><span class="n">up to 90%</span><span class="l">lower cost</span></div>
+      </a>
+      <a class="card" href="llaama.html">
+        <p class="co">Llaama</p>
+        <p class="headline">AI-driven treatment development for biopharma.</p>
+        <div class="stat"><span class="n">100%</span><span class="l">audit trail</span></div>
+      </a>
+
+    </div>
+  </div>
+</body>
+</html>

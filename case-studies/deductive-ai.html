@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>DeductiveAI Accelerates Root Cause Analysis Up to 90% | Akka Customer Story</title>
+<meta name="description" content="DeductiveAI built a multi-agent system that autonomously investigates production incidents across telemetry, accelerating root cause analysis up to 90% and cutting time-to-mitigation 70% — delivered and operated through Akka Specify.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="case-study.css">
+</head>
+<body>
+
+ <header class="hero">
+ <div class="wrap">
+ <p class="eyebrow">Customer Story</p>
+ <h1>DeductiveAI accelerates root cause analysis <span class="hl">up to 90%</span>.</h1>
+ <p class="subtitle">How an AI-native observability company built autonomous investigation agents on the Akka Agentic AI Platform — root cause analysis up to 90% faster, time-to-mitigation down 70%.</p>
+ <div class="meta">
+ <span>Industry&nbsp;·&nbsp;<b>Observability &amp; AIOps</b></span>
+ <span>Offering&nbsp;·&nbsp;<b>Akka Specify</b></span>
+ </div>
+ </div>
+ </header>
+
+ <div class="wrap">
+
+ <p class="lead">DeductiveAI built a multi-agent system that <span class="hl">autonomously investigates production incidents</span> across logs, metrics, and code changes, ranks probable causes, and hands engineers the evidence. Root cause analysis runs up to 90% faster and time-to-mitigation falls 70%, across knowledge graphs spanning millions of nodes and billions of time series.</p>
+
+ <!-- ROI Scorecard -->
+ <div class="scorecard">
+ <p class="sc-kicker">Akka ROI Scorecard</p>
+ <div class="sc-grid">
+ <div class="card">
+ <h3>Speed to Production</h3>
+ <div class="big">90%</div>
+ <p>faster root cause analysis. Investigation agents correlate telemetry and code changes autonomously, turning multi-hour manual triage into minutes.</p>
+ </div>
+ <div class="card">
+ <h3>Cost to Operate</h3>
+ <div class="big">60%</div>
+ <p>lower cost to operate the investigation pipeline. A 10-person team runs enterprise-scale RCA on infrastructure that stays responsive under peak event volume.</p>
+ </div>
+ <div class="card">
+ <h3>Scale</h3>
+ <div class="big">Billions</div>
+ <p>of time series and petabytes of logs analyzed in real time, over knowledge graphs of millions of nodes and edges built from live telemetry.</p>
+ </div>
+ </div>
+ <p class="outcome">Business outcome: time-to-mitigation reduced <b>70%</b> on average, with actionable evidence delivered even when the exact cause is not found.</p>
+ </div>
+
+ <section class="body">
+
+ <h2>The challenge</h2>
+ <p>DeductiveAI serves engineering teams that run large, multi-region distributed systems. When those systems fail, root cause analysis means correlating <span class="num">billions of time series</span>, <b>petabytes of logs</b>, and <span class="num">hundreds of millions of lines</span> of code changes across sources like GitHub, DataDog, Prometheus, and New Relic. Done by hand, that investigation stretches across hours while an incident stays live.</p>
+ <p>Automating it demanded a system that could ingest millions of events in real time, hold the full state of an ongoing investigation, and coordinate many AI agents working a single incident at once — without losing progress when a step failed. Conventional request-response infrastructure could not carry that stateful, long-running, concurrent workload at production scale.</p>
+
+ <h2>Why Akka</h2>
+ <p>DeductiveAI built its multi-agent system on the <b>Akka Agentic AI Platform</b>, delivered and operated through <b>Akka Specify</b>. Agents ingest telemetry into a knowledge graph, detect probable causes, rank hypotheses, and return evidence to developers in real time — running fully autonomously or in a human-in-the-loop mode. The platform carries the state of each investigation durably, so a long-running analysis survives failure and resumes where it left off.</p>
+ <p>This is the <b>Never Fail</b> guarantee: the Akka Agentic AI Platform handles clustering, resilience, durable state, and traffic steering, so the agents investigating an incident do not lose their work and stay responsive as event volume spikes.</p>
+
+ <div class="pullstat">
+ <div class="n">90%</div>
+ <div class="t">faster root cause analysis — autonomous agents correlate telemetry and code changes that engineers once triaged by hand.</div>
+ </div>
+
+ <h2>The results</h2>
+ <p><b>Scale.</b> The system ingests <span class="num">millions of events in real time</span> and builds knowledge graphs spanning <span class="num">millions of nodes and edges</span> from billions of time series, petabytes of logs, and hundreds of millions of lines of code changes. Investigations run across that graph without losing state.</p>
+ <p><b>Cost to operate.</b> A <span class="num">10-person team</span> delivers and operates enterprise-scale RCA. Durable state and automatic recovery remove the operational overhead of keeping long-running, concurrent investigations alive under load.</p>
+ <p><b>Speed to production.</b> Root cause analysis is accelerated <span class="num">up to 90%</span>. Agents that once required hours of manual correlation now return ranked probable causes in minutes.</p>
+ <p><b>Business impact.</b> Time-to-mitigation fell <span class="num">70%</span> on average. As DeductiveAI reports, even when an investigation does not surface the exact root cause, the evidence the agents gather is a substantial time-saver for engineers.</p>
+
+ <h2>The agentic opportunity</h2>
+ <div class="bridge">
+ <p>DeductiveAI is an AI-native company: autonomous agents that investigate incidents across telemetry are the product, not a roadmap item. That system reached production through <b>Akka Specify</b>, the delivered-outcome path — specifications go in, and a governed production system comes out in weeks, fully operated. Instead of assembling stateful orchestration, durable investigation state, and recovery on their own, the team defined the behavior they needed and received a running system built to carry millions of events and long-lived, concurrent agent workflows.</p>
+ <p>The same platform serves both paths. Enterprises build agentic AI directly on the <b>Akka Agentic AI Platform</b>, or have a governed system delivered and operated through <b>Akka Specify</b>. Both provide the production guarantees DeductiveAI runs its autonomous investigations on today: durable state, resilience under peak load, and recovery that survives failure.</p>
+ </div>
+
+ </section>
+ </div>
+
+ <section class="cta">
+ <h2>Let's Build Trust Together</h2>
+ <a class="btn" href="https://akka.io/contact">Talk to Akka <span class="arw">&rarr;</span></a>
+ </section>
+
+</body>
+</html>
