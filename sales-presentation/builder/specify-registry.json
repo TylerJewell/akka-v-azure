@@ -1,4 +1,5 @@
 {
+  "title": "Production AI, delivered — Akka",
   "slides": [
     { "id": "sp-00-title",  "folder": "slides/sp-00-title" },
     { "id": "sp-01-hero",   "folder": "slides/sp-01-hero" },
