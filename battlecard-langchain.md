@@ -131,7 +131,7 @@ These are observability and evaluation capabilities: LangSmith records, evaluate
 
 ### How Akka governs
 
-Akka indexes 186 AI regulations and 962 controls, 288 of which carry financial penalties, and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging.
+Akka indexes 189 AI regulations and 962 controls, 574 of which carry financial penalties, and derives the applicable obligation set automatically. Governance is woven into the runtime rather than added externally: guardrails, policies, LLMs-as-a-judge, and sanitizers execute inline, and Akka Verify proves conformance from the running system. Akka builds each system from two specifications — a Dev Spec defining function and an Eval Matrix defining safeguards — that merge into one certified service: agents, tools, memory, and APIs alongside guardrails, sanitizers, human-in-the-loop and human-on-the-loop gates, evaluations, and hash-chained evidence logging.
 
 | EU AI Act requirement | LangSmith (LangChain) | Akka |
 |-------------|-----------|------|

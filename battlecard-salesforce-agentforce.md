@@ -74,7 +74,7 @@ The penalties are enforceable now, and they apply to the whole AI system — not
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72). High-risk obligations are enforceable from August 2026.
 
-Akka embeds governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** (288 of them carrying a financial penalty); a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and **Akka Verify**, which proves conformance from the running system. This applies to any agentic workload, not only the part running inside a single SaaS application.
+Akka embeds governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** (574 of them carrying a financial penalty); a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and **Akka Verify**, which proves conformance from the running system. This applies to any agentic workload, not only the part running inside a single SaaS application.
 
 ## Two Lifecycles, One Certified System
 

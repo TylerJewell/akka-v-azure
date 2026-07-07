@@ -119,7 +119,7 @@
   <tr><td>RTO / RPO</td><td class="comp-col">Not published for the agent layer; inherits the AWS regional posture the customer architects</td><td class="akka-col">Sub-1-minute RTO; zero-byte RPO; active-active across regions</td></tr>
   <tr><td>Deployment</td><td class="comp-col">AWS only &mdash; IAM, VPC/PrivateLink, CloudFormation, CloudWatch</td><td class="akka-col">Any cloud (AWS/Azure/GCP VPC), own Kubernetes, on-prem, sovereign cloud</td></tr>
   <tr><td>Memory</td><td class="comp-col">AgentCore Memory &mdash; a separate, separately-billed service</td><td class="akka-col">Durable in-memory, 4ms reads / sub-10ms writes, built in</td></tr>
-  <tr><td>Governance / EU AI Act</td><td class="comp-col">Guardrails (model layer) + AgentCore Policy (tool layer), assembled; no embedded regulation/control enforcement</td><td class="akka-col">Aspect-woven runtime enforcement + pre-production classification against 186 regs / 962 controls</td></tr>
+  <tr><td>Governance / EU AI Act</td><td class="comp-col">Guardrails (model layer) + AgentCore Policy (tool layer), assembled; no embedded regulation/control enforcement</td><td class="akka-col">Aspect-woven runtime enforcement + pre-production classification against 189 regs / 962 controls</td></tr>
   <tr><td>Cost model</td><td class="comp-col">Consumption-metered across the seven AgentCore services (per-vCPU-hour, per-request, per-token) plus separately billed model inference</td><td class="akka-col">Shared compute; up to 90% lower infrastructure for the same workload, fixed annual fee</td></tr>
   <tr><td>Maturity</td><td class="comp-col">GA October 2025; Evaluations GA March 2026; Policy + Guardrails GA June 2026 &mdash; capabilities still landing</td><td class="akka-col">18 years; 100,000+ production deployments; 52 banks</td></tr>
   <tr><td>Certifications</td><td class="comp-col">Bedrock: ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible</td><td class="akka-col">19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, EU AI Act, NIST AI RMF)</td></tr>
@@ -188,7 +188,7 @@
     </div>
     <div>
       <h3>How Akka governs</h3>
-      <p>At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; pre-deployment classification against <strong>189 regulations and 962 controls &mdash; 288 of which carry a financial penalty</strong>; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.</p>
+      <p>At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; pre-deployment classification against <strong>189 regulations and 962 controls &mdash; 574 of which carry a financial penalty</strong>; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.</p>
     </div>
   </div>
 </div>

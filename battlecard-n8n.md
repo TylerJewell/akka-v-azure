@@ -80,7 +80,7 @@ n8n Enterprise provides audit logs and log streaming — useful operational tele
 | High-risk obligations (Art. 9–15) | €15M or 3% global turnover |
 | Incorrect information (supply) | €7.5M or 1.5% global turnover |
 
-The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **189 regulations and 962 controls** (288 of which carry a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline.
+The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **189 regulations and 962 controls** (574 of which carry a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline.
 
 ## Two Lifecycles, One Certified System
 

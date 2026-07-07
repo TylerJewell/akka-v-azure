@@ -95,7 +95,7 @@ High-risk AI carries a 10-year logging-retention obligation (Art. 72), enforceab
 
 ### How Akka governs
 
-At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** — **288 of which carry a financial penalty**; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.
+At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** — **574 of which carry a financial penalty**; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.
 
 ---
 
