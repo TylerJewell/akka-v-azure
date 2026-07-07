@@ -23,7 +23,7 @@ Every Akka deployment runs on one of five service tiers, from a low-overhead eva
 
 ---
 
-## 1. Two Ways to Reach Any Tier: Build It, or Have Akka Specify Deliver It
+## Two Ways to Reach Any Tier: Build It, or Have Akka Specify Deliver It
 
 Two commercial models sit on top of the five tiers above. A customer can build and operate the system with **spec-driven development** — provisioning whichever tier fits the workload and running it with their own team — or have **Akka Specify** deliver and operate the entire system as a guaranteed outcome: the customer provides the specifications, and Akka generates, governs, deploys, and operates the system in weeks, for one fixed price.
 
@@ -42,7 +42,7 @@ Every tier at Day 2 Ops and above already includes the personnel an Akka Specify
 
 ---
 
-## 2. The Two Starting Paths
+## The Two Starting Paths
 
 Every deployment begins by answering one question: does the customer want Akka-hosted or their-cloud-hosted? The answer routes to one of two on-ramps, both of which progress into Day 2 Ops, Business Continuity, or Sovereign Cloud as needs grow.
 
@@ -74,7 +74,7 @@ Sandbox is the lowest-cost way to run Akka in a customer's own cloud — roughly
 
 ---
 
-## 3. Quality of Service: The Sandbox vs. Production Distinction
+## Quality of Service: The Sandbox vs. Production Distinction
 
 Sandbox and Akka's production tiers are not versions of the same thing at different price points — they are different quality-of-service tiers, built on different infrastructure configurations. Treating them as interchangeable is the most common source of confusion: Sandbox strips out the resilience layer to minimize overhead while building or evaluating; Day 2 Ops and above include fully resilient infrastructure, 24/7 SRE, and no-downtime operations because production workloads require it.
 
@@ -93,7 +93,7 @@ The question is not which tier is "better" — it is which one matches what the 
 
 ---
 
-## 4. Platform Cores vs. Service Cores: The TCO Transparency Model
+## Platform Cores vs. Service Cores: The TCO Transparency Model
 
 **If a buyer learns one thing from this document, it should be this.** The platform-core / service-core distinction is Akka's TCO transparency story, and the one that, if skipped, creates sticker shock at contract time.
 
@@ -130,7 +130,7 @@ These questions, asked by any buyer evaluating Akka against a hyperscaler agent 
 
 ---
 
-## 5. Matching Your Workload to the Right Tier
+## Matching Your Workload to the Right Tier
 
 A five-step decision tree:
 
@@ -158,7 +158,7 @@ A five-step decision tree:
 
 ---
 
-## 6. TCO Arguments by Tier
+## TCO Arguments by Tier
 
 ### Starter
 
@@ -200,7 +200,7 @@ Whichever tier a system runs on, an Akka Specify engagement folds the platform, 
 
 ---
 
-## 7. Common Questions
+## Common Questions
 
 **Can we just run production workloads on Sandbox to save money?**
 Sandbox is stripped of the resilience layer. There is no HA/DR, no 24/7 SRE, no SLA, and platform updates require downtime. Any workload with production characteristics — customers depending on it, data that matters, revenue tied to uptime — needs Day 2 Ops at minimum. Sandbox exists to evaluate Akka at the lowest possible cost, not to run production on the cheap.
@@ -231,7 +231,7 @@ A labor-led integration engagement sells effort — time-and-materials, typicall
 
 ---
 
-## 8. Glossary
+## Glossary
 
 | Term | Definition |
 |------|------------|
@@ -248,7 +248,7 @@ A labor-led integration engagement sells effort — time-and-materials, typicall
 
 ---
 
-## 9. Sources
+## Sources
 
 - Akka Specify (spec-driven delivery) — akka.io / akka.io/llms.txt (one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy)
 - Akka service tiers & TCO model — akka.io/llms.txt (five-tier on-ramp; platform-core / service-core disclosure; up to 90% infrastructure cost reduction; managed HA/DR at sub-1 min RTO / zero-byte RPO; live CVE patching; TAM/FDE staffing scaling by tier)

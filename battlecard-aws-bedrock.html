@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Akka vs. AWS Bedrock (AgentCore): A Comparison for Teams Building Production Agentic AI</title>
-<meta name="description" content="Akka vs. AWS Bedrock AgentCore for agentic AI — AgentCore is a set of separate AWS services you wire and operate yourself; Akka is one integrated, governed platform, and Akka Specify can deliver and operate the whole system for you as a guaranteed outcome. Compare scope, the 99.9% vs 99.9999% SLA, AWS lock-in, EU AI Act governance, delivery, and cost.">
+<meta name="description" content="Akka vs. AWS Bedrock AgentCore for agentic AI — AgentCore is a set of separate AWS services you wire and operate yourself; Akka is one integrated, governed platform. Compare scope, the 99.9% vs 99.9999% SLA, AWS lock-in, EU AI Act governance, and cost.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://akka.io/compare/akka-vs-aws-bedrock">
 <script type="application/ld+json">
 { "@context":"https://schema.org","@graph":[
-  {"@type":"TechArticle","headline":"Akka vs. AWS Bedrock (AgentCore): A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-07-02","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","Akka Specify","spec-driven delivery","AWS Bedrock AgentCore","agentic AI","AI agents","EU AI Act","agent runtime"]},
+  {"@type":"TechArticle","headline":"Akka vs. AWS Bedrock (AgentCore): A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-06-19","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","AWS Bedrock AgentCore","agentic AI","AI agents","EU AI Act","agent runtime"]},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"We don't have a team to integrate this — what are our options?","acceptedAnswer":{"@type":"Answer","text":"Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system — the agents, memory, streaming, APIs, and governance AgentCore leaves you to assemble — as a guaranteed outcome, for one fixed price. With AgentCore, production is self-integration or a systems-integration engagement you then own."}},
-    {"@type":"Question","name":"How is Akka Specify different from a systems-integration engagement to assemble Bedrock AgentCore into a system?","acceptedAnswer":{"@type":"Answer","text":"A systems-integration engagement sells effort — time-and-materials over months to wire the seven AgentCore services together — and hands back a system you own and operate; the outcome is not guaranteed. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden."}},
     {"@type":"Question","name":"We're an AWS shop already. Why not just use AgentCore?","acceptedAnswer":{"@type":"Answer","text":"You can, but you are assembling and operating seven AgentCore services plus Bedrock model access, Guardrails, and Knowledge Bases — each billed and run separately, all locked to AWS. Akka delivers the same capabilities as one integrated runtime with a six-nines SLA Akka owns, and it runs in your AWS VPC, on another cloud, on your own Kubernetes, or on-prem. You get the platform instead of the integration project."}},
     {"@type":"Question","name":"AgentCore is from AWS — isn't it the safe, mature choice?","acceptedAnswer":{"@type":"Answer","text":"AWS is durable; AgentCore is recent. It reached general availability in October 2025, and core governance and evaluation capabilities were still reaching GA into 2026 (Evaluations March 2026; Policy and Guardrails June 2026). Akka has 18 years and 100,000+ production deployments behind a single, integrated platform."}},
     {"@type":"Question","name":"Can't we add EU AI Act compliance with Guardrails and Policy?","acceptedAnswer":{"@type":"Answer","text":"Guardrails enforce content safety at the model layer and Policy enforces tool-access rules — both useful, neither is regulation enforcement. The EU AI Act expects classification before deployment, immutable records witnessed as decisions happen, human override of running processes, and a sealed audit artifact. Akka embeds classification against 189 regulations and 962 controls, hash-chained evidence, HITL/HOTL control, and pre-deployment governance inline."}},
-    {"@type":"Question","name":"Isn't AgentCore's consumption pricing cheaper than one fixed price?","acceptedAnswer":{"@type":"Answer","text":"AgentCore meters its services on per-vCPU-hour, per-request, and per-token units, on top of model token spend, and the bill scales with load. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on one fixed price finance can forecast."}}
+    {"@type":"Question","name":"Isn't AgentCore's consumption pricing cheaper than a fixed fee?","acceptedAnswer":{"@type":"Answer","text":"AgentCore meters its services on per-vCPU-hour, per-request, and per-token units, on top of model token spend, and the bill scales with load. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on a fixed annual fee finance can forecast."}}
   ]}
 ]}
 </script>
@@ -99,40 +97,36 @@
 <div class="title-block">
   <h1>Akka vs. AWS Bedrock (AgentCore)</h1>
   <div class="subtitle">A comparison for teams building agentic AI</div>
-  <div class="meta">July 2026</div>
+  <div class="meta">June 2026</div>
 </div>
 
 <div class="oneliner">
-  <strong>AWS Bedrock AgentCore is a set of separate AWS services you wire and operate yourself — not an integrated, governed platform.</strong> AgentCore gives you seven modular building blocks (Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, Observability) that you assemble on top of Bedrock model access, Guardrails, and Knowledge Bases — each billed and operated separately, all running inside AWS. Akka delivers orchestration, agents, memory, streaming, APIs, observability, and governance as one runtime, with a six-nines SLA Akka owns, deployable on any cloud &mdash; and Akka Specify can deliver and run the entire governed system for you as a guaranteed outcome.
+  <strong>AWS Bedrock AgentCore is a set of separate AWS services you wire and operate yourself — not an integrated, governed platform.</strong> AgentCore gives you seven modular building blocks (Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, Observability) that you assemble on top of Bedrock model access, Guardrails, and Knowledge Bases — each billed and operated separately, all running inside AWS. Akka delivers orchestration, agents, memory, streaming, APIs, observability, and governance as one runtime, with a six-nines SLA Akka owns, deployable on any cloud.
 </div>
 
 <div class="stats-row">
-  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka Availability SLA</div></div>
-  <div class="stat-card"><div class="number">Weeks</div><div class="label">Akka Specify Delivery</div></div>
-  <div class="stat-card"><div class="number">Fixed</div><div class="label">One All-In Price</div></div>
-  <div class="stat-card"><div class="number">90%</div><div class="label">Less Infrastructure</div></div>
+  <div class="stat-card"><div class="number">99.9%</div><div class="label">Bedrock SLA</div></div>
+  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka SLA</div></div>
+  <div class="stat-card"><div class="number">7</div><div class="label">AgentCore Services to Wire</div></div>
+  <div class="stat-card"><div class="number">Oct 2025</div><div class="label">AgentCore GA</div></div>
 </div>
 
 <table class="summary-table">
   <tr><th>Dimension</th><th>AWS Bedrock AgentCore</th><th>Akka</th></tr>
   <tr><td>What it is</td><td class="comp-col">A set of modular AWS services for building and hosting agents</td><td class="akka-col">A full-stack agentic systems platform</td></tr>
   <tr><td>Scope</td><td class="comp-col">Seven AgentCore modules assembled on Bedrock model access, Guardrails, and Knowledge Bases &mdash; the customer wires and operates the seams</td><td class="akka-col">Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime</td></tr>
-  <tr><td>How you reach production</td><td class="comp-col">Self-integrate the seven AgentCore services, or contract a systems-integration engagement</td><td class="akka-col">Build with spec-driven development, or Akka Specify delivers and runs it</td></tr>
-  <tr><td>Commercial model</td><td class="comp-col">Consumption-metered across the AgentCore services and model inference, plus integration labor</td><td class="akka-col">One fixed price &mdash; platform, infrastructure, tokens, training, delivery, and operations</td></tr>
-  <tr><td>Outcome guarantee</td><td class="comp-col">Effort only; the outcome is not guaranteed</td><td class="akka-col">The delivered outcome is guaranteed</td></tr>
   <tr><td>Availability SLA</td><td class="comp-col">99.9% monthly for the Bedrock APIs, measured by request errors; service credits only</td><td class="akka-col">99.9999% &mdash; entire platform, backed by indemnities</td></tr>
   <tr><td>RTO / RPO</td><td class="comp-col">Not published for the agent layer; inherits the AWS regional posture the customer architects</td><td class="akka-col">Sub-1-minute RTO; zero-byte RPO; active-active across regions</td></tr>
   <tr><td>Deployment</td><td class="comp-col">AWS only &mdash; IAM, VPC/PrivateLink, CloudFormation, CloudWatch</td><td class="akka-col">Any cloud (AWS/Azure/GCP VPC), own Kubernetes, on-prem, sovereign cloud</td></tr>
   <tr><td>Memory</td><td class="comp-col">AgentCore Memory &mdash; a separate, separately-billed service</td><td class="akka-col">Durable in-memory, 4ms reads / sub-10ms writes, built in</td></tr>
   <tr><td>Governance / EU AI Act</td><td class="comp-col">Guardrails (model layer) + AgentCore Policy (tool layer), assembled; no embedded regulation/control enforcement</td><td class="akka-col">Aspect-woven runtime enforcement + pre-production classification against 186 regs / 962 controls</td></tr>
-  <tr><td>Cost model</td><td class="comp-col">Consumption-metered across the seven AgentCore services (per-vCPU-hour, per-request, per-token) plus separately billed model inference</td><td class="akka-col">Shared compute; up to 90% lower infrastructure for the same workload, one fixed price</td></tr>
+  <tr><td>Cost model</td><td class="comp-col">Consumption-metered across the seven AgentCore services (per-vCPU-hour, per-request, per-token) plus separately billed model inference</td><td class="akka-col">Shared compute; up to 90% lower infrastructure for the same workload, fixed annual fee</td></tr>
   <tr><td>Maturity</td><td class="comp-col">GA October 2025; Evaluations GA March 2026; Policy + Guardrails GA June 2026 &mdash; capabilities still landing</td><td class="akka-col">18 years; 100,000+ production deployments; 52 banks</td></tr>
-  <tr><td>Improves after go-live</td><td class="comp-col">AgentCore Evaluations detects quality drift; retraining and distillation are not provided</td><td class="akka-col">Continuous evaluation, reinforcement learning, and distillation &mdash; up to 80% lower token cost over time</td></tr>
   <tr><td>Certifications</td><td class="comp-col">Bedrock: ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible</td><td class="akka-col">19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, EU AI Act, NIST AI RMF)</td></tr>
 </table>
 
 <div class="section">
-  <h2>1. AgentCore Is a Set of Services to Assemble; Akka Is One Platform</h2>
+  <h2>AgentCore Is a Set of Services to Assemble; Akka Is One Platform</h2>
   <p>AWS Bedrock AgentCore is a collection of separate AWS services the customer integrates and operates, not an integrated platform. At <a href="https://aws.amazon.com/about-aws/whats-new/2025/10/amazon-bedrock-agentcore-available/">general availability</a> it ships seven modular services &mdash; Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, and Observability &mdash; and an agent of substance also draws on Bedrock model access, Bedrock Guardrails, and Knowledge Bases. Each is provisioned, secured, billed, and operated on its own; the customer owns every seam between them.</p>
   <table class="cmp-table">
     <tr><th style="width:34%;">Capability</th><th>AWS Bedrock AgentCore</th><th>Akka</th></tr>
@@ -144,28 +138,12 @@
     <tr><td>Model access</td><td class="bad">Amazon Bedrock (separately billed per token)</td><td class="good">Bring any model</td></tr>
     <tr><td>Real-time streaming</td><td class="bad">Not a native AgentCore service</td><td class="good">Built in, backpressured, petabyte-scale</td></tr>
     <tr><td>Governance / policy enforcement</td><td class="bad">Policy + Guardrails, assembled</td><td class="good">Inline, runtime-embedded</td></tr>
-    <tr><td>Delivery &amp; operation</td><td class="bad">The customer integrates and operates all seven services, or contracts a systems-integration engagement</td><td class="good">Delivered and operated by Akka Specify as a guaranteed outcome, in weeks</td></tr>
   </table>
-  <p>Akka delivers all of this on one runtime with one operational model. There are no seams to integrate, no per-service SLAs to reconcile, and no cross-service failure modes the customer inherits &mdash; and, through Akka Specify, Akka will integrate, deliver, and run the whole system for you.</p>
+  <p>Akka delivers all of this on one runtime with one operational model. There are no seams to integrate, no per-service SLAs to reconcile, and no cross-service failure modes the customer inherits.</p>
 </div>
 
 <div class="section">
-  <h2>2. Two Ways to Production: Assemble It Yourself, or Have It Delivered</h2>
-  <p>Reaching a production agentic system on AgentCore means integrating seven separate services &mdash; Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, and Observability &mdash; plus Bedrock model access, Guardrails, and Knowledge Bases, and operating every seam between them. You do that with your own engineers, or you contract a systems-integration engagement to assemble it for you &mdash; either way, there is no single vendor accountable for the finished, governed system. Akka offers a second path entirely: <strong>Akka Specify</strong> takes your specifications and delivers and operates the whole governed system for you as a guaranteed outcome &mdash; in weeks, for one fixed price.</p>
-  <table class="cmp-table" style="margin-top:5px;">
-    <tr><th style="width:16%;">&nbsp;</th><th>With AWS Bedrock AgentCore</th><th>With Akka Specify</th></tr>
-    <tr><td>Model</td><td class="bad">Self-integrate the seven AgentCore services, or a systems-integration engagement</td><td class="good">You provide the specifications</td></tr>
-    <tr><td>Who does the work</td><td class="bad">Your engineers, or forward-deployed / staff-augmentation contractors</td><td class="good">Akka generates, governs, delivers, and runs the system</td></tr>
-    <tr><td>Timeline</td><td class="bad">Months, by construction</td><td class="good">Weeks, not quarters</td></tr>
-    <tr><td>Billing</td><td class="bad">Consumption metering across seven services plus model spend, plus integration labor</td><td class="good">One fixed price</td></tr>
-    <tr><td>Afterward</td><td class="bad">You own and operate every service and every seam</td><td class="good">Kept up, safe, and improving &mdash; operated by Akka</td></tr>
-    <tr><td>Guarantee</td><td class="bad">Effort is guaranteed; the outcome is not</td><td class="good">The delivered outcome is guaranteed</td></tr>
-  </table>
-  <p style="margin-top:4px;">Under AWS's own Shared Responsibility Model, the availability, integration, and operation of everything built on top of Bedrock's managed infrastructure are the customer's. A team that cannot self-integrate contracts a systems-integration engagement &mdash; billed for time and materials, guaranteeing effort rather than the outcome, and handing back a system the team then owns and operates. Akka Specify inverts that: you provide a handful of plain-language specifications, and Akka generates, tests, governs, deploys, and runs the system &mdash; then keeps it available, safe, and improving under one agreement.</p>
-</div>
-
-<div class="section">
-  <h2>3. Availability and Disaster Recovery</h2>
+  <h2>Availability and Disaster Recovery</h2>
   <p>The agent layer has no dedicated availability SLA. Amazon Bedrock publishes a <a href="https://aws.amazon.com/bedrock/sla/">99.9% monthly uptime</a> commitment, measured as the percentage of Bedrock API requests that do not fail with errors, calculated per region, with service credits as the sole remedy. AgentCore inherits the regional, single-cloud posture the customer architects on top of AWS &mdash; the customer owns multi-region failover, RTO, and RPO for the assembled system.</p>
   <table class="cmp-table">
     <tr><th>Metric</th><th>AWS Bedrock AgentCore</th><th>Akka</th></tr>
@@ -174,10 +152,9 @@
     <tr><td>RTO</td><td class="bad">Customer-architected</td><td class="good">Sub-1 minute</td></tr>
     <tr><td>RPO</td><td class="bad">Customer-architected</td><td class="good">Zero byte</td></tr>
     <tr><td>SLA scope</td><td class="bad">The Bedrock model APIs</td><td class="good">The entire platform</td></tr>
-    <tr><td>Who operates it</td><td class="bad">The customer (the self-integrated services)</td><td class="good">Akka SREs, 24/7</td></tr>
     <tr><td>Remedy</td><td class="bad">Service credits</td><td class="good">Contractual indemnities</td></tr>
   </table>
-  <p>99.9% per region versus 99.9999% is the difference between roughly 8.8 hours and 31 seconds of allowed downtime a year. Akka's SLA covers the whole running system &mdash; orchestration, agents, memory, streaming, APIs, and governance &mdash; and Akka owns <em>and operates</em> it with 24/7 SRE.</p>
+  <p>99.9% per region versus 99.9999% is the difference between roughly 8.8 hours and 31 seconds of allowed downtime a year. Akka's SLA covers the whole running system &mdash; orchestration, agents, memory, streaming, APIs, and governance &mdash; and Akka owns it with 24/7 SRE.</p>
 </div>
 
 <!-- &#9608;&#9608;&#9608;&#9608; PAGE 2 &#9608;&#9608;&#9608;&#9608; -->
@@ -185,15 +162,13 @@
 
 <div class="two-col">
   <div class="section">
-    <h2>4. Cheaper to Operate &mdash; and It Keeps Getting Cheaper</h2>
+    <h2>Up to 90% Cheaper to Operate</h2>
     <p>AI systems built with Akka are up to <strong>90% cheaper to operate</strong> than Python-based systems &mdash; a function of the infrastructure required for the same agentic transaction volume, not a list-price comparison. AgentCore meters its services independently &mdash; Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, and Observability, plus Evaluations and Policy &mdash; on per-vCPU-hour, per-request, and per-token units, on top of standard Bedrock model token spend. Every layer the agent touches is a separate consumption meter that moves with load.</p>
-    <p style="margin-top:4px;">Akka runs all of it on one shared-compute runtime. The efficiency comes from actor concurrency (~10T tokens/core/year vs. ~2T; ~80% less compute than Python frameworks; Manulife: up to 300% more concurrency, 30&ndash;50% faster processing after porting from Python), shared compute, and micro-checkpointing that minimizes retries. The spend is one fixed price &mdash; not a stack of usage meters that scale with traffic.</p>
-    <h3>And the cost falls after go-live</h3>
-    <p>The delivered outcome compounds. Akka Verify runs continuous evaluation, reinforcement learning on production and synthetic data, and distillation to smaller specialized models &mdash; cutting token cost up to 80% while raising accuracy over time. AgentCore Evaluations detects quality drift; it does not retrain, distill, or ship the improvement. With Akka Specify, that tuning is part of the operated outcome, not a project the customer runs later.</p>
+    <p style="margin-top:4px;">Akka runs all of it on one shared-compute runtime. The efficiency comes from actor concurrency (~10T tokens/core/year vs. ~2T; ~80% less compute than Python frameworks; Manulife: up to 300% more concurrency, 30&ndash;50% faster processing after porting from Python), shared compute, and micro-checkpointing that minimizes retries. The spend is a fixed annual fee &mdash; not a stack of usage meters that scale with traffic.</p>
   </div>
 
   <div class="section">
-    <h2>5. Governance and the EU AI Act</h2>
+    <h2>Governance and the EU AI Act</h2>
     <p>AgentCore offers governance as assembled services, not embedded enforcement of regulation. <a href="https://aws.amazon.com/bedrock/guardrails/">Bedrock Guardrails</a> operate at the model-inference layer (unsafe content, PII); AgentCore Policy operates at the tool-access layer. Both reached <a href="https://aws.amazon.com/about-aws/whats-new/2026/06/amazon-bedrock-agentcore-policy-guardrails-generally-available/">GA in policy in June 2026</a>. They enforce vendor-defined safety filters and tool rules &mdash; not the obligations of a named regulation. There is no built-in classification against the EU AI Act, no immutable hash-chained evidence ledger as a platform guarantee, no pre-deployment governance gate, and no sealed audit artifact.</p>
   </div>
 </div>
@@ -213,13 +188,13 @@
     </div>
     <div>
       <h3>How Akka governs</h3>
-      <p>At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; pre-deployment classification against <strong>189 regulations and 962 controls &mdash; 574 controls carrying a financial penalty (across 89 regulations)</strong>; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.</p>
+      <p>At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; pre-deployment classification against <strong>189 regulations and 962 controls &mdash; 288 of which carry a financial penalty</strong>; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.</p>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <h2>6. One Certified System &mdash; Built, Governed, Delivered, and Run</h2>
+  <h2>Two Lifecycles, One Certified System</h2>
   <p>Building on AgentCore means engineers wiring and operating a set of AWS services; there is no first-class path for a product manager, domain expert, or risk officer to contribute, and governance is assembled from separate services rather than running as its own lifecycle. Akka runs two independent lifecycles on one platform via <strong>Akka Specify</strong>:</p>
   <div class="spec-graphic">
     <div class="spec-row">
@@ -242,43 +217,41 @@
       <div class="spec-arrow">&rarr;</div>
       <div class="spec-hub">
         <span class="name">Akka Specify</span>
-        <div class="foot">generates &middot; tests &middot; governs<br>runs &middot; operates</div>
+        <div class="foot">AI-assisted authoring<br>generates &middot; tests &middot; runs</div>
       </div>
       <div class="spec-arrow">&rarr;</div>
       <div class="spec-out">
         <div class="tag">One certified AI service</div>
-        <div class="ttl">Built, governed, delivered &amp; run</div>
+        <div class="ttl">Built, governed, and running</div>
         <ul>
           <li>Agents, tools, orchestration, memory, APIs, streaming, UI</li>
           <li>Guardrails, sanitizers, HITL/HOTL, evaluations, halts</li>
-          <li>Delivered, deployed, and operated for you</li>
+          <li>Interaction, evidence, and causal logging</li>
         </ul>
       </div>
     </div>
     <div class="spec-verify"><strong>Akka Verify &#8635;</strong> validates the running system against both specs and fine-tunes the AI from production data.</div>
   </div>
-  <p>The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences &mdash; an audience and a workflow that a set of assembled cloud services has no equivalent for. Akka generates, tests, governs, <strong>runs, and operates</strong> one certified AI service from both specs, and through <strong>Akka Specify</strong>, that certified system is delivered and operated as a guaranteed outcome &mdash; a delivery model AgentCore has no equivalent for.</p>
+  <p>The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences &mdash; an audience and a workflow that a set of assembled cloud services has no equivalent for.</p>
 </div>
 
 <div class="section">
-  <h2>7. Real-Time Streaming at Petabyte Scale</h2>
+  <h2>Real-Time Streaming at Petabyte Scale</h2>
   <p>Streaming is not a native AgentCore service; real-time pipelines are provisioned and operated separately on other AWS services. Akka's streaming is built into the runtime &mdash; continuous, backpressured, <strong>petabyte-scale, in-memory</strong>, with no external broker &mdash; powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second).</p>
 </div>
 
 <div class="section">
-  <h2>8. For the Buyer: Maturity, Lock-In, and Accountability</h2>
-  <p>AWS is a durable provider; the question is the <strong>AgentCore product's</strong> maturity and shape, not Amazon's viability.</p>
+  <h2>For the Buyer: Maturity, Lock-In, and Accountability</h2>
   <table class="cmp-table">
     <tr><th style="width:18%;">Buyer concern</th><th>AWS Bedrock AgentCore</th><th>Akka</th></tr>
     <tr><td>Product maturity</td><td class="bad">GA October 13, 2025; core capabilities still landing (Evaluations GA March 2026; Policy + Guardrails GA June 2026)</td><td class="good">18 years, 100,000+ deployments, 52 banks</td></tr>
     <tr><td>What you operate</td><td class="bad">Seven AgentCore services + model access + Guardrails + Knowledge Bases, integrated and run by the customer</td><td class="good">One platform, one SLA, 24/7 SRE &mdash; Akka owns the running system</td></tr>
     <tr><td>Portability / lock-in</td><td class="bad">AWS-only: IAM service-linked roles, VPC/PrivateLink, CloudFormation, CloudWatch, proprietary service APIs</td><td class="good">Any cloud, own Kubernetes, on-prem, sovereign cloud; portable specs</td></tr>
     <tr><td>Certifications &amp; audits</td><td class="bad">Bedrock: ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible</td><td class="good">19 standards &mdash; SOC 2 II + public SOC 3, ISO 27001/42001, EU AI Act, NIST AI RMF &mdash; plus annual pen tests, SBOMs, 40+ policies (trust.akka.io)</td></tr>
-    <tr><td>Delivery &amp; outcome</td><td class="bad">Self-integrate the AgentCore services, or a systems-integration engagement; effort is guaranteed, the outcome is not</td><td class="good">Akka Specify delivers and operates the system for one fixed price; the outcome is guaranteed</td></tr>
     <tr><td>Risk transfer</td><td class="bad">Service credits on the model-API SLA</td><td class="good">Availability and data-integrity guarantees backed by contractual indemnities</td></tr>
-    <tr><td>Budget predictability</td><td class="bad">Consumption meters across the AgentCore services plus model spend, plus integration labor, scaling with load</td><td class="good">One fixed price finance can forecast</td></tr>
+    <tr><td>Budget predictability</td><td class="bad">Consumption meters across the AgentCore services plus model spend, scaling with load</td><td class="good">Fixed annual fee finance can forecast</td></tr>
   </table>
-  <p style="margin-top:4px;">The structural point is not whether AWS will be around &mdash; it will. It is that AgentCore is a recent, consumption-metered collection of services the customer integrates and runs inside AWS, while Akka is an integrated, governed, portable platform with the SLA owned by the vendor &mdash; and, through Akka Specify, delivered and operated as a guaranteed outcome.</p>
+  <p style="margin-top:4px;">The structural point is not whether AWS will be around &mdash; it will. It is that AgentCore is a recent, consumption-metered collection of services the customer integrates and runs inside AWS, while Akka is an integrated, governed, portable platform with the SLA owned by the vendor.</p>
 </div>
 
 <div class="section">
@@ -297,30 +270,22 @@
   <div class="two-col" style="gap:14px;">
     <div>
       <div class="objection">
-        <div class="q">We don't have a team to integrate this &mdash; what are our options?</div>
-        <div class="a">Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system &mdash; the agents, memory, streaming, APIs, and governance AgentCore leaves you to assemble &mdash; as a guaranteed outcome, for one fixed price. With AgentCore, production is self-integration or a systems-integration engagement you then own.</div>
-      </div>
-      <div class="objection">
-        <div class="q">How is Akka Specify different from a systems-integration engagement to assemble Bedrock AgentCore into a system?</div>
-        <div class="a">A systems-integration engagement sells effort &mdash; time-and-materials over months to wire the seven AgentCore services together &mdash; and hands back a system you own and operate; the outcome is not guaranteed. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden.</div>
-      </div>
-      <div class="objection">
         <div class="q">We're an AWS shop already. Why not just use AgentCore?</div>
         <div class="a">You can, but you are assembling and operating seven AgentCore services plus Bedrock model access, Guardrails, and Knowledge Bases &mdash; each billed and run separately, all locked to AWS. Akka delivers the same capabilities as one integrated runtime with a six-nines SLA Akka owns, and it runs in your AWS VPC, on another cloud, on your own Kubernetes, or on-prem. You get the platform instead of the integration project.</div>
       </div>
-    </div>
-    <div>
       <div class="objection">
         <div class="q">AgentCore is from AWS &mdash; isn't it the safe, mature choice?</div>
         <div class="a">AWS is durable; AgentCore is recent. It reached general availability in October 2025, and core governance and evaluation capabilities were still reaching GA into 2026 (Evaluations March 2026; Policy and Guardrails June 2026). Akka has 18 years and 100,000+ production deployments behind a single, integrated platform.</div>
       </div>
+    </div>
+    <div>
       <div class="objection">
         <div class="q">Can't we add EU AI Act compliance with Guardrails and Policy?</div>
         <div class="a">Guardrails enforce content safety at the model layer and Policy enforces tool-access rules &mdash; both useful, neither is regulation enforcement. The EU AI Act expects classification before deployment, immutable records witnessed as decisions happen, human override of running processes, and a sealed audit artifact. Akka embeds classification against 189 regulations and 962 controls, hash-chained evidence, HITL/HOTL control, and pre-deployment governance inline.</div>
       </div>
       <div class="objection">
-        <div class="q">Isn't AgentCore's consumption pricing cheaper than one fixed price?</div>
-        <div class="a">AgentCore meters its services on per-vCPU-hour, per-request, and per-token units, on top of model token spend, and the bill scales with load. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on one fixed price finance can forecast.</div>
+        <div class="q">Isn't AgentCore's consumption pricing cheaper than a fixed fee?</div>
+        <div class="a">AgentCore meters its services on per-vCPU-hour, per-request, and per-token units, on top of model token spend, and the bill scales with load. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on a fixed annual fee finance can forecast.</div>
       </div>
     </div>
   </div>
@@ -334,20 +299,18 @@
     <strong>AgentCore maturity:</strong> aws.amazon.com/about-aws/whats-new/2026/03/agentcore-evaluations-generally-available (Evaluations GA March 2026); aws.amazon.com/about-aws/whats-new/2026/06/amazon-bedrock-agentcore-policy-guardrails-generally-available (Policy + Guardrails GA June 2026)<br>
     <strong>Bedrock SLA:</strong> aws.amazon.com/bedrock/sla &mdash; 99.9% monthly uptime, measured by Bedrock API request errors per region; service credits as remedy<br>
     <strong>AgentCore governance:</strong> aws.amazon.com/bedrock/guardrails (model-layer content/PII safety); Policy = tool-access-layer enforcement<br>
-    <strong>AWS Shared Responsibility Model:</strong> aws.amazon.com/compliance/shared-responsibility-model &mdash; the customer is responsible for the security, integration, and operation of everything built on top of AWS-managed infrastructure and services<br>
     <strong>AWS lock-in / VPC / IAM:</strong> docs.aws.amazon.com/bedrock-agentcore/latest/devguide/vpc-interface-endpoints.html; .../security-iam-awsmanpol.html &mdash; IAM service-linked roles, VPC/PrivateLink, CloudWatch-backed observability<br>
     <strong>AgentCore pricing:</strong> aws.amazon.com/bedrock/agentcore &mdash; consumption-based across the AgentCore services (per-vCPU-hour + per-GB-hour runtime, plus memory, gateway, tools, observability); Bedrock model inference billed separately; exact rates per the AWS pricing page<br>
     <strong>Bedrock compliance:</strong> aws.amazon.com/bedrock/security-privacy-responsible-ai &mdash; ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible<br>
-    <strong>Akka Specify (spec-driven delivery):</strong> akka.io / akka.io/llms.txt &mdash; you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation (up to 80% lower token cost, higher accuracy)<br>
     <strong>Akka trust center:</strong> trust.akka.io &mdash; 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies<br>
     <strong>Akka performance:</strong> akka.io/blog/go-slow-to-go-fast &mdash; Manulife up to 300% more concurrency, 30&ndash;50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python<br>
-    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1 min RTO, zero byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
   </p>
 </div>
 
 <div class="footer">
   <div style="display:flex; align-items:center; gap:8px;"><svg width="65" height="15" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip1)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="#1A1A1A"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="#1A1A1A"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="#1A1A1A"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="#1A1A1A"/></g><defs><clipPath id="clip1"><rect width="109" height="25" fill="white"/></clipPath></defs></svg> <span>Reliable AI for Every Industry &nbsp;|&nbsp; akka.io</span></div>
-  <div>July 2026</div>
+  <div>June 2026</div>
 </div>
 
 </body>

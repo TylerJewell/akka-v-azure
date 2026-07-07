@@ -1,8 +1,8 @@
 # Akka vs. n8n
 
-**A comparison for teams building agentic AI — July 2026**
+**A comparison for teams building agentic AI — June 2026**
 
-> **n8n automates your workflows; Akka runs your production agentic systems — and guarantees them.** n8n is excellent visual workflow automation with AI Agent nodes — the fast path for integrations and internal automations. It is not built for production agentic scale, durable execution, or AI governance: the heavy-load, reliability, and compliance burden stays with you. Akka owns all of it under a contractual SLA — and Akka Specify can deliver and run the entire governed system for you as a guaranteed outcome.
+> **n8n automates your workflows; Akka runs your production agentic systems — and guarantees them.** n8n is excellent visual workflow automation with AI Agent nodes — the fast path for integrations and internal automations. It is not built for production agentic scale, durable execution, or AI governance: the heavy-load, reliability, and compliance burden stays with you.
 
 ---
 
@@ -10,32 +10,28 @@
 
 | Stat | Value |
 |------|-------|
+| n8n availability SLA (Enterprise Cloud) | **99.5%** |
 | Akka availability SLA | **99.9999%** |
-| Akka Specify delivery | **Weeks** |
-| One all-in price | **Fixed** |
-| Less infrastructure | **90%** |
+| Akka durable state reads | **4ms** |
+| Akka real-time benchmark | **5B tokens/sec** |
 
 | Dimension | n8n | Akka |
 |-----------|-----|------|
-| What it is | A visual workflow-automation platform with AI Agent nodes | A full-stack agentic systems platform — build on it yourself, or have it delivered and operated for you |
-| How you reach production | Self-build around the automation canvas, or contract a labor-led integration engagement | Build with spec-driven development, or **Akka Specify** delivers and runs it |
-| Commercial model | Per-execution metering, plus build-and-operate labor for everything beyond automation | One fixed price — platform, infrastructure, tokens, training, delivery, and operations |
-| Outcome guarantee | Effort only; the outcome is not guaranteed | The delivered outcome is guaranteed |
+| What it is | A visual workflow-automation platform with AI Agent nodes | A full-stack agentic systems platform |
 | Scope | Workflow automation and integrations; agentic scale, durable execution, and AI governance are the customer's burden | Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime |
 | Availability SLA | 99.5% uptime (Enterprise Cloud), excluding planned maintenance | 99.9999% — entire platform, backed by indemnities |
 | HA / DR | Queue mode + multi-main and Redis required; no published RTO/RPO or active-active multi-region guarantee | Sub-1-minute RTO, zero-byte RPO, active-active HA/DR across regions |
 | Durable execution | Execution state persisted to PostgreSQL; in-flight runs on a crashed worker can be marked "crashed" — no deterministic replay substrate | Event-sourced durable execution; runtime handles recovery and replay |
-| AI agents | AI Agent node built on the LangChain JS framework (ReAct / tools agent) | Native agents with tools, handoffs, guardrails, and interaction logging |
+| AI agents | AI Agent node built on the LangChain JS framework (ReAct / tools agent) | Native agents with tools, handoffs, guardrails, interaction logging |
 | Memory | Bolt-on memory sub-nodes; external store you provision | Durable in-memory, 4ms reads / sub-10ms writes |
 | Governance / EU AI Act | Audit logs and log streaming (Enterprise); no inline policy enforcement, classification, or sealed audit artifact | Aspect-woven runtime enforcement + full pre-production governance |
-| Infrastructure footprint | Per-execution metering (€24–€800/mo by plan; Enterprise custom) + infra you operate when self-hosted | Shared compute; up to 90% lower infrastructure for the same workload |
-| Improves after go-live | Not provided | Continuous evaluation, reinforcement learning, and distillation — up to 80% lower token cost over time |
+| Cost model | Per-execution metering (€24–€800/mo by plan; Enterprise custom) + infra you operate when self-hosted | Shared compute; up to 90% lower infrastructure for the same workload |
 | Certifications | SOC 2 Type II, GDPR (trust.n8n.io) | 19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF) |
 | License | Sustainable Use License (fair-code, source-available, not open source); internal-business-purpose only; no reselling/hosting n8n as a service; n8n Embed requires a commercial license | BSL; deploy anywhere including sovereign cloud; portable specs |
 
 ---
 
-## 1. n8n Is an Automation Tool; Akka Is an Agentic Platform
+## n8n Is an Automation Tool; Akka Is an Agentic Platform
 
 n8n is a visual workflow-automation platform that connects 400+ apps and APIs, with AI Agent nodes added on top. It is genuinely excellent for integrations and internal automations, and self-hosting gives teams full control of their data. A production agentic system needs more than node-based automation — durable execution, horizontal agentic scale, durable memory, streaming, and runtime governance — and n8n leaves those to you.
 
@@ -51,22 +47,7 @@ n8n is a visual workflow-automation platform that connects 400+ apps and APIs, w
 
 n8n's AI Agent node is a wrapper over the LangChain JavaScript framework. It is ideal for triggering an LLM step inside an automation; it is not an agent runtime engineered for unattended, process-attached execution at scale.
 
-## 2. Two Ways to Production: Build It, or Have It Delivered
-
-Akka offers two ways onto one platform: build the system yourself with spec-driven development, or have **Akka Specify** deliver and operate the entire governed system for you as a guaranteed outcome — in weeks, for one fixed price. n8n offers neither a platform nor a delivery model for a production agentic system: past the automation canvas, durable execution, agentic scale, memory, streaming, and governance are the customer's to build, run, and own.
-
-| | With n8n | With Akka Specify |
-|---|---|---|
-| Model | Self-build, or a labor-led integration engagement | You provide the specifications |
-| Who does the work | Your engineers, or forward-deployed / staff-augmentation contractors | Akka generates, governs, delivers, and runs the system |
-| Timeline | Months, by construction | Weeks, not quarters |
-| Billing | Time-and-materials, plus metered platform parts | One fixed price |
-| Afterward | You inherit the system and its operations | Kept up, safe, and improving — operated by Akka |
-| Guarantee | Effort is guaranteed; the outcome is not | The delivered outcome is guaranteed |
-
-n8n is scoped to workflow automation: durable execution, horizontal agentic scale, memory, streaming, and governance are the customer's responsibility to build around it, on n8n Cloud or self-hosted. A team that cannot build those layers itself contracts a labor-led integration engagement — billed for time and materials, guaranteeing effort rather than the outcome, and handing back a system the team then owns and operates. Akka Specify inverts that: you provide a handful of plain-language specifications, and Akka generates, tests, governs, deploys, and runs the system — then keeps it available, safe, and improving under one agreement.
-
-## 3. Reliability, Scale, and Durable Execution
+## Reliability, Scale, and Durable Execution
 
 n8n Enterprise Cloud publishes a **99.5% uptime** commitment (excluding planned maintenance during 10am–5pm German time) — roughly 1.8 days of allowed downtime per year. Akka's contractual SLA is **99.9999%** — about 31 seconds per year — across the entire platform, backed by indemnities.
 
@@ -78,23 +59,18 @@ n8n Enterprise Cloud publishes a **99.5% uptime** commitment (excluding planned 
 | RPO | Not published | Zero byte |
 | HA model | Queue mode + multi-main; Redis + PostgreSQL required | Active-active across regions |
 | Durable execution | PostgreSQL-persisted; crashed-worker runs can be marked "crashed" | Event-sourced, replayable from the journal |
-| Who operates it | The customer (or an inherited integrator) | Akka SREs, 24/7 |
 
 To scale horizontally, n8n runs in **queue mode**: a Redis message broker (Bull queue) distributes executions to worker processes, PostgreSQL is mandatory (SQLite is unsupported), and multiple "main" instances provide availability. Default per-worker concurrency is 10. This is a capable architecture for automation throughput, but n8n provides no deterministic durable-execution substrate: when a worker dies mid-execution, in-flight runs can be marked "crashed" rather than transparently replayed, and recovery is the operator's responsibility.
 
-Akka was built for this. Its actor-based runtime runs 4KB actors at 200M actors/core across clusters up to 1M nodes; state is durable in-memory (4ms reads / sub-10ms writes, replayable from the event journal); and streaming is brokerless and backpressured with a sub-1-minute RTO and zero-byte RPO. The runtime owns recovery; application code does not have to — and Akka operates that runtime under the SLA, 24/7.
+Akka was built for this. Its actor-based runtime runs 4KB actors at 200M actors/core across clusters up to 1M nodes; state is durable in-memory (4ms reads / sub-10ms writes, replayable from the event journal); and streaming is brokerless and backpressured with a sub-1-minute RTO and zero-byte RPO. The runtime owns recovery; application code does not have to.
 
-## 4. Up to 90% Cheaper to Operate — and It Keeps Getting Cheaper
+## Up to 90% Cheaper to Operate
 
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems. This is a function of the infrastructure required to run the same agentic transaction volume — not list price. The drivers are actor concurrency, shared compute, and micro-checkpointing: ~10 trillion tokens/core/year vs ~2 trillion for comparable solutions, and ~80% less compute than Python-based frameworks. Manulife reported up to **300% more concurrency** and **30–50% faster processing** after porting Python-based systems to Akka.
 
-n8n Cloud bills **per execution** (€24/mo Starter / 2,500 executions, up to €800/mo Business / 40,000 executions; Enterprise custom), and that meter covers automation only. The memory store, the streaming tier, the agent infrastructure, and the database all sit outside it — provisioned and operated by you when self-hosted. Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on one shared-compute runtime for **one fixed price** — covering platform, infrastructure, tokens, training, delivery, and operations — not a meter that moves with load, plus separate build-and-operate labor.
+n8n Cloud bills **per execution** (€24/mo Starter / 2,500 executions, up to €800/mo Business / 40,000 executions; Enterprise custom), and that meter covers automation only. The memory store, the streaming tier, the agent infrastructure, and the database all sit outside it — provisioned and operated by you when self-hosted. Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on one shared-compute runtime for a fixed annual fee finance can forecast, not a meter that moves with load.
 
-### And the cost falls after go-live
-
-The delivered outcome compounds. Akka Verify runs continuous evaluation, reinforcement learning on production and synthetic data, and distillation to smaller specialized models — cutting token cost up to 80% while raising accuracy over time. n8n does not provide continuous evaluation, reinforcement learning, or distillation for its AI Agent node; workflow monitoring is operational, not a model-quality improvement loop. With Akka Specify, that tuning is part of the operated outcome, not a project the customer runs later.
-
-## 5. Governance and the EU AI Act
+## Governance and the EU AI Act
 
 n8n Enterprise provides audit logs and log streaming — useful operational telemetry. It does not provide AI governance for production agents: no inline policy enforcement, no decision explainability, no human pause/override of a running agent, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact. The compliance burden for an agentic system built on n8n stays with the customer.
 
@@ -104,34 +80,33 @@ n8n Enterprise provides audit logs and log streaming — useful operational tele
 | High-risk obligations (Art. 9–15) | €15M or 3% global turnover |
 | Incorrect information (supply) | €7.5M or 1.5% global turnover |
 
-The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **189 regulations and 962 controls** (574 controls carrying a financial penalty (across 89 regulations)); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline — and delivers it already wired when the system is built through Akka Specify.
+The EU AI Act is enforceable now (prohibited practices since Feb 2025, high-risk since Aug 2025) and carries a **10-year logging-retention obligation** (Art. 72). Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; pre-deployment classification against **189 regulations and 962 controls** (288 of which carry a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance n8n leaves to you, Akka enforces inline.
 
-## 6. One Certified System — Built, Governed, Delivered, and Run
+## Two Lifecycles, One Certified System
 
 Building on n8n means a workflow author wiring nodes on a canvas; there is no co-equal, independent governance lifecycle and no path for a risk officer to author and version enforceable safeguards. Akka runs two independent lifecycles on one platform via **Akka Specify**:
 
 - **Build lifecycle** (functional contract): "Rank incoming ER patients by acuity and route the top three to a clinician." Authored by product, developers, ML engineers, and domain experts. Versioned and tested.
 - **Govern lifecycle** (safeguard contract): "Block prohibited practices under EU AI Act Article 5; notify regulators within 24h of any incident." Authored by risk, security, and compliance. Versioned and tested independently of the build.
 
-Akka generates, tests, governs, **runs, and operates** one certified AI service that satisfies both specifications — agents, tools, orchestration, memory, APIs, streaming, UI; guardrails, sanitizers, HITL/HOTL, evaluations, halts; and interaction, evidence, and causal logging. **Akka Verify** validates the running system against both specs and fine-tunes the AI from production data. The build and governance lifecycles are versioned and tested independently, by different audiences, and through Akka Specify, that certified system is delivered and operated as a guaranteed outcome — a delivery model and an independent governance lifecycle n8n has no equivalent for.
+Akka Specify generates, tests, and runs one certified AI service — agents, tools, orchestration, memory, APIs, streaming, UI; guardrails, sanitizers, HITL/HOTL, evaluations, halts; and interaction, evidence, and causal logging. **Akka Verify** validates the running system against both specs and fine-tunes the AI from production data. The build and governance lifecycles are versioned and tested independently, by different audiences — a workflow n8n has no equivalent for.
 
-## 7. Real-Time Streaming at Petabyte Scale
+## Real-Time Streaming at Petabyte Scale
 
 n8n has no native streaming engine; real-time pipelines and feedback loops are provisioned separately. Akka's streaming is built into the runtime — continuous, backpressured, **petabyte-scale, in-memory**, with no external broker — powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second).
 
-## 8. For the Buyer: Risk, Compliance, Accountability, and Licensing
+## For the Buyer: Risk, Compliance, Accountability, and Licensing
 
 | Buyer concern | n8n | Akka |
 |---------------|-----|------|
-| Certifications & audits | SOC 2 Type II, GDPR (trust.n8n.io) | 19 standards — SOC 2 II + public SOC 3, ISO/IEC 27001 & 42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF — plus annual pen tests, SBOMs, 40+ policies ([trust.akka.io](https://trust.akka.io)) |
-| Delivery & outcome | Self-build or a time-and-materials integrator; effort is guaranteed, the outcome is not | Akka Specify delivers and operates the system for one fixed price; the outcome is guaranteed |
+| Certifications & audits | SOC 2 Type II, GDPR (trust.n8n.io) | 19 standards — SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF — plus annual pen tests, SBOMs, 40+ policies (trust.akka.io) |
 | Scope of accountability | The automation layer; you operate scale, durability, and governance | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Risk transfer | Standard cloud terms | Availability and data-integrity guarantees backed by contractual indemnities |
 | Track record & funding model | Venture-funded: $180M Series C at a $2.5B valuation (Oct 2025), founded 2019 | Profitable and self-funding; 18 years and 100,000+ deployments (52 banks); Dell Technologies Capital is largest shareholder, a customer, and an AI partner |
-| Budget predictability | Per-execution metering that scales with load | One fixed price finance can forecast |
+| Budget predictability | Per-execution metering that scales with load | Fixed annual fee finance can forecast |
 | License | Sustainable Use License — fair-code, source-available, **not open source**; internal-business-purpose only; reselling/hosting n8n as a service is prohibited; embedding requires the n8n Embed commercial license | BSL; deploy on Akka cloud, hyperscaler VPC, your Kubernetes, on-prem, or sovereign cloud; portable specs |
 
-n8n is well-funded and growing fast; the decision is scope and accountability. n8n gives you a best-in-class automation canvas to integrate apps and trigger AI steps. Akka gives you the agentic platform — and owns the SLA, the durability, and the governance — and, through Akka Specify, will deliver and run the whole system for you. The Sustainable Use License is also a procurement gate worth reading early: it is source-available but restricts commercial use, forbids offering n8n as a hosted service, and requires the n8n Embed commercial license to embed n8n in a product.
+n8n is well-funded and growing fast; the decision is scope and accountability. n8n gives you a best-in-class automation canvas to integrate apps and trigger AI steps. Akka gives you the agentic platform — and owns the SLA, the durability, and the governance. The Sustainable Use License is also a procurement gate worth reading early: it is source-available but restricts commercial use, forbids offering n8n as a hosted service, and requires the n8n Embed commercial license to embed n8n in a product.
 
 ## Customers Running Agentic and Real-Time Systems on Akka
 
@@ -143,12 +118,6 @@ n8n is well-funded and growing fast; the decision is scope and accountability. n
 
 ## Common Questions
 
-**We don't have a team to build this — what are our options?**
-Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system as a guaranteed outcome, for one fixed price. With n8n, production agentic scale is self-build around the automation canvas, or a labor-led integration engagement you then own.
-
-**How is Akka Specify different from hiring an integrator to build our n8n workflows?**
-An integration engagement sells effort — time-and-materials over months — and hands back a system you own and operate; the outcome is not guaranteed. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden.
-
 **We already run n8n for our automations. Why add Akka?**
 Keep n8n for what it is excellent at — integrations and internal automations. When you move into production agentic AI you also need durable execution, horizontal agentic scale, durable memory, streaming, and runtime governance, which n8n does not provide. Akka runs the agentic systems on one platform while n8n keeps handling your automations.
 
@@ -159,7 +128,7 @@ n8n's AI Agent node is a LangChain-based step inside a workflow, and strong fund
 You can add log streaming and audit logs, but the EU AI Act expects enforcement inline to the runtime: immutable records witnessed as they happen, human override on running processes, classification before a system ships, and a sealed audit artifact. Telemetry read after the fact cannot gate a deployment. Akka embeds all of this and covers pre-deployment governance.
 
 **Isn't n8n cheaper because it is free to self-host?**
-The n8n engine is source-available under the Sustainable Use License (fair-code, not open source), and self-hosting means you build and operate scale, HA/DR, durability, and everything around it. Cloud bills per execution. Akka's shared-compute model is up to 90% cheaper to operate than the equivalent assembled stack, on one fixed price — and the license is a procurement gate: reselling n8n as a service is prohibited and embedding requires a commercial license.
+The n8n engine is source-available under the Sustainable Use License (fair-code, not open source), and self-hosting means you build and operate scale, HA/DR, durability, and everything around it. Cloud bills per execution. Akka's shared-compute model is up to 90% cheaper to operate than the equivalent assembled stack, on a fixed annual fee — and the license is a procurement gate: reselling n8n as a service is prohibited and embedding requires a commercial license.
 
 ## Sources
 
@@ -172,9 +141,8 @@ The n8n engine is source-available under the Sustainable Use License (fair-code,
 - **n8n security & certifications:** n8n.io/legal/security and trust.n8n.io (SafeBase) — SOC 2 Type II, GDPR
 - **n8n funding:** blog.n8n.io/series-c and theaiinsider.tech — $180M Series C at $2.5B valuation (Oct 2025, led by Accel; NVentures/Nvidia); founded 2019
 - **n8n adoption:** github.com/n8n-io/n8n — 400+ integrations; 150,000+ GitHub stars
-- **Akka Specify (spec-driven delivery):** akka.io / akka.io/llms.txt — you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
 
-*This comparison reflects publicly available information as of July 2026. Akka figures are sourced from akka.io and trust.akka.io. n8n figures are sourced from n8n's own documentation, pricing, license, and trust center.*
+*This comparison reflects publicly available information as of June 2026. Akka figures are sourced from akka.io and trust.akka.io. n8n figures are sourced from n8n's own documentation, pricing, license, and trust center.*

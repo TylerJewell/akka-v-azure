@@ -1,8 +1,8 @@
 # Akka vs. LlamaIndex
 
-**A comparison for teams building agentic AI — July 2026**
+**A comparison for teams building agentic AI — June 2026**
 
-> **LlamaIndex indexes and retrieves your data; Akka runs the agentic system that acts on it — and guarantees it.** LlamaIndex is a strong RAG / data framework: connectors, parsing, indexing, and retrieval that give an LLM the right context. It is not an agentic runtime, and it has no delivery model of its own — production reliability, durable state, HA/DR, and runtime governance are yours to build, integrate, and operate, yourself or through a labor-led integration engagement. Akka delivers them as one platform, and Akka Specify can deliver and run the entire governed system for you as a guaranteed outcome; LlamaIndex's retrieval layer can feed an Akka agent.
+> **LlamaIndex indexes and retrieves your data; Akka runs the agentic system that acts on it — and guarantees it.** LlamaIndex is a strong RAG / data framework: connectors, parsing, indexing, and retrieval that give an LLM the right context. It is not an agentic runtime. Production reliability, durable state, HA/DR, and runtime governance are yours to build, integrate, and operate. Akka delivers them as one platform — and LlamaIndex's retrieval layer can feed an Akka agent.
 
 ---
 
@@ -12,16 +12,12 @@
 |---|---|---|
 | What it is | A RAG / data framework for indexing and retrieval (plus a managed parsing/indexing service, LlamaCloud) | A full-stack agentic systems platform |
 | Primary job | Connect, parse, index, and retrieve your data so an LLM has the right context | Run, scale, persist, and govern agentic systems in production |
-| How you reach production | Self-build the runtime around retrieval, or contract a labor-led integration engagement | Build with spec-driven development, or **Akka Specify** delivers and runs it |
-| Commercial model | Consumption credits (LlamaCloud) for parsing and indexing, plus separately provisioned infrastructure and build-and-operate labor for everything else | One fixed price — platform, infrastructure, tokens, training, delivery, and operations |
-| Outcome guarantee | Effort only; the outcome is not guaranteed | The delivered outcome is guaranteed |
 | Agentic features | Workflows (event-driven orchestration), function-calling and ReAct agents, AgentWorkflow — a library you deploy and operate yourself | Native agents, durable memory, streaming, APIs, orchestration, and governance on one runtime |
 | Durable execution | Not built in — Workflows do not auto-checkpoint; durable state requires an external integration (e.g., DBOS journaling to a database), replay-based and at-least-once | Durable sharded in-memory state, event-sourced, replayable from its own journal; 4ms reads / sub-10ms writes |
 | Availability SLA | No published numeric SLA; "uptime SLAs" referenced only for the enterprise tier | 99.9999% — entire platform, contractual, backed by indemnities |
 | HA/DR | Customer-owned (self-hosted) or per the managed service's terms; no published active-active / RTO / RPO | Active-active across regions; sub-1-minute RTO; zero-byte RPO |
 | Governance / EU AI Act | Observability and evaluation integrations; no inline policy enforcement, immutable evidence ledger, pre-deployment classification, or sealed audit artifact | Aspect-woven runtime enforcement + full pre-production governance |
-| Cost model | Consumption credits (LlamaCloud: $1 per 1,000 credits; ~3 credits/page; 10,000 free credits/month) + you provision and operate everything else | Shared compute; up to 90% lower infrastructure for the same agentic workload, on one fixed price |
-| Improves after go-live | Evaluation tooling measures quality; improvement is manual | Continuous evaluation, reinforcement learning, and distillation — up to 80% lower token cost over time |
+| Cost model | Consumption credits (LlamaCloud: $1 per 1,000 credits; ~3 credits/page; 10,000 free credits/month) + you provision and operate everything else | Shared compute; up to 90% lower infrastructure for the same agentic workload, on a fixed annual fee |
 | Certifications | SOC 2 Type II reported for LlamaCloud; no public trust center comparable in depth | 19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF) |
 | Vendor model | Venture-funded: $19M Series A (Mar 2025), ~$93M post-money; strategic minority investments from Databricks and KPMG | Profitable and self-funding; 18 years, 100,000+ deployments; Dell Technologies Capital is largest shareholder, customer, and AI partner |
 
@@ -29,16 +25,16 @@
 
 ## Stat cards
 
-- **99.9999%** — Akka Availability SLA
-- **Weeks** — Akka Specify Delivery
-- **Fixed** — One All-In Price
-- **90%** — Less Infrastructure
+- **No published SLA** — LlamaIndex availability
+- **99.9999%** — Akka platform SLA
+- **4ms** — Akka durable-state reads
+- **Up to 90%** — cheaper to operate vs Python-based systems
 
 ---
 
-## 1. LlamaIndex Is a Retrieval Framework; Akka Is the Agentic Platform
+## LlamaIndex Is a Retrieval Framework; Akka Is the Agentic Platform
 
-LlamaIndex is a data framework for retrieval-augmented generation: data connectors, document parsing (LlamaParse), indexing, and query/retrieval interfaces that give a model the right context. It does this well, and it has added agentic constructs — Workflows (event-driven orchestration), function-calling and ReAct agents, and AgentWorkflow. Those are libraries you import, deploy, and operate. The substrate a production agentic system runs on — a durable runtime, high availability, disaster recovery, and embedded governance — is not part of LlamaIndex; you build, integrate, and operate it yourself, and own every failure across the seams. Akka delivers them pre-integrated on one runtime.
+LlamaIndex is a data framework for retrieval-augmented generation: data connectors, document parsing (LlamaParse), indexing, and query/retrieval interfaces that give a model the right context. It does this well, and it has added agentic constructs — Workflows (event-driven orchestration), function-calling and ReAct agents, and AgentWorkflow. Those are libraries you import, deploy, and operate. The substrate a production agentic system runs on — a durable runtime, high availability, disaster recovery, and embedded governance — is not part of LlamaIndex; you build, integrate, and operate it yourself, and own every failure across the seams.
 
 | Capability | LlamaIndex | Akka |
 |---|---|---|
@@ -52,22 +48,7 @@ LlamaIndex is a data framework for retrieval-augmented generation: data connecto
 | Runtime governance / policy enforcement | None | Inline, runtime-embedded |
 | Pre-production governance | None | Classification, sign-offs, sealed posture |
 
-## 2. Two Ways to Production: Build It, or Have It Delivered
-
-Putting an agent into production with LlamaIndex means building the runtime around its retrieval layer yourself — durable execution, HA/DR, memory, streaming, APIs, and governance — or contracting a labor-led integration engagement to do it for you. Akka offers a second path: **Akka Specify** takes your specifications and delivers and operates the entire governed system for you as a guaranteed outcome — in weeks, for one fixed price.
-
-| | With LlamaIndex | With Akka Specify |
-|---|---|---|
-| Model | Self-build the runtime around retrieval, or a labor-led integration engagement | You provide the specifications |
-| Who does the work | Your engineers, or forward-deployed / staff-augmentation contractors | Akka generates, governs, delivers, and runs the system |
-| Timeline | Months, by construction | Weeks, not quarters |
-| Billing | Consumption credits, plus separately provisioned infrastructure, plus build-and-operate labor | One fixed price |
-| Afterward | You own and operate the runtime and its operations | Kept up, safe, and improving — operated by Akka |
-| Guarantee | Effort is guaranteed; the outcome is not | The delivered outcome is guaranteed |
-
-LlamaIndex's own documentation is explicit that it is a data/retrieval framework, not a production agent runtime — durable execution requires an external integration such as DBOS, and HA/DR, memory, streaming, and governance are sourced and operated separately. A team that cannot build and operate that stack contracts a labor-led integration engagement — billed for time and materials, guaranteeing effort rather than the outcome, and handing back a system the team then owns and operates. Akka Specify inverts that: you provide a handful of plain-language specifications, and Akka generates, tests, governs, deploys, and runs the system — then keeps it available, safe, and improving under one agreement.
-
-## 3. Availability, Durability, and Disaster Recovery
+## Availability, Durability, and Disaster Recovery
 
 LlamaIndex does not publish a numeric availability SLA; "uptime SLAs" are referenced only generically for the enterprise tier, with no stated percentage, RTO, or RPO. More important for agentic AI is durable execution. LlamaIndex Workflows do not automatically snapshot state — by design, to avoid overhead — so a workflow cannot recover from a crash on its own. Durable execution is available only through an external integration such as DBOS, which journals step completions to a database and replays on restart; recovery is at-least-once, so steps can run more than once and the developer must make them idempotent.
 
@@ -80,23 +61,16 @@ LlamaIndex does not publish a numeric availability SLA; "uptime SLAs" are refere
 | RTO / RPO | Not published | Sub-1-minute RTO / zero-byte RPO |
 | HA/DR | Customer-owned / per managed terms | Active-active across regions |
 | SLA scope | — | The entire platform, backed by indemnities |
-| Who operates it | Customer-owned (self-hosted) or per the managed service's terms | Akka SREs, 24/7 |
 
-Akka provides durability and fault tolerance as part of the runtime: state is event-sourced in durable sharded in-memory storage, replayable from its own journal, with active-active HA/DR, sub-1-minute RTO, and zero-byte RPO under a 99.9999% SLA that Akka owns and operates, 24/7. Eighteen years and 100,000+ production deployments stand behind it.
+Akka provides durability and fault tolerance as part of the runtime: state is event-sourced in durable sharded in-memory storage, replayable from its own journal, with active-active HA/DR, sub-1-minute RTO, and zero-byte RPO under a 99.9999% SLA. Eighteen years and 100,000+ production deployments stand behind it.
 
-## 4. Up to 90% Cheaper to Operate — and It Keeps Getting Cheaper
+## Up to 90% Cheaper to Operate
 
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems — a function of the infrastructure required for the same agentic transaction volume, not list price. The drivers are actor concurrency (~10 trillion tokens/core/year vs ~2 trillion for comparable solutions; ~80% less compute than Python-based frameworks), shared compute, and micro-checkpointing. Manulife reported up to 300% more concurrency and 30–50% faster processing after porting Python-based systems to Akka.
 
-LlamaCloud bills by consumption: $1 per 1,000 credits, roughly 3 credits per page for cost-effective parsing, with 10,000 free credits per month. That meter covers parsing, extraction, and indexing — the retrieval layer. The runtime to run agents in production (compute, memory, streaming, APIs, observability, governance, HA/DR) is provisioned and paid for separately, on top. Akka runs all of it on one shared-compute runtime for one fixed price finance can forecast — not consumption metering that moves with load.
+LlamaCloud bills by consumption: $1 per 1,000 credits, roughly 3 credits per page for cost-effective parsing, with 10,000 free credits per month. That meter covers parsing, extraction, and indexing — the retrieval layer. The runtime to run agents in production (compute, memory, streaming, APIs, observability, governance, HA/DR) is provisioned and paid for separately, on top. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast — not consumption metering that moves with load.
 
-### And the cost falls after go-live
-
-The delivered outcome compounds. Akka Verify runs continuous evaluation, reinforcement learning on production and synthetic data, and distillation to smaller specialized models — cutting token cost up to 80% while raising accuracy over time. LlamaIndex's evaluation tooling measures quality; it does not retrain, distill, or ship the improvement. With Akka Specify, that tuning is part of the operated outcome, not a project the customer runs later.
-
-The spend is also predictable: one fixed price covers platform, infrastructure, tokens, training, delivery, and operations — not consumption credits that scale with load, plus separate build-and-operate labor.
-
-## 5. Governance and the EU AI Act
+## Governance and the EU AI Act
 
 LlamaIndex provides observability and evaluation: instrumentation, tracing integrations, and evaluation tooling to measure retrieval and agent quality. It does not provide AI-governance enforcement — no real-time policy enforcement, no decision explainability, no human pause/override of a running process, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.
 
@@ -110,46 +84,45 @@ The EU AI Act penalties are enforceable now:
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72), enforceable since February 2025 (prohibited practices) and August 2025 (high-risk obligations).
 
-Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against 189 regulations and 962 controls (574 controls carrying a financial penalty (across 89 regulations)); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance that LlamaIndex would leave a customer to source and bolt on, Akka enforces inline.
+Akka governs at the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against 189 regulations and 962 controls (574 carrying a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance that LlamaIndex would leave a customer to source and bolt on, Akka enforces inline.
 
-## 6. One Certified System — Built, Governed, Delivered, and Run
+## Two Lifecycles, One Certified System
 
 Building on LlamaIndex means engineers writing retrieval and workflow code; there is no built-in path for a risk officer or compliance lead to contribute, and no governance lifecycle. Akka runs two independent lifecycles on one platform via **Akka Specify**:
 
 ```
 BUILD LIFECYCLE                                          ONE CERTIFIED AI SERVICE
-Functional contract                                      Built, governed, delivered & run
+Functional contract                                      Built, governed, running
 "Rank incoming ER patients by acuity and route   ──┐    • Agents, tools, orchestration,
  the top three to a clinician."                     │      memory, APIs, streaming, UI
  Product · developers · ML engineers · domain       │    • Guardrails, sanitizers,
  v1.4 · versioned · tested                           ├──► Akka Specify ──► HITL/HOTL, evaluations, halts
-                                                     │      generates · tests · governs / runs · operates
-GOVERN LIFECYCLE                                     │    • Delivered, deployed, and
-Safeguard contract                                   │      operated for you
+                                                     │    • Interaction, evidence,
+GOVERN LIFECYCLE                                     │      and causal logging
+Safeguard contract                                   │
 "Block prohibited practices under EU AI Act      ──┘    Akka Verify ↻ validates the running
  Article 5; notify regulators within 24h."              system against both specs and
  Risk · security · compliance                           fine-tunes the AI from production data.
  v2.1 · versioned & tested independent of build
 ```
 
-The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences. Akka generates, tests, governs, **runs, and operates** one certified AI service that satisfies both specifications, and Akka Verify validates the running system against both and fine-tunes it from production data — and, through Akka Specify, that certified system is delivered and operated as a guaranteed outcome. LlamaIndex has no equivalent for the independent governance lifecycle, the runtime that runs it, or the delivery model.
+The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences — an audience and a workflow LlamaIndex has no equivalent for.
 
-## 7. Real-Time Streaming at Petabyte Scale
+## Real-Time Streaming at Petabyte Scale
 
 LlamaIndex has no streaming engine; real-time pipelines are provisioned separately. Akka's streaming is built into the runtime — continuous, backpressured, **petabyte-scale, in-memory**, with no external broker — powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second).
 
-## 8. For the Buyer: Risk, Compliance, and Accountability
+## For the Buyer: Risk, Compliance, and Accountability
 
 | Buyer concern | LlamaIndex | Akka |
 |---|---|---|
 | Certifications & audits | SOC 2 Type II reported for LlamaCloud | 19 standards — SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF — plus annual pen tests, SBOMs, 40+ policies (trust.akka.io) |
-| Delivery & outcome | Self-build or a time-and-materials integrator; effort is guaranteed, the outcome is not | Akka Specify delivers and operates the system for one fixed price; the outcome is guaranteed |
 | Scope of accountability | The retrieval layer; you integrate and operate the runtime, agents, and governance | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Risk transfer | Standard cloud terms | Availability and data-integrity guarantees backed by contractual indemnities |
 | Track record & funding model | Venture-funded: $19M Series A (Mar 2025), ~$93M post-money; Databricks and KPMG strategic minority investments | Profitable and self-funding; 18 years and 100,000+ deployments (52 banks); Dell Technologies Capital is largest shareholder, a customer, and an AI partner |
-| Budget predictability | Consumption credits that scale with load | One fixed price finance can forecast |
+| Budget predictability | Consumption credits that scale with load | Fixed annual fee finance can forecast |
 
-The decision is scope and accountability: LlamaIndex gives you a best-in-class retrieval layer to feed an agent; Akka gives you the platform that runs and guarantees the agent — and, through Akka Specify, will deliver and operate the whole system for you.
+The decision is scope and accountability: LlamaIndex gives you a best-in-class retrieval layer to feed an agent; Akka gives you the platform that runs and guarantees the agent.
 
 ## Akka Complements Your Retrieval Layer
 
@@ -165,12 +138,6 @@ Akka is not a vector database or a semantic knowledge layer, and does not aim to
 
 ## Common Questions
 
-**We don't have a team to build this — what are our options?**
-Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system — including a retrieval layer if you already have one from LlamaIndex — as a guaranteed outcome, for one fixed price. With LlamaIndex, production requires you to source, integrate, and operate the runtime around retrieval yourself, or contract a labor-led integration engagement you then own.
-
-**How is Akka Specify different from hiring an integrator to build our LlamaIndex app?**
-An integration engagement sells effort — time-and-materials over months — and hands back a system you own and operate; the outcome is not guaranteed. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden.
-
 **We already use LlamaIndex for RAG. Why add Akka?**
 LlamaIndex is strong for connecting, indexing, and retrieving your data. To put an agent into production you also need a durable runtime, high availability and disaster recovery, durable memory, streaming, and runtime governance — which LlamaIndex does not provide. Akka runs the agent as a guaranteed production system, and a LlamaIndex retrieval pipeline can feed it.
 
@@ -181,7 +148,7 @@ Workflows and agents are libraries you deploy and operate yourself. They do not 
 You can add observability and evaluation tools, but the EU AI Act expects enforcement inline to the runtime: immutable records witnessed as they happen, human override on running processes, and pre-deployment classification. Tools that observe and evaluate cannot gate a deployment or seal an audit artifact. Akka embeds all of this and covers pre-deployment governance.
 
 **Is LlamaIndex cheaper because the framework is open source?**
-The OSS framework is free, but production means LlamaCloud's consumption credits for parsing and indexing plus the separate runtime you provision and operate for everything else. Akka's shared-compute model is up to 90% cheaper to operate than the equivalent assembled stack, on one fixed price.
+The OSS framework is free, but production means LlamaCloud's consumption credits for parsing and indexing plus the separate runtime you provision and operate for everything else. Akka's shared-compute model is up to 90% cheaper to operate than the equivalent assembled stack, on a fixed annual fee.
 
 ---
 
@@ -193,7 +160,7 @@ The OSS framework is free, but production means LlamaCloud's consumption credits
 - **LlamaCloud pricing:** llamaindex.ai/pricing · developers.llamaindex.ai/python/cloud/general/pricing/ — $1 per 1,000 credits; ~3 credits/page (cost-effective); 10,000 free credits/month
 - **LlamaIndex SLA / security:** no published numeric availability SLA; "uptime SLAs" referenced for enterprise tier only (llamaindex.ai; SOC 2 Type II reported for LlamaCloud)
 - **LlamaIndex funding:** prnewswire.com / crunchbase.com — $19M Series A led by Norwest with Greylock, Mar 4 2025, ~$93M post-money, $27.5M total disclosed; Databricks Ventures + KPMG strategic minority investments (May 2025)
-- **Akka Specify (spec-driven delivery):** akka.io / akka.io/llms.txt — you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy
-- **Akka platform / facts:** akka-facts.md — 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 4ms reads / sub-10ms writes; 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 19 standards (trust.akka.io); up to 90% cheaper, ~10T vs ~2T tokens/core, ~80% less compute (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30–50% faster; Tubi 5B tokens/sec; 18 years, 100,000+ deployments, 52 banks; profitable; Dell Technologies Capital
+- **Akka platform / facts:** akka-facts.md — 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 4ms reads / sub-10ms writes; 189 regulations / 962 controls / 574 with a financial penalty; 19 standards (trust.akka.io); up to 90% cheaper, ~10T vs ~2T tokens/core, ~80% less compute (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30–50% faster; Tubi 5B tokens/sec; 18 years, 100,000+ deployments, 52 banks; profitable; Dell Technologies Capital
+```
 
-*Akka — Reliable AI for Every Industry · akka.io · July 2026*
+*Akka — Reliable AI for Every Industry · akka.io · June 2026*

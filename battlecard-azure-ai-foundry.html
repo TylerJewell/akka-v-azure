@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Akka vs. Azure AI Foundry: A Comparison for Teams Building Production Agentic AI</title>
-<meta name="description" content="Akka vs. Azure AI Foundry (Microsoft Foundry) for agentic AI — Foundry is 5+ Azure services to integrate, and its Agent Service has no availability or state-durability SLA; Akka Specify can deliver and operate the whole governed system for you as a guaranteed outcome. Compare scope, HA/DR, cost, governance, delivery, and lock-in.">
+<meta name="description" content="Akka vs. Azure AI Foundry (Microsoft Foundry) for agentic AI — Foundry is 5+ Azure services to integrate, and its Agent Service has no availability or state-durability SLA. Compare scope, HA/DR, cost, governance, and lock-in.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://akka.io/compare/akka-vs-azure-ai-foundry">
 <script type="application/ld+json">
 { "@context":"https://schema.org","@graph":[
-  {"@type":"TechArticle","headline":"Akka vs. Azure AI Foundry: A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-07-02","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","Akka Specify","spec-driven delivery","Azure AI Foundry","Microsoft Foundry","agentic AI","high availability","EU AI Act"]},
+  {"@type":"TechArticle","headline":"Akka vs. Azure AI Foundry: A Comparison for Teams Building Production Agentic AI","datePublished":"2026-06-19","dateModified":"2026-06-19","inLanguage":"en","author":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"publisher":{"@type":"Organization","name":"Akka","url":"https://akka.io"},"about":["Akka","Azure AI Foundry","Microsoft Foundry","agentic AI","high availability","EU AI Act"]},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"We don't have a team to integrate this — what are our options?","acceptedAnswer":{"@type":"Answer","text":"Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system as a guaranteed outcome, for one fixed price. With Azure AI Foundry, production means self-integrating the services yourself or contracting a systems-integration engagement you then own."}},
-    {"@type":"Question","name":"How is Akka Specify different from a systems-integration engagement to assemble Azure AI Foundry Agent Service into a system?","acceptedAnswer":{"@type":"Answer","text":"A systems-integration engagement sells effort — time-and-materials over months — and hands back a system you own and operate across every service; the outcome is not guaranteed and no single vendor is accountable for it. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden."}},
     {"@type":"Question","name":"We're already on Azure. Why add Akka?","acceptedAnswer":{"@type":"Answer","text":"Akka deploys inside your Azure VPC. You keep your Azure infrastructure, your Entra ID, and your networking, and Akka runs alongside them, adding the integrated runtime, active-active HA/DR, the 99.9999% SLA, and inline governance that the Foundry Agent Service does not provide on its own."}},
     {"@type":"Question","name":"Won't Microsoft close the HA/DR gap soon?","acceptedAnswer":{"@type":"Answer","text":"Microsoft's current documentation, updated April to May 2026, states the Agent Service has no availability or state-durability SLA, no automatic failover, no built-in disaster recovery, and that the recovery point can be total loss. Until that changes in the product, the availability of an assembled Foundry agent is the customer's responsibility. Akka delivers active-active HA/DR with a contractual SLA today."}},
     {"@type":"Question","name":"Doesn't Microsoft already cover the EU AI Act?","acceptedAnswer":{"@type":"Answer","text":"Microsoft has real assessment tooling: Purview Compliance Manager extracts EU AI Act controls, maps improvement actions, and syncs Foundry evaluation results. That assesses and documents; it does not enforce inline. The EU AI Act expects immutable records witnessed as they happen, human override of a running process, authorization capture at execution time, and pre-deployment classification that gates a release. Akka enforces these in the runtime and produces a sealed posture package."}},
-    {"@type":"Question","name":"Isn't Foundry cheaper because we have an Enterprise Agreement?","acceptedAnswer":{"@type":"Answer","text":"Enterprise Agreement discounts apply to individual Azure services, but a production agent still meters across Azure OpenAI, Cosmos DB, AI Search, Storage, the gateway, and logging, each scaling independently. Akka's shared-compute model runs all of it on one runtime for one fixed price, and is up to 90% cheaper to operate for the same agentic transaction volume."}}
+    {"@type":"Question","name":"Isn't Foundry cheaper because we have an Enterprise Agreement?","acceptedAnswer":{"@type":"Answer","text":"Enterprise Agreement discounts apply to individual Azure services, but a production agent still meters across Azure OpenAI, Cosmos DB, AI Search, Storage, the gateway, and logging, each scaling independently. Akka's shared-compute model runs all of it on one runtime at a fixed annual fee, and is up to 90% cheaper to operate for the same agentic transaction volume."}}
   ]}
 ]}
 </script>
@@ -99,39 +97,35 @@
 <div class="title-block">
   <h1>Akka vs. Azure AI Foundry</h1>
   <div class="subtitle">A comparison for teams building agentic AI</div>
-  <div class="meta">July 2026 &middot; Microsoft has renamed the product Microsoft Foundry; this card covers the Foundry Agent Service.</div>
+  <div class="meta">June 2026 &middot; Microsoft has renamed the product Microsoft Foundry; this card covers the Foundry Agent Service.</div>
 </div>
 
 <div class="oneliner">
-  <strong>Azure AI Foundry is a collection of Azure services to integrate, not a platform &mdash; and its Agent Service has no availability or state-durability SLA.</strong> Microsoft's own documentation states the Agent Service has no SLA, no automatic failover, and that the recovery point for agent state "can be total loss." Akka delivers agents, memory, streaming, APIs, and governance as one runtime at a contractual 99.9999% SLA, sub-1-minute RTO, and zero-byte RPO &mdash; and, through Akka Specify, that governed system can be delivered and operated for you as a guaranteed outcome, in weeks, for one fixed price.
+  <strong>Azure AI Foundry is a collection of Azure services to integrate, not a platform &mdash; and its Agent Service has no availability or state-durability SLA.</strong> Microsoft's own documentation states the Agent Service has no SLA, no automatic failover, and that the recovery point for agent state "can be total loss." Akka delivers agents, memory, streaming, APIs, and governance as one runtime at a contractual 99.9999% SLA, sub-1-minute RTO, and zero-byte RPO.
 </div>
 
 <div class="stats-row">
-  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka Availability SLA</div></div>
-  <div class="stat-card"><div class="number">Weeks</div><div class="label">Akka Specify Delivery</div></div>
-  <div class="stat-card"><div class="number">Fixed</div><div class="label">One All-In Price</div></div>
-  <div class="stat-card"><div class="number">90%</div><div class="label">Less Infrastructure</div></div>
+  <div class="stat-card"><div class="number">No SLA</div><div class="label">Foundry Agent Service availability</div></div>
+  <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka SLA, with indemnities</div></div>
+  <div class="stat-card"><div class="number">5+</div><div class="label">Azure services to stitch together</div></div>
+  <div class="stat-card"><div class="number">Total loss</div><div class="label">Documented state recovery point</div></div>
 </div>
 
 <table class="summary-table">
   <tr><th>Dimension</th><th>Azure AI Foundry (Microsoft Foundry)</th><th>Akka</th></tr>
-  <tr><td>What it is</td><td class="comp-col">An agent service orchestrating a set of separately provisioned Azure services</td><td class="akka-col">A full-stack agentic systems platform &mdash; build on it yourself, or have it delivered and operated for you</td></tr>
+  <tr><td>What it is</td><td class="comp-col">An agent service orchestrating a set of separately provisioned Azure services</td><td class="akka-col">A full-stack agentic systems platform on one runtime</td></tr>
   <tr><td>Scope</td><td class="comp-col">Agent runtime + bring-your-own Cosmos DB, AI Search, Storage, Key Vault, OpenAI, API Management, Monitor &mdash; integrated and operated by you</td><td class="akka-col">Agents, memory, streaming, APIs, orchestration, observability, and governance on one runtime</td></tr>
-  <tr><td>How you reach production</td><td class="comp-col">Self-integrate the services, or contract a systems-integration engagement</td><td class="akka-col">Build with spec-driven development, or Akka Specify delivers and runs it</td></tr>
-  <tr><td>Commercial model</td><td class="comp-col">Per-service metering across every service in scope, plus integration and operations labor</td><td class="akka-col">One fixed price &mdash; platform, infrastructure, tokens, training, delivery, and operations</td></tr>
-  <tr><td>Outcome guarantee</td><td class="comp-col">Effort only; the outcome is not guaranteed</td><td class="akka-col">The delivered outcome is guaranteed</td></tr>
   <tr><td>Availability SLA</td><td class="comp-col">No SLA on Agent Service availability or state durability</td><td class="akka-col">99.9999% &mdash; entire platform, backed by indemnities</td></tr>
   <tr><td>HA / DR</td><td class="comp-col">No automatic failover; no built-in DR; no active-active multi-region replication</td><td class="akka-col">Active-active HA/DR; sub-1-min RTO; zero-byte RPO</td></tr>
   <tr><td>Recovery point</td><td class="comp-col">"Can be total loss"; cross-region state lost on failback</td><td class="akka-col">Zero-byte RPO; state fully preserved</td></tr>
   <tr><td>Governance / EU AI Act</td><td class="comp-col">Assessment &amp; mapping across Purview, Content Safety, API Management, Monitor, Entra &mdash; not inline enforcement</td><td class="akka-col">Aspect-woven runtime enforcement + full pre-production governance</td></tr>
   <tr><td>Portability</td><td class="comp-col">Azure identity, gateway, and data services; moving off means rebuilding</td><td class="akka-col">Any cloud, on-prem, or Akka cloud; portable specs; sovereign cloud</td></tr>
-  <tr><td>Cost model</td><td class="comp-col">Per-token / PTU OpenAI + per-RU Cosmos + per-tier AI Search + gateway + per-GB logging</td><td class="akka-col">Shared compute; up to 90% lower infrastructure; one fixed price</td></tr>
-  <tr><td>Improves after go-live</td><td class="comp-col">Not provided</td><td class="akka-col">Continuous evaluation, reinforcement learning, and distillation &mdash; up to 80% lower token cost over time</td></tr>
+  <tr><td>Cost model</td><td class="comp-col">Per-token / PTU OpenAI + per-RU Cosmos + per-tier AI Search + gateway + per-GB logging</td><td class="akka-col">Shared compute; up to 90% lower infrastructure; fixed annual fee</td></tr>
   <tr><td>Certifications</td><td class="comp-col">Inherited Azure certifications + Purview Compliance Manager templates</td><td class="akka-col">19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF)</td></tr>
 </table>
 
 <div class="section">
-  <h2>1. A Collection of Services to Integrate, Not a Platform</h2>
+  <h2>A Collection of Services to Integrate, Not a Platform</h2>
   <p>A production agent on Azure AI Foundry is assembled from multiple, separately provisioned, separately billed Azure services. In the Agent Service Standard deployment mode, Microsoft's own setup documentation requires the customer to bring and operate an Azure Cosmos DB account (minimum 3,000 RU/s), an Azure AI Search resource, an Azure Storage account, and an Azure Key Vault &mdash; and a realistic production agent also needs Azure OpenAI, an API Management gateway, and Azure Monitor / Application Insights. (<a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/standard-agent-setup">Standard agent setup</a>)</p>
   <table class="cmp-table">
     <tr><th style="width:24%;">Azure service</th><th>Role in an agent</th><th>What the customer owns</th></tr>
@@ -146,22 +140,7 @@
 </div>
 
 <div class="section">
-  <h2>2. Two Ways to Production &mdash; Integrate the Services, or Have Them Delivered</h2>
-  <p>Reaching production on Azure AI Foundry means integrating and operating the services in &sect;1 yourself, or contracting a systems-integration engagement to assemble them &mdash; and in either case, no single vendor is accountable for the assembled result. Akka offers a second path: <strong>Akka Specify</strong> takes your specifications and delivers and operates the entire governed system for you as a guaranteed outcome &mdash; in weeks, for one fixed price.</p>
-  <table class="cmp-table">
-    <tr><th style="width:16%;">&nbsp;</th><th>With Azure AI Foundry</th><th>With Akka Specify</th></tr>
-    <tr><td>Model</td><td class="bad">Self-integrate the services in &sect;1, or a systems-integration engagement</td><td class="good">You provide the specifications</td></tr>
-    <tr><td>Who does the work</td><td class="bad">Your engineers, or a systems-integration engagement</td><td class="good">Akka generates, governs, delivers, and runs the system</td></tr>
-    <tr><td>Timeline</td><td class="bad">Months, assembling and testing multiple services</td><td class="good">Weeks, not quarters</td></tr>
-    <tr><td>Billing</td><td class="bad">Per-service metering across OpenAI, Cosmos DB, AI Search, Storage, the gateway, and logging, plus integration labor</td><td class="good">One fixed price</td></tr>
-    <tr><td>Afterward</td><td class="bad">You own the integration and its ongoing operation across every service</td><td class="good">Kept up, safe, and improving &mdash; operated by Akka</td></tr>
-    <tr><td>Guarantee</td><td class="bad">Effort is guaranteed; the outcome is not, and no single vendor owns it</td><td class="good">The delivered outcome is guaranteed &mdash; one accountable owner</td></tr>
-  </table>
-  <p style="margin-top:4px;">By Microsoft's own shared-responsibility model, the customer owns the durability of every stateful dependency (Cosmos DB, AI Search, Storage) and the integration across them; no single vendor is accountable for the assembled result. A team that cannot self-integrate contracts a systems-integration engagement &mdash; billed for time and materials, guaranteeing effort rather than the outcome, and handing back a system the team then owns and operates. Akka Specify inverts that: you provide a handful of plain-language specifications, and Akka generates, tests, governs, deploys, and runs the system &mdash; then keeps it available, safe, and improving under one agreement, with one accountable owner.</p>
-</div>
-
-<div class="section">
-  <h2>3. The Agent Service Has No HA/DR Availability SLA</h2>
+  <h2>The Agent Service Has No HA/DR Availability SLA</h2>
   <p>This is stated in Microsoft's own current documentation (HA/DR pages last updated April&ndash;May 2026):</p>
   <ul>
     <li>"Agent Service has no availability or state durability Service Level Agreement (SLA)." (<a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/high-availability-resiliency">HA/DR for Foundry</a>)</li>
@@ -177,7 +156,6 @@
     <tr><td>RPO</td><td class="bad">"Can be total loss"</td><td class="good">Zero byte</td></tr>
     <tr><td>Multi-region</td><td class="bad">"No supported method for active-active"</td><td class="good">Active-active across regions</td></tr>
     <tr><td>State on failover</td><td class="bad">"Standby-region state is permanently lost"</td><td class="good">Fully preserved</td></tr>
-    <tr><td>Who operates it</td><td class="bad">The customer, or a systems-integration engagement</td><td class="good">Akka SREs, 24/7</td></tr>
   </table>
   <p>Microsoft documents that recovery on Azure is reconstruction, not failover: "Warm standby environments start mostly empty. Recovery is reconstruction, not promotion of a hot replica," and recovered agents "have no access to prior threads," with "no state&hellip; transferable between regions." (<a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/agent-service-platform-disaster-recovery">Platform outage recovery</a>)</p>
 </div>
@@ -192,23 +170,18 @@
 
 <div class="two-col">
   <div class="section">
-    <h2>4. Cost: Many Meters vs. One Fee &mdash; and It Keeps Getting Cheaper</h2>
+    <h2>Cost: Many Meters vs. One Fee</h2>
     <p>AI systems built on Akka are up to <strong>90% cheaper to operate</strong> than Python-based systems &mdash; a function of the infrastructure required to run the same agentic transaction volume, not list price. On Azure AI Foundry, cost is the sum of independent meters: per-token or PTU-reserved OpenAI, per-RU Cosmos DB (&ge;3,000 RU/s minimum), per-tier AI Search, gateway units, and per-GB log ingestion.</p>
     <p style="margin-top:4px;">PTU reservations carry a substantial monthly floor; independent 2026 pricing analyses put a single minimum PTU reservation in the low thousands of dollars per month before the surrounding services are counted (<a href="https://www.cloudzero.com/blog/azure-openai-pricing/">CloudZero</a>). Each meter scales independently, making the total bill hard to forecast.</p>
   </div>
   <div class="section">
     <h2>&nbsp;</h2>
-    <p>Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on <strong>shared compute</strong> for <strong>one fixed price</strong>. The efficiency is structural: actor-based concurrency delivers ~10 trillion tokens per core per year versus ~2 trillion for comparable solutions, and ~80% less compute than Python-based frameworks. Manulife reported up to <strong>300% more concurrency</strong> and <strong>30&ndash;50% faster processing</strong> after porting Python-based systems to Akka. (<a href="https://akka.io/blog/go-slow-to-go-fast">akka.io/blog/go-slow-to-go-fast</a>)</p>
+    <p>Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on <strong>shared compute</strong> under a <strong>fixed annual fee</strong>. The efficiency is structural: actor-based concurrency delivers ~10 trillion tokens per core per year versus ~2 trillion for comparable solutions, and ~80% less compute than Python-based frameworks. Manulife reported up to <strong>300% more concurrency</strong> and <strong>30&ndash;50% faster processing</strong> after porting Python-based systems to Akka. (<a href="https://akka.io/blog/go-slow-to-go-fast">akka.io/blog/go-slow-to-go-fast</a>)</p>
   </div>
 </div>
 
 <div class="section">
-  <h3>And the cost falls after go-live</h3>
-  <p>Akka Verify runs continuous evaluation, reinforcement learning on production and synthetic data, and distillation to smaller specialized models &mdash; cutting token cost up to 80% while raising accuracy over time. Azure AI Foundry's evaluation tooling detects and scores quality; it does not retrain, distill, or ship the improvement. The spend is also predictable: <strong>one fixed price</strong> finance can forecast &mdash; covering platform, infrastructure, tokens, training, delivery, and operations &mdash; rather than the independent per-service meters that move with load, plus separate integration labor.</p>
-</div>
-
-<div class="section">
-  <h2>5. Governance and the EU AI Act: Assessment vs. Inline Enforcement</h2>
+  <h2>Governance and the EU AI Act: Assessment vs. Inline Enforcement</h2>
   <div class="two-col" style="margin-top:2px;">
     <div>
       <h3>The penalties are enforceable now</h3>
@@ -235,11 +208,11 @@
       </table>
     </div>
   </div>
-  <p style="margin-top:4px;">Akka's governance is <strong>aspect-woven into the runtime</strong>: inline guardrails, policies, LLMs-as-a-judge, and sanitizers execute within the agents; evidence is hash-chained and immutable; humans can pause, override, or nudge a running process; PII is scrubbed and explained atomically. Before a system ships, Akka classifies it against <strong>189 regulations and 962 controls (574 controls carrying a financial penalty (across 89 regulations))</strong>, routes change events to the right reviewers, and emits a sealed Governance Posture Package. Akka Verify proves conformance from the running system.</p>
+  <p style="margin-top:4px;">Akka's governance is <strong>aspect-woven into the runtime</strong>: inline guardrails, policies, LLMs-as-a-judge, and sanitizers execute within the agents; evidence is hash-chained and immutable; humans can pause, override, or nudge a running process; PII is scrubbed and explained atomically. Before a system ships, Akka classifies it against <strong>189 regulations and 962 controls (574 carrying financial penalties)</strong>, routes change events to the right reviewers, and emits a sealed Governance Posture Package. Akka Verify proves conformance from the running system.</p>
 </div>
 
 <div class="section">
-  <h2>6. One Certified System &mdash; Built, Governed, Delivered, and Run</h2>
+  <h2>Two Lifecycles, One Certified System</h2>
   <p>Building on Azure AI Foundry means developers assembling agents against Azure SDKs and portals; there is no first-class lifecycle for a risk officer to author and independently version the safeguard contract. Akka runs two independent lifecycles on one platform via <strong>Akka Specify</strong>:</p>
   <div class="spec-graphic">
     <div class="spec-row">
@@ -262,43 +235,42 @@
       <div class="spec-arrow">&rarr;</div>
       <div class="spec-hub">
         <span class="name">Akka Specify</span>
-        <div class="foot">generates &middot; tests &middot; governs<br>runs &middot; operates</div>
+        <div class="foot">AI-assisted authoring<br>generates &middot; tests &middot; runs</div>
       </div>
       <div class="spec-arrow">&rarr;</div>
       <div class="spec-out">
         <div class="tag">One certified AI service</div>
-        <div class="ttl">Built, governed, delivered &amp; run</div>
+        <div class="ttl">Built, governed, and running</div>
         <ul>
           <li>Agents, tools, orchestration, memory, APIs, streaming, UI</li>
           <li>Guardrails, sanitizers, HITL/HOTL, evaluations, halts</li>
-          <li>Delivered, deployed, and operated for you</li>
+          <li>Interaction, evidence, and causal logging</li>
         </ul>
       </div>
     </div>
     <div class="spec-verify"><strong>Akka Verify &#8635;</strong> validates the running system against both specs and fine-tunes the AI from production data.</div>
   </div>
-  <p>Akka generates, tests, governs, <strong>runs, and operates</strong> one certified service from both specs, which are versioned and tested independently by different audiences. Through Akka Specify, that certified system is delivered and operated as a guaranteed outcome &mdash; a delivery model and an independent governance lifecycle Azure AI Foundry has no equivalent for.</p>
+  <p>The build lifecycle and the governance lifecycle are versioned and tested independently, by different audiences. Azure AI Foundry has no equivalent governance authoring lifecycle that produces a certified, sealed system.</p>
 </div>
 
 <div class="section">
-  <h2>7. Real-Time Streaming at Petabyte Scale</h2>
+  <h2>Real-Time Streaming at Petabyte Scale</h2>
   <p>Azure AI Foundry has no built-in streaming engine; real-time pipelines are provisioned separately and operated by the customer. Akka's streaming is built into the runtime &mdash; continuous, backpressured, <strong>petabyte-scale, in-memory</strong>, with no external broker &mdash; powering both agent feedback loops and high-throughput data processing (the engine behind Tubi's real-time hyper-personalization at 5 billion tokens per second).</p>
 </div>
 
 <div class="section">
-  <h2>8. For the Buyer: A Recent, Renamed Product vs. an 18-Year Platform</h2>
+  <h2>For the Buyer: A Recent, Renamed Product vs. an 18-Year Platform</h2>
   <p>Microsoft is a durable company; the question is the maturity of the <strong>product</strong>. Foundry Agent Service reached general availability at Build in May 2025, and the product is mid-rebrand from "Azure AI Foundry" to "Microsoft Foundry," with RBAC roles renamed from "Azure AI User/Owner/Project Manager" to "Foundry User/Owner/Project Manager" as the change rolls out. (<a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/high-availability-resiliency">HA/DR for Foundry</a>) It is a young, evolving agent layer assembled over a set of Azure services &mdash; and that layer ships today with no availability or state-durability SLA.</p>
   <table class="cmp-table">
     <tr><th style="width:18%;">Buyer concern</th><th>Azure AI Foundry</th><th>Akka</th></tr>
     <tr><td>Product maturity</td><td class="bad">GA May 2025; active rebrand (Azure AI Foundry &rarr; Microsoft Foundry) and RBAC rename in progress</td><td class="good">18 years; 100,000+ production deployments; 52 banks; 2B+ people reached daily</td></tr>
-    <tr><td>Delivery &amp; outcome</td><td class="bad">Self-integrate the services, or a systems-integration engagement; effort is guaranteed, the outcome is not</td><td class="good">Akka Specify delivers and operates the system for one fixed price; the outcome is guaranteed</td></tr>
     <tr><td>Scope of accountability</td><td class="bad">Customer integrates and operates Cosmos DB, AI Search, Storage, gateway, OpenAI; Agent Service has no SLA</td><td class="good">One platform, one SLA, 24/7 SRE &mdash; Akka owns the running system</td></tr>
     <tr><td>Risk transfer</td><td class="bad">Standard Azure terms; no Agent Service availability/durability SLA</td><td class="good">Availability and data-integrity guarantees backed by contractual indemnities</td></tr>
     <tr><td>HA / DR</td><td class="bad">No automatic failover; "total loss" recovery point</td><td class="good">Active-active; sub-1-min RTO; zero-byte RPO</td></tr>
     <tr><td>Certifications &amp; audits</td><td class="bad">Inherited Azure certifications + Purview Compliance Manager templates</td><td class="good">19 standards &mdash; SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF &mdash; plus annual pen tests, SBOMs, 40+ policies (trust.akka.io)</td></tr>
-    <tr><td>Budget predictability</td><td class="bad">Several independent meters that scale with load</td><td class="good">One fixed price on shared compute</td></tr>
+    <tr><td>Budget predictability</td><td class="bad">Several independent meters that scale with load</td><td class="good">Fixed annual fee on shared compute</td></tr>
   </table>
-  <p style="margin-top:4px;">The decision is scope and accountability: Azure AI Foundry gives you an agent service to wire your Azure estate around; Akka gives you the integrated platform with the SLA on the whole thing &mdash; and, through Akka Specify, will deliver and run the whole system for you.</p>
+  <p style="margin-top:4px;">The decision is scope and accountability: Azure AI Foundry gives you an agent service to wire your Azure estate around; Akka gives you the integrated platform with the SLA on the whole thing.</p>
 </div>
 
 <div class="section">
@@ -317,30 +289,22 @@
   <div class="two-col" style="gap:14px;">
     <div>
       <div class="objection">
-        <div class="q">We don't have a team to integrate this &mdash; what are our options?</div>
-        <div class="a">Two. Build it on the platform with spec-driven development, or have Akka Specify deliver and operate it for you. You provide plain-language specifications; Akka generates, governs, delivers, and runs the system as a guaranteed outcome, for one fixed price. With Azure AI Foundry, production means self-integrating the services in &sect;1 or contracting a systems-integration engagement you then own.</div>
-      </div>
-      <div class="objection">
-        <div class="q">How is Akka Specify different from a systems-integration engagement to assemble Azure AI Foundry Agent Service into a system?</div>
-        <div class="a">A systems-integration engagement sells effort &mdash; time-and-materials over months &mdash; and hands back a system you own and operate across every service; the outcome is not guaranteed and no single vendor is accountable for it. Akka Specify sells the outcome: a governed system delivered in weeks for one fixed price, then kept up, safe, and improving by Akka. You own the specifications, not the operational burden.</div>
-      </div>
-      <div class="objection">
         <div class="q">We're already on Azure. Why add Akka?</div>
         <div class="a">Akka deploys inside your Azure VPC. You keep your Azure infrastructure, your Entra ID, and your networking &mdash; Akka runs alongside them and adds the integrated runtime, active-active HA/DR, the 99.9999% SLA, and inline governance the Foundry Agent Service does not provide on its own.</div>
       </div>
-    </div>
-    <div>
       <div class="objection">
         <div class="q">Won't Microsoft close the HA/DR gap soon?</div>
         <div class="a">Microsoft's current documentation (updated Apr&ndash;May 2026) states the Agent Service has no availability or state-durability SLA, no automatic failover, no built-in DR, and that the recovery point "can be total loss." Until that changes in the product, the availability of an assembled Foundry agent is the customer's responsibility. Akka delivers active-active HA/DR with a contractual SLA today.</div>
       </div>
+    </div>
+    <div>
       <div class="objection">
         <div class="q">Doesn't Microsoft already cover the EU AI Act?</div>
         <div class="a">Microsoft has real assessment tooling: Purview Compliance Manager extracts EU AI Act controls, maps improvement actions, and syncs Foundry evaluation results. That assesses and documents; it does not enforce inline. The Act expects immutable records witnessed as they happen, human override of a running process, authorization capture at execution time, and pre-deployment classification that gates a release. Akka enforces these in the runtime and produces a sealed posture package.</div>
       </div>
       <div class="objection">
         <div class="q">Isn't Foundry cheaper because we have an EA?</div>
-        <div class="a">EA discounts apply to individual Azure services, but a production agent still meters across Azure OpenAI, Cosmos DB, AI Search, Storage, the gateway, and logging &mdash; each scaling independently. Akka's shared-compute model runs all of it on one runtime for one fixed price, and is up to 90% cheaper to operate for the same agentic transaction volume.</div>
+        <div class="a">EA discounts apply to individual Azure services, but a production agent still meters across Azure OpenAI, Cosmos DB, AI Search, Storage, the gateway, and logging &mdash; each scaling independently. Akka's shared-compute model runs all of it on one runtime at a fixed annual fee, and is up to 90% cheaper to operate for the same agentic transaction volume.</div>
       </div>
     </div>
   </div>
@@ -358,16 +322,15 @@
     <strong>Azure OpenAI / PTU pricing (third-party):</strong> cloudzero.com/blog/azure-openai-pricing; opslyft.com/blog/azure-openai-pricing &mdash; PTU minimum reservations and multi-meter cost<br>
     <strong>Azure outages:</strong> azure.status.microsoft/en-us/status/history &mdash; Oct 29 2025 Front Door global fault; May 29 2026 Azure OpenAI multi-region outage (Europe / Australia East)<br>
     <strong>Akka performance:</strong> akka.io/blog/go-slow-to-go-fast &mdash; Manulife up to 300% more concurrency, 30&ndash;50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python<br>
-    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 controls carrying a financial penalty (across 89 regulations); 100,000+ deployments / 18 years; profitable; Dell Technologies Capital<br>
+    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with penalties; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital<br>
     <strong>Akka trust center:</strong> trust.akka.io &mdash; 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies<br>
-    <strong>Akka Specify (spec-driven delivery):</strong> akka.io / akka.io/llms.txt &mdash; you provide the specifications; Akka generates, tests, governs, delivers, and operates the system as a guaranteed outcome; one fixed price covering platform, infrastructure, tokens, training, delivery, and operations; delivered in weeks; continuous improvement via reinforcement learning and distillation, up to 80% lower token cost with higher accuracy<br>
     <strong>Manulife:</strong> akka.io/blog/manulife-selects-akka-to-operationalize-agentic-ai (March 10, 2026)
   </p>
 </div>
 
 <div class="footer">
   <div style="display:flex; align-items:center; gap:8px;"><svg width="65" height="15" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip1)"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z" fill="#1A1A1A"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z" fill="#1A1A1A"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z" fill="#1A1A1A"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z" fill="#1A1A1A"/></g><defs><clipPath id="clip1"><rect width="109" height="25" fill="white"/></clipPath></defs></svg> <span>Reliable AI for Every Industry &nbsp;|&nbsp; akka.ai</span></div>
-  <div>July 2026</div>
+  <div>June 2026</div>
 </div>
 
 </body>
