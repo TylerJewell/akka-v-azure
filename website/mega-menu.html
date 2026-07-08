@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka — Mega Menu (pure HTML, from source)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  /* --- minimal reset + font (the menu font is inherited from the site; matches Instrument Sans) --- */
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:#06090d;color:#fff;-webkit-font-smoothing:antialiased;min-height:180vh}
+  .header-2026,.header-2026 *{font-family:"Instrument Sans",-apple-system,"Helvetica Neue",Arial,sans-serif}
+  /* demo-only page content so the closed bar has context behind it */
+  .demo-hero{height:60vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 50% 0,#101a2e,#06090d 70%);
+    color:#233a5e;letter-spacing:.35em;font:600 clamp(16px,3vw,28px)/1 "Instrument Sans",sans-serif;text-transform:uppercase}
+
+  /* ====================================================================== */
+  /*  BELOW: verbatim from akka.io module_Header_2026.min.css (do not edit   */
+  /*  to preserve exact rendering + the 1200 / 991 / 767 breakpoints)        */
+  /* ====================================================================== */
+  :root{--header-bg:#06090d;--panel-bg:#0d0f12;--panel-line:#181b1f;--text:#fff;--muted:#cfd3d7;--accent:#28d7e5;--heading:#f1be2e}
+  .header-2026__search{cursor:pointer;height:34px;padding:0;width:34px}
+  body.nav-open{overflow:hidden}
+  .header-2026{position:relative;z-index:9999}
+  .header-2026__bar{background:var(--header-bg);border-bottom:1px solid hsla(0,0%,100%,.06);gap:24px;justify-content:space-between;padding:18px 32px;position:relative;z-index:10002}
+  .header-2026__actions,.header-2026__bar,.header-2026__brand{align-items:center;display:flex}
+  .header-2026__actions{gap:20px}
+  .header-2026__logo-link{align-items:center;display:inline-flex;text-decoration:none}
+  .header-2026__logo-link img{display:block;max-height:34px;width:auto}
+  .header-2026__contact{align-items:center;border:1px solid var(--accent);color:var(--text);display:inline-flex;font-size:15px;justify-content:center;line-height:1;min-height:40px;padding:0 18px;text-decoration:none;transition:color .15s cubic-bezier(.215,.61,.355,1)}
+  .header-2026__contact:hover{background:var(--accent);color:#041016}
+  .menu_button{background:transparent;border:0;color:var(--accent);cursor:pointer;height:34px;padding:0;width:34px}
+  .menu_button,.menu_button .menu_icons{align-items:center;display:inline-flex;justify-content:center}
+  .header-2026.is-menu-open .menu_button .open_icon,.menu_button .close_icon{display:none}
+  .header-2026.is-menu-open .menu_button .close_icon{display:inline-flex}
+  .header-2026__overlay{background:rgba(0,0,0,.5);display:none;inset:0;position:fixed;z-index:10001}
+  .header-2026.is-menu-open .header-2026__overlay{display:block}
+  .header-2026__overlay-inner{height:100vh;overflow-y:auto;padding-top:74px}
+  .header-2026__megamenu-panel{background:var(--panel-bg);border-top:1px solid var(--panel-line);box-shadow:0 12px 40px rgba(0,0,0,.35);width:100%}
+  .mega-grid{align-items:start;display:grid;gap:0;grid-template-columns:1.45fr .9fr 1fr .85fr;margin:0 auto;max-width:1600px}
+  .mega-col{background:var(--panel-bg);border-right:1px solid var(--panel-line);min-height:520px;padding:18px 24px 28px}
+  .mega-col:last-child{border-right:0}
+  .mega-heading{color:var(--heading);font-size:11px;font-weight:700;letter-spacing:.05em;line-height:1;margin:0 -24px 18px;padding:0 24px 12px;text-transform:uppercase}
+  .mega-links .hs-menu-wrapper>ul,.mega-links ul{list-style:none;margin:0;padding:0}
+  .mega-links .hs-menu-wrapper>ul>li,.mega-links li{margin:0 0 14px;width:100%}
+  .mega-links .hs-menu-wrapper>ul>li>a,.mega-links a{color:var(--text);display:inline-block;font-size:20px;line-height:1.25;text-decoration:none;transition:color .15s cubic-bezier(.215,.61,.355,1)}
+  .mega-links .hs-menu-wrapper>ul>li>a:hover,.mega-links a:hover{color:var(--accent)}
+  .mega-links--large .hs-menu-wrapper>ul>li>a,.mega-links--large a{font-size:22px;line-height:1.35;margin-bottom:8px}
+  .mega-links a.is-highlight{color:var(--accent)}
+  .mega-feature-card{max-width:210px}
+  .mega-feature-card__inner{color:inherit;display:block;text-decoration:none}
+  .mega-feature-card__inner:hover .mega-feature-card__cta{color:#00dbdd}
+  .mega-feature-card__media{align-items:flex-start;display:flex;justify-content:flex-start;overflow:hidden;width:100%}
+  .mega-feature-card__media img{display:block;height:100%;object-fit:cover;width:auto}
+  .mega-feature-card__placeholder{color:#fff;font-size:14px}
+  .mega-feature-card__content{margin-top:10px}
+  .mega-feature-card__text{color:var(--text);font-size:15px;line-height:1.45}
+  .mega-feature-card__cta{align-items:center;color:var(--text);display:inline-flex;font-size:17px;gap:6px;line-height:1.3;margin-top:18px;padding-top:14px;transition:color .15s cubic-bezier(.215,.61,.355,1)}
+  .mega-col--news{max-width:260px}
+  .header .hs-menu-wrapper>ul>li:not([class*=button_]) a,.mega-col--company .hs-menu-wrapper>ul>li>a,.mega-col--company .mega-links a,.mega-col--dev .hs-menu-wrapper>ul>li>a,.mega-col--dev .mega-links a{font-size:17px!important;line-height:1.25}
+  @media (max-width:1200px){.mega-grid{grid-template-columns:1fr 1fr}.mega-col{border-bottom:1px solid var(--panel-line);min-height:auto}.mega-col:nth-child(2n){border-right:0}.mega-col--news{max-width:none}}
+  @media (max-width:991px){.header{padding:0!important}}
+  @media (max-width:767px){.header-2026__bar{padding:14px 16px}.header-2026__overlay-inner{padding-top:60px}.header-2026__contact{display:none}.mega-grid{grid-template-columns:1fr;padding-bottom:80px}.mega-col{border-right:0;padding:16px 16px 22px}.mega-grid .mega-col:last-child{border-bottom:0!important}.mega-heading{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}.mega-links .hs-menu-wrapper>ul>li>a,.mega-links a,.mega-links--large .hs-menu-wrapper>ul>li>a,.mega-links--large a{font-size:17px!important}.mega-feature-card{max-width:100%}}
+
+  /* --- COMPARE section (lower half of the Offerings column) --- */
+  .mega-col--platform{display:flex;flex-direction:column}
+  .mega-col--platform .mega-col-top{flex:0 0 50%}                                   /* Offerings hold the top half */
+  .mega-compare-section{margin-top:75px}                                            /* start ~50-100px lower than the halfway point */
+  .mega-compare{font-size:13px;line-height:2;color:var(--text);max-width:70%}       /* smaller font; inner column ~70% of the column width */
+  .mega-compare a{color:var(--text);text-decoration:none;white-space:nowrap;transition:color .15s cubic-bezier(.215,.61,.355,1)}
+  .mega-compare a:hover{color:var(--accent)}
+  .mega-compare a:not(:last-child)::after{content:"\2022";color:var(--muted);margin:0 .55em;vertical-align:middle}  /* elegant centered dot separator */
+  .mega-compare a.line-end::after{content:none}                                     /* no dangling dot at the end of a wrapped row */
+
+  /* --- Column widths: OFFERINGS | CUSTOMERS (wide) | DEVELOPERS+COMPANY (stacked) --- */
+  @media (min-width:1201px){.mega-grid{grid-template-columns:1.45fr 2.1fr .9fr}}     /* 3 columns; CUSTOMERS widened */
+  .mega-col--news{max-width:none}                                                   /* lift the 260px cap so News can widen */
+  .mega-feature-card{max-width:none}                                                /* card + Manulife image fill the wider column */
+  .mega-col{border-right:0}                                                         /* remove the three vertical gray dividers */
+  .mega-heading{border-top:1px solid var(--heading);margin-left:0;margin-right:0;padding-left:0;padding-right:0;padding-top:12px}  /* thin yellow bar, aligned to heading text left and the right buffer (not full-bleed) */
+  .mega-col--devco .devco-block + .devco-block{margin-top:34px}                     /* gap between the stacked DEVELOPERS and COMPANY */
+
+  /* --- CUSTOMERS: Manulife (~70%) + image tiles / customer list / see-all (~30%) --- */
+  .mega-col--news .customers-split{display:flex;gap:24px;align-items:flex-start}
+  .customers-featured{flex:0 0 66%}
+  .customers-featured .mega-feature-card__media{height:180px}                        /* crop the Manulife banner flush to the top */
+  .customers-featured .mega-feature-card__media img{width:100%!important;height:100%!important;max-width:none!important;object-fit:cover;object-position:center}
+  .customers-more{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:10px}
+  .cust-thumb{position:relative;display:block;border-radius:4px;overflow:hidden;text-decoration:none}   /* image tile with the name superimposed, Manulife-style */
+  .cust-thumb img{width:100%;height:64px;object-fit:cover;display:block}
+  .cust-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0) 55%)}
+  .cust-thumb span{position:absolute;left:10px;bottom:7px;z-index:2;font-size:15px;font-weight:600;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.75)}
+  .cust-thumb:hover span{color:var(--accent)}
+  .customers-more .mega-compare{max-width:none;font-size:12px;line-height:1.85;margin-top:4px}   /* remaining stories as a compare-style dot list */
+  .cust-seeall{font-size:13px;color:var(--text);display:inline-flex;gap:6px;margin-top:6px}
+  .cust-seeall:hover{color:var(--accent)}
+  @media (max-width:767px){.mega-col--news .customers-split{flex-direction:column}.customers-featured{flex:none;width:100%}}
+
+  /* --- When open, the bar takes the panel's gray so it connects seamlessly to the top --- */
+  .header-2026__bar{transition:background .25s cubic-bezier(.215,.61,.355,1)}
+  .header-2026.is-menu-open .header-2026__bar{background:var(--panel-bg);border-bottom-color:transparent}
+  .header-2026.is-menu-open .header-2026__megamenu-panel{border-top-color:transparent}
+
+  /* --- Larger Offerings links (+10px) --- */
+  .mega-col-top .mega-links--large a{font-size:32px}
+
+  /* --- #1 Staggered reveal on open (Palantir-style index cascade) --- */
+  .header-2026 .reveal{opacity:0;transform:translateY(20px);
+    transition:opacity .5s cubic-bezier(.215,.61,.355,1),transform .5s cubic-bezier(.215,.61,.355,1);
+    transition-delay:calc(var(--col,0) * .09s + var(--item,0) * .05s)}
+  .header-2026.is-revealed .reveal{opacity:1;transform:none}
+
+  /* --- #2 Hover effects beyond color (gated to real hover devices) --- */
+  @media (hover:hover) and (pointer:fine){
+    /* underline wipes in from the left on the main nav links */
+    .mega-links a{position:relative}
+    .mega-links a::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:100%;
+      background:var(--accent);transform:scaleX(0);transform-origin:left;
+      transition:transform .22s cubic-bezier(.215,.61,.355,1)}
+    .mega-links a:hover::after{transform:scaleX(1)}
+
+    /* arrow nudges right on the CTAs */
+    .mega-feature-card__cta svg{transition:transform .2s cubic-bezier(.215,.61,.355,1)}
+    .mega-feature-card__inner:hover .mega-feature-card__cta svg{transform:translateX(4px)}
+    .cust-seeall span{display:inline-block;transition:transform .2s cubic-bezier(.215,.61,.355,1)}
+    .cust-seeall:hover span{transform:translateX(4px)}
+
+    /* image tile zooms inside its frame */
+    .cust-thumb img{transition:transform .4s cubic-bezier(.215,.61,.355,1)}
+    .cust-thumb:hover img{transform:scale(1.06)}
+
+    /* directional sweep fills the Contact button on hover */
+    .header-2026__contact:hover{background:transparent;color:#041016}
+    .header-2026__contact:hover::before{transform:translateX(0)}
+  }
+
+  /* --- Search icon in Akka blue (the accent), not inherited --- */
+  .header-2026__search{color:var(--accent)}
+
+  /* --- Animated hamburger -> X --- */
+  .burger{position:relative;display:inline-block;width:24px;height:16px}
+  .burger i{position:absolute;left:0;width:100%;height:2px;border-radius:2px;background:currentColor;
+    transition:transform .3s cubic-bezier(.645,.045,.355,1),opacity .2s ease}
+  .burger i:nth-child(1){top:0}
+  .burger i:nth-child(2){top:7px}
+  .burger i:nth-child(3){top:14px}
+  .header-2026.is-menu-open .burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .header-2026.is-menu-open .burger i:nth-child(2){opacity:0}
+  .header-2026.is-menu-open .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  /* --- Contact button sweep base (fill wipes in from the left) --- */
+  .header-2026__contact{position:relative;overflow:hidden;z-index:0}
+  .header-2026__contact::before{content:"";position:absolute;inset:0;background:var(--accent);
+    transform:translateX(-101%);transition:transform .3s cubic-bezier(.645,.045,.355,1);z-index:-1}
+
+  /* --- #4 Reduced-motion guard: drop the entrance + motion, keep state changes --- */
+  @media (prefers-reduced-motion:reduce){
+    .header-2026 .reveal{opacity:1!important;transform:none!important}
+    .header-2026 *,.header-2026 *::before,.header-2026 *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+  <div class="header header-2026">
+    <div class="header-2026__bar">
+      <div class="header-2026__brand">
+        <a class="header-2026__logo-link" href="https://akka.io/">
+          <img src="https://akka.io/hubfs/AKKA-2024/Images/akka_logo.svg" alt="Akka" width="109" height="25">
+        </a>
+      </div>
+
+      <div class="header-2026__actions">
+        <a class="header-2026__contact" href="https://akka.io/contact-us">Contact</a>
+
+        <a class="header-2026__search" href="#" aria-label="Open search">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14.5" cy="14.5" r="9.5" stroke="currentColor" stroke-width="3"/>
+            <path d="M21.5 21.5L29 29" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </a>
+
+        <button class="menu_button js-menu-toggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+          <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-2026__overlay" aria-hidden="true">
+      <div class="header-2026__overlay-inner">
+        <div class="header-2026__megamenu-panel">
+          <div class="mega-grid">
+
+            <!-- COLUMN 1: PLATFORM -->
+            <div class="mega-col mega-col--platform">
+              <div class="mega-col-top">
+                <div class="mega-heading">OFFERINGS</div>
+                <div class="mega-links mega-links--large">
+                  <ul role="menu">
+                    <li role="none"><a role="menuitem" href="https://akka.io/offerings/platform">Akka Agentic AI Platform</a></li>
+                    <li role="none"><a role="menuitem" href="https://akka.io/offerings/specify">Akka Specify</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mega-compare-section">
+                <div class="mega-heading">COMPARE</div>
+                <div class="mega-compare">
+                  <a href="https://akka.io/compare/google-gemini-enterprise">Gemini Enterprise Agent Platform</a>
+                  <a href="https://akka.io/compare/n8n">n8n</a>
+                  <a href="https://akka.io/compare/nvidia">NVIDIA</a>
+                  <a href="https://akka.io/compare/aws-bedrock">AWS Bedrock AgentCore</a>
+                  <a href="https://akka.io/compare/databricks">Databricks Mosaic AI</a>
+                  <a href="https://akka.io/compare/crewai">CrewAI</a>
+                  <a href="https://akka.io/compare/salesforce-agentforce">Salesforce Agentforce</a>
+                  <a href="https://akka.io/compare/azure-ai-foundry">Azure AI Foundry</a>
+                  <a href="https://akka.io/compare/temporal">Temporal</a>
+                  <a href="https://akka.io/compare/orkes">Orkes Conductor</a>
+                  <a href="https://akka.io/compare/vercel-ai-sdk">Vercel AI SDK</a>
+                  <a href="https://akka.io/compare/langchain">LangChain</a>
+                  <a href="https://akka.io/compare/pydantic-ai">PydanticAI</a>
+                  <a href="https://akka.io/compare/llamaindex">LlamaIndex</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMN 2: CUSTOMERS -->
+            <div class="mega-col mega-col--news">
+              <div class="mega-heading">CUSTOMERS</div>
+              <div class="customers-split">
+
+                <!-- 70%: featured Manulife story -->
+                <div class="customers-featured">
+                  <div class="mega-feature-card">
+                    <div class="mega-feature-card__media">
+                      <img src="https://akka.io/hubfs/Manulife_logo_with_AI.svg" alt="Manulife" loading="lazy" width="1200" height="800" style="max-width:100%;height:auto;">
+                    </div>
+                    <div class="mega-feature-card__content">
+                      <div class="mega-feature-card__text">
+                        <p><strong>Manulife Selects Akka to Operationalize Agentic AI</strong></p>
+                        <p style="font-size:16px;">Akka provides global insurance leader a secure and scalable foundation to build high volume of trusted AI-powered applications.</p>
+                      </div>
+                    </div>
+                    <a class="mega-feature-card__inner" href="https://akka.io/customers/manulife">
+                      <div class="mega-feature-card__cta">
+                        Read the story
+                        <svg width="26" height="18" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 9h22M16 2l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 30%: image thumbnails + logo grid + see-all -->
+                <div class="customers-more">
+                  <a class="cust-thumb" href="https://akka.io/customers/john-deere"><img src="images/johndeere.png" alt="John Deere"><span>John Deere</span></a>
+                  <a class="cust-thumb" href="https://akka.io/customers/swiggy"><img src="images/swiggy.png" alt="Swiggy"><span>Swiggy</span></a>
+                  <a class="cust-thumb" href="https://akka.io/customers/tubi"><img src="images/tubi.jpg" alt="Tubi"><span>Tubi</span></a>
+
+                  <div class="mega-compare cust-compare">
+                    <a href="https://akka.io/customers/verizon">Verizon</a>
+                    <a href="https://akka.io/customers/capital-one">Capital One</a>
+                    <a href="https://akka.io/customers/walmart">Walmart</a>
+                    <a href="https://akka.io/customers/doctolib">Doctolib</a>
+                    <a href="https://akka.io/customers/norwegian">Norwegian Cruise Line</a>
+                    <a href="https://akka.io/customers/cern">CERN</a>
+                    <a href="https://akka.io/customers/renault">Renault</a>
+                    <a href="https://akka.io/customers/eero">Amazon eero</a>
+                    <a href="https://akka.io/customers/deloitte">Deloitte</a>
+                  </div>
+
+                  <a class="cust-seeall" href="https://akka.io/customers">See more customer stories <span aria-hidden="true">&rarr;</span></a>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- COLUMN 3: DEVELOPERS + COMPANY (stacked) -->
+            <div class="mega-col mega-col--devco">
+
+              <div class="devco-block mega-col--dev">
+                <div class="mega-heading">DEVELOPERS</div>
+                <div class="mega-links">
+                  <ul role="menu">
+                    <li role="none"><a role="menuitem" href="https://doc.akka.io" target="_blank" rel="noopener">Documentation</a></li>
+                    <li role="none"><a role="menuitem" href="https://doc.akka.io/sdk/spec-driven-development.html" target="_blank" rel="noopener">Spec-Driven Development</a></li>
+                    <li role="none"><a role="menuitem" href="https://doc.akka.io/getting-started/samples.html" target="_blank" rel="noopener">AI Samples</a></li>
+                    <li role="none"><a role="menuitem" href="https://doc.akka.io/reference/release-notes.html" target="_blank" rel="noopener">Release Notes</a></li>
+                    <li role="none"><a role="menuitem" href="https://support.akka.io/" target="_blank" rel="noopener">Support</a></li>
+                    <li role="none"><a role="menuitem" href="https://akkademy.akka.io/learn" target="_blank" rel="noopener">Free Training</a></li>
+                    <li role="none"><a role="menuitem" href="https://www.reactiveprinciples.org" target="_blank" rel="noopener">Reactive Principles</a></li>
+                    <li role="none"><a role="menuitem" href="https://www.reactivemanifesto.org" target="_blank" rel="noopener">Reactive Manifesto</a></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="devco-block mega-col--company">
+                <div class="mega-heading">COMPANY</div>
+                <div class="mega-links">
+                  <ul role="menu">
+                    <li role="none"><a role="menuitem" href="https://akka.io/about-us">About</a></li>
+                    <li role="none"><a role="menuitem" href="https://akka.io/customer-stories">Customer Stories</a></li>
+                    <li role="none"><a role="menuitem" href="https://akka.io/blog">Blog</a></li>
+                    <li role="none"><a role="menuitem" href="https://trust.akka.io/" target="_blank" rel="noopener">Trust Center</a></li>
+                    <li role="none"><a role="menuitem" href="https://support.akka.io/" target="_blank" rel="noopener">Support Portal</a></li>
+                    <li role="none"><a role="menuitem" href="https://console.akka.io/login" target="_blank" rel="noopener">Platform Login</a></li>
+                    <li role="none"><a role="menuitem" href="https://akka.io/partners">Partners</a></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="demo-hero">The Agentic Systems Platform</main>
+
+  <script>
+    (function(){
+      var header  = document.querySelector('.header-2026');
+      var btn     = header.querySelector('.js-menu-toggle');
+      var overlay = header.querySelector('.header-2026__overlay');
+      var compareLists = header.querySelectorAll('.mega-compare');
+
+      // #1 — assign the cascade indices once and tag every reveal target.
+      header.querySelectorAll('.mega-grid > .mega-col').forEach(function(col, ci){
+        col.style.setProperty('--col', ci);
+        col.querySelectorAll('.mega-heading, .mega-links li, .mega-compare a, .cust-thumb, .mega-feature-card, .cust-seeall').forEach(function(el, ii){
+          el.style.setProperty('--item', ii);
+          el.classList.add('reveal');
+        });
+      });
+
+      // Drop the trailing dot on whichever item ends each wrapped line (per list).
+      function trimCompareDots(){
+        compareLists.forEach(function(list){
+          var items = list.querySelectorAll('a');
+          items.forEach(function(a){ a.classList.remove('line-end'); });
+          for(var i=0; i<items.length-1; i++){
+            if(items[i+1].offsetTop > items[i].offsetTop){ items[i].classList.add('line-end'); }
+          }
+        });
+      }
+
+      function set(open){
+        header.classList.toggle('is-menu-open', open);
+        document.body.classList.toggle('nav-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if(open){
+          // force a reflow so the hidden start state commits, then trigger the cascade
+          var panel = overlay.querySelector('.header-2026__megamenu-panel');
+          void panel.offsetHeight;
+          header.classList.add('is-revealed');
+          trimCompareDots();
+        } else {
+          header.classList.remove('is-revealed');
+        }
+      }
+      btn.addEventListener('click', function(){ set(!header.classList.contains('is-menu-open')); });
+      overlay.addEventListener('click', function(e){ if(!e.target.closest('.header-2026__megamenu-panel')) set(false); });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape') set(false); });
+      window.addEventListener('resize', function(){ if(header.classList.contains('is-menu-open')) trimCompareDots(); });
+    })();
+  </script>
+
+</body>
+</html>
