@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka for Financial Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  INDUSTRY PAGE — Financial Services.                                */
+  /*  Look & feel ported from akka.io/platform-intro: black canvas,      */
+  /*  yellow (#F5C518) accent, JetBrains Mono uppercase micro-eyebrows,  */
+  /*  huge tight-tracked hero, 56x3 yellow divider, big-number stats,    */
+  /*  dark #131316 cards, green/red comparison marks.                    */
+  /*  Reusable for other verticals (swap copy/proof/anchors).            */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;--card-2:#1a1a1a;
+    --green:#28C840;--red:#E74C3C;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:104px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(30px,4vw,58px);line-height:1.08}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .lede{color:var(--muted);font-size:clamp(16px,1.3vw,19px);max-width:66ch;line-height:1.6}
+  .sec-head{max-width:74ch;margin-bottom:52px}
+  .sec-head h2{margin:16px 0 18px}
+  .divider{width:56px;height:3px;background:var(--yellow);margin:30px 0}
+
+  /* --- HERO --- */
+  #hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.10),transparent 55%),var(--black);overflow:hidden}
+  #hero .inner{max-width:1000px}
+  .hero-eyebrow{margin-bottom:28px}
+  .hero-headline{font-size:clamp(44px,6.5vw,92px);line-height:1.02;letter-spacing:-.035em;max-width:15ch}
+  .hero .lede{font-size:clamp(17px,1.5vw,21px);margin-top:26px}
+  .hero-stats{display:flex;gap:clamp(28px,4vw,56px);flex-wrap:wrap;margin-top:60px}
+  .hero-stat-number{font-size:40px;font-weight:700;color:var(--white);letter-spacing:-.03em;line-height:1;display:flex;align-items:baseline}
+  .hero-stat-number .suffix{color:var(--yellow);font-size:26px;margin-left:2px}
+  .hero-stat-label{font-family:var(--mono);font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1.5px;margin-top:8px;font-weight:500;max-width:18ch}
+
+  /* --- generic section variants --- */
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+
+  /* --- THESIS --- */
+  .thesis-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .thesis-list{list-style:none;margin:24px 0 0;padding:0}
+  .thesis-list li{padding:16px 0;border-top:1px solid var(--line);color:var(--muted);font-size:16px}
+  .thesis-list li b{color:var(--white);font-weight:600}
+  .pullquote{border-left:2px solid var(--yellow);padding:6px 0 6px 24px;color:#cfcfcf;font-size:18px;line-height:1.5}
+  .pullquote cite{display:block;margin-top:12px;color:var(--dim);font-family:var(--mono);font-size:12px;font-style:normal;letter-spacing:.02em}
+
+  /* --- CARD GRIDS --- */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px;transition:border-color .18s}
+  .card:hover{border-color:var(--line-2)}
+  .card .ki{font-family:var(--mono);color:var(--yellow);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;display:block}
+  .card h3{font-size:18px;margin-bottom:10px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+
+  /* --- SAFR mapping --- */
+  .maptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  .maptable th,.maptable td{text-align:left;padding:18px 20px;border-top:1px solid var(--line);vertical-align:top}
+  .maptable thead th{border-top:0;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+  .maptable td:first-child{width:24%;color:var(--white);font-weight:600}
+  .maptable td:nth-child(2){width:38%;color:var(--muted)}
+  .maptable td:last-child{color:#d8d8d8}
+  .maptable .prim{color:var(--yellow);font-weight:600}
+  .safr-note{display:inline-block;margin-top:26px;color:var(--white);font-size:17px;border-left:2px solid var(--yellow);padding-left:18px}
+  .reflink{color:var(--yellow);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(245,197,24,.4);transition:border-color .15s}
+  .reflink:hover{border-bottom-color:var(--yellow)}
+  .safr-read{display:inline-flex;align-items:center;gap:8px;margin-top:24px;font-family:var(--mono);
+    font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--yellow);text-decoration:none}
+  .safr-read span{transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .safr-read:hover span{transform:translateX(4px)}
+
+  /* --- REGULATORY CORPUS --- */
+  .corpus-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:44px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:30px}
+  .stat .n{font-size:52px;font-weight:700;line-height:1;color:var(--yellow);letter-spacing:-.03em}
+  .stat .l{color:var(--muted);font-size:14px;margin-top:12px}
+  .regcats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .regcat{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--card)}
+  .regcat h3{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:600}
+  .regtags{display:flex;flex-wrap:wrap;gap:8px}
+  .regtags span{border:1px solid var(--line-2);border-radius:6px;padding:6px 11px;font-size:12px;color:var(--muted);background:#0c0c0f}
+  .regtags span.named{color:var(--black);border-color:var(--yellow);background:var(--yellow);font-weight:600}
+  .corpus-foot{color:var(--dim);font-size:13px;margin-top:26px;max-width:80ch}
+
+  /* --- USE CASES --- */
+  .uc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .uc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;transition:border-color .18s,transform .18s}
+  .uc:hover{border-color:var(--yellow);transform:translateY(-2px)}
+  .uc .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .uc h3{font-size:17px;margin:12px 0 8px}
+  .uc p{margin:0;color:var(--muted);font-size:14px}
+
+  /* --- CUSTOMER PROOF --- */
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .proof-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:34px}
+  .proof-card .co{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .proof-card h3{font-size:23px;margin:12px 0 22px;max-width:24ch;letter-spacing:-.02em}
+  .metrics{display:flex;gap:34px;flex-wrap:wrap;margin-bottom:18px}
+  .metrics .mv{font-size:32px;font-weight:700;color:var(--yellow);line-height:1;letter-spacing:-.03em}
+  .metrics .ml{font-size:12px;color:var(--muted);margin-top:8px;max-width:16ch}
+  .proof-card p{margin:0;color:var(--muted);font-size:14px}
+  .proof-card a{color:var(--yellow);text-decoration:none;font-size:14px;font-weight:600;display:inline-block;margin-top:18px}
+  .proof-card a:hover{text-decoration:underline}
+
+  /* --- reveal --- */
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:960px){
+    .cards{grid-template-columns:1fr 1fr}
+    .regcats,.uc-grid{grid-template-columns:1fr 1fr}
+    .thesis-grid,.proof-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:620px){
+    section{padding:64px var(--pad)}
+    .cards,.corpus-stats,.regcats,.uc-grid{grid-template-columns:1fr}
+    .maptable thead{display:none}
+    .maptable tr{display:block;border-top:1px solid var(--line);padding:16px 0}
+    .maptable td{display:block;border-top:0;padding:4px 0;width:auto!important}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="hero">
+    <div class="inner">
+      <div class="eyebrow hero-eyebrow rv">Industries — Financial Services</div>
+      <h1 class="hero-headline rv">Agentic AI for <span class="accent">regulated finance.</span></h1>
+      <p class="lede rv">Banking, insurance, and capital markets run on actions that are regulated, irreversible, and time-critical. The Akka Agentic AI Platform lets AI agents execute those actions — payments, credit decisions, claims, regulatory filings — with audit trails, authorization controls, and human oversight embedded within the platform.</p>
+      <div class="hero-stats rv">
+        <div>
+          <div class="hero-stat-number">52</div>
+          <div class="hero-stat-label">FS orgs running in prod</div>
+        </div>
+        <div>
+          <div class="hero-stat-number">227</div>
+          <div class="hero-stat-label">FS AI controls supported</div>
+        </div>
+        <div>
+          <div class="hero-stat-number">19<span class="suffix">+</span></div>
+          <div class="hero-stat-label">InfoSec certifications</div>
+        </div>
+        <div>
+          <div class="hero-stat-number">SAFR</div>
+          <div class="hero-stat-label">Embedded within the platform</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== THESIS ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="thesis-grid">
+        <div>
+          <div class="eyebrow rv">Why finance is different</div>
+          <h2 class="rv" style="margin-top:16px">From recommendation to <span class="accent">execution.</span></h2>
+          <p class="lede rv" style="margin-top:20px">Financial institutions are deploying agents that initiate payments, submit trading orders, approve credit, file regulatory reports, and settle claims — at machine speed, without a human reviewing every action. That shift breaks control frameworks designed for human decision-making.</p>
+          <div class="pullquote rv" style="margin-top:30px">
+            "The volume and speed of agent decisions make traditional per-action oversight operationally impossible. What is needed is a governance layer that operates at the point of action."
+            <cite>SAFR — Safeguards for Agentic Finance at Runtime, v1.0 (2026)</cite>
+          </div>
+        </div>
+        <div>
+          <ul class="thesis-list rv">
+            <li><b>Actions are irreversible.</b> A settled payment or executed order can't be recalled — the control has to happen <i>before</i> execution, not in a next-day audit.</li>
+            <li><b>Everything is regulated.</b> Prudential, conduct, operational resilience, AML/CFT, data protection, and consumer-protection obligations apply at once.</li>
+            <li><b>Systemic risk is real.</b> Correlated agent behaviour across institutions is a named FSB systemic vulnerability — bounded authority contains it.</li>
+            <li><b>Oversight must be provable.</b> Regulators expect evidence, reconstructable independent of the agent's own account — not dashboards.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLATFORM APPLIED TO FS ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">The platform, applied to finance</div>
+        <h2 class="rv">Built for actions that cannot fail.</h2>
+      </div>
+      <div class="cards rv">
+        <div class="card">
+          <span class="ki">Durable execution</span>
+          <h3>No lost or double actions</h3>
+          <p>Every step survives failure, restart, and redeploy. A payment or decision runs exactly as intended, once — even when infrastructure fails mid-flight.</p>
+        </div>
+        <div class="card">
+          <span class="ki">Event sourcing</span>
+          <h3>Tamper-evident audit trail</h3>
+          <p>State changes are recorded as an append-only, replayable log — the immutable, time-stamped record auditors ask for, embedded within the platform.</p>
+        </div>
+        <div class="card">
+          <span class="ki">Guardrails + HITL</span>
+          <h3>Control before execution</h3>
+          <p>Deterministic gates and human-in-the-loop escalation evaluate each proposed action against policy before it is applied — not after.</p>
+        </div>
+        <div class="card">
+          <span class="ki">Multi-region</span>
+          <h3>Residency &amp; resilience</h3>
+          <p>Data residency and active-active operation across regions for workloads carrying regulatory and availability obligations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GOVERNANCE / SAFR ===================== -->
+  <section id="governance" class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Governance</div>
+        <h2 class="rv">SAFR-aligned governance, <span class="accent">embedded in the platform.</span></h2>
+        <p class="lede rv" style="margin-top:18px"><a class="reflink" href="https://www.mas.gov.sg/-/media/mas-media-library/development/fintech/ai-safr/safr.pdf" target="_blank" rel="noopener">SAFR (Safeguards for Agentic Finance at Runtime)</a> is the emerging industry reference model for governing agents at the moment they act — developed with the Monetary Authority of Singapore's Project MindForge and BuildFin.ai, and aligned to NIST's AI Risk Management Framework. It defines a governance checkpoint between every agent decision and its execution.</p>
+        <p class="lede rv" style="margin-top:14px"><span class="accent">The Akka Agentic AI Platform satisfies SAFR's four runtime components with capabilities embedded within the platform.</span> Agent identity, authorization controls, the pre-execution decision gate, and the audit trail are all provided by the platform itself.</p>
+      </div>
+
+      <table class="maptable rv">
+        <thead>
+          <tr><th>SAFR component</th><th>What it requires</th><th>Embedded in the Akka Agentic AI Platform</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Governance Envelope</td>
+            <td>A faithful record of what the agent intends and how it got there — the action trace, authenticated to origin.</td>
+            <td><span class="prim">A sealed, signed evidence bundle</span> — the action and its decision trace transparently captured (including for third-party agents), bound by a reproducibility hash and authenticated to origin.</td>
+          </tr>
+          <tr>
+            <td>Agent Identity</td>
+            <td>Every action bound to a registered, verified agent before evaluation proceeds.</td>
+            <td><span class="prim">SPIFFE identity</span> + ACLs + JWT — a stable, verifiable identity for every agent.</td>
+          </tr>
+          <tr>
+            <td>Controls Repository</td>
+            <td>A configurable rulebook of policy, regulation, and capability-based mandates — bounded, machine-readable authority.</td>
+            <td><span class="prim">The regulatory corpus and its controls</span> — policy matrices automatically enforced against each proposed action.</td>
+          </tr>
+          <tr>
+            <td>Disposition Engine</td>
+            <td>A deterministic, pre-execution gate resolving each action to Deny / Escalate / Auto-Execute / Observe — re-run every step.</td>
+            <td><span class="prim">Enforcement of evaluations</span>, sanitizers, guardrails, HITL escalations, HOTL escalations (halt switches), and testing gates.</td>
+          </tr>
+          <tr>
+            <td>Audit Log</td>
+            <td>An immutable, tamper-evident record, reconstructable independent of the agent.</td>
+            <td><span class="prim">Petabyte-scale logging</span> — append-only and tamper-evident, with 10-year retention and legal hold.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="safr-note rv">Every SAFR component maps to a capability embedded within the Akka Agentic AI Platform.</div>
+      <div class="rv"><a class="safr-read" href="https://www.mas.gov.sg/-/media/mas-media-library/development/fintech/ai-safr/safr.pdf" target="_blank" rel="noopener">Read the SAFR white paper <span aria-hidden="true">&rarr;</span></a></div>
+    </div>
+  </section>
+
+  <!-- ===================== FINOS AIGF ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Governance</div>
+        <h2 class="rv">FINOS AI Governance Framework — <span class="accent">implemented in the platform.</span></h2>
+        <p class="lede rv" style="margin-top:18px">FINOS AIGF is the financial-services industry's open standard for governing agentic AI, developed under the Fintech Open Source Foundation. It defines 23 agentic-AI risks and 23 mitigations — preventive and detective — and is the basis for the FINOS Common Cloud Controls adopted across banking, insurance, and capital markets.</p>
+        <p class="lede rv" style="margin-top:14px"><span class="accent">Akka implements the FINOS mitigations as platform capabilities.</span> The same runtime that enforces SAFR carries the preventive and detective controls FINOS specifies.</p>
+      </div>
+
+      <table class="maptable rv">
+        <thead>
+          <tr><th>FINOS AIGF mitigation</th><th>What it requires</th><th>Embedded in the Akka Agentic AI Platform</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Agent authority, least privilege<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-PREV</span></td>
+            <td>Each agent may act only within explicitly granted authority.</td>
+            <td><span class="prim">SPIFFE identity + capability-scoped mandates</span> — an agent cannot widen its own authority.</td>
+          </tr>
+          <tr>
+            <td>Tool-chain validation &amp; sanitization<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-PREV</span></td>
+            <td>Tools and their inputs and outputs validated and sanitized before use.</td>
+            <td><span class="prim">Sanitizers + tool-call guardrails</span> run in the decision path before any tool executes.</td>
+          </tr>
+          <tr>
+            <td>Multi-agent isolation &amp; MCP security<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-PREV</span></td>
+            <td>Agents isolated from one another; the MCP tool supply chain governed.</td>
+            <td><span class="prim">Each agent an isolated component</span>; MCP endpoints governed and access-controlled.</td>
+          </tr>
+          <tr>
+            <td>Model &amp; data firewalling<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-PREV</span></td>
+            <td>Inbound and outbound filtering of model traffic and knowledge-base data.</td>
+            <td><span class="prim">Runtime guardrails</span> filter prohibited content on the way in and out.</td>
+          </tr>
+          <tr>
+            <td>Agent decision audit &amp; explainability<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-DET</span></td>
+            <td>Every agent decision auditable and explainable after the fact.</td>
+            <td><span class="prim">Tamper-evident, hash-chained log</span> + sealed, signed evidence bundles.</td>
+          </tr>
+          <tr>
+            <td>Automated evaluation &amp; human feedback<span style="display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--dim);margin-top:5px">AIR-DET</span></td>
+            <td>Automated (LLM-as-a-judge) evaluation with a human feedback loop.</td>
+            <td><span class="prim">Evaluations (LLMs-as-judges)</span> + HITL / HOTL escalation.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rv"><a class="safr-read" href="https://air-governance-framework.finos.org/" target="_blank" rel="noopener">Explore the FINOS AI Governance Framework <span aria-hidden="true">&rarr;</span></a></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTROLS & ENFORCEMENT ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Controls &amp; enforcement</div>
+        <h2 class="rv">How the platform enforces it.</h2>
+        <p class="lede rv" style="margin-top:18px">SAFR and the regulatory corpus are enforced by a two-layer control model embedded in the platform — a real-time check on every agent action, and periodic verification over time.</p>
+      </div>
+      <div class="cards cards--3 rv">
+        <div class="card"><span class="ki">Guardrails</span><h3>Block unsafe outputs</h3><p>Runtime filters catch prohibited or unsafe content before an agent can act on it.</p></div>
+        <div class="card"><span class="ki">Sanitizers</span><h3>Strip sensitive data</h3><p>Personal and confidential data is automatically removed from what agents read and write.</p></div>
+        <div class="card"><span class="ki">Evaluations</span><h3>Checked in real time</h3><p>Every agent action is checked inline as it happens — pass, block, or flag — so a non-compliant action never executes.</p></div>
+        <div class="card"><span class="ki">HITL / HOTL</span><h3>People stay in control</h3><p>High-stakes actions escalate to a person for approval, and halt switches let a human stop an agent instantly.</p></div>
+        <div class="card"><span class="ki">Testing gates</span><h3>Proven before it ships</h3><p>Scenario, replay, stress, and adversarial red-team tests gate every change before production.</p></div>
+        <div class="card"><span class="ki">Logging &amp; retention</span><h3>A record that holds up</h3><p>Every decision is written to a tamper-evident, hash-chained log, retained up to 10 years with legal hold.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REGULATORY CORPUS ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">The regulatory corpus</div>
+        <h2 class="rv">Your obligations, continuously mapped.</h2>
+        <p class="lede rv" style="margin-top:18px">Akka maintains a live corpus of the financial-services regulations that govern agentic AI — mapped to enforceable controls and monitored as they change. Governance runs against this corpus at the agent boundary, so obligations are enforced, not just reported.</p>
+      </div>
+
+      <!-- Numbers derived from the live corpus: regulations with financial-services-scoped controls -->
+      <div class="corpus-stats rv">
+        <div class="stat"><div class="n">49</div><div class="l">financial-services AI regulations mapped to enforceable controls</div></div>
+        <div class="stat"><div class="n">227</div><div class="l">AI controls governing agent actions in financial services</div></div>
+        <div class="stat"><div class="n">46</div><div class="l">of those AI regulations carry direct financial penalties</div></div>
+      </div>
+
+      <div class="regcats rv">
+        <div class="regcat">
+          <h3>Prudential &amp; operational resilience</h3>
+          <div class="regtags"><span class="named">DORA</span><span class="named">PRA SS1/23</span><span>APRA CPS 230</span><span>OSFI E-23</span><span>FSB AI in Finance</span></div>
+        </div>
+        <div class="regcat">
+          <h3>Model risk management</h3>
+          <div class="regtags"><span class="named">SR 11-7</span><span>OCC Model Risk</span></div>
+        </div>
+        <div class="regcat">
+          <h3>Markets &amp; conduct</h3>
+          <div class="regtags"><span class="named">MiFID II</span><span>ESMA</span><span>IOSCO</span><span>FINRA</span><span>FCA Consumer Duty</span></div>
+        </div>
+        <div class="regcat">
+          <h3>Insurance</h3>
+          <div class="regtags"><span class="named">Solvency II</span><span>NAIC AI</span><span>IAIS ICPs</span><span>EIOPA</span></div>
+        </div>
+        <div class="regcat">
+          <h3>AI governance for finance</h3>
+          <div class="regtags"><span class="named">MAS FEAT</span><span>MAS AIRG</span><span>FINOS AIGF</span><span>HKMA GenAI</span><span>NY DFS 500</span></div>
+        </div>
+        <div class="regcat">
+          <h3>Consumer credit, privacy &amp; data</h3>
+          <div class="regtags"><span class="named">GDPR Art. 22</span><span>FCRA / ECOA</span><span>CFPB</span><span>GLBA</span></div>
+        </div>
+      </div>
+      <p class="corpus-foot rv">A selection of the 49 financial-services regulations in the corpus, mapped across the EU, UK, US (federal and state), Singapore, Australia, Canada, Hong Kong, and Brazil. EU AI Act Art. 72 alone mandates 10-year retention with tamper-evident records.</p>
+    </div>
+  </section>
+
+  <!-- ===================== USE CASES ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Use cases</div>
+        <h2 class="rv">Where agents act in financial services.</h2>
+      </div>
+      <div class="uc-grid rv">
+        <div class="uc"><div class="tag">Banking · Payments</div><h3>Payments orchestration &amp; settlement</h3><p>Initiate, sequence, and settle payments with per-action authority limits and full reconstructable traces.</p></div>
+        <div class="uc"><div class="tag">Risk · Compliance</div><h3>Transaction monitoring &amp; AML triage</h3><p>Surface, prioritize, and act on suspicious activity — with escalation gates before any customer-affecting action.</p></div>
+        <div class="uc"><div class="tag">Lending</div><h3>Credit assessment &amp; underwriting</h3><p>Real-time decisioning under model-risk governance. See Capital One below — two-day batch to 200 ms.</p></div>
+        <div class="uc"><div class="tag">Compliance</div><h3>Regulatory reporting &amp; filing</h3><p>Assemble, validate, and file against the mapped control set, with the audit trail retained by construction.</p></div>
+        <div class="uc"><div class="tag">Insurance</div><h3>Claims processing &amp; settlement</h3><p>Straight-through claims with human-in-the-loop escalation on high-materiality or anomalous cases.</p></div>
+        <div class="uc"><div class="tag">Insurance</div><h3>Underwriting &amp; policy servicing</h3><p>Bounded agent authority over quotes, endorsements, and renewals — every action policy-checked pre-execution.</p></div>
+        <div class="uc"><div class="tag">Fraud</div><h3>Fraud detection &amp; response</h3><p>Detect and contain in real time; reversible actions auto-execute, irreversible ones escalate.</p></div>
+        <div class="uc"><div class="tag">Customer</div><h3>Next-best-action &amp; servicing</h3><p>Personalized, compliant interactions with conduct and data-protection controls enforced inline.</p></div>
+        <div class="uc"><div class="tag">Capital markets</div><h3>Order handling &amp; post-trade</h3><p>Agentic workflows across the trade lifecycle with deterministic containment and tamper-evident records.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CUSTOMER PROOF ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Proof</div>
+        <h2 class="rv">Financial institutions already run on Akka.</h2>
+      </div>
+      <div class="proof-grid rv">
+        <div class="proof-card">
+          <div class="co">Capital One · Banking / Lending</div>
+          <h3>Auto-loan decisioning, from a two-day batch to real time.</h3>
+          <div class="metrics">
+            <div><div class="mv">200 ms</div><div class="ml">to a financing decision</div></div>
+            <div><div class="mv">4.9×</div><div class="ml">application throughput</div></div>
+            <div><div class="mv">60%</div><div class="ml">lower cost per decision</div></div>
+          </div>
+          <p>Auto Navigator pre-qualifies buyers across ~4 million cars from 12,000+ dealers with no impact to their credit score — 486 applications per minute at 180–200 ms under load.</p>
+          <a href="https://akka.io/customers/capital-one">Read the story →</a>
+        </div>
+        <div class="proof-card">
+          <div class="co">Manulife · Insurance</div>
+          <h3>Operationalizing agentic AI on a secure, scalable foundation.</h3>
+          <div class="metrics">
+            <div><div class="mv">Global</div><div class="ml">insurance leader</div></div>
+            <div><div class="mv">High-volume</div><div class="ml">trusted AI applications</div></div>
+          </div>
+          <p>Manulife selected Akka to build a high volume of trusted AI-powered applications on a secure and scalable foundation — the insurance proof point that anchors this vertical.</p>
+          <a href="https://akka.io/customers/manulife">Read the story →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

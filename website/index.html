@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka Industry Stories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="industry.css">
+<style>
+  /* index-only: linked story cards */
+  .story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .story{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:28px;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
+  .story:hover{border-color:var(--yellow);transform:translateY(-2px)}
+  .story .ind{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--yellow)}
+  .story h3{font-size:20px;margin:14px 0 12px;letter-spacing:-.02em}
+  .story p{margin:0;color:var(--muted);font-size:14px;flex:1}
+  .story .stat{margin-top:18px;font-family:var(--mono);font-size:12px;letter-spacing:.5px;color:var(--dim)}
+  .story .go{margin-top:16px;font-size:14px;font-weight:600;color:var(--yellow);display:inline-flex;gap:8px}
+  .story .go span{transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .story:hover .go span{transform:translateX(4px)}
+  @media (max-width:960px){.story-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.story-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+  <section id="hero" style="min-height:60vh">
+    <div class="inner">
+      <div class="eyebrow hero-eyebrow rv">Industries</div>
+      <h1 class="hero-headline rv">Akka Industry <span class="accent">Stories.</span></h1>
+      <p class="lede rv">How banking, insurance, telecom, retail, manufacturing, media, and the public sector put agentic AI into production on the Akka Agentic AI Platform — with the scale, resilience, and governance each industry demands.</p>
+    </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="story-grid rv">
+
+        <a class="story" href="industry-financial-services.html">
+          <div class="ind">Financial Services</div>
+          <h3>Agentic AI for regulated finance.</h3>
+          <p>SAFR- and FINOS-aligned governance embedded in the platform, over a corpus of financial-services AI regulations.</p>
+          <div class="stat">52 FS orgs in production · SAFR + FINOS</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+        <a class="story" href="industry-telecommunications.html">
+          <div class="ind">Telecommunications</div>
+          <h3>Consumer trust and critical-infrastructure resilience.</h3>
+          <p>Commerce, provisioning, and network operations at national scale, through every launch-day and holiday peak.</p>
+          <div class="stat">Verizon · 7.5× orders on half the hardware</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+        <a class="story" href="industry-retail.html">
+          <div class="ind">Retail &amp; E-commerce</div>
+          <h3>Consumer AI, transparent and fair.</h3>
+          <p>Real-time personalization, inventory, pricing, and fulfillment at the moment of decision.</p>
+          <div class="stat">Walmart +20% conversion · Swiggy 2× faster</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+        <a class="story" href="industry-manufacturing.html">
+          <div class="ind">Manufacturing</div>
+          <h3>Safe, accountable AI on the line.</h3>
+          <p>Millions of sensor signals turned into real-time digital twins and guidance across distributed plants.</p>
+          <div class="stat">John Deere 1M+ events/s · Renault 35+ plants</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+        <a class="story" href="industry-media.html">
+          <div class="ind">Media &amp; Streaming</div>
+          <h3>Transparent AI content and recommendations.</h3>
+          <p>Per-viewer personalization at streaming scale, live, across hundreds of thousands of titles.</p>
+          <div class="stat">Fox / Tubi · 5B tokens/s · 300K+ titles</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+        <a class="story" href="industry-public-sector.html">
+          <div class="ind">Public Sector &amp; Research</div>
+          <h3>Accountable AI for public institutions.</h3>
+          <p>Mission-critical, high-volume systems that cannot lose data or stop — for months at a time.</p>
+          <div class="stat">CERN · 2.5M+ signals/day · 0 data loss</div>
+          <div class="go">Read the story <span aria-hidden="true">&rarr;</span></div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+  </script>
+
+</body>
+</html>

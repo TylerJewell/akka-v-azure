@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka — Mega Footer (SEO navigation list)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  /* --- minimal reset + font --- */
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:#000;color:#f1f1f1;-webkit-font-smoothing:antialiased}
+  .footerSec,.footerSec *{font-family:"Instrument Sans",-apple-system,"Helvetica Neue",Arial,sans-serif}
+  .demo-hero{min-height:55vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 50% 0,#101a2e,#000 70%);
+    color:#233a5e;letter-spacing:.35em;font:600 clamp(16px,3vw,28px)/1 "Instrument Sans",sans-serif;text-transform:uppercase}
+
+  /* ====================================================================== */
+  /*  Akka SEO mega-footer.                                                   */
+  /*  Chrome (gray band, blurred corner circles that darken it, socials,     */
+  /*  legal row, gradient baseline, wordmark) recreated from akka.io          */
+  /*  footer.html + module_Footer_Module.css. The dense sitemap body is new.  */
+  /* ====================================================================== */
+  :root{--footer-bg:#24272c;--body_color:#e9eaec;--muted:#8b9199;--link:#00dbdd;--link_hover:#fff;--heading:#f1be2e;--panel-line:#3a3e44}
+
+  .footerSec{position:relative;overflow:hidden;background:var(--footer-bg);padding-top:72px}
+  .footerSec .container{position:relative;z-index:2;width:100%;max-width:1680px;margin:0 auto;padding:0 40px}
+
+  /* --- decorative blurred corner circles (black, so they darken the gray) --- */
+  .desktopCircle .circleLeft{position:absolute;left:0;bottom:0;z-index:0;pointer-events:none;line-height:0}
+  .desktopCircle .circleRight{position:absolute;right:0;bottom:0;z-index:0;pointer-events:none;line-height:0}
+  .desktopCircle svg{display:block;max-width:100%;height:auto}
+  .mobileCircle{display:none}
+  .mobileCircle span{position:absolute;bottom:0;z-index:0;pointer-events:none;line-height:0}
+  .mobileCircle .mobcircleLeft{left:0}.mobileCircle .mobcircleRight{right:0}
+
+  /* --- the sitemap grid: 6 columns, one row, no wrap --- */
+  .footerNav{display:grid;grid-template-columns:repeat(6,1fr);gap:36px 24px}
+  .footerCol{min-width:0}
+  .footerCol h6{margin:0 0 16px;padding-top:11px;border-top:1px solid var(--heading);
+    color:var(--heading);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1}
+  .footerCol ul{list-style:none;margin:0;padding:0}
+  .footerCol li{margin:0 0 11px}
+  .footerCol a{color:var(--body_color);font-size:14px;line-height:1.3;text-decoration:none;
+    transition:color .18s cubic-bezier(.215,.61,.355,1)}
+  .footerCol a:hover{color:var(--link)}
+  .footerCol .seeall{display:inline-flex;gap:6px;margin-top:4px;font-size:13px;color:var(--muted)}
+  .footerCol .seeall:hover{color:var(--link)}
+  .footerCol .seeall span{transition:transform .2s cubic-bezier(.215,.61,.355,1)}
+  .footerCol .seeall:hover span{transform:translateX(4px)}
+  .footerCol--compare li,.footerCol--customers li{margin-bottom:9px}
+  /* slightly-indented sub-links (e.g. Trust Center detail pages) */
+  .footerCol li.sub{padding-left:14px;margin-bottom:4px}
+  .footerCol li.sub a{font-size:13px;color:var(--muted)}
+  .footerCol li.sub a:hover{color:var(--link)}
+  /* pull the first sub up to its parent, and re-separate the last sub from the next top link */
+  .footerCol li:has(+ li.sub){margin-bottom:4px}
+  .footerCol li.sub:has(+ li:not(.sub)){margin-bottom:11px}
+
+  /* --- bottom bar: socials (left) + legal (right) --- */
+  .footerBottomBar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;
+    margin-top:56px;padding-top:28px;border-top:1px solid var(--panel-line)}
+  .socialsIconsMain{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+  .socialsIconOutter a{display:inline-flex;color:var(--body_color);line-height:0;text-decoration:none;
+    transition:color .18s cubic-bezier(.215,.61,.355,1)}
+  .socialsIconOutter a:hover{color:var(--link)}
+  .socialsIconOutter svg{width:20px;height:20px;fill:currentColor;display:block}
+
+  .copyRightLinkWrapper{display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+  .copyRightLinkMain{font-size:12px;color:var(--body_color)}
+  .copyRightLinkMain p{margin:0}
+  .copyRightLinkMain a{position:relative;color:var(--body_color);text-decoration:none;cursor:pointer}
+  .copyRightLinkMain a:after{content:"";position:absolute;bottom:-2px;left:0;width:100%;height:1px;
+    background:var(--body_color);transition:all .4s ease}
+  .copyRightLinkMain a:hover:after{background:var(--link_hover)}
+
+  /* --- giant "akka" wordmark, fades in with the panel --- */
+  .footerBottomLogo{opacity:0;visibility:hidden;transition:all ease .8s;text-align:center;line-height:0;margin-top:40px}
+  .footerContentWrapper.is-in ~ .footerBottomLogo{opacity:1;visibility:visible}
+  .footerBottomLogo img{display:block;width:100%;max-width:1560px;height:auto;margin:0 auto;opacity:.5}
+  /* --- brand gradient baseline (green -> cyan) --- */
+  .footerBottomLine{width:100%;height:4px;background:linear-gradient(90deg,#a5d000 0%,#2bc0ba 55%,#00dbdd 100%)}
+
+  /* --- reveal --- */
+  .footerContentWrapper{opacity:0;transform:translateY(12px);
+    transition:opacity .5s cubic-bezier(.215,.61,.355,1),transform .5s cubic-bezier(.215,.61,.355,1)}
+  .footerContentWrapper.is-in{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:1200px){
+    .footerNav{grid-template-columns:repeat(3,1fr)}
+    .footerSec .container{padding:0 24px}
+  }
+  @media (max-width:767px){
+    .footerSec{padding-top:48px}
+    .footerSec .container{padding:0 16px}
+    .footerNav{grid-template-columns:repeat(2,1fr);gap:30px 20px}
+    .desktopCircle{display:none}.mobileCircle{display:block}
+    .footerBottomBar{flex-direction:column;align-items:flex-start;gap:22px}
+    .footerBottomLogo{margin-top:28px}
+  }
+  @media (max-width:420px){ .footerNav{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+  <main class="demo-hero">The Agentic Systems Platform</main>
+
+  <footer>
+    <div class="baseSec footerSec">
+      <span class="overlayColor"></span>
+
+      <div class="desktopCircle">
+        <span class="circleLeft"><svg width="853" height="874" viewBox="0 0 853 874" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#f0l)"><ellipse cx="0.000305176" cy="451.861" rx="352.529" ry="322.401" fill="black" fill-opacity="0.5"/></g>
+          <defs><filter id="f0l" x="-852.528" y="-370.539" width="1705.06" height="1644.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="bg"/><feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape"/><feGaussianBlur stdDeviation="250" result="e1"/></filter></defs>
+        </svg></span>
+        <span class="circleRight"><svg width="718" height="874" viewBox="0 0 718 874" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#f0r)"><ellipse cx="873.119" cy="338.229" rx="373.116" ry="341.229" fill="black" fill-opacity="0.5"/></g>
+          <defs><filter id="f0r" x="0.00292969" y="-503" width="1746.23" height="1682.46" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="bg"/><feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape"/><feGaussianBlur stdDeviation="250" result="e1"/></filter></defs>
+        </svg></span>
+      </div>
+      <div class="mobileCircle">
+        <span class="mobcircleLeft"><svg width="257" height="370" viewBox="0 0 257 370" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#f0ml)"><ellipse cx="-64" cy="306.5" rx="171" ry="156.5" fill="black" fill-opacity="0.5"/></g>
+          <defs><filter id="f0ml" x="-385" y="0" width="642" height="613" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="bg"/><feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape"/><feGaussianBlur stdDeviation="75" result="e1"/></filter></defs>
+        </svg></span>
+        <span class="mobcircleRight"><svg width="272" height="361" viewBox="0 0 272 361" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g filter="url(#f0mr)"><ellipse cx="301" cy="288" rx="151" ry="138" fill="black" fill-opacity="0.5"/></g>
+          <defs><filter id="f0mr" x="0" y="0" width="602" height="576" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="bg"/><feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape"/><feGaussianBlur stdDeviation="75" result="e1"/></filter></defs>
+        </svg></span>
+      </div>
+
+      <div class="container">
+        <div class="footerContentWrapper">
+          <nav class="footerNav" aria-label="Footer">
+
+            <!-- INDUSTRIES -->
+            <div class="footerCol">
+              <h6>Industries</h6>
+              <ul>
+                <li><a href="https://akka.io/industries/financial-services">Financial Services</a></li>
+                <li><a href="https://akka.io/industries/insurance">Insurance</a></li>
+                <li><a href="https://akka.io/industries/telecommunications">Telecommunications</a></li>
+                <li><a href="https://akka.io/industries/retail">Retail &amp; E-commerce</a></li>
+                <li><a href="https://akka.io/industries/manufacturing">Manufacturing</a></li>
+                <li><a href="https://akka.io/industries/media">Media &amp; Streaming</a></li>
+                <li><a href="https://akka.io/industries/public-sector">Public Sector</a></li>
+              </ul>
+            </div>
+
+            <!-- CUSTOMERS -->
+            <div class="footerCol footerCol--customers">
+              <h6>Customers</h6>
+              <ul>
+                <li><a href="https://akka.io/customers/manulife">Manulife</a></li>
+                <li><a href="https://akka.io/customers/john-deere">John Deere</a></li>
+                <li><a href="https://akka.io/customers/swiggy">Swiggy</a></li>
+                <li><a href="https://akka.io/customers/tubi">Tubi</a></li>
+                <li><a href="https://akka.io/customers/verizon">Verizon</a></li>
+                <li><a href="https://akka.io/customers/capital-one">Capital One</a></li>
+                <li><a href="https://akka.io/customers/walmart">Walmart</a></li>
+                <li><a href="https://akka.io/customers/doctolib">Doctolib</a></li>
+                <li><a href="https://akka.io/customers/norwegian">Norwegian Cruise Line</a></li>
+                <li><a href="https://akka.io/customers/cern">CERN</a></li>
+                <li><a href="https://akka.io/customers/renault">Renault</a></li>
+                <li><a href="https://akka.io/customers/eero">Amazon eero</a></li>
+                <li><a href="https://akka.io/customers/deloitte">Deloitte</a></li>
+              </ul>
+              <a class="seeall" href="https://akka.io/customers">All customer stories <span aria-hidden="true">&rarr;</span></a>
+            </div>
+
+            <!-- COMPARE -->
+            <div class="footerCol footerCol--compare">
+              <h6>Compare</h6>
+              <ul>
+                <li><a href="https://akka.io/compare/aws-bedrock">AWS Bedrock AgentCore</a></li>
+                <li><a href="https://akka.io/compare/azure-ai-foundry">Azure AI Foundry</a></li>
+                <li><a href="https://akka.io/compare/crewai">CrewAI</a></li>
+                <li><a href="https://akka.io/compare/databricks">Databricks Mosaic AI</a></li>
+                <li><a href="https://akka.io/compare/google-gemini-enterprise">Gemini Enterprise</a></li>
+                <li><a href="https://akka.io/compare/langchain">LangChain</a></li>
+                <li><a href="https://akka.io/compare/llamaindex">LlamaIndex</a></li>
+                <li><a href="https://akka.io/compare/n8n">n8n</a></li>
+                <li><a href="https://akka.io/compare/nvidia">NVIDIA</a></li>
+                <li><a href="https://akka.io/compare/orkes">Orkes Conductor</a></li>
+                <li><a href="https://akka.io/compare/pydantic-ai">PydanticAI</a></li>
+                <li><a href="https://akka.io/compare/salesforce-agentforce">Salesforce Agentforce</a></li>
+                <li><a href="https://akka.io/compare/temporal">Temporal</a></li>
+                <li><a href="https://akka.io/compare/vercel-ai-sdk">Vercel AI SDK</a></li>
+              </ul>
+            </div>
+
+            <!-- BUILD · SDK -->
+            <div class="footerCol">
+              <h6>Akka SDK</h6>
+              <ul>
+                <li><a href="https://doc.akka.io/getting-started/index.html">Getting Started</a></li>
+                <li><a href="https://doc.akka.io/sdk/spec-driven-development.html">Spec-Driven Development</a></li>
+                <li><a href="https://doc.akka.io/sdk/agents.html">Agents</a></li>
+                <li><a href="https://doc.akka.io/sdk/autonomous-agents.html">Autonomous Agents</a></li>
+                <li><a href="https://doc.akka.io/sdk/agents/orchestrating.html">Orchestrating Agents</a></li>
+                <li><a href="https://doc.akka.io/sdk/use-cases/multi-agent-systems.html">Multi-Agent Systems</a></li>
+                <li><a href="https://doc.akka.io/sdk/use-cases/rag-and-knowledge.html">RAG &amp; Knowledge</a></li>
+                <li><a href="https://doc.akka.io/sdk/agents/guardrails.html">Guardrails &amp; Evaluation</a></li>
+                <li><a href="https://doc.akka.io/sdk/workflows.html">Workflows</a></li>
+                <li><a href="https://doc.akka.io/sdk/event-sourced-entities.html">Event Sourced Entities</a></li>
+                <li><a href="https://doc.akka.io/sdk/views.html">Views</a></li>
+                <li><a href="https://doc.akka.io/sdk/mcp-endpoints.html">MCP Endpoints</a></li>
+                <li><a href="https://doc.akka.io/sdk/model-provider-details.html">Model Providers</a></li>
+              </ul>
+            </div>
+
+            <!-- LIBRARIES -->
+            <div class="footerCol">
+              <h6>Akka Libraries</h6>
+              <ul>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/typed/index.html">Actors</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/stream/index.html">Streams</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-http/current/introduction.html">Akka HTTP</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-grpc/current/whygrpc.html">Akka gRPC</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/typed/cluster.html">Cluster</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/typed/cluster-sharding.html">Cluster Sharding</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/typed/persistence.html">Event Sourcing</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-core/current/typed/index-persistence-durable-state.html">Durable State</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-projection/current/">Projections</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-management/current/">Management</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-diagnostics/current/">Diagnostics</a></li>
+                <li><a href="https://doc.akka.io/libraries/akka-edge/current/index.html">Edge</a></li>
+              </ul>
+            </div>
+
+            <!-- RESOURCES (Learn + Company) -->
+            <div class="footerCol">
+              <h6>Resources</h6>
+              <ul>
+                <li><a href="https://akkademy.akka.io/learn">Akkademy (Free Training)</a></li>
+                <li><a href="https://doc.akka.io/getting-started/samples.html">Samples &amp; Blueprints</a></li>
+                <li><a href="https://akka.io/blog">Blog</a></li>
+                <li><a href="https://akka.io/newsletter">Newsletter</a></li>
+                <li><a href="https://akka.io/resources">White Papers &amp; Analysis</a></li>
+                <li><a href="https://www.reactiveprinciples.org">Reactive Principles</a></li>
+                <li><a href="https://akka.io/about-us">About</a></li>
+                <li><a href="https://trust.akka.io/">Trust Center</a></li>
+                <li class="sub"><a href="https://trust.akka.io/soc3">SOC 2 Report</a></li>
+                <li class="sub"><a href="https://trust.akka.io/resilience-guarantee">Resilience Guarantee</a></li>
+                <li class="sub"><a href="https://trust.akka.io/availability-guarantee">Availability Guarantee</a></li>
+                <li><a href="https://support.akka.io/">Support</a></li>
+                <li><a href="https://akka.io/partners">Partners</a></li>
+                <li><a href="https://console.akka.io/login">Platform Login</a></li>
+                <li><a href="https://doc.akka.io/reference/release-notes.html">Release Notes</a></li>
+                <li><a href="https://doc.akka.io/reference/security-announcements/">Security Announcements</a></li>
+                <li><a href="https://akka.io/contact-us">Contact</a></li>
+              </ul>
+            </div>
+
+          </nav>
+
+          <!-- bottom bar: socials + legal -->
+          <div class="footerBottomBar">
+            <div class="socialsIconsMain">
+              <div class="socialsIconOutter"><a aria-label="GitHub" href="https://github.com/akka" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="LinkedIn" href="https://www.linkedin.com/company/akka-io/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="Discord" href="https://discord.com/invite/QZc652rgtf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="YouTube" href="https://www.youtube.com/@akka-io" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="X" href="https://x.com/akka_io_" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="Bluesky" href="https://bsky.app/profile/akka.io" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 01-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="Facebook" href="https://www.facebook.com/AkkaCommunity" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a></div>
+              <div class="socialsIconOutter"><a aria-label="RSS" href="/blog/rss.xml" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248-1.796 0-3.252-1.454-3.252-3.248 0-1.794 1.456-3.248 3.252-3.248 1.795.001 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817c-.062-8.71-7.118-15.758-15.839-15.82zm0-3.368c10.58.046 19.152 8.594 19.183 19.188h4.817c-.03-13.231-10.755-23.954-24-24v4.812z"/></svg></a></div>
+            </div>
+
+            <div class="copyRightLinkWrapper">
+              <div class="copyRightLinkMain"><p>©2026 Lightbend, Inc. dba Akka. All rights reserved.</p></div>
+              <div class="copyRightLinkMain"><a href="https://akka.io/legal/terms-of-use">Terms</a></div>
+              <div class="copyRightLinkMain"><a href="https://akka.io/legal/privacy">Privacy Policy</a></div>
+              <div class="copyRightLinkMain"><a href="https://akka.io/legal/patents">Patents</a></div>
+              <div class="copyRightLinkMain"><p><a class="ot-sdk-show-settings">Cookie Settings</a></p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footerBottomLogo">
+          <img src="images/footer-wordmark.png" alt="Akka" loading="lazy">
+        </div>
+      </div>
+      <div class="footerBottomLine"></div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      var wrap = document.querySelector('.footerContentWrapper');
+      if(!wrap) return;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ wrap.classList.add('is-in'); io.disconnect(); } });
+      }, {threshold:.08});
+      io.observe(wrap);
+    })();
+  </script>
+
+</body>
+</html>
