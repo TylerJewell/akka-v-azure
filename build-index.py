@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Regenerate the root index.html landing page that lists every presentation.
+Regenerate the landing pages:
+    index.html             - short summary: presentations + links to the two indexes
+    battlecards/index.html - the competitive briefs (sales collateral)
+    comparisons/index.html - the public Akka-vs-rival comparison pages
 
 For each deck, the link text comes from its first slide's headline, the summary
 descriptor from that slide's subtitle, and the "Last updated" date from the last
 git commit that touched the linked file (git log -1 --format=%cs).
 
-Run from the repo root after (re)building a deck, then commit index.html:
+Run from the repo root after (re)building content, then commit:
     python build-index.py
-
-To add a presentation, append an entry to PRESENTATIONS below.
 """
 
 import html, os, re, subprocess
@@ -18,35 +19,81 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # One entry per published deck. `link` is the Pages-relative entry point the
 # landing page points at (and whose git history sets the "Last updated" date).
-# List order does not matter — the page is rendered latest-updated first.
 PRESENTATIONS = [
     {"dir": "gartner-presentation", "link": "gartner-presentation/generated/akka-gartner-deck.html"},
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/overview/"},
     {"dir": "sales-presentation",   "link": "sales-presentation/generated/specify/",
      "title_src": "sales-presentation/slides/sp-00-title/slide.html"},
     {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
-    {"link": "case-studies/", "title": "Akka Customer Stories",
-     "sub": "CASE STUDIES", "title_src": None},
+    {"link": "sales-presentation/generated/token-shredder/",
+     "title": "AI that lowers its own bill.", "sub": "AKKA TOKEN SHREDDER"},
+    {"link": "case-studies/", "title": "Akka Customer Stories", "sub": "CASE STUDIES"},
+    {"link": "website/", "title": "Akka Industry Stories", "sub": "INDUSTRIES"},
 ]
 
-# Standalone competitive briefs (single HTML files under battlecards/).
+# Sales-rep battlecards, living in battlecards/ (files are basenames in that folder).
 BATTLECARDS = [
-    {"link": "battlecards/battlecard-langchain.html",                 "label": "Akka vs. LangChain"},
-    {"link": "battlecards/battlecard-temporal.html",                  "label": "Akka vs. Temporal"},
-    {"link": "battlecards/battlecard-azure-ai-foundry.html",          "label": "Akka vs. Azure AI Foundry"},
-    {"link": "battlecards/battlecard-aws-bedrock.html",               "label": "Akka vs. AWS Bedrock"},
-    {"link": "battlecards/battlecard-google-gemini-enterprise.html",  "label": "Akka vs. Google Gemini Enterprise Agent Platform"},
-    {"link": "battlecards/battlecard-nvidia.html",                    "label": "Akka vs. NVIDIA"},
-    {"link": "battlecards/battlecard-databricks.html",                "label": "Akka vs. Databricks"},
-    {"link": "battlecards/battlecard-salesforce-agentforce.html",     "label": "Akka vs. Salesforce Agentforce"},
-    {"link": "battlecards/battlecard-crewai.html",                    "label": "Akka vs. CrewAI"},
-    {"link": "battlecards/battlecard-llamaindex.html",                "label": "Akka vs. LlamaIndex"},
-    {"link": "battlecards/battlecard-n8n.html",                       "label": "Akka vs. n8n"},
-    {"link": "battlecards/battlecard-vercel-ai-sdk.html",             "label": "Akka vs. Vercel AI SDK"},
-    {"link": "battlecards/battlecard-pydantic-ai.html",               "label": "Akka vs. PydanticAI"},
-    {"link": "battlecards/battlecard-orkes.html",                     "label": "Akka vs. Orkes (Conductor)"},
-    {"link": "battlecards/battlecard-service-tiers.html",             "label": "Akka Service Tiers & TCO"},
+    ("battlecard-langchain.html",                "Akka vs. LangChain"),
+    ("battlecard-temporal.html",                 "Akka vs. Temporal"),
+    ("battlecard-azure-ai-foundry.html",         "Akka vs. Azure AI Foundry"),
+    ("battlecard-aws-bedrock.html",              "Akka vs. AWS Bedrock"),
+    ("battlecard-google-gemini-enterprise.html", "Akka vs. Google Gemini Enterprise Agent Platform"),
+    ("battlecard-nvidia.html",                   "Akka vs. NVIDIA"),
+    ("battlecard-databricks.html",               "Akka vs. Databricks"),
+    ("battlecard-salesforce-agentforce.html",    "Akka vs. Salesforce Agentforce"),
+    ("battlecard-crewai.html",                   "Akka vs. CrewAI"),
+    ("battlecard-llamaindex.html",               "Akka vs. LlamaIndex"),
+    ("battlecard-n8n.html",                      "Akka vs. n8n"),
+    ("battlecard-vercel-ai-sdk.html",            "Akka vs. Vercel AI SDK"),
+    ("battlecard-pydantic-ai.html",              "Akka vs. PydanticAI"),
+    ("battlecard-orkes.html",                    "Akka vs. Orkes (Conductor)"),
+    ("battlecard-service-tiers.html",            "Akka Service Tiers & TCO"),
 ]
+
+# Public comparison pages, living in comparisons/.
+COMPARISONS = [
+    ("compare-langchain.html",                "Akka vs. LangChain"),
+    ("compare-temporal.html",                 "Akka vs. Temporal"),
+    ("compare-azure-ai-foundry.html",         "Akka vs. Azure AI Foundry"),
+    ("compare-aws-bedrock.html",              "Akka vs. AWS Bedrock"),
+    ("compare-google-gemini-enterprise.html", "Akka vs. Google Gemini Enterprise"),
+    ("compare-nvidia.html",                   "Akka vs. NVIDIA"),
+    ("compare-databricks.html",               "Akka vs. Databricks"),
+    ("compare-salesforce-agentforce.html",    "Akka vs. Salesforce Agentforce"),
+    ("compare-crewai.html",                   "Akka vs. CrewAI"),
+    ("compare-llamaindex.html",               "Akka vs. LlamaIndex"),
+    ("compare-n8n.html",                      "Akka vs. n8n"),
+    ("compare-vercel-ai-sdk.html",            "Akka vs. Vercel AI SDK"),
+    ("compare-pydantic-ai.html",              "Akka vs. PydanticAI"),
+    ("compare-orkes.html",                    "Akka vs. Orkes (Conductor)"),
+]
+
+STYLE = """    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 640px; margin: 0 auto; padding: 48px 24px;
+      color: #1a1a1a; line-height: 1.5;
+    }
+    h1 { font-size: 24px; margin: 0 0 4px; }
+    p.intro { color: #666; margin: 0 0 32px; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { padding: 16px 0; border-top: 1px solid #e5e5e5; }
+    a { color: #0b66c3; text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    .kicker { color: #999; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-top: 4px; }
+    .desc { color: #666; font-size: 14px; margin-top: 2px; }
+    .back { margin: 0 0 24px; }
+    .back a { font-size: 13px; font-weight: 600; }"""
+
+
+def page(title, body):
+    return (
+        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
+        "  <meta charset=\"utf-8\">\n"
+        "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+        "  <link rel=\"icon\" href=\"https://akka.io/favicon.ico\" type=\"image/x-icon\">\n"
+        "  <title>%s</title>\n  <style>\n%s\n  </style>\n</head>\n<body>\n%s\n</body>\n</html>\n"
+        % (html.escape(title), STYLE, body)
+    )
 
 
 def slide_text(path, tag, cls):
@@ -56,8 +103,8 @@ def slide_text(path, tag, cls):
     m = re.search(r'<%s[^>]*class="%s"[^>]*>(.*?)</%s>' % (tag, cls, tag), src, re.S)
     if not m:
         return ""
-    inner = re.sub(r"<[^>]+>", "", m.group(1))         # drop nested tags (e.g. <span class="accent">)
-    inner = html.unescape(inner).replace("\xa0", " ")  # &nbsp; -> space, &middot; -> -, etc.
+    inner = re.sub(r"<[^>]+>", "", m.group(1))
+    inner = html.unescape(inner).replace("\xa0", " ")
     return re.sub(r"\s+", " ", inner).strip()
 
 
@@ -70,8 +117,6 @@ def last_commit_date(link):
 
 
 def last_commit_epoch(link):
-    """Unix timestamp of the last commit touching `link` (0 if uncommitted).
-    Used to order decks latest-first — finer than the displayed YYYY-MM-DD date."""
     out = subprocess.run(
         ["git", "log", "-1", "--format=%ct", "--", link],
         cwd=ROOT, capture_output=True, text=True,
@@ -80,7 +125,7 @@ def last_commit_epoch(link):
 
 
 def render_item(p):
-    if p.get("title"):                                 # explicit title/sub (no title slide to read)
+    if p.get("title"):
         title, sub = p["title"], p.get("sub", "")
     else:
         title_html = os.path.join(ROOT, p["title_src"]) if p.get("title_src") \
@@ -97,63 +142,55 @@ def render_item(p):
     )
 
 
-def render_brief(b):
-    date = last_commit_date(b["link"])
+def render_brief(folder, file, label):
+    date = last_commit_date("%s/%s" % (folder, file))
     return (
         "    <li>\n"
         '      <a href="%s">%s</a>\n'
         '      <div class="desc">Last updated %s.</div>\n'
-        "    </li>" % (html.escape(b["link"]), html.escape(b["label"]), html.escape(date))
+        "    </li>" % (html.escape(file), html.escape(label), html.escape(date))
     )
 
 
-# Order decks latest-updated first (by last commit on the linked file).
+def build_listing(folder, title, entries):
+    """Write folder/index.html listing entries latest-updated first."""
+    ordered = sorted(entries, key=lambda e: last_commit_epoch("%s/%s" % (folder, e[0])), reverse=True)
+    items = "\n".join(render_brief(folder, f, l) for f, l in ordered)
+    body = (
+        '  <p class="back"><a href="../">&larr; All presentations</a></p>\n'
+        "  <h1>%s</h1>\n  <ul>\n%s\n  </ul>" % (html.escape(title), items)
+    )
+    with open(os.path.join(ROOT, folder, "index.html"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(page(title, body))
+    return len(ordered)
+
+
+# --- battlecards/ and comparisons/ index pages ---
+n_briefs = build_listing("battlecards", "Battlecards", BATTLECARDS)
+n_compare = build_listing("comparisons", "Comparisons", COMPARISONS)
+
+# --- root summary: presentations, then links to the two indexes ---
 ordered = sorted(PRESENTATIONS, key=lambda p: last_commit_epoch(p["link"]), reverse=True)
 items = "\n".join(render_item(p) for p in ordered)
 
-ordered_briefs = sorted(BATTLECARDS, key=lambda b: last_commit_epoch(b["link"]), reverse=True)
-briefs = "\n".join(render_brief(b) for b in ordered_briefs)
-briefs_section = ('''
-  <h1 style="margin-top: 40px;">Competitive briefs</h1>
+competitive = '''
+  <h1 style="margin-top: 40px;">Competitive content</h1>
   <ul>
-%s
-  </ul>''' % briefs) if BATTLECARDS else ""
+    <li>
+      <a href="battlecards/">Battlecards</a>
+      <div class="kicker">FOR SALES</div>
+      <div class="desc">%d competitive briefs, one per rival.</div>
+    </li>
+    <li>
+      <a href="comparisons/">Comparisons</a>
+      <div class="kicker">FOR THE WEBSITE</div>
+      <div class="desc">%d public Akka-vs-rival pages.</div>
+    </li>
+  </ul>''' % (n_briefs, n_compare)
 
-PAGE = """<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
-  <title>Presentations</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 640px; margin: 0 auto; padding: 48px 24px;
-      color: #1a1a1a; line-height: 1.5;
-    }
-    h1 { font-size: 24px; margin: 0 0 4px; }
-    p.intro { color: #666; margin: 0 0 32px; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { padding: 16px 0; border-top: 1px solid #e5e5e5; }
-    a { color: #0b66c3; text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
-    .kicker { color: #999; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-top: 4px; }
-    .desc { color: #666; font-size: 14px; margin-top: 2px; }
-  </style>
-</head>
-<body>
-  <h1>Presentations</h1>
-  <ul>
-%s
-  </ul>%s
-</body>
-</html>
-""" % (items, briefs_section)
-
+root_body = "  <h1>Presentations</h1>\n  <ul>\n%s\n  </ul>%s" % (items, competitive)
 with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
-    f.write(PAGE)
+    f.write(page("Presentations", root_body))
 
-print("Wrote index.html with %d presentation(s), latest first:" % len(ordered))
-for p in ordered:
-    print("  - %s  (%s)" % (p["link"], last_commit_date(p["link"])))
+print("Wrote index.html (%d presentations), battlecards/index.html (%d), comparisons/index.html (%d)."
+      % (len(ordered), n_briefs, n_compare))
