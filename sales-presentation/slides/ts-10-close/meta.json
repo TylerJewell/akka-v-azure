@@ -1,0 +1,12 @@
+{
+  "id": "ts-10-close",
+  "nav_id": "ts-closing",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "100vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": ".tsc-reveal", "threshold": 0.2 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

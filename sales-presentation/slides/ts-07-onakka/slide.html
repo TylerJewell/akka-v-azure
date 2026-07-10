@@ -1,0 +1,33 @@
+<div id="ts7-wrapper">
+  <div id="ts7-sticky">
+    <div class="ts7-head">
+      <div class="ts7-eyebrow" data-ts7="0">Agents on Akka</div>
+      <div class="ts7-headline" data-ts7="0">Running the agents on Akka cuts compute up to <span class="accent">70%</span>.</div>
+      <div class="ts7-sub" data-ts7="0">Running your agents on Akka adds more efficiency: actor-based concurrency and a shared compute model, where orchestration, agents, memory, streaming, and APIs run on one runtime. Agent orchestration requires up to 70% less compute than Python-based agents.</div>
+    </div>
+
+    <div class="ts7-compare" data-ts7="1">
+      <div class="ts7-cell ts7-corner"></div>
+      <div class="ts7-cell ts7-colhead">Agents anywhere<br><span>+ Token Shredder</span></div>
+      <div class="ts7-cell ts7-colhead ts7-colhead--akka">Agents on Akka<br><span>+ Token Shredder</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Model<br>tokens</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--y">&minus;80%</span><span class="ts7-note">the Shredder</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val ts7-val--y">&minus;80%</span><span class="ts7-note">the Shredder</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Orchestration<br>compute</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--dim">unchanged</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val ts7-val--y">&minus;70%</span><span class="ts7-note">actor concurrency &middot; shared compute</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Tokens<br>per retry</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--dim">full task resent</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val">resumes from the last checkpoint</span><span class="ts7-note">durable execution &middot; micro-checkpointing</span></div>
+    </div>
+
+    <div class="ts7-points" data-ts7="2">
+      <div class="ts7-point">Durable execution micro-checkpoints every step of an agent. A retry resumes from the last checkpoint and resends only the remaining work to the model &mdash; fewer tokens per retry.</div>
+      <div class="ts7-point"><span class="ts7-num">Verizon</span> &mdash; cloud infrastructure reduced <span class="ts7-num">70%</span>.</div>
+      <div class="ts7-point"><span class="ts7-num">Manulife</span> &mdash; latency improved <span class="ts7-num">70%</span>, concurrency up <span class="ts7-num">300%</span>, after rewriting their AI on Akka <span class="ts7-src">(Reuters)</span>.</div>
+    </div>
+  </div>
+</div>

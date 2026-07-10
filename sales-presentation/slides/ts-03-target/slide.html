@@ -1,0 +1,103 @@
+<div id="ts3-wrapper">
+  <div id="ts3-sticky">
+    <div class="ts3-head">
+      <div class="ts3-eyebrow" data-ts3="0">How it works &middot; 01</div>
+      <div class="ts3-headline" data-ts3="0">Targeting ranks every agent; evaluations <span class="accent">grade live traffic</span>.</div>
+      <div class="ts3-sub" data-ts3="0">The targeting engine continuously scores every agent &mdash; Akka-built or third-party &mdash; on task narrowness, traffic volume, outcome verifiability, token spend, and quality headroom creating a ranked plan with projected savings.</div>
+    </div>
+
+    <table class="ts3-table" data-ts3="1">
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Volume / mo</th>
+          <th>Task shape</th>
+          <th>Verifiable</th>
+          <th>Spend / mo</th>
+          <th>SLM fit</th>
+          <th>Projected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ts3-agent">claims-extractor</td>
+          <td class="ts3-mono">4.1M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; schema</td>
+          <td class="ts3-mono">$58K</td>
+          <td class="ts3-fit">0.94</td>
+          <td class="ts3-proj">&minus;$46K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">support-summarizer</td>
+          <td class="ts3-mono">2.7M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; judge</td>
+          <td class="ts3-mono">$34K</td>
+          <td class="ts3-fit">0.91</td>
+          <td class="ts3-proj">&minus;$25K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">sql-assistant</td>
+          <td class="ts3-mono">0.9M</td>
+          <td>narrow</td>
+          <td class="ts3-check">&#10003; executes</td>
+          <td class="ts3-mono">$22K</td>
+          <td class="ts3-fit">0.88</td>
+          <td class="ts3-proj">&minus;$18K/mo</td>
+        </tr>
+        <tr class="ts3-dim">
+          <td class="ts3-agent">research-planner</td>
+          <td class="ts3-mono">0.1M</td>
+          <td>open-ended</td>
+          <td>&#10007;</td>
+          <td class="ts3-mono">$12K</td>
+          <td class="ts3-mono">0.31</td>
+          <td class="ts3-keep">keep frontier</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="ts3-foot-label">Projected fleet savings</td>
+          <td class="ts3-foot-val">&minus;$89K/mo</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="ts3-grade" data-ts3="2">
+      <div class="ts3-grade-copy">
+        <div class="ts3-grade-title">Evaluations run in the same runtime as your agents</div>
+        <div class="ts3-grade-body">Evaluations grade each targeted agent&rsquo;s traffic as it runs. When an outcome can be checked directly &mdash; the SQL executes, the JSON validates &mdash; a deterministic evaluation scores it. When it can&rsquo;t, an LLM judge scores it, and humans review where policy requires. Every score is recorded with the tokens the interaction consumed. The same evaluations grade production traffic, training runs, and staging tests.</div>
+      </div>
+      <div class="ts3-fan">
+        <div class="ts3-fan-src">
+          <div class="ts3-fan-src-tag">Live traffic</div>
+          <div class="ts3-fan-src-name">Evaluation</div>
+        </div>
+        <svg class="ts3-fan-svg" viewBox="0 0 80 200" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V30 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V170 H72" />
+          </g>
+          <polygon class="ts3-fan-head" points="80,30 72,24 72,36" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,100 72,94 72,106" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,170 72,164 72,176" fill="#F5C518"/>
+        </svg>
+        <div class="ts3-fan-outs">
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Governance observation</div>
+            <div class="ts3-fan-out-desc">the audit trail</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Training reward</div>
+            <div class="ts3-fan-out-desc">the RL signal</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Promotion gate</div>
+            <div class="ts3-fan-out-desc">the staging verdict</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

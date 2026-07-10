@@ -1,0 +1,92 @@
+<div id="ts5-wrapper">
+  <div id="ts5-sticky">
+    <div class="ts5-head">
+      <div class="ts5-eyebrow" data-ts5="0">How it works &middot; 03</div>
+      <div class="ts5-headline" data-ts5="0">You bring the GPU. <span class="accent">Akka runs the rest.</span></div>
+      <div class="ts5-sub" data-ts5="0">Serving and training run in one Kubernetes, deployed and operated by Akka &mdash; on GPUs in your cloud account.</div>
+    </div>
+
+    <div class="ts5-stage" data-ts5="1">
+
+      <svg class="ts5-wires" viewBox="0 0 1400 620" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- cluster boundary -->
+        <rect x="22" y="54" width="926" height="556" rx="18" class="ts5-w-cluster"/>
+
+        <!-- serving path: live traffic → runtime → vLLM -->
+        <line x1="480" y1="26" x2="480" y2="98" class="ts5-w-serve"/>
+        <polygon points="480,112 472,97 488,97" class="ts5-w-serve-head"/>
+        <line x1="480" y1="248" x2="480" y2="318" class="ts5-w-serve"/>
+        <polygon points="480,332 472,317 488,317" class="ts5-w-serve-head"/>
+
+        <!-- training path: runtime → log -->
+        <line x1="900" y1="170" x2="1046" y2="170" class="ts5-w-train"/>
+        <polygon points="1060,170 1044,162 1044,178" class="ts5-w-train-head"/>
+
+        <!-- training path: log → verl (elbow) -->
+        <path d="M1210,320 V416 H914" class="ts5-w-train"/>
+        <polygon points="900,416 916,408 916,424" class="ts5-w-train-head"/>
+
+        <!-- training path: verl → vLLM (new adapter) -->
+        <line x1="680" y1="400" x2="596" y2="400" class="ts5-w-train"/>
+        <polygon points="582,400 598,392 598,408" class="ts5-w-train-head"/>
+
+        <!-- interaction log cylinder -->
+        <path d="M1060,135 v160 a150,26 0 0 0 300,0 v-160" class="ts5-w-cylbody"/>
+        <ellipse cx="1210" cy="135" rx="150" ry="26" class="ts5-w-cyltop"/>
+      </svg>
+
+      <!-- labels -->
+      <div class="ts5-lbl ts5-lbl--serve" style="left:34.29%; top:0;">live traffic</div>
+      <div class="ts5-lbl ts5-lbl--serve ts5-lbl--side" style="left:35.6%; top:44.7%;">inference calls</div>
+      <div class="ts5-lbl" style="left:69.5%; top:22.6%;">records every interaction</div>
+      <div class="ts5-lbl" style="left:75.7%; top:61.5%;">training data</div>
+      <div class="ts5-lbl" style="left:45.7%; top:67.5%;">new adapter</div>
+
+      <div class="ts5-legend">
+        <span class="ts5-leg"><i class="ts5-leg-serve"></i>serving path</span>
+        <span class="ts5-leg"><i class="ts5-leg-train"></i>training path</span>
+      </div>
+
+      <div class="ts5-k8s-head" style="left:3.9%; top:10.6%;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><path d="M12 3.5V1M12 23v-2.5M3.5 12H1M23 12h-2.5M6 6L4.2 4.2M18 18l1.8 1.8M18 6l1.8-1.8M6 18l-1.8 1.8"/></svg>
+        <span>Kubernetes cluster</span>
+      </div>
+
+      <!-- boxes -->
+      <div class="ts5-box ts5-runtime" style="left:4.29%; top:18.06%; width:60%; height:21.94%;">
+        <div class="ts5-box-title">Akka runtime <em>one set of processes</em></div>
+        <div class="ts5-runtime-items">agents <i>&middot;</i> evaluations <i>&middot;</i> orchestration</div>
+      </div>
+
+      <div class="ts5-box ts5-vllm" style="left:4.29%; top:53.55%; width:37.14%; height:27.1%;">
+        <div class="ts5-box-title">vLLM</div>
+        <div class="ts5-adapters">
+          <span class="ts5-adapter">adapter A</span>
+          <span class="ts5-adapter">adapter B</span>
+          <span class="ts5-adapter">adapter C</span>
+          <span class="ts5-adapter ts5-adapter--more">&hellip;</span>
+          <span class="ts5-adapter">adapter N</span>
+          <span class="ts5-adapter-size">~50MB each</span>
+        </div>
+        <div class="ts5-base">base model &mdash; frozen backbone &middot; <em>8 GB</em></div>
+      </div>
+
+      <div class="ts5-box ts5-training" style="left:48.57%; top:53.55%; width:15.71%; height:27.1%;">
+        <div class="ts5-box-title">Training <em>verl</em></div>
+        <div class="ts5-training-desc">RL loop &mdash; rollouts scored by your evaluations</div>
+      </div>
+
+      <div class="ts5-log-body" style="left:76.43%; top:27.4%; width:20%;">
+        <b>Interaction log</b>
+        <span>petabyte-scale storage</span>
+      </div>
+
+      <div class="ts5-nodes" style="left:4.29%; top:84.2%; width:60%;">
+        <span class="ts5-node">CPU</span><span class="ts5-node">CPU</span><span class="ts5-node">CPU</span>
+        <span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span>
+        <span class="ts5-nodes-cap">the cluster&rsquo;s nodes &mdash; your cloud account</span>
+      </div>
+
+    </div>
+  </div>
+</div>

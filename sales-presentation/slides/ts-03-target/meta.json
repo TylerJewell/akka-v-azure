@@ -1,0 +1,12 @@
+{
+  "id": "ts-03-target",
+  "nav_id": "ts3-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "260vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-ts3]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

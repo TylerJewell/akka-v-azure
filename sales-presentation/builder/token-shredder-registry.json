@@ -1,0 +1,16 @@
+{
+  "title": "AI that lowers its own bill — Akka Token Shredder",
+  "slides": [
+    { "id": "ts-00-title",       "folder": "slides/ts-00-title" },
+    { "id": "ts-01-problem",     "folder": "slides/ts-01-problem" },
+    { "id": "ts-02-product",     "folder": "slides/ts-02-product" },
+    { "id": "ts-03-target",      "folder": "slides/ts-03-target" },
+    { "id": "ts-04-prove",       "folder": "slides/ts-04-prove" },
+    { "id": "ts-05-serve",       "folder": "slides/ts-05-serve" },
+    { "id": "ts-06-anyagent",    "folder": "slides/ts-06-anyagent" },
+    { "id": "ts-07-onakka",      "folder": "slides/ts-07-onakka" },
+    { "id": "ts-08-math",        "folder": "slides/ts-08-math" },
+    { "id": "ts-09-competitive", "folder": "slides/ts-09-competitive" },
+    { "id": "ts-10-close",       "folder": "slides/ts-10-close" }
+  ]
+}

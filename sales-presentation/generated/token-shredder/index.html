@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI that lowers its own bill — Akka Token Shredder</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   SHARED — variables, resets, fonts, keyframes
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --yellow: #F5C518;
+  --black:  #000;
+  --dark:   #07070C;
+  --white:  #fff;
+  --gray:   #555;
+  --pad-8:  8vw;
+  --pad-6:  6vw;
+  --pad-10: 10vw;
+  --pad-3:  3vw;
+}
+@media (min-width: 1537px) {
+  :root {
+    --pad-8:  123px;
+    --pad-6:  92px;
+    --pad-10: 154px;
+    --pad-3:  46px;
+  }
+}
+html { scroll-behavior: auto; background: var(--black); }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+
+@keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+@keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+@keyframes bounceDown {
+  0%,100% { transform:rotate(45deg) translate(0,0); }
+  50%     { transform:rotate(45deg) translate(4px,4px); }
+}
+@keyframes bgSlide {
+  from { background-position:0 0; }
+  to   { background-position:36px 36px; }
+}
+
+/* ── ts-00-title ── */
+#ts-title {
+  height: 100vh; min-height: 720px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#ts-title::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#ts-title::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+#ts-title > * { position: relative; z-index: 2; }
+
+.tst-logo {
+  margin-bottom: 36px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .3s;
+}
+.tst-logo svg { height: 52px; width: auto; }
+
+.tst-headline {
+  font-size: clamp(48px, 6.8vw, 104px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1200px; margin-bottom: 24px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .6s;
+}
+.tst-headline .accent { color: var(--yellow); }
+
+.tst-sub {
+  font-size: clamp(19px, 2vw, 30px);
+  color: #d4d4d4; font-weight: 700;
+  letter-spacing: 8px; line-height: 1.5;
+  margin-bottom: 52px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .5s ease forwards .9s;
+}
+
+/* Loop glyph */
+.tst-loop {
+  display: flex; flex-direction: column; align-items: center;
+  width: min(940px, 90vw);
+  margin-bottom: 48px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .6s ease forwards 1.1s;
+}
+.tst-loop-stages {
+  display: flex; align-items: center; gap: 18px;
+  width: 100%; justify-content: space-between;
+}
+.tst-loop-stages span {
+  font-size: clamp(17px, 1.75vw, 25px);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2.8px; color: var(--white);
+}
+.tst-loop-arrow { width: 36px; height: 18px; flex-shrink: 0; }
+.tst-loop-return {
+  width: calc(100% - 72px);
+  height: 38px;
+  margin-top: 10px;
+  border-left: 1.5px solid var(--yellow);
+  border-right: 1.5px solid var(--yellow);
+  border-bottom: 1.5px solid var(--yellow);
+  position: relative;
+  opacity: 0; animation: tst-fade .5s ease-out 1.7s forwards;
+}
+.tst-loop-tip {
+  position: absolute;
+  top: -9px; left: -6.75px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 9px solid var(--yellow);
+}
+@keyframes tst-fade { to { opacity: 1; } }
+.tst-loop-label {
+  margin-top: 9px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--gray); font-weight: 600;
+}
+
+.tst-tag {
+  font-size: clamp(17px, 1.65vw, 25px);
+  color: #b8b8b8; line-height: 1.45; max-width: 960px;
+  margin-bottom: 44px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .5s ease forwards 1.3s;
+}
+.tst-tag-num { color: var(--yellow); font-weight: 700; }
+
+.tst-divider {
+  width: 64px; height: 3px; background: var(--yellow);
+  opacity:0;
+  animation: fadeUp .5s ease forwards 1.4s;
+}
+
+.tst-scroll-hint {
+  margin-top: 48px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  opacity:0; animation:fadeUp .5s ease forwards 2.1s;
+}
+.tst-scroll-hint span { font-size:9px; text-transform:uppercase; letter-spacing:3px; color:var(--gray); }
+@media (max-height: 820px) { .tst-scroll-hint { display: none; } }
+.tst-scroll-arrow {
+  width:18px; height:18px;
+  border-right:1.5px solid var(--yellow); border-bottom:1.5px solid var(--yellow);
+  transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
+}
+
+
+/* ── ts-01-problem ── */
+#ts1-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts1-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts1-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts1-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts1] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts1].visible { opacity: 1; transform: none; }
+
+.ts1-head { margin-bottom: 44px; }
+.ts1-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts1-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts1-headline {
+  font-size: clamp(34px, 4.2vw, 58px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts1-headline .accent { color: var(--yellow); }
+.ts1-sub {
+  font-size: clamp(15px, 1.35vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.ts1-num { color: var(--yellow); font-weight: 700; white-space: nowrap; }
+.ts1-em { color: var(--white); font-weight: 600; }
+
+.ts1-body {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+/* Curve chart */
+.ts1-chart-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; margin-bottom: 14px;
+}
+.ts1-src {
+  display: block; margin-top: 3px;
+  font-size: 10px; letter-spacing: 1.2px; color: #555; font-weight: 500;
+}
+.ts1-curve { width: 100%; height: auto; display: block; overflow: visible; }
+.ts1-tick {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; fill: #555;
+}
+.ts1-series {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.6px;
+}
+.ts1-series-tok { fill: var(--yellow); }
+.ts1-series-infra { fill: #999; }
+.ts1-line { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts1-chart-curve.visible .ts1-line-infra { animation: ts1-draw .8s ease-out .15s forwards; }
+.ts1-chart-curve.visible .ts1-line-tokens { animation: ts1-draw .9s ease-out .35s forwards; }
+@keyframes ts1-draw { to { stroke-dashoffset: 0; } }
+.ts1-series { opacity: 0; }
+.ts1-chart-curve.visible .ts1-series { animation: ts1-fade .25s ease-out 1.15s forwards; }
+@keyframes ts1-fade { to { opacity: 1; } }
+.ts1-axis-label {
+  margin-top: 6px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: #555; font-weight: 600; text-align: center;
+}
+
+/* Bar charts */
+.ts1-insight {
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: #d4d4d4; line-height: 1.45;
+  margin-bottom: 22px;
+}
+.ts1-bargroup { margin-bottom: 22px; }
+.ts1-bar-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 52px;
+  gap: 12px; align-items: center;
+  margin-bottom: 8px;
+}
+.ts1-bar-label {
+  font-size: 13px; color: #d4d4d4; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ts1-bar-note {
+  font-size: 10px; color: var(--yellow);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+  margin-left: 4px;
+}
+.ts1-bar-track { position: relative; height: 16px; }
+.ts1-bar {
+  height: 100%; width: 0;
+  background: #2E2E2E; border: 1px solid #3A3A3A; border-left: none;
+  border-radius: 0 4px 4px 0;
+  transition: width .8s cubic-bezier(0.16,1,0.3,1) .2s;
+}
+.ts1-bar--subject { background: var(--yellow); border-color: var(--yellow); }
+.ts1-bar--dim { background: #1E1E1E; border-color: #2A2A2A; }
+.ts1-charts-bars.visible .ts1-bar { width: var(--w); }
+.ts1-bar-val {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px; color: #999; font-weight: 500;
+}
+.ts1-bar-val--subject { color: var(--yellow); font-weight: 700; }
+
+.ts1-note {
+  margin-top: 4px; padding-top: 14px;
+  border-top: 1px solid #1F1F1F;
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .ts1-body { grid-template-columns: 1fr; gap: 32px; }
+}
+
+
+/* ── ts-02-product ── */
+#ts2-wrapper {
+  height: 260vh;
+  position: relative;
+}
+#ts2-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts2-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts2-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts2] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts2].visible { opacity: 1; transform: none; }
+
+.ts2-head { margin-bottom: 56px; }
+.ts2-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts2-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts2-headline {
+  font-size: clamp(32px, 4vw, 56px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts2-headline .accent { color: var(--yellow); }
+.ts2-sub {
+  font-size: clamp(15px, 1.35vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+
+/* Stage row */
+.ts2-stages {
+  display: flex; align-items: stretch; gap: 10px;
+}
+.ts2-arrow { width: 30px; height: 14px; flex-shrink: 0; align-self: center; overflow: visible; }
+.ts2-stage {
+  flex: 1 1 0;
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(245,197,24,0.5);
+  background: rgba(245,197,24,0.05);
+  border-radius: 4px;
+}
+.ts2-flow.visible .ts2-stage { animation: ts2-rise .5s ease-out forwards; }
+.ts2-stage { opacity: 0; transform: translateY(14px); }
+.ts2-flow.visible .ts2-stage:nth-of-type(1) { animation-delay: .10s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(2) { animation-delay: .24s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(3) { animation-delay: .38s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(4) { animation-delay: .52s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(5) { animation-delay: .66s; }
+@keyframes ts2-rise { to { opacity: 1; transform: none; } }
+
+.ts2-stage-num {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 10px; color: var(--yellow); font-weight: 700;
+  letter-spacing: 1.5px; margin-bottom: 8px;
+}
+.ts2-stage-name {
+  font-size: clamp(16px, 1.5vw, 21px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--white); line-height: 1; margin-bottom: 8px;
+}
+.ts2-stage-desc {
+  font-size: clamp(11px, 0.95vw, 13.5px); color: #aaa; line-height: 1.35;
+}
+
+.ts2-outcome {
+  flex: 1.1 1 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+  border: 1px solid var(--yellow);
+  border-radius: 4px;
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity .5s ease .85s, transform .5s cubic-bezier(0.16,1,0.3,1) .85s;
+}
+.ts2-flow.visible .ts2-outcome { opacity: 1; transform: none; }
+.ts2-outcome-tag {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: #aaa; font-weight: 600; margin-bottom: 6px;
+}
+.ts2-outcome-val {
+  font-size: clamp(18px, 1.8vw, 26px); font-weight: 700;
+  color: var(--yellow); line-height: 1.1; letter-spacing: -0.01em;
+}
+.ts2-outcome-val span { color: var(--white); font-size: clamp(13px, 1.1vw, 16px); font-weight: 600; }
+
+/* Return loop */
+.ts2-loop { margin-top: 14px; position: relative; }
+.ts2-loop-svg { width: 100%; height: 42px; display: block; overflow: visible; }
+.ts2-loop-path { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts2-flow.visible .ts2-loop-path { animation: ts2-trace .9s ease-out 1.1s forwards; }
+.ts2-loop-head { opacity: 0; }
+.ts2-flow.visible .ts2-loop-head { animation: ts2-fade .15s ease-out 1.95s forwards; }
+@keyframes ts2-trace { to { stroke-dashoffset: 0; } }
+@keyframes ts2-fade { to { opacity: 1; } }
+.ts2-loop-label {
+  position: absolute; left: 50%; top: 26px;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px;
+  background: var(--black); padding: 2px 18px;
+  white-space: nowrap;
+}
+.ts2-loop-tag {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700;
+}
+.ts2-loop-text { font-size: clamp(12px, 1vw, 15px); color: #d4d4d4; font-weight: 500; }
+
+/* Capability chips */
+.ts2-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 34px;
+}
+.ts2-chip {
+  display: inline-flex; align-items: center;
+  font-size: clamp(11px, 0.95vw, 14px);
+  padding: 6px 14px;
+  color: #e0e0e0; font-weight: 500;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2A2A2A;
+  border-radius: 999px;
+  line-height: 1.1; white-space: nowrap;
+}
+
+
+/* ── ts-03-target ── */
+#ts3-wrapper {
+  height: 260vh;
+  position: relative;
+}
+#ts3-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts3-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts3-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts3] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts3].visible { opacity: 1; transform: none; }
+
+.ts3-head { margin-bottom: 40px; }
+.ts3-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts3-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts3-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts3-headline .accent { color: var(--yellow); }
+.ts3-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.ts3-em { color: var(--white); font-weight: 600; }
+
+/* Ranked table */
+.ts3-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ts3-table th {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; text-align: left;
+  padding: 0 14px 10px 0;
+  border-bottom: 1px solid #2A2A2A;
+}
+.ts3-table td {
+  font-size: clamp(13px, 1.05vw, 16px);
+  color: #d4d4d4;
+  padding: 11px 14px 11px 0;
+  border-bottom: 1px solid #1A1A1A;
+}
+.ts3-agent {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(12px, 1vw, 15px) !important;
+  color: var(--white) !important; font-weight: 500;
+}
+.ts3-mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+.ts3-check { color: #d4d4d4; }
+.ts3-fit {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700;
+}
+.ts3-proj {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700; white-space: nowrap;
+}
+.ts3-dim td { color: #666; }
+.ts3-dim .ts3-agent { color: #666 !important; }
+.ts3-keep { font-style: italic; color: #666 !important; }
+.ts3-foot-label {
+  font-size: 11px !important; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888 !important; font-weight: 600; text-align: right;
+  border-bottom: none !important;
+}
+.ts3-foot-val {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700;
+  font-size: clamp(15px, 1.25vw, 19px) !important;
+  border-bottom: none !important; white-space: nowrap;
+}
+/* Grade fan-out */
+.ts3-grade {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.ts3-grade-title {
+  font-size: clamp(16px, 1.4vw, 20px); font-weight: 700;
+  color: var(--white); letter-spacing: -0.01em; margin-bottom: 10px;
+}
+.ts3-grade-body {
+  font-size: clamp(13.5px, 1.15vw, 16.5px);
+  color: #b8b8b8; line-height: 1.5;
+}
+.ts3-fan {
+  display: flex; align-items: stretch; gap: 0;
+  min-height: 170px;
+}
+.ts3-fan-src {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 14px 18px;
+  border: 1px solid rgba(245,197,24,0.5);
+  border-left: 3px solid var(--yellow);
+  background: rgba(245,197,24,0.05);
+  border-radius: 3px;
+  align-self: center;
+}
+.ts3-fan-src-tag {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: #aaa; font-weight: 600; margin-bottom: 6px;
+}
+.ts3-fan-src-name {
+  font-size: clamp(16px, 1.4vw, 20px); font-weight: 700;
+  color: var(--white); line-height: 1;
+}
+.ts3-fan-svg { width: 70px; height: 170px; flex-shrink: 0; overflow: visible; align-self: center; }
+.ts3-fan-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts3-grade.visible .ts3-fan-arrow { animation: ts3-draw .5s ease-out forwards; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(1) { animation-delay: .35s; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(2) { animation-delay: .45s; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(3) { animation-delay: .55s; }
+.ts3-fan-head { opacity: 0; }
+.ts3-grade.visible .ts3-fan-head { animation: ts3-fade .15s ease-out .95s forwards; }
+@keyframes ts3-draw { to { stroke-dashoffset: 0; } }
+@keyframes ts3-fade { to { opacity: 1; } }
+.ts3-fan-outs {
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 10px; flex: 1;
+}
+.ts3-fan-out {
+  padding: 8px 14px;
+  border: 1px solid #1F1F1F;
+  border-left: 2px solid var(--yellow);
+  background: rgba(255,255,255,0.02);
+  border-radius: 3px;
+}
+.ts3-fan-out-tag {
+  font-size: clamp(11px, 1vw, 13px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: var(--yellow); margin-bottom: 2px;
+}
+.ts3-fan-out-desc { font-size: 11px; color: #999; }
+
+@media (max-width: 1100px) {
+  .ts3-grade { grid-template-columns: 1fr; gap: 24px; }
+}
+
+
+/* ── ts-04-prove ── */
+#ts4-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts4-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts4-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts4-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts4] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts4].visible { opacity: 1; transform: none; }
+
+.ts4-head { margin-bottom: 36px; }
+.ts4-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts4-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts4-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts4-headline .accent { color: var(--yellow); }
+.ts4-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1200px;
+}
+.ts4-em { color: var(--white); font-weight: 600; }
+
+/* Staging gate diagram — node/edge idiom */
+.ts4-diagram { max-width: 1200px; }
+.ts4-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ts4-nd  { fill: #141414; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-ndy { fill: #1a1700; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-nl {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; fill: #ccc; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+.ts4-nl-y { fill: #F5C518; }
+.ts4-nls {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px; fill: #777;
+}
+.ts4-nls-y { fill: #F5C518; }
+.ts4-nls-w { fill: #d4d4d4; }
+.ts4-dimtext { fill: #666; }
+.ts4-el { stroke: #F5C518; stroke-width: 1; }
+.ts4-el-dash { stroke: #F5C518; stroke-width: 1; stroke-dasharray: 4,3; }
+
+.ts4-benchmark {
+  margin-top: 26px;
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: #C8C8C8; line-height: 1.45;
+}
+
+.ts4-points {
+  margin-top: 18px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+}
+.ts4-point {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.5;
+  padding-left: 16px; position: relative;
+}
+.ts4-point::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .ts4-points { grid-template-columns: 1fr; gap: 14px; }
+}
+
+
+/* ── ts-05-serve ── */
+#ts5-wrapper {
+  height: 220vh;
+  position: relative;
+}
+#ts5-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts5-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts5-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+[data-ts5] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts5].visible { opacity: 1; transform: none; }
+
+.ts5-head { margin-bottom: 18px; }
+.ts5-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+}
+.ts5-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts5-headline {
+  font-size: clamp(30px, 3.6vw, 50px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 10px;
+}
+.ts5-headline .accent { color: var(--yellow); }
+.ts5-sub {
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1100px;
+}
+
+/* ── Fixed-aspect stage: boxes and wires share one coordinate system ── */
+#ts5-sticky > .ts5-stage {
+  position: relative;
+  width: min(100%, calc((100vh - 250px) * 2.258));
+  aspect-ratio: 1400 / 620;
+  margin: 0 auto;
+}
+.ts5-wires {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.ts5-w-cluster {
+  fill: rgba(255,255,255,0.012);
+  stroke: #3F3F3F; stroke-width: 1.6;
+  stroke-dasharray: 10 8;
+}
+.ts5-w-serve { stroke: var(--yellow); stroke-width: 2.4; }
+.ts5-w-serve-head { fill: var(--yellow); }
+.ts5-w-train { stroke: #8A8A8A; stroke-width: 1.8; stroke-dasharray: 8 7; fill: none; }
+.ts5-w-train-head { fill: #8A8A8A; }
+.ts5-w-cylbody { fill: rgba(255,255,255,0.02); stroke: #4A4A4A; stroke-width: 1.5; }
+.ts5-w-cyltop { fill: #0C0C0C; stroke: #4A4A4A; stroke-width: 1.5; }
+
+/* Labels */
+.ts5-lbl {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: clamp(9px, 0.85vw, 12px);
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; white-space: nowrap;
+  background: var(--black); padding: 2px 8px;
+}
+.ts5-lbl--serve { color: #d4d4d4; font-weight: 700; }
+.ts5-lbl--side { transform: none; }
+
+.ts5-legend {
+  position: absolute; right: 0; top: 0;
+  display: flex; gap: 22px;
+}
+.ts5-leg {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: clamp(9px, 0.85vw, 11px);
+  text-transform: uppercase; letter-spacing: 1.6px;
+  color: #888; font-weight: 600;
+}
+.ts5-leg-serve { width: 26px; height: 0; border-top: 2px solid var(--yellow); }
+.ts5-leg-train { width: 26px; height: 0; border-top: 2px dashed #8A8A8A; }
+
+.ts5-k8s-head {
+  position: absolute;
+  display: flex; align-items: center; gap: 8px;
+  color: #b8b8b8;
+}
+.ts5-k8s-head svg { width: clamp(14px, 1.2vw, 18px); height: clamp(14px, 1.2vw, 18px); }
+.ts5-k8s-head span {
+  font-size: clamp(10px, 0.9vw, 12px);
+  text-transform: uppercase; letter-spacing: 2.2px;
+  font-weight: 700;
+}
+
+/* Boxes */
+.ts5-box {
+  position: absolute;
+  border-radius: 8px;
+  padding: clamp(10px, 1.2vw, 20px) clamp(14px, 1.5vw, 24px);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.ts5-runtime {
+  background: rgba(245,197,24,0.055);
+  border: 1px solid rgba(245,197,24,0.28);
+  gap: 8px;
+}
+.ts5-vllm {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #2A2A2A;
+  gap: 10px;
+}
+.ts5-training {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #2A2A2A;
+  gap: 8px;
+}
+.ts5-box-title {
+  font-size: clamp(13px, 1.25vw, 18px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.6px;
+  color: var(--white);
+}
+.ts5-box-title em {
+  font-style: normal; text-transform: none; letter-spacing: 0.4px;
+  font-size: 0.76em; color: #999; font-weight: 500;
+  margin-left: 10px;
+}
+.ts5-runtime-items {
+  font-size: clamp(18px, 1.9vw, 27px);
+  color: var(--white); font-weight: 600; letter-spacing: -0.01em;
+}
+.ts5-runtime-items i { font-style: normal; color: #777; margin: 0 8px; }
+
+.ts5-adapters { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+.ts5-adapter {
+  display: inline-flex; align-items: center;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(10px, 0.95vw, 13px);
+  padding: 4px 12px;
+  color: #d4d4d4; font-weight: 500;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #2A2A2A;
+  border-radius: 999px;
+  line-height: 1.1; white-space: nowrap;
+}
+.ts5-adapter--more { color: #999; border-color: transparent; background: transparent; padding: 4px 2px; }
+.ts5-adapter-size { font-size: clamp(9px, 0.8vw, 11px); color: #777; letter-spacing: 0.6px; margin-left: 4px; }
+.ts5-base {
+  padding: 7px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  font-size: clamp(11px, 1.05vw, 15px);
+  color: var(--white); font-weight: 700;
+  text-align: center;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.ts5-base em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow);
+}
+.ts5-training-desc {
+  font-size: clamp(11px, 1.05vw, 15px);
+  color: #aaa; line-height: 1.4;
+}
+
+/* Log text (over the cylinder) */
+.ts5-log-body {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  text-align: center;
+}
+.ts5-log-body b {
+  font-size: clamp(13px, 1.25vw, 18px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--white);
+}
+.ts5-log-body span {
+  font-size: clamp(10px, 0.9vw, 12px);
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: #888; font-weight: 500;
+}
+
+/* Node strip */
+.ts5-nodes {
+  position: absolute;
+  display: flex; align-items: center; gap: 8px;
+}
+.ts5-node {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(8px, 0.75vw, 10px); letter-spacing: 1px;
+  padding: 6px 11px;
+  color: #999;
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.03);
+}
+.ts5-node--gpu {
+  color: #d4d4d4;
+  border-color: rgba(245,197,24,0.35);
+  background: rgba(245,197,24,0.05);
+}
+.ts5-nodes-cap {
+  margin-left: auto;
+  font-size: clamp(9px, 0.85vw, 11px);
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: #777; font-weight: 500;
+}
+
+
+/* ── ts-06-anyagent ── */
+#ts6-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts6-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts6-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts6-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts6] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts6].visible { opacity: 1; transform: none; }
+
+.ts6-head { margin-bottom: 36px; }
+.ts6-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts6-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts6-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts6-headline .accent { color: var(--yellow); }
+.ts6-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.ts6-em { color: var(--white); font-weight: 600; }
+
+/* Funnel */
+.ts6-funnel { display: flex; flex-direction: column; align-items: center; }
+.ts6-sources {
+  width: 100%;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+}
+.ts6-source {
+  padding: 12px 14px;
+  text-align: center;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 600; color: #e0e0e0;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1F1F1F;
+  border-top: 2px solid var(--yellow);
+  border-radius: 4px;
+}
+
+.ts6-arrow-wrap { position: relative; width: 100%; }
+.ts6-arrows { width: 100%; height: clamp(60px, 9vh, 96px); display: block; overflow: visible; }
+.ts6-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts6-funnel.visible .ts6-arrow { animation: ts6-draw .4s ease-out .25s forwards; }
+.ts6-arrowhead { opacity: 0; }
+.ts6-funnel.visible .ts6-arrowhead { animation: ts6-fade .12s ease-out .65s forwards; }
+@keyframes ts6-draw { to { stroke-dashoffset: 0; } }
+@keyframes ts6-fade { to { opacity: 1; } }
+.ts6-arrow-label {
+  position: absolute; left: 50%; top: 46%;
+  transform: translate(-50%, -50%);
+  background: var(--black);
+  color: var(--yellow);
+  font-size: clamp(11px, 1vw, 14px);
+  text-transform: uppercase; letter-spacing: 2.5px; font-weight: 700;
+  white-space: nowrap; padding: 4px 16px;
+  border: 1px solid rgba(245,197,24,0.4);
+  z-index: 2; opacity: 0;
+}
+.ts6-funnel.visible .ts6-arrow-label { animation: ts6-fade .15s ease-out .7s forwards; }
+
+.ts6-log {
+  margin-top: 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 14px 34px 16px;
+  background: rgba(245,197,24,0.05);
+  border: 1px solid var(--yellow);
+  border-radius: 4px;
+  text-align: center;
+}
+.ts6-log-name {
+  font-size: clamp(16px, 1.5vw, 21px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--white); line-height: 1;
+}
+.ts6-log-rows { display: flex; gap: 26px; flex-wrap: wrap; justify-content: center; }
+.ts6-log-row { font-size: clamp(11px, 0.95vw, 13.5px); color: #999; }
+.ts6-log-row em { font-style: normal; color: var(--yellow); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9em; }
+
+.ts6-down { width: 16px; height: 30px; margin: 8px 0; }
+
+.ts6-bottom {
+  display: flex; align-items: center; gap: 18px;
+}
+.ts6-loopchips {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 18px;
+  border: 1px solid #2A2A2A; border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+}
+.ts6-loopchips span {
+  font-size: clamp(11px, 1vw, 14px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.8px; color: #d4d4d4;
+}
+.ts6-loopchips i { font-style: normal; color: var(--yellow); font-weight: 700; }
+.ts6-right { width: 30px; height: 14px; flex-shrink: 0; overflow: visible; }
+.ts6-endpoint {
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+  border: 1px solid rgba(245,197,24,0.5);
+  border-radius: 4px;
+}
+.ts6-endpoint-tag {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700; margin-bottom: 4px;
+}
+.ts6-endpoint-body { font-size: clamp(12px, 1.05vw, 15px); color: #d4d4d4; }
+
+
+/* ── ts-07-onakka ── */
+#ts7-wrapper {
+  height: 200vh;
+  position: relative;
+}
+#ts7-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts7-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts7-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts7] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts7].visible { opacity: 1; transform: none; }
+
+.ts7-head { margin-bottom: 38px; }
+.ts7-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts7-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts7-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts7-headline .accent { color: var(--yellow); }
+.ts7-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1200px;
+}
+
+/* Comparison grid */
+.ts7-compare {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr;
+  border: 1px solid #1F1F1F;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+}
+.ts7-cell {
+  padding: 16px 22px;
+  border-bottom: 1px solid #1A1A1A;
+  border-left: 1px solid #1A1A1A;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+}
+.ts7-compare > .ts7-cell:nth-child(3n+1) { border-left: none; }
+.ts7-compare > .ts7-cell:nth-last-child(-n+3) { border-bottom: none; }
+.ts7-corner { background: transparent; }
+.ts7-colhead {
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: #d4d4d4; line-height: 1.4;
+}
+.ts7-colhead span { font-size: 10px; color: #777; letter-spacing: 1.4px; }
+.ts7-colhead--akka { color: var(--yellow); }
+.ts7-colhead--akka span { color: rgba(245,197,24,0.6); }
+.ts7-cell--akka { background: rgba(245,197,24,0.04); }
+.ts7-rowhead {
+  font-size: clamp(15px, 1.35vw, 20px);
+  font-weight: 700; letter-spacing: -0.02em;
+  color: var(--white); line-height: 1.15;
+}
+.ts7-val {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #d4d4d4; font-weight: 600; line-height: 1.25;
+}
+.ts7-val--y {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow); font-weight: 700;
+  font-size: clamp(19px, 1.7vw, 25px);
+}
+.ts7-val--dim { color: #777; font-weight: 500; }
+.ts7-note {
+  font-size: 11px; color: #888;
+  text-transform: uppercase; letter-spacing: 1.2px; font-weight: 500;
+}
+
+.ts7-points {
+  margin-top: 28px;
+  display: grid; grid-template-columns: 1.3fr 0.8fr 1.1fr; gap: 28px;
+}
+.ts7-point {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.5;
+  padding-left: 16px; position: relative;
+}
+.ts7-point::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+.ts7-num { color: var(--yellow); font-weight: 700; white-space: nowrap; }
+.ts7-src { color: #777; font-size: 0.9em; }
+
+@media (max-width: 1100px) {
+  .ts7-compare { grid-template-columns: 140px 1fr 1fr; }
+  .ts7-points { grid-template-columns: 1fr; gap: 12px; }
+}
+
+
+/* ── ts-08-math ── */
+#ts8-wrapper {
+  height: 220vh;
+  position: relative;
+}
+#ts8-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts8-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts8-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts8] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts8].visible { opacity: 1; transform: none; }
+
+.ts8-head { margin-bottom: 42px; }
+.ts8-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts8-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts8-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts8-headline .accent { color: var(--yellow); }
+.ts8-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+
+.ts8-body {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* Formula lockup */
+.ts8-formula {
+  display: flex; align-items: center; gap: 22px;
+  margin-bottom: 34px;
+  padding: 22px 26px;
+  border: 1px solid #1F1F1F;
+  border-left: 3px solid var(--yellow);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.02);
+}
+.ts8-formula-lhs {
+  font-size: clamp(15px, 1.3vw, 19px);
+  font-weight: 700; color: var(--white);
+  letter-spacing: -0.01em; white-space: nowrap;
+}
+.ts8-formula-eq {
+  font-size: clamp(20px, 1.8vw, 26px);
+  color: var(--yellow); font-weight: 700;
+}
+.ts8-frac { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.ts8-frac-num, .ts8-frac-den {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(12px, 1.05vw, 15px);
+  color: #e4e4e4; white-space: nowrap;
+}
+.ts8-frac-num em { font-style: normal; color: #888; }
+.ts8-frac-rule { width: 100%; height: 2px; background: var(--yellow); }
+
+/* Worked example */
+.ts8-mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; text-transform: none; letter-spacing: 0; }
+.ts8-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+.ts8-table th {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; text-align: left;
+  padding: 0 14px 9px 0;
+  border-bottom: 1px solid #2A2A2A;
+}
+.ts8-table td {
+  font-size: clamp(13px, 1.15vw, 17px);
+  color: #d4d4d4;
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid #1A1A1A;
+}
+.ts8-row-slm td { border-bottom: none; }
+.ts8-row-slm td:first-child { color: var(--white); font-weight: 600; }
+.ts8-y { color: var(--yellow) !important; font-weight: 700; }
+
+.ts8-deltas { display: flex; gap: 14px; }
+.ts8-delta {
+  flex: 1;
+  padding: 12px 16px 14px;
+  border: 1px solid #1F1F1F;
+  border-top: 2px solid var(--yellow);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.025);
+}
+.ts8-delta-num {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(20px, 1.9vw, 28px); font-weight: 700;
+  color: var(--yellow); line-height: 1; letter-spacing: -0.02em;
+}
+.ts8-delta-lbl {
+  font-size: 10.5px; color: var(--gray); text-transform: uppercase;
+  letter-spacing: 1.4px; margin-top: 6px; font-weight: 500;
+}
+
+/* Proof rail */
+.ts8-proof-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; margin-bottom: 16px;
+}
+.ts8-proof { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
+.ts8-proof-item {
+  display: flex; align-items: center; gap: 18px;
+  padding: 12px 16px;
+  border: 1px solid #1F1F1F;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+}
+.ts8-proof-num {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(19px, 1.7vw, 25px); font-weight: 700;
+  color: var(--yellow); letter-spacing: -0.02em;
+  min-width: 88px;
+}
+.ts8-proof-body {
+  font-size: clamp(12.5px, 1.05vw, 15px);
+  color: #b8b8b8; line-height: 1.4;
+}
+.ts8-proof-body span { color: var(--white); font-weight: 700; }
+
+@media (max-width: 1100px) {
+  .ts8-body { grid-template-columns: 1fr; gap: 32px; }
+}
+
+
+/* ── ts-09-competitive ── */
+#ts9-wrapper {
+  height: 200vh;
+  position: relative;
+}
+#ts9-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts9-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts9-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+[data-ts9] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts9].visible { opacity: 1; transform: none; }
+
+.ts9-head { margin-bottom: 44px; }
+.ts9-eyebrow {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+}
+.ts9-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts9-headline {
+  font-size: clamp(30px, 3.8vw, 54px); font-weight: 700;
+  line-height: 1.08; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1250px;
+}
+.ts9-headline .accent { color: var(--yellow); }
+
+/* Duel layout: one large Shredder card, rivals stacked beside it */
+.ts9-duel {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.ts9-akka {
+  display: flex; flex-direction: column;
+  padding: 34px 38px 36px;
+  background: rgba(245,197,24,0.05);
+  border: 1px solid rgba(245,197,24,0.55);
+  border-radius: 6px;
+}
+.ts9-akka-name {
+  font-size: clamp(15px, 1.3vw, 19px); font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 16px;
+}
+.ts9-akka-desc {
+  font-size: clamp(18px, 1.7vw, 25px);
+  font-weight: 600; letter-spacing: -0.01em;
+  color: var(--white); line-height: 1.3;
+  margin-bottom: 26px;
+}
+.ts9-akka-stat { margin-bottom: 26px; }
+.ts9-akka-stat-num {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(44px, 4.6vw, 68px); font-weight: 700;
+  color: var(--yellow); line-height: 1; letter-spacing: -0.03em;
+}
+.ts9-akka-stat-num em {
+  font-style: normal;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.42em; font-weight: 600;
+  color: #d4d4d4; letter-spacing: 0;
+  margin-right: 6px;
+}
+.ts9-akka-stat-lbl {
+  font-size: 12px; color: #b8b8b8; text-transform: uppercase;
+  letter-spacing: 1.8px; margin-top: 8px; font-weight: 500;
+}
+.ts9-akka-caps { display: flex; flex-direction: column; gap: 11px; margin-top: auto; }
+.ts9-akka-cap {
+  font-size: clamp(13px, 1.15vw, 16.5px);
+  color: #e0e0e0; line-height: 1.4;
+  padding-left: 16px; position: relative;
+}
+.ts9-akka-cap::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+/* Rivals column */
+.ts9-rivals {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ts9-rival {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 18px 24px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1F1F1F;
+  border-radius: 6px;
+}
+.ts9-rival-name {
+  font-size: clamp(11px, 1vw, 14px); font-weight: 700;
+  letter-spacing: 1.8px; text-transform: uppercase;
+  color: #b8b8b8;
+  margin-bottom: 8px;
+}
+.ts9-rival-line {
+  font-size: clamp(13px, 1.15vw, 16.5px);
+  color: #999; line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .ts9-duel { grid-template-columns: 1fr; }
+}
+
+
+/* ── ts-10-close ── */
+#ts-closing {
+  height: 100vh; min-height: 760px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#ts-closing::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#ts-closing::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+
+.tsc-reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+  position: relative; z-index: 2;
+}
+.tsc-reveal.visible { opacity: 1; transform: none; }
+.tsc-reveal.visible:nth-child(1) { transition-delay: 0s; }
+.tsc-reveal.visible:nth-child(2) { transition-delay: .1s; }
+.tsc-reveal.visible:nth-child(3) { transition-delay: .18s; }
+.tsc-reveal.visible:nth-child(4) { transition-delay: .26s; }
+.tsc-reveal.visible:nth-child(5) { transition-delay: .34s; }
+.tsc-reveal.visible:nth-child(6) { transition-delay: .5s; }
+
+.tsc-logo { margin-bottom: 34px; }
+.tsc-logo svg { height: 42px; width: auto; }
+
+.tsc-headline {
+  font-size: clamp(40px, 5.5vw, 80px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1000px; margin-bottom: 20px;
+}
+.tsc-headline .accent { color: var(--yellow); }
+
+.tsc-sub {
+  font-size: clamp(12px, 1.2vw, 16px);
+  color: var(--gray); font-weight: 600;
+  letter-spacing: 4px; line-height: 1.5;
+  margin-bottom: 34px;
+}
+
+.tsc-divider {
+  width: 56px; height: 3px; background: var(--yellow); margin-bottom: 36px;
+}
+
+.tsc-cta-block {
+  max-width: 980px; width: 100%;
+  margin-bottom: 40px;
+}
+.tsc-cta-label {
+  font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700; margin-bottom: 8px;
+}
+.tsc-cta-line {
+  font-size: clamp(14px, 1.25vw, 18px);
+  color: #b8b8b8; margin-bottom: 26px;
+}
+
+.tsc-phases {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 26px;
+}
+.tsc-phase { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.tsc-phase-node {
+  padding: 8px 22px;
+  border: 1px solid var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-radius: 999px;
+  font-size: clamp(13px, 1.15vw, 16px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--white);
+}
+.tsc-phase-days {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; color: var(--yellow); font-weight: 600;
+}
+.tsc-phase-desc {
+  font-size: clamp(11px, 0.95vw, 13px);
+  color: #999; line-height: 1.45; max-width: 260px;
+}
+.tsc-phase-line {
+  flex: 0 0 34px; height: 1px;
+  background: rgba(245,197,24,0.45);
+  margin-top: 18px;
+}
+
+.tsc-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  background: var(--yellow); color: var(--black);
+  font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; border-radius: 6px;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.tsc-cta:hover { background: #e0b416; }
+
+<!-- DEMO_CSS_MARKER -->
+</style>
+</head>
+<body>
+<section id="ts-title">
+  <div class="tst-logo">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tst)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tst"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tst-headline">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tst-sub">AKKA TOKEN SHREDDER</div>
+
+  <div class="tst-loop">
+    <div class="tst-loop-stages">
+      <span>Target</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Grade</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Train</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Prove</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Promote</span>
+    </div>
+    <div class="tst-loop-return" aria-hidden="true"><i class="tst-loop-tip"></i></div>
+    <div class="tst-loop-label">production feedback</div>
+  </div>
+
+  <div class="tst-tag">Continuous AI evaluations that create SLMs cutting token costs up to <span class="tst-tag-num">80%</span>.</div>
+  <div class="tst-divider"></div>
+
+  <div class="tst-scroll-hint">
+    <span>scroll to explore</span>
+    <div class="tst-scroll-arrow"></div>
+  </div>
+</section>
+
+
+<div id="ts1-wrapper">
+  <div id="ts1-sticky">
+    <div class="ts1-head">
+      <div class="ts1-eyebrow" data-ts1="0">The problem</div>
+      <div class="ts1-headline" data-ts1="0">Token spend is the <span class="accent">largest and fastest-growing</span> line item.</div>
+      <div class="ts1-sub" data-ts1="0"><span class="ts1-num">$6M&ndash;$12M</span> of a mid-sized enterprise&rsquo;s 3-year agentic TCO &mdash; bigger than infrastructure.<br>Agents multiply calls: plans, retries, tool loops, reasoning tokens, stuffed context windows.</div>
+    </div>
+
+    <div class="ts1-body">
+      <div class="ts1-chart-curve" data-ts1="1">
+        <div class="ts1-chart-title">AI spend as agent fleets grow</div>
+        <svg class="ts1-curve" viewBox="0 0 640 300" aria-label="Token spend rises steeply with agents in production while Akka infrastructure cost stays flat">
+          <line x1="40" y1="270" x2="620" y2="270" stroke="#2A2A2A" stroke-width="1"/>
+          <line x1="40" y1="270" x2="40" y2="30" stroke="#2A2A2A" stroke-width="1"/>
+          <text x="140" y="290" class="ts1-tick" text-anchor="middle">5</text>
+          <text x="280" y="290" class="ts1-tick" text-anchor="middle">15</text>
+          <text x="430" y="290" class="ts1-tick" text-anchor="middle">40</text>
+          <text x="590" y="290" class="ts1-tick" text-anchor="middle">100</text>
+          <path class="ts1-line ts1-line-infra" pathLength="100" d="M40,258 C220,242 420,226 592,212" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/>
+          <path class="ts1-line ts1-line-tokens" pathLength="100" d="M40,254 C230,240 420,168 592,44" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="592" y="32" class="ts1-series ts1-series-tok" text-anchor="end">TOKEN SPEND</text>
+          <text x="592" y="200" class="ts1-series ts1-series-infra" text-anchor="end">INFRA ON AKKA</text>
+        </svg>
+        <div class="ts1-axis-label">Agents in production &rarr;</div>
+      </div>
+
+      <div class="ts1-charts-bars" data-ts1="2">
+        <div class="ts1-insight">Most of that traffic is narrow, repetitive, and verifiable &mdash; extraction, classification, summarization, SQL, routing, moderation. A small model specialized on <span class="ts1-em">one task</span> beats a frontier API on that task.</div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Content moderation &mdash; production score <span class="ts1-src">Google DeepMind Gemmaverse case study &middot; 23M-subscriber telco</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Gemma 3 4B <span class="ts1-bar-note">tuned</span></div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:80%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">0.80</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Claude Sonnet 3.7</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:77%"></div></div>
+            <div class="ts1-bar-val">0.77</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:76%"></div></div>
+            <div class="ts1-bar-val">0.76</div>
+          </div>
+        </div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Enterprise RAG &mdash; head-to-head preference <span class="ts1-src">published enterprise result</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">RL-tuned 8B</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:51%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">51%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:29%"></div></div>
+            <div class="ts1-bar-val">29%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Tie</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--dim" style="--w:20%"></div></div>
+            <div class="ts1-bar-val">20%</div>
+          </div>
+        </div>
+
+        <div class="ts1-note">A 4B open-weight model &mdash; up to <span class="ts1-num">12&times;</span> lower inference cost. The model does less work, enabling more inference per GPU.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts2-wrapper">
+  <div id="ts2-sticky">
+    <div class="ts2-head">
+      <div class="ts2-eyebrow" data-ts2="0">The product</div>
+      <div class="ts2-headline" data-ts2="0"><span class="accent">Target, grade, train, prove, promote</span> &mdash; continuously.</div>
+      <div class="ts2-sub" data-ts2="0">The Shredder runs inside the Akka platform, watching every interaction your agents produce. Four capabilities &mdash; recorded traffic, a live quality bar, a training loop, a serving path &mdash; run on one interaction record.</div>
+    </div>
+
+    <div class="ts2-flow" data-ts2="1">
+      <div class="ts2-stages">
+        <div class="ts2-stage">
+          <div class="ts2-stage-num">01</div>
+          <div class="ts2-stage-name">Target</div>
+          <div class="ts2-stage-desc">find the agents doing SLM-shaped work</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-num">02</div>
+          <div class="ts2-stage-name">Grade</div>
+          <div class="ts2-stage-desc">continuous evaluations on live traffic</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-num">03</div>
+          <div class="ts2-stage-name">Train</div>
+          <div class="ts2-stage-desc">RL on your traffic, your evals as grader</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-num">04</div>
+          <div class="ts2-stage-name">Prove</div>
+          <div class="ts2-stage-desc">shadow-test in staging: quality &ge; bar, tokens &darr;</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-num">05</div>
+          <div class="ts2-stage-name">Promote</div>
+          <div class="ts2-stage-desc">canary &rarr; fleet, automatic rollback</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-outcome">
+          <div class="ts2-outcome-tag">Same tasks</div>
+          <div class="ts2-outcome-val">up to 80%<span> fewer tokens</span></div>
+        </div>
+      </div>
+
+      <div class="ts2-loop">
+        <svg class="ts2-loop-svg" viewBox="0 0 1500 56" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke">
+            <path class="ts2-loop-path" pathLength="100" d="M1400,0 V40 H80 V12" />
+          </g>
+          <polygon class="ts2-loop-head" points="80,0 72,16 88,16" fill="#F5C518"/>
+        </svg>
+        <div class="ts2-loop-label">
+          <span class="ts2-loop-tag">Production feedback</span>
+          <span class="ts2-loop-text">Promoted models keep getting graded &mdash; the loop keeps running.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ts2-chips" data-ts2="2">
+      <span class="ts2-chip">Continuous targeting</span>
+      <span class="ts2-chip">Live-traffic grading</span>
+      <span class="ts2-chip">RL training</span>
+      <span class="ts2-chip">Eval-gated promotion</span>
+      <span class="ts2-chip">Automatic rollback</span>
+      <span class="ts2-chip">Immutable audit trail</span>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="ts3-wrapper">
+  <div id="ts3-sticky">
+    <div class="ts3-head">
+      <div class="ts3-eyebrow" data-ts3="0">How it works &middot; 01</div>
+      <div class="ts3-headline" data-ts3="0">Targeting ranks every agent; evaluations <span class="accent">grade live traffic</span>.</div>
+      <div class="ts3-sub" data-ts3="0">The targeting engine continuously scores every agent &mdash; Akka-built or third-party &mdash; on task narrowness, traffic volume, outcome verifiability, token spend, and quality headroom creating a ranked plan with projected savings.</div>
+    </div>
+
+    <table class="ts3-table" data-ts3="1">
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Volume / mo</th>
+          <th>Task shape</th>
+          <th>Verifiable</th>
+          <th>Spend / mo</th>
+          <th>SLM fit</th>
+          <th>Projected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ts3-agent">claims-extractor</td>
+          <td class="ts3-mono">4.1M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; schema</td>
+          <td class="ts3-mono">$58K</td>
+          <td class="ts3-fit">0.94</td>
+          <td class="ts3-proj">&minus;$46K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">support-summarizer</td>
+          <td class="ts3-mono">2.7M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; judge</td>
+          <td class="ts3-mono">$34K</td>
+          <td class="ts3-fit">0.91</td>
+          <td class="ts3-proj">&minus;$25K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">sql-assistant</td>
+          <td class="ts3-mono">0.9M</td>
+          <td>narrow</td>
+          <td class="ts3-check">&#10003; executes</td>
+          <td class="ts3-mono">$22K</td>
+          <td class="ts3-fit">0.88</td>
+          <td class="ts3-proj">&minus;$18K/mo</td>
+        </tr>
+        <tr class="ts3-dim">
+          <td class="ts3-agent">research-planner</td>
+          <td class="ts3-mono">0.1M</td>
+          <td>open-ended</td>
+          <td>&#10007;</td>
+          <td class="ts3-mono">$12K</td>
+          <td class="ts3-mono">0.31</td>
+          <td class="ts3-keep">keep frontier</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="ts3-foot-label">Projected fleet savings</td>
+          <td class="ts3-foot-val">&minus;$89K/mo</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="ts3-grade" data-ts3="2">
+      <div class="ts3-grade-copy">
+        <div class="ts3-grade-title">Evaluations run in the same runtime as your agents</div>
+        <div class="ts3-grade-body">Evaluations grade each targeted agent&rsquo;s traffic as it runs. When an outcome can be checked directly &mdash; the SQL executes, the JSON validates &mdash; a deterministic evaluation scores it. When it can&rsquo;t, an LLM judge scores it, and humans review where policy requires. Every score is recorded with the tokens the interaction consumed. The same evaluations grade production traffic, training runs, and staging tests.</div>
+      </div>
+      <div class="ts3-fan">
+        <div class="ts3-fan-src">
+          <div class="ts3-fan-src-tag">Live traffic</div>
+          <div class="ts3-fan-src-name">Evaluation</div>
+        </div>
+        <svg class="ts3-fan-svg" viewBox="0 0 80 200" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V30 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V170 H72" />
+          </g>
+          <polygon class="ts3-fan-head" points="80,30 72,24 72,36" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,100 72,94 72,106" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,170 72,164 72,176" fill="#F5C518"/>
+        </svg>
+        <div class="ts3-fan-outs">
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Governance observation</div>
+            <div class="ts3-fan-out-desc">the audit trail</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Training reward</div>
+            <div class="ts3-fan-out-desc">the RL signal</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Promotion gate</div>
+            <div class="ts3-fan-out-desc">the staging verdict</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts4-wrapper">
+  <div id="ts4-sticky">
+    <div class="ts4-head">
+      <div class="ts4-eyebrow" data-ts4="0">How it works &middot; 02</div>
+      <div class="ts4-headline" data-ts4="0">Production traffic trains your model and then <span class="accent">tested in staging</span>.</div>
+      <div class="ts4-sub" data-ts4="0">An open-weights base (4&ndash;12B) is tuned with reinforcement learning against your interaction data &mdash; your evaluations are the grader. Training runs on GPUs in your cloud account: in-VPC, sovereign, air-gapped where required. The result is a specialized SLM &mdash; a ~50MB adapter. You own the weights.</div>
+    </div>
+
+    <div class="ts4-diagram" data-ts4="1">
+      <svg viewBox="0 0 1100 300" aria-label="Candidate SLM shadows live traffic in staging; the gate promotes only when quality holds and tokens drop">
+        <rect x="20" y="130" width="130" height="40" class="ts4-nd"/>
+        <text x="85" y="154" text-anchor="middle" class="ts4-nl">live traffic</text>
+
+        <line x1="150" y1="143" x2="300" y2="90" class="ts4-el"/>
+        <line x1="150" y1="157" x2="300" y2="232" class="ts4-el-dash"/>
+
+        <rect x="300" y="58" width="210" height="64" class="ts4-nd"/>
+        <text x="405" y="79" text-anchor="middle" class="ts4-nl">Incumbent</text>
+        <text x="405" y="95" text-anchor="middle" class="ts4-nls">frontier API</text>
+        <text x="405" y="112" text-anchor="middle" class="ts4-nls">quality 0.87 &middot; 100% tokens</text>
+
+        <rect x="300" y="200" width="210" height="64" class="ts4-ndy"/>
+        <text x="405" y="221" text-anchor="middle" class="ts4-nl ts4-nl-y">Candidate</text>
+        <text x="405" y="237" text-anchor="middle" class="ts4-nls">your SLM</text>
+        <text x="405" y="254" text-anchor="middle" class="ts4-nls ts4-nls-y">quality 0.89 &middot; 21% tokens</text>
+
+        <line x1="510" y1="90" x2="740" y2="140" class="ts4-el"/>
+        <line x1="510" y1="232" x2="740" y2="180" class="ts4-el"/>
+
+        <rect x="740" y="116" width="180" height="88" class="ts4-ndy"/>
+        <text x="830" y="141" text-anchor="middle" class="ts4-nl ts4-nl-y">GATE</text>
+        <text x="830" y="161" text-anchor="middle" class="ts4-nls ts4-nls-w">quality &ge; baseline &nbsp;&#10003;</text>
+        <text x="830" y="177" text-anchor="middle" class="ts4-nls ts4-nls-w">token drop &ge; target &nbsp;&#10003;</text>
+
+        <line x1="920" y1="160" x2="958" y2="160" class="ts4-el"/>
+        <polygon points="966,160 958,155 958,165" fill="#F5C518"/>
+        <rect x="966" y="130" width="120" height="60" class="ts4-nd"/>
+        <text x="1026" y="155" text-anchor="middle" class="ts4-nl">Promote</text>
+        <text x="1026" y="171" text-anchor="middle" class="ts4-nls">canary &rarr; fleet</text>
+
+        <line x1="830" y1="204" x2="830" y2="240" class="ts4-el-dash"/>
+        <text x="830" y="258" text-anchor="middle" class="ts4-nls ts4-dimtext">Do not promote if no improvement</text>
+      </svg>
+    </div>
+
+    <div class="ts4-benchmark" data-ts4="2">Every promotion ships with an auto-generated before/after benchmark &mdash; computed by your evaluations, on your traffic, stored on the audit record.</div>
+
+    <div class="ts4-points" data-ts4="2">
+      <div class="ts4-point">After promotion, the loop keeps grading. Drift in traffic or upstream models registers in eval scores first; retraining triggers automatically; a new candidate re-enters staging. Quality below the bar triggers <span class="ts4-em">instant rollback</span> to the incumbent.</div>
+      <div class="ts4-point">The loop runs inside your <span class="ts4-em">Improvement Policy</span>: what it optimizes toward, how far it may tune, what it may never touch. Every decision lands on the immutable interaction record.</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts5-wrapper">
+  <div id="ts5-sticky">
+    <div class="ts5-head">
+      <div class="ts5-eyebrow" data-ts5="0">How it works &middot; 03</div>
+      <div class="ts5-headline" data-ts5="0">You bring the GPU. <span class="accent">Akka runs the rest.</span></div>
+      <div class="ts5-sub" data-ts5="0">Serving and training run in one Kubernetes, deployed and operated by Akka &mdash; on GPUs in your cloud account.</div>
+    </div>
+
+    <div class="ts5-stage" data-ts5="1">
+
+      <svg class="ts5-wires" viewBox="0 0 1400 620" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- cluster boundary -->
+        <rect x="22" y="54" width="926" height="556" rx="18" class="ts5-w-cluster"/>
+
+        <!-- serving path: live traffic → runtime → vLLM -->
+        <line x1="480" y1="26" x2="480" y2="98" class="ts5-w-serve"/>
+        <polygon points="480,112 472,97 488,97" class="ts5-w-serve-head"/>
+        <line x1="480" y1="248" x2="480" y2="318" class="ts5-w-serve"/>
+        <polygon points="480,332 472,317 488,317" class="ts5-w-serve-head"/>
+
+        <!-- training path: runtime → log -->
+        <line x1="900" y1="170" x2="1046" y2="170" class="ts5-w-train"/>
+        <polygon points="1060,170 1044,162 1044,178" class="ts5-w-train-head"/>
+
+        <!-- training path: log → verl (elbow) -->
+        <path d="M1210,320 V416 H914" class="ts5-w-train"/>
+        <polygon points="900,416 916,408 916,424" class="ts5-w-train-head"/>
+
+        <!-- training path: verl → vLLM (new adapter) -->
+        <line x1="680" y1="400" x2="596" y2="400" class="ts5-w-train"/>
+        <polygon points="582,400 598,392 598,408" class="ts5-w-train-head"/>
+
+        <!-- interaction log cylinder -->
+        <path d="M1060,135 v160 a150,26 0 0 0 300,0 v-160" class="ts5-w-cylbody"/>
+        <ellipse cx="1210" cy="135" rx="150" ry="26" class="ts5-w-cyltop"/>
+      </svg>
+
+      <!-- labels -->
+      <div class="ts5-lbl ts5-lbl--serve" style="left:34.29%; top:0;">live traffic</div>
+      <div class="ts5-lbl ts5-lbl--serve ts5-lbl--side" style="left:35.6%; top:44.7%;">inference calls</div>
+      <div class="ts5-lbl" style="left:69.5%; top:22.6%;">records every interaction</div>
+      <div class="ts5-lbl" style="left:75.7%; top:61.5%;">training data</div>
+      <div class="ts5-lbl" style="left:45.7%; top:67.5%;">new adapter</div>
+
+      <div class="ts5-legend">
+        <span class="ts5-leg"><i class="ts5-leg-serve"></i>serving path</span>
+        <span class="ts5-leg"><i class="ts5-leg-train"></i>training path</span>
+      </div>
+
+      <div class="ts5-k8s-head" style="left:3.9%; top:10.6%;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><path d="M12 3.5V1M12 23v-2.5M3.5 12H1M23 12h-2.5M6 6L4.2 4.2M18 18l1.8 1.8M18 6l1.8-1.8M6 18l-1.8 1.8"/></svg>
+        <span>Kubernetes cluster</span>
+      </div>
+
+      <!-- boxes -->
+      <div class="ts5-box ts5-runtime" style="left:4.29%; top:18.06%; width:60%; height:21.94%;">
+        <div class="ts5-box-title">Akka runtime <em>one set of processes</em></div>
+        <div class="ts5-runtime-items">agents <i>&middot;</i> evaluations <i>&middot;</i> orchestration</div>
+      </div>
+
+      <div class="ts5-box ts5-vllm" style="left:4.29%; top:53.55%; width:37.14%; height:27.1%;">
+        <div class="ts5-box-title">vLLM</div>
+        <div class="ts5-adapters">
+          <span class="ts5-adapter">adapter A</span>
+          <span class="ts5-adapter">adapter B</span>
+          <span class="ts5-adapter">adapter C</span>
+          <span class="ts5-adapter ts5-adapter--more">&hellip;</span>
+          <span class="ts5-adapter">adapter N</span>
+          <span class="ts5-adapter-size">~50MB each</span>
+        </div>
+        <div class="ts5-base">base model &mdash; frozen backbone &middot; <em>8 GB</em></div>
+      </div>
+
+      <div class="ts5-box ts5-training" style="left:48.57%; top:53.55%; width:15.71%; height:27.1%;">
+        <div class="ts5-box-title">Training <em>verl</em></div>
+        <div class="ts5-training-desc">RL loop &mdash; rollouts scored by your evaluations</div>
+      </div>
+
+      <div class="ts5-log-body" style="left:76.43%; top:27.4%; width:20%;">
+        <b>Interaction log</b>
+        <span>petabyte-scale storage</span>
+      </div>
+
+      <div class="ts5-nodes" style="left:4.29%; top:84.2%; width:60%;">
+        <span class="ts5-node">CPU</span><span class="ts5-node">CPU</span><span class="ts5-node">CPU</span>
+        <span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span><span class="ts5-node ts5-node--gpu">GPU</span>
+        <span class="ts5-nodes-cap">the cluster&rsquo;s nodes &mdash; your cloud account</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div id="ts6-wrapper">
+  <div id="ts6-sticky">
+    <div class="ts6-head">
+      <div class="ts6-eyebrow" data-ts6="0">Any agent</div>
+      <div class="ts6-headline" data-ts6="0">It optimizes agents you <span class="accent">didn&rsquo;t build on Akka</span>.</div>
+      <div class="ts6-sub" data-ts6="0">The interaction-log ingests traces from wherever your agents run today.</div>
+    </div>
+
+    <div class="ts6-funnel" data-ts6="1">
+      <div class="ts6-sources">
+        <div class="ts6-source">LangChain / LangGraph</div>
+        <div class="ts6-source">CrewAI / AutoGen</div>
+        <div class="ts6-source">Bedrock / Foundry</div>
+        <div class="ts6-source">custom stacks</div>
+      </div>
+
+      <div class="ts6-arrow-wrap">
+        <svg class="ts6-arrows" viewBox="0 0 1500 170" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="ts6-arrow" pathLength="100" d="M187.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M562.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M937.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M1312.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M750,85 V160" />
+          </g>
+          <polygon class="ts6-arrowhead" points="750,170 741,154 759,154" fill="#F5C518" />
+        </svg>
+        <span class="ts6-arrow-label">OTEL / OpenInference &middot; ingest</span>
+      </div>
+
+      <div class="ts6-log">
+        <div class="ts6-log-name">Interaction log</div>
+        <div class="ts6-log-rows">
+          <span class="ts6-log-row"><em>captured</em> &mdash; recorded by the Akka runtime</span>
+          <span class="ts6-log-row"><em>imported</em> &mdash; ingested from a third-party runtime</span>
+        </div>
+      </div>
+
+      <svg class="ts6-down" viewBox="0 0 16 34" aria-hidden="true">
+        <line x1="8" y1="0" x2="8" y2="26" stroke="#F5C518" stroke-width="1.5"/>
+        <polygon points="8,34 1,22 15,22" fill="#F5C518"/>
+      </svg>
+
+      <div class="ts6-bottom">
+        <div class="ts6-loopchips">
+          <span>Target</span><i>&rarr;</i><span>Grade</span><i>&rarr;</i><span>Train</span><i>&rarr;</i><span>Prove</span>
+        </div>
+        <svg class="ts6-right" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts6-endpoint">
+          <div class="ts6-endpoint-tag">OpenAI-compatible endpoint &middot; serving your SLM</div>
+          <div class="ts6-endpoint-body">Your existing agent adopts it with a <span class="ts6-em">one-line base-URL change</span>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="ts7-wrapper">
+  <div id="ts7-sticky">
+    <div class="ts7-head">
+      <div class="ts7-eyebrow" data-ts7="0">Agents on Akka</div>
+      <div class="ts7-headline" data-ts7="0">Running the agents on Akka cuts compute up to <span class="accent">70%</span>.</div>
+      <div class="ts7-sub" data-ts7="0">Running your agents on Akka adds more efficiency: actor-based concurrency and a shared compute model, where orchestration, agents, memory, streaming, and APIs run on one runtime. Agent orchestration requires up to 70% less compute than Python-based agents.</div>
+    </div>
+
+    <div class="ts7-compare" data-ts7="1">
+      <div class="ts7-cell ts7-corner"></div>
+      <div class="ts7-cell ts7-colhead">Agents anywhere<br><span>+ Token Shredder</span></div>
+      <div class="ts7-cell ts7-colhead ts7-colhead--akka">Agents on Akka<br><span>+ Token Shredder</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Model<br>tokens</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--y">&minus;80%</span><span class="ts7-note">the Shredder</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val ts7-val--y">&minus;80%</span><span class="ts7-note">the Shredder</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Orchestration<br>compute</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--dim">unchanged</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val ts7-val--y">&minus;70%</span><span class="ts7-note">actor concurrency &middot; shared compute</span></div>
+
+      <div class="ts7-cell ts7-rowhead">Tokens<br>per retry</div>
+      <div class="ts7-cell"><span class="ts7-val ts7-val--dim">full task resent</span></div>
+      <div class="ts7-cell ts7-cell--akka"><span class="ts7-val">resumes from the last checkpoint</span><span class="ts7-note">durable execution &middot; micro-checkpointing</span></div>
+    </div>
+
+    <div class="ts7-points" data-ts7="2">
+      <div class="ts7-point">Durable execution micro-checkpoints every step of an agent. A retry resumes from the last checkpoint and resends only the remaining work to the model &mdash; fewer tokens per retry.</div>
+      <div class="ts7-point"><span class="ts7-num">Verizon</span> &mdash; cloud infrastructure reduced <span class="ts7-num">70%</span>.</div>
+      <div class="ts7-point"><span class="ts7-num">Manulife</span> &mdash; latency improved <span class="ts7-num">70%</span>, concurrency up <span class="ts7-num">300%</span>, after rewriting their AI on Akka <span class="ts7-src">(Reuters)</span>.</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts8-wrapper">
+  <div id="ts8-sticky">
+    <div class="ts8-head">
+      <div class="ts8-eyebrow" data-ts8="0">The metric</div>
+      <div class="ts8-headline" data-ts8="0">Measure <span class="accent">cost per verified task</span>.</div>
+      <div class="ts8-sub" data-ts8="0">Every graded interaction records two things: the tokens it consumed and whether it passed its evaluation. A cost reduction that degrades quality will be identified quickly and can be reverted.</div>
+    </div>
+
+    <div class="ts8-body">
+      <div class="ts8-left" data-ts8="1">
+        <div class="ts8-formula">
+          <span class="ts8-formula-lhs">cost per verified task</span>
+          <span class="ts8-formula-eq">=</span>
+          <span class="ts8-frac">
+            <span class="ts8-frac-num">model tokens + eval overhead <em>($)</em></span>
+            <span class="ts8-frac-rule"></span>
+            <span class="ts8-frac-den">tasks that passed evaluation</span>
+          </span>
+        </div>
+
+        <table class="ts8-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Spend / mo</th>
+              <th>Pass rate</th>
+              <th>Cost / verified task</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>frontier incumbent</td>
+              <td class="ts8-mono">$58K</td>
+              <td class="ts8-mono">93%</td>
+              <td class="ts8-mono">$0.0152</td>
+            </tr>
+            <tr class="ts8-row-slm">
+              <td>optimized SLM</td>
+              <td class="ts8-mono ts8-y">$12K</td>
+              <td class="ts8-mono ts8-y">95%</td>
+              <td class="ts8-mono ts8-y">$0.0031</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ts8-deltas">
+          <div class="ts8-delta"><div class="ts8-delta-num">&minus;79%</div><div class="ts8-delta-lbl">token spend</div></div>
+          <div class="ts8-delta"><div class="ts8-delta-num">+2pts</div><div class="ts8-delta-lbl">quality</div></div>
+          <div class="ts8-delta"><div class="ts8-delta-num">&minus;80%</div><div class="ts8-delta-lbl">cost per verified task</div></div>
+        </div>
+      </div>
+
+      <div class="ts8-right" data-ts8="2">
+        <div class="ts8-proof-title">In production on Akka</div>
+        <div class="ts8-proof">
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;85%</div>
+            <div class="ts8-proof-body"><span>Tubi (Fox)</span> 150,000 CPUs + 5,000 GPUs down to 22,000 + 1,000 &mdash; at 5B tokens/sec</div>
+          </div>
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;90%</div>
+            <div class="ts8-proof-body"><span>Yields</span> model management cost, 20&times; more models governed</div>
+          </div>
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;60%</div>
+            <div class="ts8-proof-body"><span>DeductiveAI</span> cost to operate a multi-agent pipeline</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts9-wrapper">
+  <div id="ts9-sticky">
+    <div class="ts9-head">
+      <div class="ts9-eyebrow" data-ts9="0">Akka vs. The Other Guys</div>
+      <div class="ts9-headline" data-ts9="0"><span class="accent">Akka Token Shredder</span> vs.<br>gateways, dashboards, and one-shot tuning.</div>
+    </div>
+
+    <div class="ts9-duel" data-ts9="1">
+
+      <div class="ts9-akka">
+        <div class="ts9-akka-name">Akka Token Shredder</div>
+        <div class="ts9-akka-desc">Continuous RL on your traffic &mdash; evaluation-gated promotion, drift-triggered retraining.</div>
+        <div class="ts9-akka-stat">
+          <div class="ts9-akka-stat-num"><em>up to</em> 80%</div>
+          <div class="ts9-akka-stat-lbl">lower token cost &mdash; compounding</div>
+        </div>
+        <div class="ts9-akka-caps">
+          <div class="ts9-akka-cap">promotion gate, 24/7 &mdash; quality holds or it doesn&rsquo;t ship</div>
+          <div class="ts9-akka-cap">your weights, operated for you</div>
+          <div class="ts9-akka-cap">token tracking and evaluation telemetry built into the platform</div>
+          <div class="ts9-akka-cap">your production data stays on the platform record</div>
+        </div>
+      </div>
+
+      <div class="ts9-rivals">
+        <div class="ts9-rival">
+          <div class="ts9-rival-name">AI Gateways</div>
+          <div class="ts9-rival-line">Every request still runs on a rented general-purpose model, so the savings stop at roughly 20&ndash;40% and never compound.</div>
+        </div>
+        <div class="ts9-rival">
+          <div class="ts9-rival-name">Eval Dashboards</div>
+          <div class="ts9-rival-line">The dashboard tells you what went wrong after the fact, and fixing it is still your team&rsquo;s job.</div>
+        </div>
+        <div class="ts9-rival">
+          <div class="ts9-rival-name">One-Shot Tuning</div>
+          <div class="ts9-rival-line">The model is as good as the day it shipped, and it slowly degrades as your production traffic changes.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<section id="ts-closing">
+  <div class="tsc-logo tsc-reveal">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tsc)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tsc"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tsc-headline tsc-reveal">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tsc-sub tsc-reveal">AKKA TOKEN SHREDDER</div>
+  <div class="tsc-divider tsc-reveal"></div>
+
+  <div class="tsc-cta-block tsc-reveal">
+    <div class="tsc-cta-label">The 90-day Optimization Assessment</div>
+    <div class="tsc-cta-line">Deployed in your environment &mdash; your logs never leave it.</div>
+
+    <div class="tsc-phases">
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Install</div>
+        <div class="tsc-phase-days">days 1&ndash;30</div>
+        <div class="tsc-phase-desc">deploy in your VPC &middot; pass InfoSec &middot; connect trace sources</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Observe</div>
+        <div class="tsc-phase-days">days 31&ndash;60</div>
+        <div class="tsc-phase-desc">targeting scores live traffic &middot; ranked plan + quality baselines</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Witness</div>
+        <div class="tsc-phase-days">days 61&ndash;90</div>
+        <div class="tsc-phase-desc">first SLM trained, staged, shadow-tested &middot; before/after benchmark on your traffic</div>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="https://akka.io" class="tsc-cta tsc-reveal">Start the assessment &rarr;</a>
+</section>
+
+<!-- DEMO_HTML_MARKER -->
+<script>
+/* ── ts-01-problem ── */
+/* ── ts-01-problem reveals ────────────────────────── */
+const ts1Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts1]').forEach(el => ts1Obs.observe(el));
+
+
+/* ── ts-02-product ── */
+/* ── ts-02-product reveals ────────────────────────── */
+const ts2Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts2], .ts2-flow').forEach(el => ts2Obs.observe(el));
+
+
+/* ── ts-03-target ── */
+/* ── ts-03-target reveals ─────────────────────────── */
+const ts3Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts3]').forEach(el => ts3Obs.observe(el));
+
+
+/* ── ts-04-prove ── */
+/* ── ts-04-prove reveals ──────────────────────────── */
+const ts4Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts4]').forEach(el => ts4Obs.observe(el));
+
+
+/* ── ts-05-serve ── */
+/* ── ts-05-serve reveals ──────────────────────────── */
+const ts5Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts5]').forEach(el => ts5Obs.observe(el));
+
+
+/* ── ts-06-anyagent ── */
+/* ── ts-06-anyagent reveals ───────────────────────── */
+const ts6Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts6]').forEach(el => ts6Obs.observe(el));
+
+
+/* ── ts-07-onakka ── */
+/* ── ts-07-onakka reveals ─────────────────────────── */
+const ts7Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts7]').forEach(el => ts7Obs.observe(el));
+
+
+/* ── ts-08-math ── */
+/* ── ts-08-math reveals ───────────────────────────── */
+const ts8Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts8]').forEach(el => ts8Obs.observe(el));
+
+
+/* ── ts-09-competitive ── */
+/* ── ts-09-competitive reveals ────────────────────── */
+const ts9Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts9]').forEach(el => ts9Obs.observe(el));
+
+
+/* ── ts-10-close ── */
+/* ── ts-10-close reveals ──────────────────────────── */
+const tscObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.tsc-reveal').forEach(el => tscObs.observe(el));
+
+
+(function(){
+  var views = [
+    'ts-title','ts1-wrapper','ts2-wrapper','ts3-wrapper','ts4-wrapper',
+    'ts5-wrapper','ts6-wrapper','ts7-wrapper','ts8-wrapper','ts9-wrapper',
+    'ts-closing'
+  ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+
+  function docTop(el){
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+  function currentIndex() {
+    var y = (window.scrollY || window.pageYOffset) + 4;
+    var best = 0;
+    for (var i = 0; i < views.length; i++) {
+      if (docTop(views[i]) <= y) best = i;
+    }
+    return best;
+  }
+  function goTo(i) {
+    if (i < 0 || i >= views.length) return;
+    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
+  }
+  function navNext() { goTo(currentIndex() + 1); }
+  function navPrev() { goTo(currentIndex() - 1); }
+  function handleNavKey(key) {
+    if (key === 'ArrowRight' || key === 'PageDown') navNext();
+    else if (key === 'ArrowLeft' || key === 'PageUp') navPrev();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' ||
+        e.key === 'ArrowLeft'  || e.key === 'PageUp') {
+      e.preventDefault();
+      handleNavKey(e.key);
+    }
+  });
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'akka-deck-nav' && e.data.key) {
+      handleNavKey(e.data.key);
+    }
+  });
+})();
+
+
+/* ── KIOSK MODE (?kiosk in URL) ── */
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+
+  var kioskParam = new URLSearchParams(location.search).get('kiosk');
+  var SLIDE_MS = (kioskParam && !isNaN(kioskParam) ? parseInt(kioskParam) : 30) * 1000;
+  var TAB_MS   = Math.round(SLIDE_MS / 6);
+
+  const SECTION_IDS = [
+    'hero-wrapper','st-wrapper','s2-wrapper','s4-wrapper',
+    's5-wrapper','s6-wrapper','s7-problem','cust-wrapper',
+    'pkg-wrapper','s9-wrapper'
+  ];
+
+  function scrollMid(el) {
+    return el.offsetTop + Math.max(0, (el.offsetHeight - window.innerHeight) * 0.4);
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+
+      /* Build ordered stop list */
+      var stops = [];
+      SECTION_IDS.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) stops.push({ type: 'slide', el: el });
+      });
+      var demoEl    = document.getElementById('demo-section');
+      var closingEl = document.getElementById('closing');
+      if (demoEl)    stops.push({ type: 'demo',  el: demoEl });
+      if (closingEl) stops.push({ type: 'slide', el: closingEl });
+      stops.sort(function(a,b){ return a.el.offsetTop - b.el.offsetTop; });
+
+      /* Progress bar */
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:3px;z-index:99999;background:#111;pointer-events:none';
+      var fill = document.createElement('div');
+      fill.style.cssText = 'height:100%;width:0%;background:#F5C518';
+      bar.appendChild(fill);
+      document.body.appendChild(bar);
+
+      var badge = document.createElement('div');
+      badge.textContent = '⏵ KIOSK';
+      badge.style.cssText = 'position:fixed;bottom:8px;right:14px;z-index:99999;font-family:monospace;font-size:10px;color:#444;letter-spacing:2px;pointer-events:none';
+      document.body.appendChild(badge);
+
+      var idx = 0, timer = null;
+
+      function startFill(ms) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + ms + 'ms linear';
+          fill.style.width = '100%';
+        });
+      }
+
+      function advance() {
+        idx = (idx + 1) % stops.length;
+        if (idx === 0) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          timer = setTimeout(function(){ show(0); }, 2000);
+        } else {
+          show(idx);
+        }
+      }
+
+      function show(i) {
+        idx = i;
+        var stop = stops[i];
+        var y = stop.type === 'demo' ? stop.el.offsetTop : scrollMid(stop.el);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        if (stop.type === 'demo') {
+          var tabs = document.querySelectorAll('#demo-section .tab-btn');
+          if (!tabs.length) { startFill(SLIDE_MS); timer = setTimeout(advance, SLIDE_MS); return; }
+          var t = 0;
+          tabs[0].click();
+          startFill(TAB_MS * tabs.length);
+          function nextTab() {
+            t++;
+            if (t < tabs.length) { tabs[t].click(); timer = setTimeout(nextTab, TAB_MS); }
+            else { timer = setTimeout(advance, TAB_MS); }
+          }
+          timer = setTimeout(nextTab, TAB_MS);
+        } else {
+          startFill(SLIDE_MS);
+          timer = setTimeout(advance, SLIDE_MS);
+        }
+      }
+
+      /* Pause/resume on click */
+      var paused = false;
+      document.addEventListener('click', function() {
+        if (!paused) {
+          clearTimeout(timer);
+          fill.style.transition = 'none';
+          badge.textContent = '⏸ KIOSK';
+          paused = true;
+        } else {
+          badge.textContent = '⏵ KIOSK';
+          paused = false;
+          advance();
+        }
+      });
+
+      show(0);
+
+    }, 800);
+  });
+})();
+
+/* DEMO_JS_MARKER */
+</script>
+</body>
+</html>

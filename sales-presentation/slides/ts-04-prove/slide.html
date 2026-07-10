@@ -1,0 +1,53 @@
+<div id="ts4-wrapper">
+  <div id="ts4-sticky">
+    <div class="ts4-head">
+      <div class="ts4-eyebrow" data-ts4="0">How it works &middot; 02</div>
+      <div class="ts4-headline" data-ts4="0">Production traffic trains your model and then <span class="accent">tested in staging</span>.</div>
+      <div class="ts4-sub" data-ts4="0">An open-weights base (4&ndash;12B) is tuned with reinforcement learning against your interaction data &mdash; your evaluations are the grader. Training runs on GPUs in your cloud account: in-VPC, sovereign, air-gapped where required. The result is a specialized SLM &mdash; a ~50MB adapter. You own the weights.</div>
+    </div>
+
+    <div class="ts4-diagram" data-ts4="1">
+      <svg viewBox="0 0 1100 300" aria-label="Candidate SLM shadows live traffic in staging; the gate promotes only when quality holds and tokens drop">
+        <rect x="20" y="130" width="130" height="40" class="ts4-nd"/>
+        <text x="85" y="154" text-anchor="middle" class="ts4-nl">live traffic</text>
+
+        <line x1="150" y1="143" x2="300" y2="90" class="ts4-el"/>
+        <line x1="150" y1="157" x2="300" y2="232" class="ts4-el-dash"/>
+
+        <rect x="300" y="58" width="210" height="64" class="ts4-nd"/>
+        <text x="405" y="79" text-anchor="middle" class="ts4-nl">Incumbent</text>
+        <text x="405" y="95" text-anchor="middle" class="ts4-nls">frontier API</text>
+        <text x="405" y="112" text-anchor="middle" class="ts4-nls">quality 0.87 &middot; 100% tokens</text>
+
+        <rect x="300" y="200" width="210" height="64" class="ts4-ndy"/>
+        <text x="405" y="221" text-anchor="middle" class="ts4-nl ts4-nl-y">Candidate</text>
+        <text x="405" y="237" text-anchor="middle" class="ts4-nls">your SLM</text>
+        <text x="405" y="254" text-anchor="middle" class="ts4-nls ts4-nls-y">quality 0.89 &middot; 21% tokens</text>
+
+        <line x1="510" y1="90" x2="740" y2="140" class="ts4-el"/>
+        <line x1="510" y1="232" x2="740" y2="180" class="ts4-el"/>
+
+        <rect x="740" y="116" width="180" height="88" class="ts4-ndy"/>
+        <text x="830" y="141" text-anchor="middle" class="ts4-nl ts4-nl-y">GATE</text>
+        <text x="830" y="161" text-anchor="middle" class="ts4-nls ts4-nls-w">quality &ge; baseline &nbsp;&#10003;</text>
+        <text x="830" y="177" text-anchor="middle" class="ts4-nls ts4-nls-w">token drop &ge; target &nbsp;&#10003;</text>
+
+        <line x1="920" y1="160" x2="958" y2="160" class="ts4-el"/>
+        <polygon points="966,160 958,155 958,165" fill="#F5C518"/>
+        <rect x="966" y="130" width="120" height="60" class="ts4-nd"/>
+        <text x="1026" y="155" text-anchor="middle" class="ts4-nl">Promote</text>
+        <text x="1026" y="171" text-anchor="middle" class="ts4-nls">canary &rarr; fleet</text>
+
+        <line x1="830" y1="204" x2="830" y2="240" class="ts4-el-dash"/>
+        <text x="830" y="258" text-anchor="middle" class="ts4-nls ts4-dimtext">Do not promote if no improvement</text>
+      </svg>
+    </div>
+
+    <div class="ts4-benchmark" data-ts4="2">Every promotion ships with an auto-generated before/after benchmark &mdash; computed by your evaluations, on your traffic, stored on the audit record.</div>
+
+    <div class="ts4-points" data-ts4="2">
+      <div class="ts4-point">After promotion, the loop keeps grading. Drift in traffic or upstream models registers in eval scores first; retraining triggers automatically; a new candidate re-enters staging. Quality below the bar triggers <span class="ts4-em">instant rollback</span> to the incumbent.</div>
+      <div class="ts4-point">The loop runs inside your <span class="ts4-em">Improvement Policy</span>: what it optimizes toward, how far it may tune, what it may never touch. Every decision lands on the immutable interaction record.</div>
+    </div>
+  </div>
+</div>

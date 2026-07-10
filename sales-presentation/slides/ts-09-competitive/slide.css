@@ -1,0 +1,123 @@
+#ts9-wrapper {
+  height: 200vh;
+  position: relative;
+}
+#ts9-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts9-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts9-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+[data-ts9] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts9].visible { opacity: 1; transform: none; }
+
+.ts9-head { margin-bottom: 44px; }
+.ts9-eyebrow {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+}
+.ts9-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts9-headline {
+  font-size: clamp(30px, 3.8vw, 54px); font-weight: 700;
+  line-height: 1.08; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1250px;
+}
+.ts9-headline .accent { color: var(--yellow); }
+
+/* Duel layout: one large Shredder card, rivals stacked beside it */
+.ts9-duel {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.ts9-akka {
+  display: flex; flex-direction: column;
+  padding: 34px 38px 36px;
+  background: rgba(245,197,24,0.05);
+  border: 1px solid rgba(245,197,24,0.55);
+  border-radius: 6px;
+}
+.ts9-akka-name {
+  font-size: clamp(15px, 1.3vw, 19px); font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 16px;
+}
+.ts9-akka-desc {
+  font-size: clamp(18px, 1.7vw, 25px);
+  font-weight: 600; letter-spacing: -0.01em;
+  color: var(--white); line-height: 1.3;
+  margin-bottom: 26px;
+}
+.ts9-akka-stat { margin-bottom: 26px; }
+.ts9-akka-stat-num {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(44px, 4.6vw, 68px); font-weight: 700;
+  color: var(--yellow); line-height: 1; letter-spacing: -0.03em;
+}
+.ts9-akka-stat-num em {
+  font-style: normal;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.42em; font-weight: 600;
+  color: #d4d4d4; letter-spacing: 0;
+  margin-right: 6px;
+}
+.ts9-akka-stat-lbl {
+  font-size: 12px; color: #b8b8b8; text-transform: uppercase;
+  letter-spacing: 1.8px; margin-top: 8px; font-weight: 500;
+}
+.ts9-akka-caps { display: flex; flex-direction: column; gap: 11px; margin-top: auto; }
+.ts9-akka-cap {
+  font-size: clamp(13px, 1.15vw, 16.5px);
+  color: #e0e0e0; line-height: 1.4;
+  padding-left: 16px; position: relative;
+}
+.ts9-akka-cap::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+/* Rivals column */
+.ts9-rivals {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.ts9-rival {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 18px 24px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1F1F1F;
+  border-radius: 6px;
+}
+.ts9-rival-name {
+  font-size: clamp(11px, 1vw, 14px); font-weight: 700;
+  letter-spacing: 1.8px; text-transform: uppercase;
+  color: #b8b8b8;
+  margin-bottom: 8px;
+}
+.ts9-rival-line {
+  font-size: clamp(13px, 1.15vw, 16.5px);
+  color: #999; line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .ts9-duel { grid-template-columns: 1fr; }
+}

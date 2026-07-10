@@ -1,0 +1,72 @@
+<div id="ts8-wrapper">
+  <div id="ts8-sticky">
+    <div class="ts8-head">
+      <div class="ts8-eyebrow" data-ts8="0">The metric</div>
+      <div class="ts8-headline" data-ts8="0">Measure <span class="accent">cost per verified task</span>.</div>
+      <div class="ts8-sub" data-ts8="0">Every graded interaction records two things: the tokens it consumed and whether it passed its evaluation. A cost reduction that degrades quality will be identified quickly and can be reverted.</div>
+    </div>
+
+    <div class="ts8-body">
+      <div class="ts8-left" data-ts8="1">
+        <div class="ts8-formula">
+          <span class="ts8-formula-lhs">cost per verified task</span>
+          <span class="ts8-formula-eq">=</span>
+          <span class="ts8-frac">
+            <span class="ts8-frac-num">model tokens + eval overhead <em>($)</em></span>
+            <span class="ts8-frac-rule"></span>
+            <span class="ts8-frac-den">tasks that passed evaluation</span>
+          </span>
+        </div>
+
+        <table class="ts8-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Spend / mo</th>
+              <th>Pass rate</th>
+              <th>Cost / verified task</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>frontier incumbent</td>
+              <td class="ts8-mono">$58K</td>
+              <td class="ts8-mono">93%</td>
+              <td class="ts8-mono">$0.0152</td>
+            </tr>
+            <tr class="ts8-row-slm">
+              <td>optimized SLM</td>
+              <td class="ts8-mono ts8-y">$12K</td>
+              <td class="ts8-mono ts8-y">95%</td>
+              <td class="ts8-mono ts8-y">$0.0031</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="ts8-deltas">
+          <div class="ts8-delta"><div class="ts8-delta-num">&minus;79%</div><div class="ts8-delta-lbl">token spend</div></div>
+          <div class="ts8-delta"><div class="ts8-delta-num">+2pts</div><div class="ts8-delta-lbl">quality</div></div>
+          <div class="ts8-delta"><div class="ts8-delta-num">&minus;80%</div><div class="ts8-delta-lbl">cost per verified task</div></div>
+        </div>
+      </div>
+
+      <div class="ts8-right" data-ts8="2">
+        <div class="ts8-proof-title">In production on Akka</div>
+        <div class="ts8-proof">
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;85%</div>
+            <div class="ts8-proof-body"><span>Tubi (Fox)</span> 150,000 CPUs + 5,000 GPUs down to 22,000 + 1,000 &mdash; at 5B tokens/sec</div>
+          </div>
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;90%</div>
+            <div class="ts8-proof-body"><span>Yields</span> model management cost, 20&times; more models governed</div>
+          </div>
+          <div class="ts8-proof-item">
+            <div class="ts8-proof-num">&minus;60%</div>
+            <div class="ts8-proof-body"><span>DeductiveAI</span> cost to operate a multi-agent pipeline</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

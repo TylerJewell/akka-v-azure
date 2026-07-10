@@ -1,0 +1,57 @@
+<div id="ts6-wrapper">
+  <div id="ts6-sticky">
+    <div class="ts6-head">
+      <div class="ts6-eyebrow" data-ts6="0">Any agent</div>
+      <div class="ts6-headline" data-ts6="0">It optimizes agents you <span class="accent">didn&rsquo;t build on Akka</span>.</div>
+      <div class="ts6-sub" data-ts6="0">The interaction-log ingests traces from wherever your agents run today.</div>
+    </div>
+
+    <div class="ts6-funnel" data-ts6="1">
+      <div class="ts6-sources">
+        <div class="ts6-source">LangChain / LangGraph</div>
+        <div class="ts6-source">CrewAI / AutoGen</div>
+        <div class="ts6-source">Bedrock / Foundry</div>
+        <div class="ts6-source">custom stacks</div>
+      </div>
+
+      <div class="ts6-arrow-wrap">
+        <svg class="ts6-arrows" viewBox="0 0 1500 170" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="ts6-arrow" pathLength="100" d="M187.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M562.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M937.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M1312.5,0 V85 H750" />
+            <path class="ts6-arrow" pathLength="100" d="M750,85 V160" />
+          </g>
+          <polygon class="ts6-arrowhead" points="750,170 741,154 759,154" fill="#F5C518" />
+        </svg>
+        <span class="ts6-arrow-label">OTEL / OpenInference &middot; ingest</span>
+      </div>
+
+      <div class="ts6-log">
+        <div class="ts6-log-name">Interaction log</div>
+        <div class="ts6-log-rows">
+          <span class="ts6-log-row"><em>captured</em> &mdash; recorded by the Akka runtime</span>
+          <span class="ts6-log-row"><em>imported</em> &mdash; ingested from a third-party runtime</span>
+        </div>
+      </div>
+
+      <svg class="ts6-down" viewBox="0 0 16 34" aria-hidden="true">
+        <line x1="8" y1="0" x2="8" y2="26" stroke="#F5C518" stroke-width="1.5"/>
+        <polygon points="8,34 1,22 15,22" fill="#F5C518"/>
+      </svg>
+
+      <div class="ts6-bottom">
+        <div class="ts6-loopchips">
+          <span>Target</span><i>&rarr;</i><span>Grade</span><i>&rarr;</i><span>Train</span><i>&rarr;</i><span>Prove</span>
+        </div>
+        <svg class="ts6-right" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts6-endpoint">
+          <div class="ts6-endpoint-tag">OpenAI-compatible endpoint &middot; serving your SLM</div>
+          <div class="ts6-endpoint-body">Your existing agent adopts it with a <span class="ts6-em">one-line base-URL change</span>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

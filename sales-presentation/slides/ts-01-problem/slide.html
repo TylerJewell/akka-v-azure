@@ -1,0 +1,72 @@
+<div id="ts1-wrapper">
+  <div id="ts1-sticky">
+    <div class="ts1-head">
+      <div class="ts1-eyebrow" data-ts1="0">The problem</div>
+      <div class="ts1-headline" data-ts1="0">Token spend is the <span class="accent">largest and fastest-growing</span> line item.</div>
+      <div class="ts1-sub" data-ts1="0"><span class="ts1-num">$6M&ndash;$12M</span> of a mid-sized enterprise&rsquo;s 3-year agentic TCO &mdash; bigger than infrastructure.<br>Agents multiply calls: plans, retries, tool loops, reasoning tokens, stuffed context windows.</div>
+    </div>
+
+    <div class="ts1-body">
+      <div class="ts1-chart-curve" data-ts1="1">
+        <div class="ts1-chart-title">AI spend as agent fleets grow</div>
+        <svg class="ts1-curve" viewBox="0 0 640 300" aria-label="Token spend rises steeply with agents in production while Akka infrastructure cost stays flat">
+          <line x1="40" y1="270" x2="620" y2="270" stroke="#2A2A2A" stroke-width="1"/>
+          <line x1="40" y1="270" x2="40" y2="30" stroke="#2A2A2A" stroke-width="1"/>
+          <text x="140" y="290" class="ts1-tick" text-anchor="middle">5</text>
+          <text x="280" y="290" class="ts1-tick" text-anchor="middle">15</text>
+          <text x="430" y="290" class="ts1-tick" text-anchor="middle">40</text>
+          <text x="590" y="290" class="ts1-tick" text-anchor="middle">100</text>
+          <path class="ts1-line ts1-line-infra" pathLength="100" d="M40,258 C220,242 420,226 592,212" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/>
+          <path class="ts1-line ts1-line-tokens" pathLength="100" d="M40,254 C230,240 420,168 592,44" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="592" y="32" class="ts1-series ts1-series-tok" text-anchor="end">TOKEN SPEND</text>
+          <text x="592" y="200" class="ts1-series ts1-series-infra" text-anchor="end">INFRA ON AKKA</text>
+        </svg>
+        <div class="ts1-axis-label">Agents in production &rarr;</div>
+      </div>
+
+      <div class="ts1-charts-bars" data-ts1="2">
+        <div class="ts1-insight">Most of that traffic is narrow, repetitive, and verifiable &mdash; extraction, classification, summarization, SQL, routing, moderation. A small model specialized on <span class="ts1-em">one task</span> beats a frontier API on that task.</div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Content moderation &mdash; production score <span class="ts1-src">Google DeepMind Gemmaverse case study &middot; 23M-subscriber telco</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Gemma 3 4B <span class="ts1-bar-note">tuned</span></div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:80%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">0.80</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Claude Sonnet 3.7</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:77%"></div></div>
+            <div class="ts1-bar-val">0.77</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:76%"></div></div>
+            <div class="ts1-bar-val">0.76</div>
+          </div>
+        </div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Enterprise RAG &mdash; head-to-head preference <span class="ts1-src">published enterprise result</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">RL-tuned 8B</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:51%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">51%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:29%"></div></div>
+            <div class="ts1-bar-val">29%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Tie</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--dim" style="--w:20%"></div></div>
+            <div class="ts1-bar-val">20%</div>
+          </div>
+        </div>
+
+        <div class="ts1-note">A 4B open-weight model &mdash; up to <span class="ts1-num">12&times;</span> lower inference cost. The model does less work, enabling more inference per GPU.</div>
+      </div>
+    </div>
+  </div>
+</div>

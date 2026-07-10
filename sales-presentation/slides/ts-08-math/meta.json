@@ -1,0 +1,12 @@
+{
+  "id": "ts-08-math",
+  "nav_id": "ts8-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "220vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-ts8]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

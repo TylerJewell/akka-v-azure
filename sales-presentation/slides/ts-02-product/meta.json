@@ -1,0 +1,12 @@
+{
+  "id": "ts-02-product",
+  "nav_id": "ts2-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "260vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-ts2], .ts2-flow", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

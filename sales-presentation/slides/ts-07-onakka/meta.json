@@ -1,0 +1,12 @@
+{
+  "id": "ts-07-onakka",
+  "nav_id": "ts7-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "200vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-ts7]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

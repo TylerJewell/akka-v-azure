@@ -1,0 +1,91 @@
+#ts4-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts4-sticky {
+  position: sticky; top: 0;
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts4-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts4-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts4] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts4].visible { opacity: 1; transform: none; }
+
+.ts4-head { margin-bottom: 36px; }
+.ts4-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts4-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts4-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts4-headline .accent { color: var(--yellow); }
+.ts4-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1200px;
+}
+.ts4-em { color: var(--white); font-weight: 600; }
+
+/* Staging gate diagram — node/edge idiom */
+.ts4-diagram { max-width: 1200px; }
+.ts4-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ts4-nd  { fill: #141414; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-ndy { fill: #1a1700; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-nl {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; fill: #ccc; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+.ts4-nl-y { fill: #F5C518; }
+.ts4-nls {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px; fill: #777;
+}
+.ts4-nls-y { fill: #F5C518; }
+.ts4-nls-w { fill: #d4d4d4; }
+.ts4-dimtext { fill: #666; }
+.ts4-el { stroke: #F5C518; stroke-width: 1; }
+.ts4-el-dash { stroke: #F5C518; stroke-width: 1; stroke-dasharray: 4,3; }
+
+.ts4-benchmark {
+  margin-top: 26px;
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: #C8C8C8; line-height: 1.45;
+}
+
+.ts4-points {
+  margin-top: 18px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+}
+.ts4-point {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.5;
+  padding-left: 16px; position: relative;
+}
+.ts4-point::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .ts4-points { grid-template-columns: 1fr; gap: 14px; }
+}

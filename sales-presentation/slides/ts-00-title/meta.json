@@ -1,0 +1,12 @@
+{
+  "id": "ts-00-title",
+  "nav_id": "ts-title",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "100vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": []
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}
