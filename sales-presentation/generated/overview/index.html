@@ -54,7 +54,7 @@ body {
 
 /* ── 00-title ── */
 #title {
-  height: 100vh; min-height: 680px;
+  height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
   text-align: center;
@@ -137,13 +137,22 @@ body {
   transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
 }
 
+@media (max-width: 820px) {
+  #title {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .title-headline { font-size: clamp(38px, 9vw, 56px); }
+  .title-sub { letter-spacing: 2.5px; }
+}
+
 /* ── 01-hero ── */
 #hero-wrapper {
   height: 140vh;
   position: relative;
 }
 #hero {
-  height: 100vh; min-height: 680px;
+  height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center;
   padding: 0 var(--pad-8); position: sticky; top: 0; background: var(--black); overflow: hidden;
 }
@@ -208,6 +217,17 @@ body {
   transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
 }
 
+@media (max-width: 820px) {
+  #hero-wrapper { height: auto; }
+  #hero {
+    position: static; height: auto;
+    padding-top: 88px; padding-bottom: 64px;
+  }
+  .hero-headline { font-size: clamp(38px, 9vw, 56px); }
+  .hero-stats { gap: 32px; }
+  .hero-scroll-hint { display: none; }
+}
+
 /* ── 02-types ── */
 #st-wrapper {
   height: calc(100vh * 1.6);
@@ -216,7 +236,7 @@ body {
 
 #st-sticky {
   position: sticky; top: 0;
-  height: 100vh; min-height: 700px;
+  height: 100vh; height: 100dvh; min-height: 700px;
   background: var(--dark);
   padding: 28px 24px 24px;
   display: flex; flex-direction: column;
@@ -329,15 +349,30 @@ body {
   display: block;
 }
 
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  #st-wrapper { height: auto; }
+  #st-sticky {
+    position: static; height: auto; min-height: 0;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  /* 4x2 grid → 2 columns; drop JS-set explicit placement so cards auto-flow */
+  .st-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+  .st-card { grid-column: auto !important; grid-row: auto !important; }
+}
+@media (max-width: 600px) {
+  .st-grid { grid-template-columns: 1fr; }
+}
 
-/* ── 02b-taxonomy ── */
+
+/* ── 03-taxonomy ── */
 #stax-wrapper {
   height: 200vh;
   position: relative;
 }
 #stax-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex; flex-direction: column; justify-content: center;
   align-items: center;
   padding: 0 var(--pad-6);
@@ -567,15 +602,47 @@ body {
 }
 .stax-col--process .stax-v { color:#e8e8e8; }
 
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  #stax-wrapper { height: auto; }
+  #stax-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .stax-headline { margin-bottom: 36px; }
 
-/* ── 03-complexity ── */
+  /* Two halves → single column */
+  .stax-halves { grid-template-columns: 1fr; gap: 40px 0; }
+  .stax-vdivider { display: none; }
+
+  /* desktop vertical-alignment margin hacks collapse */
+  .stax-half > .stax-col-name { margin-bottom: 24px; }
+  .stax-col--person .stax-logos { margin-bottom: 24px; }
+
+  /* Governance bracket: neutralize the absolute bar + bracket, stack instead */
+  .stax-gov-bracket-wrap { flex-direction: column; }
+  .stax-gov-bracket-rows { padding-right: 0; }
+  .stax-gov-bar { display: none; }
+  .stax-gov-bracket {
+    position: static; transform: none;
+    left: auto; top: auto; margin-top: 16px;
+  }
+}
+@media (max-width: 600px) {
+  /* Person-attached vs Process-attached → stacked */
+  .stax-compare { grid-template-columns: 1fr; }
+  .stax-col-divider { padding: 10px 0; }
+}
+
+
+/* ── 04-complexity ── */
 #s2-wrapper {
   height: 300vh;
   position: relative;
 }
 #s2-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex; flex-direction: column; justify-content: center;
   align-items: center;
   padding: 0 var(--pad-6);
@@ -893,8 +960,34 @@ body {
   background: rgba(255,255,255,0.025);
 }
 
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  #s2-wrapper { height: auto; }
+  #s2-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .s2-sub { margin-bottom: 40px; }
+  .s2-grid { grid-template-columns: repeat(2, 1fr); }
+  .s2-matrix { grid-template-columns: repeat(2, 1fr); }
 
-/* ── 04-platform ── */
+  /* Converging arrows only make sense over the 4-col pillars — drop them,
+     keep the "unevenly delivered" label as a centered divider */
+  .s2-arrows { display: none; }
+  .s2-arrow-wrap { text-align: center; }
+  .s2-arrow-label {
+    position: static; transform: none;
+    display: inline-block; margin: 4px 0 12px;
+  }
+}
+@media (max-width: 600px) {
+  .s2-grid { grid-template-columns: 1fr; }
+  .s2-pillar { border-left-color: transparent; padding-left: 0; padding-right: 0; }
+  .s2-matrix { grid-template-columns: 1fr; }
+}
+
+
+/* ── 05-platform ── */
 #s4-wrapper {
   height: 180vh;
   position: relative;
@@ -904,7 +997,7 @@ body {
   padding: 80px var(--pad-6) 60px;
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -995,14 +1088,23 @@ body {
   font-size: 12px; color: #888; line-height: 1.45;
 }
 
-/* ── 05-specifications ── */
+@media (max-width: 820px) {
+  #s4-wrapper { height: auto; }
+  #s4 {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .s4-image { width: 100%; }
+}
+
+/* ── 06-specifications ── */
 #spec-wrapper {
   height: 320vh;
   position: relative;
 }
 #spec-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex; flex-direction: column;
   justify-content: center;
   padding: 0 var(--pad-6);
@@ -1425,8 +1527,35 @@ body {
   }
 }
 
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  #spec-wrapper { height: auto; }
+  #spec-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .spec-head { margin-bottom: 40px; }
 
-/* ── 06-platform-use-cases ── */
+  /* Fixed grid-areas flow → single column.
+     Reading order becomes Build spec → Govern spec → Akka Specify → certified service */
+  .spec-flow { display: flex; flex-direction: column; grid-template-areas: none; gap: 16px; }
+  .spec-track { display: flex; flex-direction: column; gap: 12px; }
+  .spec-track-arrow { display: none; }
+  .spec-hub { order: 1; }
+  .spec-hub::before, .spec-hub::after { display: none; }
+  .spec-merge { order: 2; flex-direction: column; }
+  .spec-merge-arrows { display: none; }
+
+  /* Verify loop: drop the stretched loop-back wire, keep the label inline */
+  .spec-loop-svg { display: none; }
+  .spec-loop-label {
+    position: static; transform: none;
+    white-space: normal; margin-top: 8px;
+  }
+}
+
+
+/* ── 07-platform-use-cases ── */
 ﻿#platform-pattern-wrapper {
   height: 180vh;
   position: relative;
@@ -1437,6 +1566,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1627,8 +1757,37 @@ body {
 }
 .pp-row.visible .pp-counter-word { opacity: 1; transform: none; }
 
+/* ── Mobile ── */
+@media (max-width: 820px) {
+  #platform-pattern-wrapper { height: auto; }
+  #platform-pattern {
+    position: static;
+    height: auto;
+    padding: 64px var(--pad-6);
+  }
+  .pp-inner { height: auto; max-height: none; }
+  .pp-headline,
+  .pp-subhead { white-space: normal; }
+  .pp-headline { font-size: clamp(28px, 8vw, 52px); }
+  .pp-subhead { font-size: clamp(16px, 4.4vw, 26px); }
+}
 
-/* ── 07-framework ── */
+@media (max-width: 600px) {
+  .pp-row { grid-template-columns: 1fr; }
+  .pp-row-stat {
+    border-right: none;
+    border-bottom: 1px solid rgba(245,197,24,0.18);
+    padding: 22px 24px 26px;
+  }
+  .pp-stat-rule { left: 24px; }
+  .pp-row-body { padding: 22px 24px; }
+  .pp-row-tag { letter-spacing: 2px; }
+  .pp-row-customer { gap: 14px; }
+  .pp-customer-mark { font-size: clamp(28px, 7vw, 40px); }
+}
+
+
+/* ── 08-framework ── */
 #s6b-wrapper {
   height: 180vh;
   position: relative;
@@ -1637,7 +1796,7 @@ body {
   background: var(--black);
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex;
   flex-direction: column;
   padding: 40px var(--pad-6) 32px;
@@ -1831,8 +1990,24 @@ body {
   }
 }
 
+@media (max-width: 820px) {
+  #s6b-wrapper { height: auto; }
+  #s6b {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  #s6b .s6b-inner { height: auto; justify-content: flex-start; }
+  .s6b-row { grid-template-columns: 1fr; }
+  .s6b-theme {
+    border-right: none;
+    border-bottom: 1px solid rgba(40,200,64,0.18);
+    padding: 12px 20px;
+  }
+  .s6b-right { padding: 12px 20px; }
+}
 
-/* ── 08-innovations ── */
+
+/* ── 09-innovations ── */
 #s13-wrapper {
   height: 180vh;
   position: relative;
@@ -1843,6 +2018,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2039,8 +2215,26 @@ body {
   letter-spacing: 0.06em;
 }
 
+/* ── Mobile ── */
+@media (max-width: 820px) {
+  #s13-wrapper { height: auto; }
+  #s13 {
+    position: static;
+    height: auto;
+    padding: 64px var(--pad-6);
+  }
+  .s13-headline { font-size: clamp(30px, 8vw, 64px); }
+  .s13-subhead { margin-bottom: 36px; }
+}
 
-/* ── 09-devzero ── */
+@media (max-width: 780px) {
+  .s13-grid { grid-template-columns: 1fr; }
+  .s13-title { min-height: 0; }
+  .s13-desc { min-height: 0; }
+}
+
+
+/* ── 10-devzero ── */
 #s5-wrapper {
   height: 140vh;
   position: relative;
@@ -2050,6 +2244,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   padding: 40px 0 24px;
@@ -2262,7 +2457,27 @@ body {
   .s5-props { flex-direction: column; gap: 12px; }
 }
 
-/* ── 10-resilience ── */
+/* ── Mobile ── */
+@media (max-width: 820px) {
+  #s5-wrapper { height: auto; }
+  #s5 {
+    position: static;
+    height: auto;
+    padding: 64px 0 40px;
+  }
+  .s5-main { min-height: 0; gap: 20px; }
+  .s5-terminal { flex: none; min-height: 320px; }
+  .s5-props { max-width: none; width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .s5-headline { font-size: clamp(26px, 8vw, 50px); }
+  /* Architecture diagram labels shrink with the shrinking viewBox — bump them */
+  .s5-arch-body .nl { font-size: 13px; }
+  .s5-arch-body .nl-s { font-size: 11px; }
+}
+
+/* ── 11-resilience ── */
 #s6-wrapper {
   height: 140vh;
   position: relative;
@@ -2272,6 +2487,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   padding: 36px var(--pad-6) 24px;
@@ -2378,6 +2594,49 @@ body {
   .s6-stats { gap: 20px; }
 }
 
+/* Mobile-only link-out card (the scaled interactive iframe is unusable on phones) */
+.s6-mobile-card { display: none; }
+
+@media (max-width: 820px) {
+  #s6-wrapper { height: auto; }
+  #s6 {
+    position: static;
+    height: auto;
+    padding: 64px var(--pad-6);
+  }
+  .s6-headline { font-size: clamp(26px, 8vw, 50px); }
+  .s6-frame-wrap {
+    flex: none;
+    box-shadow: none;
+  }
+  .s6-frame-wrap iframe,
+  .s6-expand-toggle { display: none; }
+  .s6-mobile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px 26px;
+    text-decoration: none;
+    background: rgba(245,197,24,0.04);
+  }
+  .s6-mobile-card-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--yellow); font-weight: 700;
+  }
+  .s6-mobile-card-title {
+    font-size: 22px; font-weight: 700; color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .s6-mobile-card-desc {
+    font-size: 14px; color: #b0b0b0; line-height: 1.5;
+  }
+  .s6-mobile-card-cta {
+    margin-top: 6px;
+    font-size: 14px; font-weight: 700; color: var(--yellow);
+    letter-spacing: 0.3px;
+  }
+}
+
 
 /* ── external inline: ../../assets/resilience/resilience.html ── */
 
@@ -2438,7 +2697,7 @@ body {
     #s6-rf .tab-btn.active { color: var(--fg); border-bottom-color: var(--yellow); }
   
 
-/* ── 11-governance ── */
+/* ── 12-governance ── */
 /* ── Phase 1: The Problem ── */
 #s7-problem {
   height: 140vh;
@@ -2446,7 +2705,7 @@ body {
 }
 #s7-problem-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex; flex-direction: column; justify-content: center;
   padding: 0 8vw;
   background: var(--black);
@@ -2503,7 +2762,7 @@ body {
 
 /* ── Phase 2: The Answer ── embedded governance tool ── */
 #s7-answer-frame {
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   width: 100%;
   background: var(--black);
   position: relative;
@@ -2534,15 +2793,62 @@ body {
   background: var(--black);
 }
 
+/* Mobile-only link-out card (the scaled interactive iframe is unusable on phones) */
+.s7gov-mobile-card { display: none; }
 
-/* ── 12-customers ── */
+@media (max-width: 820px) {
+  #s7-problem { height: auto; }
+  #s7-problem-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+    overflow: visible;
+  }
+  .s7-problems { flex-direction: column; gap: 0; }
+  .s7-prob { padding: 18px 0; }
+
+  #s7-answer-frame {
+    height: auto;
+    padding: 40px 20px 40px;
+  }
+  .s7gov-demo { min-height: 0; }
+  #s7-gov-iframe { display: none; }
+  .s7gov-mobile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 32px 26px;
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(245,197,24,0.04);
+    border: 1px solid rgba(245,197,24,0.18);
+  }
+  .s7gov-mobile-card-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--yellow); font-weight: 700;
+  }
+  .s7gov-mobile-card-title {
+    font-size: 22px; font-weight: 700; color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .s7gov-mobile-card-desc {
+    font-size: 14px; color: #b0b0b0; line-height: 1.5;
+  }
+  .s7gov-mobile-card-cta {
+    margin-top: 6px;
+    font-size: 14px; font-weight: 700; color: var(--yellow);
+    letter-spacing: 0.3px;
+  }
+}
+
+
+/* ── 13-customers ── */
 #cust-wrapper {
   height: 200vh; /* 5 customers, ~4 clicks each */
   position: relative;
 }
 #cust-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   background: var(--black);
   overflow: hidden;
 }
@@ -2682,13 +2988,33 @@ body {
   color: #333; z-index: 10;
 }
 
-/* ── 13-packages ── */
+@media (max-width: 820px) {
+  #cust-wrapper { height: auto; }
+  #cust-sticky { position: static; height: auto; overflow: visible; }
+  /* The scroll-jacked slides fan out into a vertical stack */
+  .cust-slide {
+    position: static; inset: auto;
+    opacity: 1 !important; pointer-events: auto;
+    min-height: 60vh; min-height: 60dvh;
+    padding: 72px var(--pad-6);
+  }
+  .cust-dots, .cust-counter, .cust-scroll-hint { display: none; }
+  .cust-name { font-size: clamp(34px, 9vw, 72px); }
+  /* Swap the wide left-to-right fade for an even vertical darken */
+  .cust-slide::after {
+    background: linear-gradient(180deg, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.6) 100%);
+  }
+}
+
+/* ── 14-packages ── */
 #pkg-wrapper {
   height: calc(100vh + 300px);
+  height: calc(100dvh + 300px);
   position: relative;
 }
 #pkg {
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 40px var(--pad-6) 40px;
   position: sticky;
   top: 0;
@@ -2987,14 +3313,34 @@ body {
 .pkg-reveal-d7 { transition-delay: .7s; }
 .pkg-reveal-d8 { transition-delay: .8s; }
 
+@media (max-width: 820px) {
+  #pkg-wrapper { height: auto; }
+  #pkg {
+    position: static; height: auto; min-height: 0;
+    padding-top: 64px; padding-bottom: 64px;
+    overflow-y: visible;
+  }
+  .pkg-infra { flex-direction: column; align-items: flex-start; gap: 14px; padding: 16px 20px; }
+  .pkg-infra-divider { display: none; }
+  .pkg-split { flex-direction: column; }
+  .pkg-eval-col { width: auto; }
+  /* Progression strip → vertical stack, drop the connector rules */
+  .pkg-upgrade { flex-direction: column; align-items: center; padding: 0; gap: 6px; }
+  .pkg-upgrade-line { display: none; }
+}
 
-/* ── 14-specify ── */
+@media (max-width: 600px) {
+  .pkg-tiers { grid-template-columns: 1fr; }
+}
+
+
+/* ── 15-specify ── */
 #spwhat-wrapper {
   height: 140vh;
   position: relative;
 }
 #spwhat {
-  height: 100vh; min-height: 680px;
+  height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center;
   padding: 0 var(--pad-8); position: sticky; top: 0; background: var(--black); overflow: hidden;
 }
@@ -3069,9 +3415,20 @@ body {
   transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
 }
 
-/* ── 17-closing ── */
+@media (max-width: 820px) {
+  #spwhat-wrapper { height: auto; }
+  #spwhat {
+    position: static; height: auto; min-height: 0;
+    padding-top: 64px; padding-bottom: 64px;
+    overflow: visible;
+  }
+  .hero-scroll-hint { display: none; }
+  .hero-stats { gap: 28px; }
+}
+
+/* ── 16-closing ── */
 #closing {
-  height: 100vh; min-height: 680px;
+  height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
   text-align: center;
@@ -3143,6 +3500,16 @@ body {
   margin-bottom: 32px;
 }
 .closing-cta:hover { background: #e0b416; }
+
+@media (max-width: 820px) {
+  #closing {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .closing-headline { font-size: clamp(38px, 9vw, 56px); }
+  .closing-sub { letter-spacing: 2.5px; }
+  .closing-stats { gap: 32px; }
+}
 
 
 <!-- DEMO_CSS_MARKER -->
@@ -3243,7 +3610,7 @@ body {
         <div class="stax-compare">
 
           <div class="stax-col stax-col--person">
-            <div class="stax-col-name">Person-attached</div>
+            <div class="stax-col-name">Human-driven agents</div>
             <div class="stax-logos">
               <span class="stax-logo stax-logo--claude"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg><span class="stax-logo-name">Claude Code</span></span>
               <span class="stax-logo stax-logo--copilot"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span class="stax-logo-name">Copilot</span></span>
@@ -3265,7 +3632,7 @@ body {
           <div class="stax-col-divider">vs</div>
 
           <div class="stax-col stax-col--process">
-            <div class="stax-col-name">Process-attached</div>
+            <div class="stax-col-name">Always-on agents</div>
             <div class="stax-logos">
               <span class="stax-logo stax-logo--akka"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109 25" fill="currentColor" aria-hidden="true"><path d="M72.1584 0L63.1046 10.1333V0H56.9064V24.9803H63.1046V14.8471L72.1584 24.9803H80.4349L69.2771 12.4894L80.4349 0H72.1584Z"/><path d="M13.7804 8.28733L17.2652 16.4097H10.2971L13.7819 8.28733H13.7804ZM11.3362 0.0620117L0 24.9999H6.55216L8.11306 21.5641H19.4493L21.113 24.9999H27.5623L16.276 0.0620117H11.3362Z"/><path d="M95.2196 8.28733L98.7044 16.4097H91.7363L95.2196 8.28733ZM92.7754 0.0620117L81.4392 24.9999H87.9914L89.5508 21.5641H100.888L102.552 24.9999H109L97.7152 0.0620117H92.7754Z"/><path d="M45.2828 0.0620117L36.2456 10.1786V0.0620117H30.0565V24.9999H36.2456V14.8833L45.2828 24.9999H53.5471L42.4076 12.5302L53.5471 0.0620117H45.2828Z"/></svg></span>
               <span class="stax-logo stax-logo--temporal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.206 7.794C15.64 3.546 14.204 0 12 0 9.796 0 8.361 3.546 7.794 7.794 3.546 8.36 0 9.796 0 12c0 2.204 3.546 3.639 7.794 4.206C8.36 20.453 9.796 24 12 24c2.204 0 3.639-3.546 4.206-7.794C20.454 15.64 24 14.204 24 12c0-2.204-3.547-3.64-7.794-4.206Zm-8.55 7.174c-4.069-.587-6.44-1.932-6.44-2.969 0-1.036 2.372-2.381 6.44-2.969-.09.98-.137 1.98-.137 2.97 0 .99.047 1.99.137 2.968zM12 1.215c1.036 0 2.381 2.372 2.969 6.44a32.718 32.718 0 0 0-5.938 0c.587-4.068 1.932-6.44 2.969-6.44Zm4.344 13.753c-.2.03-1.022.126-1.23.146-.02.209-.117 1.03-.145 1.23-.588 4.068-1.933 6.44-2.97 6.44-1.036 0-2.38-2.372-2.968-6.44-.03-.2-.126-1.022-.147-1.23a31.833 31.833 0 0 1 0-6.23 31.813 31.813 0 0 1 7.46.146c4.068.587 6.442 1.933 6.442 2.969-.001 1.036-2.374 2.382-6.442 2.97z"/></svg><span class="stax-logo-name">Temporal</span></span>
@@ -4388,7 +4755,7 @@ body {
                 <ServerIcon size={16} /> About Akka Clusters
               </h3>
               <p className="text-xs text-muted" style={{ lineHeight: 1.6 }}>
-                Akka clusters distribute agent workloads and memory across nodes. When a node fails, agents automatically migrate to healthy nodes. State is sharded in-memory across nodes with embedded routing and load balancing. Workflow state is managed with durable execution and memory recovery is from event sourced state. The combination reduces token waste by avoiding full workflow restarts. Akka's largest customers run clusters of 300K nodes with petabytes of data.
+                Akka clusters distribute agent workloads and memory across nodes. When a node fails, agents migrate automatically with no lost state, avoiding full workflow restarts. Akka's largest customers run clusters of 300K nodes with petabytes of data.
               </p>
             </div>
           </div>
@@ -5448,6 +5815,12 @@ body {
 
     ReactDOM.createRoot(document.getElementById('s6-rf-root')).render(React.createElement(App));
   </script>
+    <a class="s6-mobile-card" href="resilience/resilience.html" target="_blank" rel="noopener">
+      <div class="s6-mobile-card-label">Interactive demo</div>
+      <div class="s6-mobile-card-title">Resilience Tester</div>
+      <div class="s6-mobile-card-desc">Kill nodes, inject failures, and watch Akka self-heal in real time. Best viewed full-screen.</div>
+      <div class="s6-mobile-card-cta">Open the live demo &rarr;</div>
+    </a>
   </div>
 </section>
 </div>
@@ -5485,6 +5858,12 @@ body {
   </div>
   <div class="s7gov-demo">
     <iframe id="s7-gov-iframe" src="governance/governance-specify.html" title="Governance for agentic AI" loading="lazy" allow="fullscreen"></iframe>
+    <a class="s7gov-mobile-card" href="governance/governance-specify.html" target="_blank" rel="noopener">
+      <div class="s7gov-mobile-card-label">Interactive demo</div>
+      <div class="s7gov-mobile-card-title">Governance Console</div>
+      <div class="s7gov-mobile-card-desc">Explore live policy checks, approvals, and audit trails on agentic AI. Best viewed full-screen.</div>
+      <div class="s7gov-mobile-card-cta">Open the live demo &rarr;</div>
+    </a>
   </div>
 </div>
 
@@ -5838,7 +6217,6 @@ TYPES.forEach((t, i) => {
 
   card.innerHTML = `
     <div class="st-card-content">
-      <div class="st-num">${t.n}</div>
       <div class="st-name">${t.name}</div>
       <div class="st-desc">${t.desc}</div>
       <div class="st-context">${t.context}</div>
@@ -5879,7 +6257,7 @@ new IntersectionObserver(entries => {
 }, { threshold: 0 }).observe(document.getElementById('st-sticky'));
 
 
-/* ── 02b-taxonomy ── */
+/* ── 03-taxonomy ── */
 /* ── AI market taxonomy slide ─────────────────── */
 const staxObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -5889,7 +6267,7 @@ const staxObs = new IntersectionObserver(entries => {
 document.querySelectorAll('[data-stax]').forEach(el => staxObs.observe(el));
 
 
-/* ── 03-complexity ── */
+/* ── 04-complexity ── */
 /* ── Section 3 ──────────────────────── */
 const s2RevealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -5899,7 +6277,7 @@ const s2RevealObs = new IntersectionObserver(entries => {
 document.querySelectorAll('[data-s2="0"], [data-s2="1"], [data-s2="2"]').forEach(el => s2RevealObs.observe(el));
 
 
-/* ── 04-platform ── */
+/* ── 05-platform ── */
 const s4observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -5908,7 +6286,7 @@ const s4observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('#s4 .s4-reveal').forEach(el => s4observer.observe(el));
 
-/* ── 05-specifications ── */
+/* ── 06-specifications ── */
 /* ── Slide 04 specifications ──────────────────────── */
 const specRevealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -5918,7 +6296,7 @@ const specRevealObs = new IntersectionObserver(entries => {
 document.querySelectorAll('[data-spec="0"], [data-spec="1"], [data-spec="2"], [data-spec="3"]').forEach(el => specRevealObs.observe(el));
 
 
-/* ── 06-platform-use-cases ── */
+/* ── 07-platform-use-cases ── */
 (function() {
   function countUp(el, target, duration) {
     var start = performance.now();
@@ -5958,7 +6336,7 @@ document.querySelectorAll('[data-spec="0"], [data-spec="1"], [data-spec="2"], [d
 })();
 
 
-/* ── 07-framework ── */
+/* ── 08-framework ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -5969,7 +6347,7 @@ document.querySelectorAll('[data-spec="0"], [data-spec="1"], [data-spec="2"], [d
 })();
 
 
-/* ── 08-innovations ── */
+/* ── 09-innovations ── */
 const s13observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -5979,7 +6357,7 @@ const s13observer = new IntersectionObserver(entries => {
 document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(el));
 
 
-/* ── 09-devzero ── */
+/* ── 10-devzero ── */
 (function() {
   var script = [
     { type:'cmd', text:'/akka:specify "Customer loyalty program with points, tiers, and rewards"', phase:'specify' },
@@ -6320,7 +6698,7 @@ document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(
 })();
 
 
-/* ── 10-resilience ── */
+/* ── 11-resilience ── */
 (function() {
   var revObs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
@@ -6342,7 +6720,7 @@ document.querySelectorAll('#s13 .s13-reveal').forEach(el => s13observer.observe(
 })();
 
 
-/* ── 11-governance ── */
+/* ── 12-governance ── */
 /* ── Phase 1: scroll-driven problem reveals ── */
 const s7wrapper = document.getElementById('s7-problem');
 const s7els     = document.querySelectorAll('[data-s7]');
@@ -6364,7 +6742,7 @@ window.addEventListener('scroll', updateS7, { passive: true });
 updateS7();
 
 
-/* ── 12-customers ── */
+/* ── 13-customers ── */
 const custWrapper = document.getElementById('cust-wrapper');
 const slides  = document.querySelectorAll('.cust-slide');
 const dotsEl  = document.getElementById('custDots');
@@ -6396,7 +6774,7 @@ function updateSlides() {
 window.addEventListener('scroll', updateSlides, { passive: true });
 updateSlides();
 
-/* ── 13-packages ── */
+/* ── 14-packages ── */
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -6405,11 +6783,11 @@ const observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll('#pkg .pkg-reveal, #pkg .pkg-tier').forEach(el => observer.observe(el));
 
-/* ── 14-specify ── */
+/* ── 15-specify ── */
 /* Static slide — CSS-animated reveal, no JS needed. */
 
 
-/* ── 17-closing ── */
+/* ── 16-closing ── */
 const closingObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');

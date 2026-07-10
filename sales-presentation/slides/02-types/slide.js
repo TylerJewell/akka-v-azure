@@ -55,7 +55,6 @@ TYPES.forEach((t, i) => {
 
   card.innerHTML = `
     <div class="st-card-content">
-      <div class="st-num">${t.n}</div>
       <div class="st-name">${t.name}</div>
       <div class="st-desc">${t.desc}</div>
       <div class="st-context">${t.context}</div>

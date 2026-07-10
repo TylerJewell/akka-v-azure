@@ -68,6 +68,29 @@ sales-presentation/
 2. Run `python3 builder/build.py` to regenerate
 3. Open `generated/overview/index.html` in a browser to preview
 
+## Pre-commit checklist (REQUIRED)
+
+Any change that adds, removes, or reorders slides MUST be cleaned up before
+committing/pushing — never commit a deck mid-restructure:
+
+1. **Sequential numbering.** Within each deck's registry order the slide
+   folders are gapless: overview `00…N`, specify `sp-00…sp-N`,
+   token-shredder `ts-00…ts-N`. No skipped numbers, no leftover `NNb` inserts.
+2. **Id consistency.** Each `slides/<folder>/meta.json` `id` equals its folder
+   basename, and the registry entry's `id` + `folder` match it.
+3. **No orphan folders.** Every folder in `slides/` is referenced by a
+   registry. Delete anything that isn't (or add it to a registry). Closing the
+   gap a removed slide leaves is part of this.
+4. **Regenerate every affected deck** and confirm the expected slide count with
+   zero build warnings:
+   ```bash
+   python3 builder/build.py                                                              # overview
+   python3 builder/build.py --registry specify-registry.json        --nav nav-specify.js  --out generated/specify/index.html
+   python3 builder/build.py --registry token-shredder-6-registry.json --nav nav-shredder6.js --out generated/token-shredder/index.html
+   ```
+5. **Update `builder/image-registry.json`** `used_in` values if any slide ids
+   changed (documentation only — not read by the build — but keep it correct).
+
 ## Updating the Governance Section
 
 The governance section (slide 07) has its own source at

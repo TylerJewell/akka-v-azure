@@ -5,7 +5,7 @@
 
 #st-sticky {
   position: sticky; top: 0;
-  height: 100vh; min-height: 700px;
+  height: 100vh; height: 100dvh; min-height: 700px;
   background: var(--dark);
   padding: 28px 24px 24px;
   display: flex; flex-direction: column;
@@ -116,4 +116,19 @@
   width: 100%; aspect-ratio: 268 / 168;
   object-fit: cover; border-radius: 5px;
   display: block;
+}
+
+/* ── Mobile ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  #st-wrapper { height: auto; }
+  #st-sticky {
+    position: static; height: auto; min-height: 0;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  /* 4x2 grid → 2 columns; drop JS-set explicit placement so cards auto-flow */
+  .st-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+  .st-card { grid-column: auto !important; grid-row: auto !important; }
+}
+@media (max-width: 600px) {
+  .st-grid { grid-template-columns: 1fr; }
 }

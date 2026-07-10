@@ -58,4 +58,4 @@ Wide-tracked uppercase lines overflow narrow screens. Reduce `letter-spacing` at
 2. Inventory each slide's graphic: fixed-aspect stage → Recipe 2a; pure-SVG diagram → Recipe 2b; chart → Recipe 3; table/grid/strip → Recipe 4.
 3. Check all uppercase tracked text at 390px → Recipe 5.
 4. Test at 390×844 and ~768px (DevTools device toolbar); confirm zero horizontal scrollbars anywhere.
-5. Iframe demo slides (resilience/governance in the overview deck) need their own decision — the embedded apps have independent layouts; consider hiding the iframe behind a link-out card on mobile.
+5. Iframe demo slides (resilience/governance) — **resolved: hide the iframe at the breakpoint and swap in a mobile-only link-out card** that opens the demo full-screen in a new tab. The embedded apps have desktop-oriented layouts unusable at 390px. Reference: `.s6-mobile-card` (resilience) and `.s7gov-mobile-card` (governance) in `slides/10-resilience`, `11-governance`, `sp-06-up`, `sp-07-safe` — default `display:none`, `display:flex` inside the breakpoint, iframe + expand toggle hidden. Use this pattern for any demo iframe in the dev/gartner decks too.
