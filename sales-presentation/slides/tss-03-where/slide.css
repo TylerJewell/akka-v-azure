@@ -129,7 +129,7 @@
   border: 1px solid rgba(245,197,24,0.28);
   gap: 8px;
 }
-.tss3-vllm { background: rgba(255,255,255,0.025); border: 1px solid #2A2A2A; gap: 10px; }
+.tss3-vllm { background: rgba(255,255,255,0.025); border: 1px solid #2A2A2A; gap: 10px; justify-content: flex-start; }
 .tss3-training { background: rgba(255,255,255,0.025); border: 1px solid #2A2A2A; gap: 8px; justify-content: flex-start; }
 .tss3-box-title {
   font-size: clamp(13px, 1.25vw, 18px); font-weight: 700;
