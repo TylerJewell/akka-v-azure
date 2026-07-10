@@ -29,23 +29,23 @@ PRESENTATIONS = [
      "sub": "CASE STUDIES", "title_src": None},
 ]
 
-# Standalone competitive briefs (single HTML files at the repo root).
+# Standalone competitive briefs (single HTML files under battlecards/).
 BATTLECARDS = [
-    {"link": "battlecard-langchain.html",                 "label": "Akka vs. LangChain"},
-    {"link": "battlecard-temporal.html",                  "label": "Akka vs. Temporal"},
-    {"link": "battlecard-azure-ai-foundry.html",          "label": "Akka vs. Azure AI Foundry"},
-    {"link": "battlecard-aws-bedrock.html",               "label": "Akka vs. AWS Bedrock"},
-    {"link": "battlecard-google-gemini-enterprise.html",  "label": "Akka vs. Google Gemini Enterprise Agent Platform"},
-    {"link": "battlecard-nvidia.html",                    "label": "Akka vs. NVIDIA"},
-    {"link": "battlecard-databricks.html",                "label": "Akka vs. Databricks"},
-    {"link": "battlecard-salesforce-agentforce.html",     "label": "Akka vs. Salesforce Agentforce"},
-    {"link": "battlecard-crewai.html",                    "label": "Akka vs. CrewAI"},
-    {"link": "battlecard-llamaindex.html",                "label": "Akka vs. LlamaIndex"},
-    {"link": "battlecard-n8n.html",                       "label": "Akka vs. n8n"},
-    {"link": "battlecard-vercel-ai-sdk.html",             "label": "Akka vs. Vercel AI SDK"},
-    {"link": "battlecard-pydantic-ai.html",               "label": "Akka vs. PydanticAI"},
-    {"link": "battlecard-orkes.html",                     "label": "Akka vs. Orkes (Conductor)"},
-    {"link": "battlecard-service-tiers.html",             "label": "Akka Service Tiers & TCO"},
+    {"link": "battlecards/battlecard-langchain.html",                 "label": "Akka vs. LangChain"},
+    {"link": "battlecards/battlecard-temporal.html",                  "label": "Akka vs. Temporal"},
+    {"link": "battlecards/battlecard-azure-ai-foundry.html",          "label": "Akka vs. Azure AI Foundry"},
+    {"link": "battlecards/battlecard-aws-bedrock.html",               "label": "Akka vs. AWS Bedrock"},
+    {"link": "battlecards/battlecard-google-gemini-enterprise.html",  "label": "Akka vs. Google Gemini Enterprise Agent Platform"},
+    {"link": "battlecards/battlecard-nvidia.html",                    "label": "Akka vs. NVIDIA"},
+    {"link": "battlecards/battlecard-databricks.html",                "label": "Akka vs. Databricks"},
+    {"link": "battlecards/battlecard-salesforce-agentforce.html",     "label": "Akka vs. Salesforce Agentforce"},
+    {"link": "battlecards/battlecard-crewai.html",                    "label": "Akka vs. CrewAI"},
+    {"link": "battlecards/battlecard-llamaindex.html",                "label": "Akka vs. LlamaIndex"},
+    {"link": "battlecards/battlecard-n8n.html",                       "label": "Akka vs. n8n"},
+    {"link": "battlecards/battlecard-vercel-ai-sdk.html",             "label": "Akka vs. Vercel AI SDK"},
+    {"link": "battlecards/battlecard-pydantic-ai.html",               "label": "Akka vs. PydanticAI"},
+    {"link": "battlecards/battlecard-orkes.html",                     "label": "Akka vs. Orkes (Conductor)"},
+    {"link": "battlecards/battlecard-service-tiers.html",             "label": "Akka Service Tiers & TCO"},
 ]
 
 

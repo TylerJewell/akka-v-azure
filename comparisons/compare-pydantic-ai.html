@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka vs. PydanticAI</title>
+<meta name="description" content="PydanticAI is a framework: a Python agent library you assemble and operate. Akka is a platform: the system comes assembled and operated, under a contractual SLA. A side-by-side comparison.">
+<link rel="canonical" href="https://akka.io/compare/akka-vs-pydantic-ai">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  COMPARE PAGE — Akka vs. PydanticAI.                                */
+  /*  Public, self-serve. akka.io/platform-intro look, shared with the   */
+  /*  industry pages: black canvas, #F5C518 accent, JetBrains Mono       */
+  /*  eyebrows, #131316 cards.                                           */
+  /*  RULE: every section is a two-sided contrast. No solo Akka stats —  */
+  /*  a number appears only opposite the PydanticAI number it beats.     */
+  /*  The one intentionally one-sided section is Proof (evidence).       */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;--card-2:#1a1a1a;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:104px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(30px,4vw,54px);line-height:1.1}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .lede{color:var(--muted);font-size:clamp(16px,1.3vw,19px);max-width:66ch;line-height:1.6}
+  .sec-head{max-width:74ch;margin-bottom:48px}
+  .sec-head h2{margin:16px 0 18px}
+
+  /* --- HERO --- */
+  #hero{min-height:78vh;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.10),transparent 55%),var(--black);overflow:hidden}
+  #hero .inner{max-width:1000px}
+  .hero-eyebrow{margin-bottom:28px}
+  .hero-headline{font-size:clamp(42px,6.2vw,88px);line-height:1.02;letter-spacing:-.035em;max-width:15ch}
+  .hero .lede{font-size:clamp(17px,1.5vw,21px);margin-top:26px;max-width:70ch}
+
+  /* --- section variants --- */
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+
+  /* --- VERSUS (two-column contrast) --- */
+  .versus{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:32px 30px}
+  .vcard.akka{border-color:rgba(245,197,24,.4);background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card)}
+  .vlabel{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .vcard.akka .vlabel{color:var(--yellow)}
+  .vcard h3{font-size:24px;margin:8px 0 6px}
+  .vcard .sub{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .vbody{margin:16px 0 0;color:var(--muted);font-size:15.5px;line-height:1.62}
+  .vbody + .vbody{margin-top:14px}
+  .vcard.akka .vbody{color:#d7d7d7}
+  .versus-note{margin-top:26px;font-size:17px;color:#cfcfcf;border-left:2px solid var(--yellow);padding-left:20px;max-width:70ch;line-height:1.5}
+
+  /* --- HEAD-TO-HEAD TABLE --- */
+  .maptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  .maptable th,.maptable td{text-align:left;padding:18px 20px;border-top:1px solid var(--line);vertical-align:top}
+  .maptable thead th{border-top:0;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+  .maptable thead th:last-child{color:var(--yellow)}
+  .maptable td:first-child{width:20%;color:var(--white);font-weight:600}
+  .maptable td:nth-child(2){width:40%;color:var(--muted)}
+  .maptable td:last-child{color:#e6e6e6}
+  .maptable tr td:last-child b{color:var(--yellow);font-weight:600}
+
+  /* --- CUSTOMER PROOF --- */
+  .proofbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .pcard{background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px}
+  .pcard .co{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+  .pcard .mv{font-size:30px;font-weight:700;color:var(--yellow);line-height:1.05;letter-spacing:-.03em;margin:12px 0 8px}
+  .pcard .d{color:var(--muted);font-size:13px}
+
+  /* --- CLOSE --- */
+  .close{text-align:center}
+  .close h2{max-width:22ch;margin:0 auto 16px}
+  .close .lede{margin:0 auto}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:34px;background:var(--yellow);color:#000;
+    text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:8px}
+  .cta span{transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .cta:hover span{transform:translateX(4px)}
+
+  /* --- reveal --- */
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:960px){
+    .versus{grid-template-columns:1fr}
+    .proofbar{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:620px){
+    section{padding:64px var(--pad)}
+    .proofbar{grid-template-columns:1fr}
+    .maptable thead{display:none}
+    .maptable tr{display:block;border-top:1px solid var(--line);padding:16px 0}
+    .maptable td{display:block;border-top:0;padding:4px 0;width:auto!important}
+    .maptable td:first-child{margin-bottom:2px}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== HERO — the category contrast ===================== -->
+  <section id="hero">
+    <div class="inner">
+      <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. PydanticAI</div>
+      <h1 class="hero-headline rv">PydanticAI is a framework. <span class="accent">Akka is a platform.</span></h1>
+      <p class="lede rv">PydanticAI gives you a clean, type-safe way to write agents in Python; it does not give you the system that runs them. With a framework you assemble the parts and operate the result — availability, durable state, governance, and the pager are yours. With a platform the system comes assembled and operated, under a contractual SLA.</p>
+    </div>
+  </section>
+
+  <!-- ===================== WHAT EACH ONE IS ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">PydanticAI vs. Akka</div>
+        <h2 class="rv">A typed library, or a running system.</h2>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">PydanticAI — Framework</div>
+          <h3>You build and operate it</h3>
+          <p class="vbody">PydanticAI is a typed Python agent library from the team behind Pydantic. It gives you model-agnostic agents, structured and validated outputs, dependency injection, MCP support, and graph-based workflows, all checked by your type checker. Those are components for writing agents, not a running system, so your engineers wire in the durability, streaming, and governance around them.</p>
+          <p class="vbody">Then your team runs it — scaling it, handling failover and recovery, and carrying the pager. The framework publishes no application-level SLA, so the availability of the running system is yours to guarantee.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Akka — Platform</div>
+          <h3>It comes built and operated</h3>
+          <p class="vbody">Akka gives you the agents, durable state, streaming, APIs, and governance as one pre-integrated runtime. You describe the system you want, and the platform generates it, tests it, and runs it.</p>
+          <p class="vbody">Akka keeps it running around the clock, with active-active replication and automatic failover, and stands behind a contractual 99.9999% availability SLA on the running system.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HEAD-TO-HEAD TABLE ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Head to head</div>
+        <h2 class="rv">Line by line: who owns production.</h2>
+      </div>
+      <table class="maptable rv">
+        <thead>
+          <tr><th>Dimension</th><th>With PydanticAI</th><th>With Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Availability</td>
+            <td>The framework publishes no availability SLA, because it does not run anything — uptime and recovery belong to the infrastructure your team assembles. A contractual SLA is offered only on the Logfire Enterprise observability service, not on your agents.</td>
+            <td><b>Akka owns 99.9999%</b> on the running system — a ~31-second yearly budget — active-active, sub-1-minute RTO, zero-byte RPO.</td>
+          </tr>
+          <tr>
+            <td>State &amp; memory</td>
+            <td>Agent state lives in process memory; durability is delegated to an external engine — Temporal, DBOS, Prefect, or Restate — that checkpoints or replays it in its own datastore, which you provision, scale, and keep available.</td>
+            <td><b>Held in memory</b>, active-active replicated — 4 ms reads, sub-10 ms writes. Durability is a runtime property, not a database round-trip.</td>
+          </tr>
+          <tr>
+            <td>Governance</td>
+            <td>Through Logfire, calls are <b style="color:var(--muted);font-weight:600">traced and scored</b> after execution. Inline blocking, hash-chained evidence, human override, and pre-deployment classification are the customer's to build.</td>
+            <td><b>Risk teams define policies independently</b>; the runtime enforces them on every action — HITL, HOTL, guardrails, evaluations — with no developer code, into tamper-evident storage.</td>
+          </tr>
+          <tr>
+            <td>Runtime track record</td>
+            <td>PydanticAI reached its first major version in September 2025, with the current stable release in June 2026 and V2 in beta; it delegates the durable runtime to external engines rather than running one itself.</td>
+            <td><b>18 years, 100,000+ deployments</b> — the runtime behind systems two billion people use daily.</td>
+          </tr>
+          <tr>
+            <td>Infrastructure cost</td>
+            <td>The Python infrastructure footprint, plus the separate datastore and operations of the durable-execution engine, plus the memory, streaming, API, observability, and governance tiers — each provisioned and operated separately.</td>
+            <td><b>One shared-compute runtime</b> carries the same volume on up to 90% less infrastructure, at a fixed annual fee.</td>
+          </tr>
+          <tr>
+            <td>Portability</td>
+            <td>A production deployment accretes dependencies on the hosted Logfire observability service and on whichever durable-execution engine and datastore provide recovery.</td>
+            <td><b>Any cloud, on-prem, or sovereign</b> — portable specs, BSL licensing, no per-trace meter.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
+        <h2 class="rv">Observe, or enforce.</h2>
+        <p class="lede rv" style="margin-top:18px">It comes down to who writes the policy and when it acts. With PydanticAI, governance is observability through Logfire, applied to logs after execution. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">Logfire — Observe</div>
+          <h3>After the fact</h3>
+          <p class="sub">Trace &amp; evaluate</p>
+          <p class="vbody">PydanticAI's governance story is Pydantic Logfire, the team's commercial observability product. It traces agent calls and runs evaluations for quality and monitoring, with SOC 2 Type II, HIPAA, and GDPR for the observability service and an EU data region. It works on the record of what already ran.</p>
+          <p class="vbody">Because it observes and evaluates logs, the actual inline blocking, the hash-chained immutable evidence, the human override on a running process, and the classification of a system before it ships are things you assemble and bolt on yourself, project by project. Evaluation is a job you run against datasets, not something gating production.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Akka — Enforce</div>
+          <h3>Before the action</h3>
+          <p class="sub">Block &amp; escalate</p>
+          <p class="vbody">With Akka, your risk and compliance teams write the policies themselves, in a separate versioned lifecycle that is independent of the agents — there is no developer code to customize. The runtime enforces every policy inline at the agent boundary, so human-in-the-loop approvals, human-on-the-loop halt switches, sanitizers, guardrails, evaluations, testing gates, and simulations all run before an action executes and block or escalate anything that does not pass.</p>
+          <p class="vbody">Every call is traced automatically into petabyte-scale, tamper-evident storage, and that same trace data feeds continuous evaluations that keep running in production, right alongside your agents.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHEN TO CHOOSE WHICH ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Choosing between them</div>
+        <h2 class="rv">Pick for where you are.</h2>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">Choose the framework when</div>
+          <p class="vbody">Reach for the framework when you are building agents in Python and want your type checker and IDE to catch errors at write-time, when the system is internal or low-stakes enough that some downtime is fine, and when your team is ready to own the durability, scaling, recovery, and governance that come with running it yourself. It is also the right call when you want low-level control over every component.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Choose the platform when</div>
+          <p class="vbody">Reach for the platform when the system has to stay up, survive failure, and recover on its own, and when it has to pass an audit and enforce governance while it runs. It fits when you want a single vendor accountable for availability under an SLA, and when you would rather ship the system than build and operate the plumbing underneath it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROOF (the one one-sided section: evidence) ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Proof</div>
+        <h2 class="rv">Akka is proven in production.</h2>
+        <p class="lede rv" style="margin-top:18px">A sample of agentic and real-time systems on Akka Platform:</p>
+      </div>
+      <div class="proofbar rv">
+        <div class="pcard"><div class="co">Manulife</div><div class="mv">2,000</div><div class="d">developers across 100 projects on one governed platform</div></div>
+        <div class="pcard"><div class="co">Tubi</div><div class="mv">5B tok/s</div><div class="d">real-time hyper-personalization engine</div></div>
+        <div class="pcard"><div class="co">Swiggy</div><div class="mv">71 ms</div><div class="d">order-assignment AI, ~50% latency reduction</div></div>
+        <div class="pcard"><div class="co">John Deere</div><div class="mv">1,000+</div><div class="d">tractor sensors turned into real-time insight</div></div>
+        <div class="pcard"><div class="co">Verizon</div><div class="mv">750%</div><div class="d">order-processing capacity gain; 6s → 2.4s response</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CLOSE ===================== -->
+  <section class="band--panel close">
+    <div class="inner">
+      <h2 class="rv">Build on a platform, not a framework.</h2>
+      <p class="lede rv">Akka Platform builds, runs, and governs agentic systems under a contractual SLA. Tell us what you are building, and we will show you how it runs in production.</p>
+      <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

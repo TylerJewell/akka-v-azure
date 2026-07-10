@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka vs. Google Gemini Enterprise</title>
+<meta name="description" content="Google's Gemini Enterprise is a cloud agent suite — GCP-locked building blocks you assemble. Akka is a portable, operated, governed platform you run on any cloud, on-prem, or sovereign. A side-by-side comparison.">
+<link rel="canonical" href="https://akka.io/compare/akka-vs-google-gemini-enterprise">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  COMPARE PAGE — Akka vs. Google Gemini Enterprise.                  */
+  /*  Public, self-serve. akka.io/platform-intro look, shared with the   */
+  /*  industry pages: black canvas, #F5C518 accent, JetBrains Mono       */
+  /*  eyebrows, #131316 cards.                                           */
+  /*  RULE: every section is a two-sided contrast. No solo Akka stats —  */
+  /*  a number appears only opposite the Temporal number it beats.       */
+  /*  The one intentionally one-sided section is Proof (evidence).       */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;--card-2:#1a1a1a;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:104px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(30px,4vw,54px);line-height:1.1}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .lede{color:var(--muted);font-size:clamp(16px,1.3vw,19px);max-width:66ch;line-height:1.6}
+  .sec-head{max-width:74ch;margin-bottom:48px}
+  .sec-head h2{margin:16px 0 18px}
+
+  /* --- HERO --- */
+  #hero{min-height:78vh;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.10),transparent 55%),var(--black);overflow:hidden}
+  #hero .inner{max-width:1000px}
+  .hero-eyebrow{margin-bottom:28px}
+  .hero-headline{font-size:clamp(42px,6.2vw,88px);line-height:1.02;letter-spacing:-.035em;max-width:15ch}
+  .hero .lede{font-size:clamp(17px,1.5vw,21px);margin-top:26px;max-width:70ch}
+
+  /* --- section variants --- */
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+
+  /* --- VERSUS (two-column contrast) --- */
+  .versus{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:32px 30px}
+  .vcard.akka{border-color:rgba(245,197,24,.4);background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card)}
+  .vlabel{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .vcard.akka .vlabel{color:var(--yellow)}
+  .vcard h3{font-size:24px;margin:8px 0 6px}
+  .vcard .sub{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .vbody{margin:16px 0 0;color:var(--muted);font-size:15.5px;line-height:1.62}
+  .vbody + .vbody{margin-top:14px}
+  .vcard.akka .vbody{color:#d7d7d7}
+  .versus-note{margin-top:26px;font-size:17px;color:#cfcfcf;border-left:2px solid var(--yellow);padding-left:20px;max-width:70ch;line-height:1.5}
+
+  /* --- HEAD-TO-HEAD TABLE --- */
+  .maptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  .maptable th,.maptable td{text-align:left;padding:18px 20px;border-top:1px solid var(--line);vertical-align:top}
+  .maptable thead th{border-top:0;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+  .maptable thead th:last-child{color:var(--yellow)}
+  .maptable td:first-child{width:20%;color:var(--white);font-weight:600}
+  .maptable td:nth-child(2){width:40%;color:var(--muted)}
+  .maptable td:last-child{color:#e6e6e6}
+  .maptable tr td:last-child b{color:var(--yellow);font-weight:600}
+
+  /* --- CUSTOMER PROOF --- */
+  .proofbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .pcard{background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px}
+  .pcard .co{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+  .pcard .mv{font-size:30px;font-weight:700;color:var(--yellow);line-height:1.05;letter-spacing:-.03em;margin:12px 0 8px}
+  .pcard .d{color:var(--muted);font-size:13px}
+
+  /* --- CLOSE --- */
+  .close{text-align:center}
+  .close h2{max-width:22ch;margin:0 auto 16px}
+  .close .lede{margin:0 auto}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:34px;background:var(--yellow);color:#000;
+    text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:8px}
+  .cta span{transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .cta:hover span{transform:translateX(4px)}
+
+  /* --- reveal --- */
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:960px){
+    .versus{grid-template-columns:1fr}
+    .proofbar{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:620px){
+    section{padding:64px var(--pad)}
+    .proofbar{grid-template-columns:1fr}
+    .maptable thead{display:none}
+    .maptable tr{display:block;border-top:1px solid var(--line);padding:16px 0}
+    .maptable td{display:block;border-top:0;padding:4px 0;width:auto!important}
+    .maptable td:first-child{margin-bottom:2px}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== HERO — the category contrast ===================== -->
+  <section id="hero">
+    <div class="inner">
+      <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. Google Gemini Enterprise</div>
+      <h1 class="hero-headline rv">Gemini Enterprise is a cloud agent suite. <span class="accent">Akka is a platform.</span></h1>
+      <p class="lede rv">Gemini Enterprise gives you Google Cloud building blocks to assemble inside Google Cloud. But a production agentic system needs agents, memory, streaming, APIs, and governance unified under one SLA — and bound to no single cloud. With Gemini Enterprise you integrate separate Google Cloud services and stay on GCP for identity, models, and data. Akka delivers the whole system as one operated, governed platform that runs on any cloud, on-prem, or sovereign.</p>
+    </div>
+  </section>
+
+  <!-- ===================== WHAT EACH ONE IS ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Gemini Enterprise vs. Akka</div>
+        <h2 class="rv">Assembled pieces, or one platform.</h2>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">Gemini Enterprise — Cloud agent suite</div>
+          <h3>You assemble it on Google Cloud</h3>
+          <p class="vbody">Gemini Enterprise is the name Google gave Vertex AI at Cloud Next 2026. It bundles three ways to build an agent — the code-first Agent Development Kit, the low-code Agent Studio, and templates in Agent Garden — plus a managed Agent Engine runtime and a Model Garden of models. Each is a separate Google Cloud service the customer wires together and operates; the suite unifies the console and namespace, not the runtime.</p>
+          <p class="vbody">Google Cloud publishes a 99.9% SLA for online inference, and the Agent Runtime itself is excluded from the SLA. Identity runs through Google Cloud IAM, data lives in your GCP project, and models are served through GCP.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Akka — Platform</div>
+          <h3>It comes built, operated, and portable</h3>
+          <p class="vbody">Akka Platform gives you agents, durable memory, streaming, APIs, and governance as one pre-integrated runtime. You describe the system you want, and the platform generates it, tests it, and runs it — you do not integrate or operate the seams between an orchestration kit, a memory store, a streaming tier, and a governance stack.</p>
+          <p class="vbody">Akka keeps it running around the clock with active-active replication and automatic failover, under a contractual 99.9999% availability SLA across the entire platform, backed by indemnities. It deploys on Akka cloud, any hyperscaler VPC, your own Kubernetes, on-prem, or a sovereign cloud — the specs are portable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HEAD-TO-HEAD TABLE ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Head to head</div>
+        <h2 class="rv">Line by line: who owns production.</h2>
+      </div>
+      <table class="maptable rv">
+        <thead>
+          <tr><th>Dimension</th><th>With Gemini Enterprise</th><th>With Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Scope</td>
+            <td>Build tools plus a managed agent runtime; memory, governance enforcement, and the API and streaming tier are assembled from separate Google Cloud services the customer integrates.</td>
+            <td><b>The whole system on one runtime</b> — orchestration, agents, memory, streaming, APIs, observability, and governance pre-integrated, with no seams for the customer to operate.</td>
+          </tr>
+          <tr>
+            <td>Availability</td>
+            <td>99.9% on online inference for custom models across 2 or more nodes — about 8.8 hours a year — and the Agent Runtime is explicitly excluded from the SLA.</td>
+            <td><b>99.9999% on the entire platform</b> — about 31 seconds a year — active-active, sub-1-minute RTO, zero-byte RPO, agent runtime included.</td>
+          </tr>
+          <tr>
+            <td>State &amp; memory</td>
+            <td>Memory Bank plus session storage, metered at $0.25 per 1,000 stored memories, provisioned as a separate service.</td>
+            <td><b>Durable state held in memory</b>, active-active replicated — 4 ms reads, sub-10 ms writes, built into the runtime.</td>
+          </tr>
+          <tr>
+            <td>Portability</td>
+            <td>Bound to Google Cloud: IAM for identity, the GCP project for data residency, and models served through GCP.</td>
+            <td><b>Runs anywhere</b> — Akka cloud, any hyperscaler VPC, your own Kubernetes, on-prem, or sovereign cloud, from one set of portable specs.</td>
+          </tr>
+          <tr>
+            <td>Governance</td>
+            <td>Infrastructure governance — IAM, VPC Service Controls, CMEK, DLP, audit logs, and data residency. There is no inline AI-policy enforcement, pre-deployment classification, or sealed audit artifact.</td>
+            <td><b>Risk teams define policies independently</b>; the runtime enforces them on every action — HITL, HOTL, guardrails, evaluations — with no developer code, into tamper-evident storage.</td>
+          </tr>
+          <tr>
+            <td>Infrastructure cost</td>
+            <td>Pay-as-you-go on multiple meters that scale with load — $0.0864 per vCPU-hour and $0.0090 per GB-hour of runtime, per-token model calls, per-query search — plus per-seat app subscriptions.</td>
+            <td><b>One shared-compute runtime</b> carries the same volume on up to 90% less infrastructure, at a fixed annual fee finance can forecast.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
+        <h2 class="rv">Bolt on, or enforce.</h2>
+        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. Gemini Enterprise secures the perimeter and the data with Google Cloud controls and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">Gemini Enterprise — Bolt-on</div>
+          <h3>After the fact</h3>
+          <p class="sub">Secure the perimeter</p>
+          <p class="vbody">Gemini Enterprise provides infrastructure governance through Google Cloud IAM, VPC Service Controls, Customer-Managed Encryption Keys, Data Loss Prevention, Access Transparency, audit logging, and data residency. These secure the perimeter and the data.</p>
+          <p class="vbody">They do not enforce AI policy inline: there is no real-time guardrail or judge layer woven into the runtime, no decision explainability, no human pause or override of a running agent as a platform primitive, no immutable interaction ledger, and no pre-deployment classification against a regulatory corpus.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Akka — Enforce</div>
+          <h3>Before the action</h3>
+          <p class="sub">Block &amp; escalate</p>
+          <p class="vbody">With Akka, your risk and compliance teams write the policies themselves, in a separate versioned lifecycle that is independent of the agents — there is no developer code to customize. The runtime enforces every policy inline at the agent boundary, so human-in-the-loop approvals, human-on-the-loop halt switches, sanitizers, guardrails, evaluations, testing gates, and simulations all run before an action executes and block or escalate anything that does not pass.</p>
+          <p class="vbody">Every call is traced automatically into petabyte-scale, tamper-evident storage, and that same trace data feeds continuous evaluations that keep running in production, right alongside your agents. A system is classified against 189 regulations and 962 controls before it ships.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHEN TO CHOOSE WHICH ===================== -->
+  <section class="band--panel">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Choosing between them</div>
+        <h2 class="rv">Pick for where you are.</h2>
+      </div>
+      <div class="versus rv">
+        <div class="vcard">
+          <div class="vlabel">Choose the cloud agent suite when</div>
+          <p class="vbody">Reach for Gemini Enterprise when your organization is standardized on Google Cloud and intends to stay there, when you want to build agents with Google's ADK, Agent Studio, and Model Garden inside the GCP console, and when your team is ready to integrate and operate the memory, streaming, API, and governance layers around the agent runtime as separate Google Cloud services.</p>
+        </div>
+        <div class="vcard akka">
+          <div class="vlabel">Choose the platform when</div>
+          <p class="vbody">Reach for Akka when you are building a full agentic system rather than assembling cloud services — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with inline governance built in, and the freedom to run on any cloud, on-prem, or a sovereign environment without rebinding to one vendor's identity, models, and data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROOF (the one one-sided section: evidence) ===================== -->
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">Proof</div>
+        <h2 class="rv">Akka is proven in production.</h2>
+        <p class="lede rv" style="margin-top:18px">A sample of agentic and real-time systems on Akka Platform:</p>
+      </div>
+      <div class="proofbar rv">
+        <div class="pcard"><div class="co">Manulife</div><div class="mv">2,000</div><div class="d">developers across 100 projects on one governed platform</div></div>
+        <div class="pcard"><div class="co">Tubi</div><div class="mv">5B tok/s</div><div class="d">real-time hyper-personalization engine</div></div>
+        <div class="pcard"><div class="co">Swiggy</div><div class="mv">71 ms</div><div class="d">order-assignment AI, ~50% latency reduction</div></div>
+        <div class="pcard"><div class="co">John Deere</div><div class="mv">1,000+</div><div class="d">tractor sensors turned into real-time insight</div></div>
+        <div class="pcard"><div class="co">Verizon</div><div class="mv">750%</div><div class="d">order-processing capacity gain; 6s → 2.4s response</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CLOSE ===================== -->
+  <section class="band--panel close">
+    <div class="inner">
+      <h2 class="rv">Run one platform, not a set of cloud services.</h2>
+      <p class="lede rv">Gemini Enterprise gives you Google Cloud building blocks to assemble inside Google Cloud. Akka Platform builds, runs, and governs the whole agentic system under a contractual SLA — on any cloud, on-prem, or sovereign. Tell us what you are building, and we will show you how it runs in production.</p>
+      <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>
