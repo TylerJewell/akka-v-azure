@@ -1,0 +1,12 @@
+{
+  "id": "tss-03-where",
+  "nav_id": "tss3-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "220vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-tss3]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

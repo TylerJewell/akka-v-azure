@@ -1,0 +1,12 @@
+{
+  "id": "tss-01-problem",
+  "nav_id": "tss1-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "200vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-tss1]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

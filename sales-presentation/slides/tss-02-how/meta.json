@@ -1,0 +1,12 @@
+{
+  "id": "tss-02-how",
+  "nav_id": "tss2-wrapper",
+  "pre_spacer": 0,
+  "scroll": { "envelope_vh": "220vh" },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [ { "selector": "[data-tss2]", "threshold": 0.15 } ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable"]
+}

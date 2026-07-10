@@ -1,0 +1,30 @@
+<div id="tss1-wrapper">
+  <div id="tss1-sticky">
+    <div class="tss1-head">
+      <div class="tss1-eyebrow" data-tss1="0">AI cost control</div>
+      <div class="tss1-headline" data-tss1="0">Token spend grows with <span class="accent">every agent you ship</span>.</div>
+    </div>
+
+    <div class="tss1-chart" data-tss1="1">
+      <div class="tss1-chart-title">AI spend as agent fleets grow</div>
+      <svg class="tss1-curve" viewBox="0 0 640 300" aria-label="Token spend rises steeply with agents in production while Akka infrastructure cost stays flat">
+        <line x1="40" y1="270" x2="620" y2="270" stroke="#2A2A2A" stroke-width="1"/>
+        <line x1="40" y1="270" x2="40" y2="30" stroke="#2A2A2A" stroke-width="1"/>
+        <text x="140" y="290" class="tss1-tick" text-anchor="middle">5</text>
+        <text x="280" y="290" class="tss1-tick" text-anchor="middle">15</text>
+        <text x="430" y="290" class="tss1-tick" text-anchor="middle">40</text>
+        <text x="590" y="290" class="tss1-tick" text-anchor="middle">100</text>
+        <path class="tss1-line tss1-line-infra" pathLength="100" d="M40,258 C220,242 420,226 592,212" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/>
+        <path class="tss1-line tss1-line-tokens" pathLength="100" d="M40,254 C230,240 420,168 592,44" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="592" y="32" class="tss1-series tss1-series-tok" text-anchor="end">TOKEN SPEND</text>
+        <text x="592" y="200" class="tss1-series tss1-series-infra" text-anchor="end">INFRA ON AKKA</text>
+      </svg>
+      <div class="tss1-axis-label">Agents in production &rarr;</div>
+    </div>
+
+    <div class="tss1-evidence" data-tss1="2">
+      <div class="tss1-evidence-body">Most agent traffic is narrow and repetitive. A specialized 4B open-weight model handles that work at frontier-level quality and up to <span class="tss1-num">12&times;</span> lower inference cost.</div>
+      <div class="tss1-evidence-src">Google DeepMind Gemmaverse case study &mdash; Gemma 3 4B scored 0.80 vs GPT-4o 0.76 in production content moderation</div>
+    </div>
+  </div>
+</div>
