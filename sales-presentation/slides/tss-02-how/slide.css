@@ -23,7 +23,7 @@
 }
 [data-tss2].visible { opacity: 1; transform: none; }
 
-.tss2-head { margin-bottom: 46px; }
+.tss2-head { margin-bottom: 34px; }
 .tss2-eyebrow {
   font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
   color: var(--yellow); font-weight: 600; margin-bottom: 14px;
@@ -47,14 +47,54 @@
 /* Loop strip */
 .tss2-loop {
   display: flex; align-items: center; justify-content: center; gap: 18px;
-  max-width: 860px !important; margin: 0 auto 44px;
+  max-width: 860px !important; margin: 0 auto 22px;
 }
-.tss2-loop span {
+.tss2-step {
+  font-family: inherit; background: none; border: 0;
+  padding: 6px 4px 9px; cursor: pointer;
   font-size: clamp(14px, 1.3vw, 19px);
   font-weight: 700; text-transform: uppercase;
   letter-spacing: 2.4px; color: var(--white);
+  position: relative; transition: color .2s ease;
 }
+.tss2-step::after {
+  content: ''; position: absolute; left: 4px; right: 4px; bottom: 0; height: 2px;
+  background: var(--yellow); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s cubic-bezier(0.16,1,0.3,1);
+}
+.tss2-step:hover { color: var(--yellow); }
+.tss2-step.active { color: var(--yellow); }
+.tss2-step.active::after { transform: scaleX(1); }
 .tss2-loop svg { width: 26px; height: 14px; flex-shrink: 0; }
+
+/* Click-to-reveal "how Akka runs it" box (grid-stacked so it reserves the
+   tallest card's height — this is what pushes the diagram down, with no jump) */
+.tss2-explain { max-width: 900px !important; margin: 0 auto 38px; }
+.tss2-explain-stack { display: grid; }
+.tss2-explain-stack > * {
+  grid-area: 1 / 1;
+  display: flex; flex-direction: column; justify-content: center;
+  opacity: 0; transition: opacity .3s ease, transform .32s cubic-bezier(0.16,1,0.3,1);
+}
+.tss2-explain-stack > .active { opacity: 1; }
+.tss2-explain-card {
+  transform: translateY(8px);
+  text-align: left; padding: 15px 22px;
+  background: linear-gradient(180deg, #151515, #0f0f0f);
+  border: 1px solid rgba(245,197,24,0.28);
+  border-left: 3px solid var(--yellow);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.45);
+}
+.tss2-explain-card.active { transform: none; }
+.tss2-explain-k {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2.4px;
+  color: var(--yellow); font-weight: 700; margin-bottom: 7px;
+}
+.tss2-explain-t {
+  font-size: clamp(14px, 1.15vw, 17px); color: #d6d6d6; line-height: 1.5; margin: 0;
+}
 
 /* Staging diagram */
 .tss2-diagram { max-width: 1150px !important; margin: 0 auto; }

@@ -6,16 +6,41 @@
       <div class="tss2-sub" data-tss2="0">Akka runs evaluations in the same runtime as your agents, grading live traffic as it flows. It uses those grades to identify the agents suited to a small model, trains one with reinforcement learning, and tests it in staging before promotion.</div>
     </div>
 
-    <div class="tss2-loop" data-tss2="1">
-      <span>Target</span>
+    <div class="tss2-loop" data-tss2="1" role="tablist" aria-label="Pipeline steps — click to see how Akka runs each">
+      <button type="button" class="tss2-step active" data-step="target" role="tab" aria-selected="true">Target</button>
       <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
-      <span>Grade</span>
+      <button type="button" class="tss2-step" data-step="grade" role="tab" aria-selected="false">Grade</button>
       <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
-      <span>Train</span>
+      <button type="button" class="tss2-step" data-step="train" role="tab" aria-selected="false">Train</button>
       <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
-      <span>Prove</span>
+      <button type="button" class="tss2-step" data-step="prove" role="tab" aria-selected="false">Prove</button>
       <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
-      <span>Promote</span>
+      <button type="button" class="tss2-step" data-step="promote" role="tab" aria-selected="false">Promote</button>
+    </div>
+
+    <div class="tss2-explain" data-tss2="1">
+      <div class="tss2-explain-stack">
+        <div class="tss2-explain-card active" data-for="target">
+          <div class="tss2-explain-k">Target</div>
+          <p class="tss2-explain-t">Akka runs evaluations to score and grade your agents, identifying the high-volume, well-scoped tasks where an SLM can improve cost or accuracy.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="grade">
+          <div class="tss2-explain-k">Grade</div>
+          <p class="tss2-explain-t">LLM judges and deterministic checks score production traffic without requiring a separate eval pipeline to manage.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="train">
+          <div class="tss2-explain-k">Train</div>
+          <p class="tss2-explain-t">Akka fine-tunes an open-weight model with reinforcement learning &mdash; PPO, GRPO, or DPO &mdash; using the grades as the reward signal, and synthesizes training data when real examples are scarce.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="prove">
+          <div class="tss2-explain-k">Prove</div>
+          <p class="tss2-explain-t">Optionally, you can run the SLM candidate against production traffic to compare quality and token cost against the existing model.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="promote">
+          <div class="tss2-explain-k">Promote</div>
+          <p class="tss2-explain-t">Akka will serve the base model and the SLM adapter behind an OpenAI-compatible endpoint. Multiple SLMs can share the same GPU allocation.</p>
+        </div>
+      </div>
     </div>
 
     <div class="tss2-diagram" data-tss2="1">
