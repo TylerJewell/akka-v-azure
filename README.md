@@ -87,6 +87,42 @@ To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
 `<name>-presentation/generated/overview/` or a single-file deck) — then re-run it and
 commit `index.html`.
 
+## HubSpot import builds
+
+Every sales deliverable is published in **two** forms from one source:
+
+- **GitHub Pages page** — the standalone HTML we host (`index.html`).
+- **HubSpot fragment** — a paste-ready import for marketing (`hubspot.html`),
+  with our global CSS scoped under `.akka-embed` (so it can't disturb HubSpot's
+  header/footer), relative `images/` rewritten to absolute `hubfs/` URLs, external
+  CSS inlined, and the `<html>/<head>/<body>` wrapper stripped.
+
+Covered: the three sales decks (`overview`, `specify`, `token-shredder`), the
+customer case studies, and the competitor comparisons.
+
+```bash
+python build-all.py          # builds BOTH forms for everything
+```
+
+Outputs:
+- Decks → `sales-presentation/generated/<deck>/hubspot.html` (beside `index.html`)
+- Case studies → `case-studies/hubspot/<name>.html`
+- Comparisons → `comparisons/hubspot/<name>.html`
+
+**Every commit regenerates both forms automatically** via `.githooks/pre-commit`
+(which runs `build-all.py` and stages the outputs). One-time setup per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The transform lives in `sales-presentation/builder/hubspot.py`; `build.py` emits
+each deck's `hubspot.html` inline. The `hubfs/` image base is set by
+`build.py --hubspot-image-base` (default `https://akka.io/hubfs/akka-platform-intro/`,
+which the overview and specify decks share). Case studies and comparisons use no
+images today; their gallery `index.html` fragments keep relative inter-page links,
+which HubSpot page setup must map.
+
 ## Publishing
 
 Pushing to `main` triggers a GitHub Pages rebuild (~30–60s). Each deck renders at

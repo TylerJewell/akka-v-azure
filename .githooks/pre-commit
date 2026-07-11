@@ -1,0 +1,22 @@
+#!/bin/sh
+# Every commit regenerates both outputs for all sales deliverables:
+#   GitHub Pages page + HubSpot import fragment
+# (three decks, case studies, comparisons). See build-all.py.
+#
+# Wired via: git config core.hooksPath .githooks
+# Bypass once with: git commit --no-verify
+
+set -e
+
+python build-all.py
+
+# Stage the regenerated outputs so they land in this commit.
+git add \
+  sales-presentation/generated/overview/index.html \
+  sales-presentation/generated/overview/hubspot.html \
+  sales-presentation/generated/specify/index.html \
+  sales-presentation/generated/specify/hubspot.html \
+  sales-presentation/generated/token-shredder/index.html \
+  sales-presentation/generated/token-shredder/hubspot.html \
+  case-studies/hubspot \
+  comparisons/hubspot

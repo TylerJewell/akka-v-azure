@@ -15,6 +15,7 @@ import json, os, sys, argparse, re, shutil, zipfile
 from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from inline_external import process as inline_external
+from hubspot import to_hubspot_fragment
 
 BASE    = os.path.dirname(os.path.abspath(__file__))
 ROOT    = os.path.dirname(BASE)
@@ -52,6 +53,10 @@ parser.add_argument('--registry', default='slide-registry.json',
     help='Registry JSON filename in builder/ (default: slide-registry.json)')
 parser.add_argument('--nav', default='nav.js',
     help='Nav JS filename in shell/ (default: nav.js)')
+parser.add_argument('--hubspot-image-base', default='https://akka.io/hubfs/akka-platform-intro/',
+    help='Absolute base URL that relative images/ paths map to in the HubSpot fragment')
+parser.add_argument('--no-zip', action='store_true',
+    help='Skip building the shareable .zip (used by the every-commit build)')
 args = parser.parse_args()
 
 out_path = args.out or os.path.join(GEN, args.mode, 'index.html')
@@ -324,8 +329,14 @@ if head_script_tags:
 
 write(out_path, result)
 
-# Copy assets alongside HTML so relative paths work when opening in a browser
+# HubSpot import fragment alongside the GitHub Pages page (see hubspot.py)
 out_dir = os.path.dirname(out_path)
+hubspot_path = os.path.join(out_dir, 'hubspot.html')
+write(hubspot_path, to_hubspot_fragment(
+    result, base_dir=out_dir, image_base=args.hubspot_image_base,
+    label=registry.get('title', args.mode)))
+
+# Copy assets alongside HTML so relative paths work when opening in a browser
 assets_src = os.path.join(ROOT, 'assets')
 
 images_dst = os.path.join(out_dir, 'images')
@@ -362,24 +373,26 @@ size_kb = os.path.getsize(out_path) // 1024
 # ── Zip output dir ────────────────────────────────────────────────────────────
 # Place zip at generated/ root with a descriptive name so it's easy to share.
 
-zip_name = f'akka-presentation-{args.mode}.zip'
-if args.presenter:
-    zip_name = f'akka-presentation-{args.mode}-{args.presenter}.zip'
-zip_path = os.path.join(GEN, zip_name)
+zip_path = None
+if not args.no_zip:
+    zip_name = f'akka-presentation-{args.mode}.zip'
+    if args.presenter:
+        zip_name = f'akka-presentation-{args.mode}-{args.presenter}.zip'
+    zip_path = os.path.join(GEN, zip_name)
 
-with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-    for root, _, files in os.walk(out_dir):
-        for fname in files:
-            if fname.endswith('.zip'):
-                continue
-            fpath = os.path.join(root, fname)
-            zf.write(fpath, os.path.relpath(fpath, out_dir))
-
-zip_kb = os.path.getsize(zip_path) // 1024
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, _, files in os.walk(out_dir):
+            for fname in files:
+                if fname.endswith('.zip'):
+                    continue
+                fpath = os.path.join(root, fname)
+                zf.write(fpath, os.path.relpath(fpath, out_dir))
 
 print(f'Mode:      {args.mode}')
 print(f'Slides:    {included} included, {skipped} skipped')
 if presenter:
     print(f'Presenter: {args.presenter}')
 print(f'Output:    {out_path}  ({size_kb} KB)')
-print(f'Zip:       {zip_path}  ({zip_kb} KB)')
+print(f'HubSpot:   {hubspot_path}  ({os.path.getsize(hubspot_path)//1024} KB)')
+if zip_path:
+    print(f'Zip:       {zip_path}  ({os.path.getsize(zip_path)//1024} KB)')
