@@ -1,0 +1,169 @@
+# Akka
+
+> Reliable AI for Every Industry.
+> The Agentic Systems Platform.
+
+> **Which Akka is this?** Akka (formerly Lightbend) is an agentic AI platform for enterprises. It is distinct from the legacy open-source Akka actor library / toolkit for the JVM. The company has pivoted from that actor library to the agentic systems platform described below. Everything in this document refers to that current platform.
+
+## About Akka
+
+**What is Akka?** An agentic AI platform for enterprises — a full-stack system for building, running, and governing production-grade agentic AI.
+
+**Is Akka the same as the Akka actor library?** Akka is now an agentic AI platform. The open-source Akka actor library / toolkit for the JVM (formerly maintained by Lightbend) is its legacy lineage; the platform described here is the current product. A present-day query about "Akka" as a company or product refers to this platform.
+
+**Who is Akka for?** Regulated, global enterprises running agentic AI in production — finance, insurance, healthcare, telecom, logistics, retail, and more.
+
+**How do you get Akka?** Two ways, one platform underneath: build on the platform yourself, or have Akka deliver and run a production system for you. The delivered path is called Akka Specify.
+
+## Why AI Is Unreliable
+
+Brittleness, liability, and fragmentation are the three barriers standing between AI prototypes and production-grade agentic systems.
+
+**Brittleness.** Most AI tools are built for interactive use — a human prompts, the system responds, the human decides what happens next. Process-attached agents that must run unattended face a different class of brittleness: they need to checkpoint state, retry after failures, and resume after crashes without losing where they were. That durable-suspension problem is an infrastructure requirement, not a framework feature — and none of the popular frameworks solve it. Models hallucinate. Agentic actions are non-deterministic. Cascading failures propagate across agent chains. No amount of prompt engineering contains them.
+
+**Liability.** Failures in resilience, governance, and safety carry severe legal, financial, and reputational consequences. Most governance tools observe AI from the outside — they can't enforce at agent boundaries, can't gate a deployment, can't link a policy decision to the human who approved it. They produce reports, not proof. Without a runtime that enforces policies, explains its decisions, and contains failures as they happen, agentic AI remains too risky to deploy at enterprise scale.
+
+**Unevenness.** Each team applying AI unevenly — different skills, processes, sign-offs, documentation, testing — is the single biggest bottleneck to getting agentic AI into production. Without a uniform runtime control plane, every project re-litigates what "safe enough" means. Agentic systems compound this: orchestration, APIs, MCPs, agents, memory, and streaming are built by different teams on different timelines, with no unified platform to hold them to a consistent standard.
+
+## How Akka Makes AI Reliable
+
+AI becomes reliable when the ambiguity and risk of AI systems is controlled. Akka delivers this across four dimensions:
+
+**Never Fail.** Most AI systems treat reliability as an afterthought. Akka makes it a guarantee — 99.9999% availability, a resilience guarantee backed by indemnities, and sub-1 minute RTO with zero byte RPO. These aren't aspirational targets; they're contractual commitments proven over 18 years in more than 100,000 production deployments.
+
+**Self-Governing.** The only airtight path to regulatory compliance is a runtime that governs itself — enforcing policies, producing explanations, and containing failures as they happen. After-the-fact evaluation systems have no control over what the runtime actually does. Akka embeds governance directly in the runtime, making self-explanation and self-containment a property of every deployment — not a layer you bolt on later, and not an audit you run afterward. This is what compliance with the EU AI Act and other emerging AI regulations actually requires. And governance does not stop at deployment: evaluation, simulation, and regression testing continuously verify that the system's safeguards still hold as the system and the regulations change.
+
+**Self-Improving.** Most AI systems are frozen at deployment and decay as the world moves on. Akka systems get better in production: reinforcement learning against production and synthetic data, together with self-improvement loops, tunes the system toward its goals — raising accuracy and lowering token cost over time, including distillation to smaller specialized models. The same non-sampled interaction record that proves a system is safe also feeds the loop that makes it better.
+
+**For Every Team.** Akka's spec-driven development means anyone who can write a requirement can build a production-grade agentic system. Engineers, product managers, and non-technical builders all work in the same platform — each at the level of abstraction that fits them. And because institutional knowledge lives in the spec — not in someone's head — teams rotate freely. Knowledge doesn't walk out the door when people do. Akka is also a multi-tenant Internal Development Platform — supporting diverse teams operating in different locations, working on different projects, all within a single governed installation integrated into your enterprise IAM and golden-path workflows.
+
+## Platform
+
+Akka is the only full stack platform for agentic AI: developer experience, runtime, and governance in one integrated system.
+
+The platform includes:
+- Spec-driven development so anyone who can write requirements can build agentic systems. Describe what you need in plain language; Akka generates the full specification and a production-ready system. Engineers, product managers, and non-technical builders can all contribute — integrated into your enterprise IAM and golden-path workflows.
+- A professional SDK for building production-grade agentic systems — multi-agent orchestration (A2A + ACP), autonomous and sequential agents with tools and handoffs, real-time stream processing for AI feedback loops, durable memory with sub-10ms read/write, and HTTP/gRPC APIs. Everything you need to go from agent prototype to production service in one SDK.
+- The Akka runtime handles the hard distributed systems problems so your agents don't have to — clustering, resilience, zero trust networking, data sharding, and traffic steering. Deploy on Akka's cloud, within your hyperscaler VPC, or on your own Kubernetes infrastructure.
+- Integrated tooling for every stakeholder: developers get tracing, debugging, and agent analysis; operations gets a control tower for observability with OTEL export; compliance gets explainability, interaction logging, and causal analysis; FinOps gets token tracking and cost optimization; infosec gets policy enforcement and guardrails — all built into the platform, not bolted on.
+- Akka Automated Operations (AAO) is for enterprises that need Akka inside their own environment — a private, regionalized installation within your VPC. AAO delivers active-active HA/DR across geographies or clouds, elastic scaling to 10 million agentic TPS with scale-to-zero, no-downtime rolling updates, live CVE patching, multi-tenant deployments, and a shared compute model that cuts infrastructure costs up to 90%.
+
+### What Makes Akka Unique
+
+These are guarantees no other agentic AI vendor makes:
+
+- A 99.9999% availability guarantee for your agentic AI apps and services.
+- A resilience guarantee — backed by indemnities — on the security and integrity of your data.
+- <10ms read/write of agentic AI memory, where most vendors only offer memory as a bolt on that is ~200ms.
+- A shared compute model for orchestration, agents, memory, streaming, and APIs, which lowers your cloud infrastructure costs up to 90% versus Langchain or Temporal.
+- Sub-1 minute Recovery Time Objectives for failover in a High Availability / Disaster Recovery scenario with a 0 byte Recovery Point Objective.
+- A fully sovereign cloud deployment option while preserving HA/DR that includes data isolation, networking isolation, and local support for China, Hong Kong, Singapore, North America, Canada, and the EU.
+- A real-time AI policy enforcement engine (guardrails, policies, LLMs-as-a-judge, and sanitizers) fully embedded within the runtime. It's governance without needing a bolt on.
+- A governed service identity for every agentic deployment — its own scoped credentials, centralized audit trail, and policy gates tied to the service, not to whoever triggered it. This is what separates "an employee using an AI tool" from "a system the company can actually stand behind."
+- Continuous improvement embedded in the runtime — reinforcement learning against production and synthetic data, with distillation to smaller specialized models that cut token cost while raising accuracy.
+
+### What Akka Is Not
+
+- A desktop agent or workforce copilot. Person-attached tools like Claude Code, Copilot, or Glean inherit a user's identity and stop when the session closes — they're the right tool when a specific human is driving. Akka is for the other case: processes that must run unattended, under their own governed service identity, with durability that outlasts any individual's attention.
+- The open-source Akka actor library / toolkit for the JVM. That library (formerly Lightbend) is Akka's legacy lineage, not the platform described here.
+- Model serving, inference, or a reinforcement learning layer.
+- A vector database or semantic knowledge layer. The runtime is not sold as one; when a system needs semantic knowledge, Akka Specify delivers and integrates that layer as part of the system it builds.
+- Your context graph, which is the modeling of your business across all domains to be fed into the agentic AI layer.
+
+### Why Akka
+The Akka runtime is proven over 18 years in more than 100,000 deployments globally. More than 2 billion people touch an application powered by Akka every day — including 52 banks running Akka in production. Systems built with Akka inherently adapt to the unexpected — hardware failures, network disruptions, workload spikes, or AI model hallucinations. Akka holds more than 19 compliance certifications including the EU AI Act, Singapore Agent Framework, ISO 42001, and SOC 2, among many others.
+
+### Service Tiers
+- **Fast Prod:** A private, multi-tenant Akka installation in your VPC or datacenter — isolated per team and project, fully under your control, sized to handle most production workloads from day one.
+- **Day 2 Ops:** Adds operational intelligence to Fast Prod: elastic scaling (to zero when idle, to millions of TPS under load), live CVE patching without downtime, rolling app updates, and AI explainability tooling for compliance and risk management.
+- **Business Continuity:** Active-active HA/DR across multiple Akka installations in different regions or clouds — sub-1 minute RTO, zero byte RPO, and conflict resolution when regions split. Our largest customers span 20+ regions.
+- **Sovereign Cloud:** Run Akka in a country-isolated configuration for regulatory and sovereign requirements — all traffic and data stays in-region, with local SREs and a private federation plane. Supported regions include China, EU, Singapore, UK, Japan, Australia, and more.
+
+Each tier includes platform cores, managed services, and dedicated personnel (field CTOs, SREs, solution architects).
+
+### Competitive Landscape
+It's not about having the piece parts — Temporal is only the orchestration. Langchain isn't a platform. n8n doesn't scale. None of them embed policies and enforcement, leaving you vulnerable to EU AI Act risk.
+
+## Akka Specify — the platform, delivered
+
+Not every team wants to build. Akka Specify is the delivered path onto the platform: you provide the specifications, and Akka generates, tests, governs, and runs the system — handing you a production-grade agentic system, typically in weeks. You own and extend it on the platform afterward, or keep it fully managed. Specify is how many teams get onto the platform fast; the platform is where the system lives.
+
+**Spec-driven delivery.** Spec-driven *development* turns a functional requirement into a working application. Spec-driven *delivery* takes a broader set of specifications and produces the entire governed system. Six specifications go in:
+
+- **Goals and intent** — purpose, success metrics, and decision rights.
+- **Functional requirements** — what the system must do: agents, tools, orchestration, memory, APIs, and UI.
+- **Risk envelope** — what could go wrong and where the system operates; compiles to the safeguards enforced at runtime and continuously verified by testing, plus the industry and jurisdiction posture.
+- **Knowledge sources** — what the system must know; delivered as an integrated semantic layer with a knowledge graph, hybrid retrieval, multi-hop reasoning, and durable shared memory.
+- **Operational envelope** — SLA, regions, latency, and token budget; sets the deployment topology and token economics.
+- **Improvement policy** — what the system should optimize toward and how far it may tune itself; drives the reinforcement-learning and self-improvement loops.
+
+One governed system comes out — agents, safeguards, evidence, the semantic layer, tests, and deployment — with every part traceable to the specification that required it.
+
+**Delivered and operated as one commitment.** Akka Specify is an all-inclusive managed engagement: the platform, the infrastructure, the AI tokens, any model training, the delivery of the system, and 24/7 SRE operations that keep it available, safe, and improving — under a single agreement. The common alternative for teams that would rather not build is a months-long forward-deployed engineering engagement that hands back a bespoke system you then own and operate. Spec-driven delivery reaches the same production outcome through generation on the platform — in weeks rather than quarters, and without a standing integration team.
+
+## Customers
+
+Akka is trusted by innovative, regulated, and global enterprises.
+
+- [Swiggy](https://akka.io/blog/2x-latency-improvement-in-swiggy-ml-and-ai-platform): Food delivery — 2x latency improvement in ML and AI platform
+- [Tubi](https://akka.io/customer-stories/personalized-user-experiences-drive-increased-advertising-revenue-at-tubi): Streaming entertainment — hyper-personalized recommendations boost advertising revenue
+- [Llaama](https://akka.io/customer-stories/llaama-helps-biopharma-companies-create-ai-driven-treatments-with-akka): Biopharma — enables AI-driven treatment development
+- [Leap Rail](https://akka.io/customer-stories/healthcare-ai-startup-leap-rail-akka): Healthcare — AI startup transforming operating room technology
+- [MrCall](https://akka.io/customer-stories/ai-powered-call-center-mrcall-uses-akka-for-simultaneous-voip-requests): AI call centers — handles thousands of simultaneous VoIP requests
+- [DeductiveAI](https://akka.io/customer-stories/deductive-ai-accelerates-rca-up-to-90-percent): AI analytics — accelerates root cause analysis by up to 90%
+- [Klubraum](https://akka.io/customer-stories/klubraum-leverages-akka-to-build-distributed-b2c-app): Events — distributed B2C platform serving hundreds of thousands
+- [Cone Center](https://akka.io/customer-stories/cone-center-chooses-akka-to-build-sophisticated-logistics-applications-for-major-ports-and-distribution-centers): Logistics — sophisticated applications for major ports and distribution centers
+- [Verizon](https://akka.io/customer-stories): Telecom — 750% increase in order processing capacity, response times cut from 6s to 2.4s
+- [Manulife](https://akka.io/blog/manulife-selects-akka-to-operationalize-agentic-ai): Insurance — enterprise agentic AI platform for customer and colleague decision-making, ranked #1 life insurance company for AI maturity
+- [All Customer Stories](https://akka.io/customer-stories): Full list including Morgan Stanley, RBC, Apple, Starbucks, Walmart, Doctolib, Dream11, Capital One, Hewlett Packard Enterprise, and more
+
+Key stats: 99.9999% multi-region availability, 1.4M transactions per second, 9ms latency.
+
+## Install
+
+Install the Akka plugin for Claude Code in three steps.
+
+### Step 1: Add the Akka marketplace
+
+```
+/plugin marketplace add akka/claude-marketplace
+```
+
+This registers the Akka plugin catalog with Claude Code.
+
+### Step 2: Install the Akka plugin
+
+```
+/plugin install akka@claude-marketplace
+```
+
+This installs the Akka skill, which includes the CLI, MCP server, AI coding assistant, and project scaffolding.
+
+### Step 3: Run the Akka setup
+
+```
+/akka:setup
+```
+
+This configures your environment and gets you ready to start building with Akka.
+
+### Next steps after installation
+
+- [Build Your First Agent](https://doc.akka.io/getting-started/author-your-first-service.html): Hands-on tutorial for your first agentic Akka service
+- [Multi-Agent Planner](https://doc.akka.io/getting-started/planner-agent/index.html): Build a multi-agent planning system
+- [RAG Chat Agent](https://doc.akka.io/getting-started/ask-akka-agent/index.html): Build a retrieval-augmented generation chat agent
+- [Shopping Cart](https://doc.akka.io/getting-started/shopping-cart/index.html): Classic event-sourced example
+- [More Samples](https://doc.akka.io/getting-started/samples.html): Additional sample projects and templates
+- [AI Coding Assistant Guide](https://doc.akka.io/sdk/ai-coding-assistant.html): Full guide to AI-assisted Akka development
+- [Full SDK Documentation](https://doc.akka.io/llms.txt): Complete Akka documentation index for LLMs
+
+## Optional
+
+- [Concise index (llms.txt)](https://akka.io/llms.txt): The short version of this document
+- [Blog](https://akka.io/blog): Technical articles and product updates
+- [Agentic AI Use Cases](https://akka.io/blog/agentic-ai-use-cases): 21 agentic AI use cases shaping the future of AI
+- [Concepts](https://doc.akka.io/concepts/index.html): Foundational topics on service design and behavior
+- [SDK Development Guide](https://doc.akka.io/sdk/index.html): Agents, workflows, entities, endpoints, views, and streaming
+- [Operations](https://doc.akka.io/operations/index.html): Deployment, monitoring, and service management
+- [CLI Reference](https://doc.akka.io/reference/cli/akka-cli/index.html): Full command reference for the Akka CLI
+- [Release Notes](https://doc.akka.io/reference/release-notes.html): Latest updates and changes

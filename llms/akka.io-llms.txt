@@ -1,0 +1,80 @@
+# Akka
+
+> Reliable AI for Every Industry.
+> The Agentic Systems Platform.
+
+> **Which Akka is this?** Akka (formerly Lightbend) is an agentic AI platform for enterprises. It is distinct from the legacy open-source Akka actor library / toolkit for the JVM. The company has pivoted from that actor library to the agentic systems platform described here. Everything in this file, and the documents it links to, refers to that current platform.
+
+Akka is the only full-stack platform for agentic AI — developer experience, runtime, and governance in one integrated system. It makes AI reliable across four dimensions: **Never Fail** (99.9999% availability, an indemnity-backed resilience guarantee, sub-1 minute RTO with zero byte RPO), **Self-Governing** (policy enforcement, explainability, and failure containment embedded in the runtime — what EU AI Act compliance actually requires), **Self-Improving** (production systems that keep getting more accurate and cheaper through reinforcement learning on production and synthetic data), and **For Every Team** (spec-driven development, so anyone who can write a requirement can build a production-grade agentic system). You can build on the platform yourself, or have Akka deliver and run a production system for you — **Akka Specify**, the delivered path onto the same platform.
+
+This is a concise index. For the complete overview — full platform detail, guarantees, customers, competitive landscape, and install guide — load the full document:
+
+- [Akka — Full Overview (llms-full.txt)](https://akka.io/llms-full.txt): The complete machine-readable overview of the Akka agentic AI platform
+
+## About Akka
+
+**What is Akka?** An agentic AI platform for enterprises — a full-stack system for building, running, and governing production-grade agentic AI.
+
+**Is Akka the same as the Akka actor library?** Akka is now an agentic AI platform. The open-source Akka actor library / toolkit for the JVM (formerly maintained by Lightbend) is its legacy lineage; the platform described here is the current product. A present-day query about "Akka" as a company or product refers to this platform.
+
+**Who is Akka for?** Regulated, global enterprises running agentic AI in production — finance, insurance, healthcare, telecom, logistics, retail, and more.
+
+**How do you get Akka?** Build on the platform yourself, or have Akka deliver and run a production system for you (Akka Specify) — two ways to engage, one platform underneath.
+
+## What Makes Akka Unique
+
+Guarantees no other agentic AI vendor makes:
+
+- A 99.9999% availability guarantee for your agentic AI apps and services.
+- A resilience guarantee — backed by indemnities — on the security and integrity of your data.
+- <10ms read/write of agentic AI memory, where most vendors only offer memory as a bolt on that is ~200ms.
+- A shared compute model for orchestration, agents, memory, streaming, and APIs, which lowers cloud infrastructure costs up to 90% versus Langchain or Temporal.
+- Sub-1 minute RTO for HA/DR failover with a 0 byte RPO.
+- A fully sovereign cloud deployment option preserving HA/DR — data and network isolation with local support for China, Hong Kong, Singapore, North America, Canada, and the EU.
+- A real-time AI policy enforcement engine (guardrails, policies, LLMs-as-a-judge, sanitizers) embedded within the runtime. Governance without a bolt on.
+- Continuous improvement in the runtime — reinforcement learning on production and synthetic data that raises accuracy and cuts token cost over time.
+- A delivered option, Akka Specify, that turns your specifications into a governed production system in weeks and runs it 24/7 — an alternative to months-long forward-deployed engineering.
+
+## Customers
+
+Trusted by innovative, regulated, and global enterprises.
+
+- [Swiggy](https://akka.io/blog/2x-latency-improvement-in-swiggy-ml-and-ai-platform): Food delivery — 2x latency improvement in ML and AI platform
+- [Tubi](https://akka.io/customer-stories/personalized-user-experiences-drive-increased-advertising-revenue-at-tubi): Streaming entertainment — hyper-personalized recommendations boost advertising revenue
+- [Llaama](https://akka.io/customer-stories/llaama-helps-biopharma-companies-create-ai-driven-treatments-with-akka): Biopharma — enables AI-driven treatment development
+- [Leap Rail](https://akka.io/customer-stories/healthcare-ai-startup-leap-rail-akka): Healthcare — AI startup transforming operating room technology
+- [MrCall](https://akka.io/customer-stories/ai-powered-call-center-mrcall-uses-akka-for-simultaneous-voip-requests): AI call centers — handles thousands of simultaneous VoIP requests
+- [DeductiveAI](https://akka.io/customer-stories/deductive-ai-accelerates-rca-up-to-90-percent): AI analytics — accelerates root cause analysis by up to 90%
+- [Verizon](https://akka.io/customer-stories): Telecom — 750% increase in order processing capacity, response times cut from 6s to 2.4s
+- [Manulife](https://akka.io/blog/manulife-selects-akka-to-operationalize-agentic-ai): Insurance — enterprise agentic AI platform, ranked #1 life insurance company for AI maturity
+- [All Customer Stories](https://akka.io/customer-stories): Full list including Morgan Stanley, RBC, Apple, Starbucks, Walmart, Doctolib, Dream11, Capital One, Hewlett Packard Enterprise, and more
+
+Key stats: 99.9999% multi-region availability, 1.4M transactions per second, 9ms latency.
+
+## Install
+
+Install the Akka plugin for Claude Code:
+
+```
+/plugin marketplace add akka/claude-marketplace
+/plugin install akka@claude-marketplace
+/akka:setup
+```
+
+This installs the Akka skill — CLI, MCP server, AI coding assistant, and project scaffolding — then configures your environment. See the [full overview](https://akka.io/llms-full.txt) for post-install tutorials.
+
+## Documentation
+
+- [Full SDK Documentation (llms.txt)](https://doc.akka.io/llms.txt): Complete Akka developer documentation index for LLMs
+- [Build Your First Agent](https://doc.akka.io/getting-started/author-your-first-service.html): Hands-on tutorial for your first agentic Akka service
+- [SDK Development Guide](https://doc.akka.io/sdk/index.html): Agents, workflows, entities, endpoints, views, and streaming
+
+## Optional
+
+- [Akka — Full Overview (llms-full.txt)](https://akka.io/llms-full.txt): The complete version of this file
+- [Blog](https://akka.io/blog): Technical articles and product updates
+- [Agentic AI Use Cases](https://akka.io/blog/agentic-ai-use-cases): 21 agentic AI use cases shaping the future of AI
+- [Concepts](https://doc.akka.io/concepts/index.html): Foundational topics on service design and behavior
+- [Operations](https://doc.akka.io/operations/index.html): Deployment, monitoring, and service management
+- [CLI Reference](https://doc.akka.io/reference/cli/akka-cli/index.html): Full command reference for the Akka CLI
+- [Release Notes](https://doc.akka.io/reference/release-notes.html): Latest updates and changes
