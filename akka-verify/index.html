@@ -87,7 +87,8 @@
   .vznode.on .dotmark{background:var(--yellow);}
   .vznode .nn{font-size:14.5px; font-weight:600;}
   .vznode .nd{font-size:12px; color:var(--dim); margin-left:auto; text-align:right;}
-  .vz-detail{border:1px solid var(--line); border-radius:12px; background:linear-gradient(160deg,#0e0e12,#08080b); padding:30px 32px; display:flex; flex-direction:column; justify-content:center;}
+  .vz-detail{border:1px solid var(--line); border-radius:12px; background:linear-gradient(160deg,#0e0e12,#08080b); padding:30px 32px; display:flex; flex-direction:column; justify-content:center; min-width:0;}
+  .vzx{min-width:0; overflow-x:auto;}
   .vz-detail .de{font-size:11px; text-transform:uppercase; letter-spacing:2.5px; color:var(--yellow); font-weight:600; margin-bottom:13px;}
   .vz-detail .dh{font-size:clamp(19px,2vw,26px); font-weight:700; letter-spacing:-0.02em; line-height:1.16; margin-bottom:15px;}
   .vz-detail .dbody{font-size:clamp(14px,1.15vw,16.5px); color:var(--muted); line-height:1.6;}
@@ -136,7 +137,7 @@
   .grd-pill{white-space:nowrap;}
   .san-row{display:flex; align-items:center; gap:10px;}
   .san-tag{font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); width:26px; flex:none;}
-  .san-code{font-family:'SF Mono','Consolas',monospace; font-size:11px; color:#cfcfcf; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:6px; padding:8px 11px; flex:1; overflow-x:auto; white-space:nowrap;}
+  .san-code{font-family:'SF Mono','Consolas',monospace; font-size:11px; color:#cfcfcf; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:6px; padding:8px 11px; flex:1; min-width:0; overflow-x:auto; white-space:nowrap;}
   .san-code b{color:var(--yellow); font-weight:600; letter-spacing:1px;}
   .san-mid{display:flex; align-items:center; gap:9px; padding:9px 0 9px 36px;}
   .san-ar{color:#4a4a4a; font-size:10px;}
@@ -328,6 +329,7 @@
   @media (max-width:620px){
     .stats,.catgrid{grid-template-columns:1fr;}
     .pchips{flex-wrap:wrap;}
+    .govframe iframe{height:860px;}
     /* production-readiness table -> stacked, labeled cards */
     .probrows{max-width:520px; border:none; border-radius:0; overflow:visible;}
     .phead{display:none;}

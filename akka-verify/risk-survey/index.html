@@ -87,7 +87,14 @@
   .rs-legend span{display:inline-flex; align-items:center; gap:5px;}
   .rs-legend i{width:7px; height:7px; border-radius:2px; flex:none;}
 
-  @media (max-width:760px){ .rs-main{grid-template-columns:1fr;} .rs-qcol,.rs-rescol{height:auto;} body{overflow:auto;} }
+  .rs-livecount{display:none; margin:-4px 0 14px; font-size:13px; font-weight:600; color:var(--yellow);}
+  @media (max-width:760px){
+    .rs-main{grid-template-columns:1fr;}
+    .rs-qcol,.rs-rescol{height:auto;}
+    .rs-res-list{max-height:300px;}
+    .rs-livecount{display:block;}
+    body{overflow:auto;}
+  }
 </style>
 </head>
 <body>
@@ -106,6 +113,7 @@
   <div class="rs-main">
     <div class="rs-qcol">
       <div class="rs-progress">Question <b id="qnum">1</b> of <span id="qtot">6</span> &middot; <span id="qcat"></span></div>
+      <div class="rs-livecount" id="qLive"></div>
       <div class="rs-qcard" id="qcard"></div>
       <div class="rs-nav">
         <button id="prev" class="ghost" type="button">&larr; Back</button>
@@ -267,7 +275,7 @@ function applicable(){ return CONTROLS.filter(ctl => ctl.when.every(condOk)); }
 /* ---------- render ---------- */
 const qcard=document.getElementById('qcard'), dotsEl=document.getElementById('dots'),
       qnum=document.getElementById('qnum'), qcat=document.getElementById('qcat'),
-      resList=document.getElementById('resList'), cCount=document.getElementById('cCount'), rCount=document.getElementById('rCount'),
+      resList=document.getElementById('resList'), cCount=document.getElementById('cCount'), rCount=document.getElementById('rCount'), qLive=document.getElementById('qLive'),
       prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
 document.getElementById('qtot').textContent = QS.length;
 
@@ -315,6 +323,7 @@ function renderResults(){
   cCount.textContent = apps.length;
   const regsHit = [...new Set(apps.map(a=>a.reg))];
   rCount.textContent = regsHit.length;
+  qLive.textContent = apps.length===0 ? 'No controls yet — keep answering.' : (apps.length+' controls · '+regsHit.length+' regulations apply. Scroll down for the list.');
   if(apps.length===0){
     resList.innerHTML='<div class="rs-empty">Answer a question and the controls your system must satisfy appear here, grouped by regulation. Click a regulation to expand it.</div>';
     return;
