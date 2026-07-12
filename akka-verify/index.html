@@ -327,7 +327,16 @@
   }
   @media (max-width:620px){
     .stats,.catgrid{grid-template-columns:1fr;}
-    .prow{grid-template-columns:1fr;} .prow > div{border-left:none; border-right:none;} .pchips{flex-wrap:wrap;}
+    .pchips{flex-wrap:wrap;}
+    /* production-readiness table -> stacked, labeled cards */
+    .probrows{max-width:520px; border:none; border-radius:0; overflow:visible;}
+    .phead{display:none;}
+    .prow{grid-template-columns:1fr; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:16px; background:rgba(255,255,255,0.015);}
+    .prow > div{border-left:none; border-right:none; padding:15px 18px;}
+    .prow > div:first-child{border-top:none;}
+    .prow > div.akkacell{padding-top:34px;}
+    .akkacell{position:relative;}
+    .akkacell::before{content:"Akka Verify"; position:absolute; top:13px; left:18px; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--yellow); font-weight:700;}
   }
 </style>
 </head>
