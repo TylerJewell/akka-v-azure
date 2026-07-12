@@ -27,6 +27,7 @@ PRESENTATIONS = [
     {"dir": "dev-presentation",     "link": "dev-presentation/generated/overview/"},
     {"link": "sales-presentation/generated/token-shredder/",
      "title": "AI that lowers its own bill.", "sub": "AKKA TOKEN SHREDDER"},
+    {"link": "akka-verify/", "title": "AI, under control.", "sub": "AKKA VERIFY"},
     {"link": "case-studies/", "title": "Akka Customer Stories", "sub": "CASE STUDIES"},
     {"link": "website/", "title": "Akka Industry Stories", "sub": "INDUSTRIES"},
 ]

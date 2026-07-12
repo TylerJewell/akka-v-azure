@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Risk Survey — Akka Verify</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --yellow:#F5C518; --bg:#0a0a0d; --line:#2a2a2a; --white:#fff; --muted:#b8b8b8; --dim:#888;
+    --head:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+    --guardrail:#F5C518; --sanitizer:#2ED6C1; --hitl:#8AB4FF; --eval:#28C840; --cigate:#C08CFF;
+  }
+  html,body{background:var(--bg);}
+  body{font-family:var(--head); color:var(--white); -webkit-font-smoothing:antialiased; padding:16px 20px; overflow:hidden;}
+  a{color:var(--yellow); text-decoration:none;}
+
+  .rs{max-width:1180px; margin:0 auto;}
+  .rs-top{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:12px; flex-wrap:wrap;}
+  .rs-eyebrow{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:2.5px; color:var(--yellow); font-weight:600;}
+  .rs-presets{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--dim); flex-wrap:wrap;}
+  .rs-presets button{font-family:var(--head); font-size:12.5px; color:var(--white); background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:100px; padding:6px 14px; cursor:pointer; transition:border-color .15s, background .15s;}
+  .rs-presets button:hover{border-color:var(--yellow);}
+  .rs-presets button.ghost{color:var(--dim); border-style:dashed;}
+
+  .rs-main{display:grid; grid-template-columns:1fr 0.72fr; gap:22px; align-items:stretch;}
+
+  .rs-qcol{height:470px; overflow:hidden; border:1px solid var(--line); border-radius:12px; background:#0d0d11; padding:20px 24px; display:flex; flex-direction:column;}
+  .rs-progress{font-family:var(--mono); font-size:11px; letter-spacing:1px; color:var(--dim); text-transform:uppercase; margin-bottom:14px;}
+  .rs-progress b{color:var(--yellow);}
+  .rs-qcard{flex:1; min-height:0;}
+  .rs-q{font-size:clamp(18px,1.9vw,22px); font-weight:700; letter-spacing:-0.02em; line-height:1.2; margin-bottom:5px;}
+  .rs-qsub{font-size:12.5px; color:var(--dim); margin-bottom:16px; line-height:1.4;}
+  .rs-qsub b{color:var(--yellow); font-weight:600;}
+  .rs-opts{display:flex; flex-direction:column; gap:7px;}
+  .rs-opt{display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:9px; padding:9px 15px; cursor:pointer; transition:border-color .15s, background .15s; text-align:left; color:var(--white); background:rgba(255,255,255,0.015);}
+  .rs-opt:hover{border-color:#4a4a4a;}
+  .rs-opt.on{border-color:var(--yellow); background:rgba(245,197,24,0.08);}
+  .rs-box{width:16px; height:16px; border:1.5px solid #555; border-radius:4px; flex:none; display:flex; align-items:center; justify-content:center; transition:border-color .15s, background .15s;}
+  .rs-opt.single .rs-box{border-radius:50%;}
+  .rs-opt.on .rs-box{border-color:var(--yellow); background:var(--yellow);}
+  .rs-opt.on .rs-box::after{content:''; width:7px; height:7px; border-radius:2px; background:#000;}
+  .rs-opt.single.on .rs-box::after{border-radius:50%;}
+  .rs-otext{font-size:14px; font-weight:500;}
+
+  .rs-nav{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px;}
+  .rs-nav button{font-family:var(--head); font-size:14px; font-weight:600; padding:9px 20px; border-radius:100px; cursor:pointer; border:1px solid var(--line); background:var(--yellow); color:#000; transition:opacity .15s;}
+  .rs-nav button.ghost{background:transparent; color:var(--muted);}
+  .rs-nav button:disabled{opacity:.35; cursor:default;}
+  .rs-dots{display:flex; gap:7px;}
+  .rs-dot{width:8px; height:8px; border-radius:50%; background:#3a3a3a; cursor:pointer; transition:background .15s;}
+  .rs-dot.on{background:var(--yellow);}
+  .rs-dot.done{background:#6a6a2a;}
+
+  .rs-rescol{height:470px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(160deg,#0f0f14,#0a0a0d); padding:18px 18px 14px; display:flex; flex-direction:column;}
+  .rs-res-hd{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--dim); margin-bottom:10px;}
+  .rs-res-count{font-size:13.5px; color:var(--muted); margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--line);}
+  .rs-res-count b{font-size:25px; color:var(--yellow); font-weight:700; letter-spacing:-0.02em;}
+  .rs-res-list{flex:1; min-height:0; overflow-y:auto; margin:0 -4px; padding:0 4px; scrollbar-width:thin; scrollbar-color:#3a3a3a transparent;}
+  .rs-res-list::-webkit-scrollbar{width:8px;}
+  .rs-res-list::-webkit-scrollbar-track{background:transparent;}
+  .rs-res-list::-webkit-scrollbar-thumb{background:#333; border-radius:100px; border:2px solid transparent; background-clip:padding-box;}
+  .rs-res-list::-webkit-scrollbar-thumb:hover{background:var(--yellow); background-clip:padding-box;}
+  .rs-empty{font-size:12.5px; color:var(--dim); line-height:1.5; padding:12px 2px;}
+  .rs-reg{margin-bottom:6px;}
+  .rs-reg-name{width:100%; display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:7px 4px; text-align:left; color:#e6e6e6;}
+  .rs-reg-name:hover{color:#fff;}
+  .rs-tri{color:var(--yellow); font-size:13px; line-height:1; transition:transform .15s; flex:none; width:13px; text-align:center;}
+  .rs-reg-name.open .rs-tri{transform:rotate(90deg);}
+  .rs-reg-t{font-size:12.5px; font-weight:700; letter-spacing:.2px; flex:1;}
+  .rs-reg-name .n{font-family:var(--mono); font-size:10px; color:var(--dim); font-weight:600; background:rgba(255,255,255,0.05); border-radius:100px; padding:2px 8px;}
+  .rs-reg-ctls{padding:2px 0 6px 17px;}
+  .rs-ctl{display:flex; align-items:flex-start; gap:9px; padding:5px 0;}
+  .rs-mech{width:8px; height:8px; border-radius:2px; flex:none; margin-top:5px;}
+  .rs-ctl-body{flex:1;}
+  .rs-ctl-title{display:block; font-size:12px; color:#dcdcdc; line-height:1.3;}
+  .rs-ctl-meta{display:block; font-family:var(--mono); font-size:9.5px; color:var(--dim); margin-top:4px;}
+  .rs-ctl-meta .cite{color:#9a9a9a;}
+  .rs-res-foot{font-size:10.5px; color:var(--dim); line-height:1.45; margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+  .rs-res-foot b{color:var(--muted);}
+  .rs-legend{display:flex; flex-wrap:wrap; gap:7px 12px; margin-top:8px; font-size:9.5px; color:var(--dim);}
+  .rs-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .rs-legend i{width:7px; height:7px; border-radius:2px; flex:none;}
+
+  @media (max-width:760px){ .rs-main{grid-template-columns:1fr;} .rs-qcol,.rs-rescol{height:auto;} body{overflow:auto;} }
+</style>
+</head>
+<body>
+<div class="rs">
+  <div class="rs-top">
+    <div class="rs-eyebrow">AI Risk Survey</div>
+    <div class="rs-presets">
+      <span>Try an example:</span>
+      <button data-preset="loan" type="button">Banking</button>
+      <button data-preset="clinical" type="button">Healthcare</button>
+      <button data-preset="hiring" type="button">Hiring</button>
+      <button data-preset="reset" class="ghost" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div class="rs-main">
+    <div class="rs-qcol">
+      <div class="rs-progress">Question <b id="qnum">1</b> of <span id="qtot">6</span> &middot; <span id="qcat"></span></div>
+      <div class="rs-qcard" id="qcard"></div>
+      <div class="rs-nav">
+        <button id="prev" class="ghost" type="button">&larr; Back</button>
+        <div class="rs-dots" id="dots"></div>
+        <button id="next" type="button">Next &rarr;</button>
+      </div>
+    </div>
+
+    <div class="rs-rescol">
+      <div class="rs-res-hd">Eval Matrix</div>
+      <div class="rs-res-count"><b id="cCount">0</b> controls &middot; <span id="rCount">0</span> regulations</div>
+      <div class="rs-res-list" id="resList"><div class="rs-empty">Answer a question and the controls your system must satisfy appear here, grouped by regulation. Click a regulation to expand it.</div></div>
+      <div class="rs-res-foot">This sample derives from <b>8 of 191</b> regulations in the corpus. <a href="mailto:sales@akka.io">Map the full corpus &rarr;</a>
+        <div class="rs-legend">
+          <span><i style="background:var(--guardrail)"></i>Guardrail</span>
+          <span><i style="background:var(--sanitizer)"></i>Sanitizer</span>
+          <span><i style="background:var(--hitl)"></i>HITL</span>
+          <span><i style="background:var(--eval)"></i>Evaluation</span>
+          <span><i style="background:var(--cigate)"></i>CI gate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- survey questions (one at a time; jurisdiction first so results appear immediately) ---------- */
+const QS = [
+  { id:'jur', cat:'Jurisdiction', multi:true,
+    q:'Where does it operate?',
+    sub:'Classifies which regional regimes apply.',
+    opts:[
+      {v:'eu',    t:'European Union'},
+      {v:'us-fed',t:'United States (federal)'},
+      {v:'us-co', t:'Colorado'},
+      {v:'us-nyc',t:'New York City'},
+    ]},
+  { id:'sec', cat:'Sector', multi:true,
+    q:'What sector does it serve?',
+    sub:'Classifies sectoral rules for finance, health, and employment.',
+    opts:[
+      {v:'financial', t:'Financial services'},
+      {v:'health',    t:'Healthcare'},
+      {v:'employment',t:'Employment / hiring'},
+      {v:'consumer',  t:'Consumer / SaaS'},
+      {v:'gov',       t:'Government'},
+      {v:'ailab',     t:'Frontier AI lab'},
+    ]},
+  { id:'risk', cat:'Decisions', multi:false,
+    q:'Does it make consequential decisions about people?',
+    sub:'Classifies high-risk obligations under the EU AI Act and US state law.',
+    opts:[
+      {v:'high',    t:'Yes — it affects access, eligibility, or rights'},
+      {v:'limited', t:'No — it is informational or assistive'},
+    ]},
+  { id:'pd', cat:'Data', multi:true,
+    q:'What data does it process?',
+    sub:'Classifies data-protection and sanitization obligations.',
+    opts:[
+      {v:'personal', t:'Personal data (PII)'},
+      {v:'health',   t:'Health data (PHI)'},
+      {v:'none',     t:'No personal data'},
+    ]},
+  { id:'cap', cat:'Purpose', multi:true,
+    q:'What can the system do?',
+    sub:'Classifies transparency and tool-use obligations.',
+    opts:[
+      {v:'chat',   t:'Chats or messages with people directly'},
+      {v:'gen',    t:'Generates content (text, image, audio, video)'},
+      {v:'decide', t:'Makes or recommends decisions about people'},
+      {v:'act',    t:'Takes autonomous or bulk actions'},
+      {v:'tools',  t:'Uses external tools, APIs, or the internet'},
+    ]},
+  { id:'fw', cat:'Compliance', multi:true,
+    q:'Which frameworks have you adopted?',
+    sub:'Classifies voluntary-framework evidence obligations.',
+    opts:[
+      {v:'nist', t:'NIST AI RMF'},
+      {v:'iso',  t:'ISO/IEC 42001'},
+      {v:'none', t:'None yet'},
+    ]},
+];
+
+/* ---------- teaser corpus: 6 regulations, 26 controls ---------- */
+const REGS = {
+  'eu-ai-act': 'EU AI Act',
+  'gdpr':      'GDPR',
+  'colorado':  'Colorado AI Act',
+  'nyc-ll144': 'NYC Local Law 144',
+  'ftc':       'FTC Act §5',
+  'ecoa':      'ECOA / Fair Lending',
+  'hipaa':     'HIPAA',
+  'nist':      'NIST AI RMF',
+};
+// when: array of conditions (implicit AND). {f: fact, op:'any'|'eq', v: [values] | value}
+const CONTROLS = [
+  // EU AI Act
+  {reg:'eu-ai-act', mech:'guardrail', title:'Block prohibited practices',                  cite:'Art. 5',  when:[{f:'jur',op:'any',v:['eu']}]},
+  {reg:'eu-ai-act', mech:'guardrail', title:'Disclose that a user is interacting with AI', cite:'Art. 50', when:[{f:'jur',op:'any',v:['eu']},{f:'cap',op:'any',v:['chat','gen']}]},
+  {reg:'eu-ai-act', mech:'cigate',    title:'Risk management system',                      cite:'Art. 9',  when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'eu-ai-act', mech:'eval',      title:'Data governance & bias examination',          cite:'Art. 10', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'eu-ai-act', mech:'cigate',    title:'Technical documentation',                     cite:'Art. 11', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'eu-ai-act', mech:'eval',      title:'Automatic event logging',                     cite:'Art. 12', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'eu-ai-act', mech:'hitl',      title:'Human oversight',                             cite:'Art. 14', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'eu-ai-act', mech:'eval',      title:'GPAI model evaluation & red-teaming',         cite:'Art. 55', when:[{f:'jur',op:'any',v:['eu']},{f:'sec',op:'any',v:['ailab']}]},
+  // GDPR
+  {reg:'gdpr', mech:'sanitizer', title:'Data minimization & PII redaction',                cite:'Art. 5',  when:[{f:'jur',op:'any',v:['eu']},{f:'pd',op:'any',v:['personal','health']}]},
+  {reg:'gdpr', mech:'hitl',      title:'Human review of automated decisions',              cite:'Art. 22', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'gdpr', mech:'cigate',    title:'Records of processing activities',                 cite:'Art. 30', when:[{f:'jur',op:'any',v:['eu']},{f:'pd',op:'any',v:['personal','health']}]},
+  {reg:'gdpr', mech:'cigate',    title:'Data protection impact assessment',                cite:'Art. 35', when:[{f:'jur',op:'any',v:['eu']},{f:'risk',op:'eq',v:'high'},{f:'pd',op:'any',v:['personal','health']}]},
+  // Colorado AI Act
+  {reg:'colorado', mech:'guardrail', title:'Consumer notice of AI decision',               cite:'SB 24-205 §1703', when:[{f:'jur',op:'any',v:['us-co']}]},
+  {reg:'colorado', mech:'hitl',      title:'Consumer right to human appeal',               cite:'SB 24-205 §1703', when:[{f:'jur',op:'any',v:['us-co']}]},
+  {reg:'colorado', mech:'cigate',    title:'Impact assessment',                            cite:'SB 24-205 §1702', when:[{f:'jur',op:'any',v:['us-co']},{f:'risk',op:'eq',v:'high'}]},
+  {reg:'colorado', mech:'eval',      title:'Algorithmic-discrimination review',            cite:'SB 24-205 §1702', when:[{f:'jur',op:'any',v:['us-co']},{f:'risk',op:'eq',v:'high'}]},
+  // NYC Local Law 144
+  {reg:'nyc-ll144', mech:'guardrail', title:'Candidate notification (10 days)',            cite:'§20-871',  when:[{f:'jur',op:'any',v:['us-nyc']}]},
+  {reg:'nyc-ll144', mech:'eval',      title:'Independent bias audit (annual)',             cite:'§20-871',  when:[{f:'jur',op:'any',v:['us-nyc']},{f:'sec',op:'any',v:['employment']}]},
+  {reg:'nyc-ll144', mech:'cigate',    title:'Publish audit summary of results',            cite:'§20-871',  when:[{f:'jur',op:'any',v:['us-nyc']},{f:'sec',op:'any',v:['employment']}]},
+  // US federal
+  {reg:'ftc',  mech:'guardrail', title:'No unfair or deceptive AI practices',              cite:'FTC Act §5',   when:[{f:'jur',op:'any',v:['us-fed']}]},
+  {reg:'ftc',  mech:'eval',      title:'Substantiate model performance claims',            cite:'FTC Act §5',   when:[{f:'jur',op:'any',v:['us-fed']}]},
+  {reg:'ecoa', mech:'hitl',      title:'Adverse-action notice with reasons',               cite:'15 USC §1691', when:[{f:'sec',op:'any',v:['financial']}]},
+  {reg:'ecoa', mech:'eval',      title:'Disparate-impact testing',                         cite:'Reg B §1002.4',when:[{f:'sec',op:'any',v:['financial']},{f:'risk',op:'eq',v:'high'}]},
+  // HIPAA
+  {reg:'hipaa', mech:'sanitizer', title:'PHI de-identification / minimum necessary',       cite:'45 CFR 164.514', when:[{f:'sec',op:'any',v:['health']},{f:'pd',op:'any',v:['health']}]},
+  {reg:'hipaa', mech:'eval',      title:'Access audit controls & logging',                 cite:'45 CFR 164.312', when:[{f:'sec',op:'any',v:['health']}]},
+  {reg:'hipaa', mech:'evalevent', title:'Breach notification (60 days)',                   cite:'45 CFR 164.404', when:[{f:'sec',op:'any',v:['health']}]},
+  // NIST AI RMF
+  {reg:'nist', mech:'cigate', title:'GOVERN — policies & accountability',                  cite:'AI RMF 1.0', when:[{f:'fw',op:'any',v:['nist']}]},
+  {reg:'nist', mech:'eval',   title:'MAP — context & risk identification',                 cite:'AI RMF 1.0', when:[{f:'fw',op:'any',v:['nist']}]},
+  {reg:'nist', mech:'eval',   title:'MEASURE — metrics & testing',                         cite:'AI RMF 1.0', when:[{f:'fw',op:'any',v:['nist']}]},
+  {reg:'nist', mech:'hitl',   title:'MANAGE — risk response & oversight',                  cite:'AI RMF 1.0', when:[{f:'fw',op:'any',v:['nist']}]},
+];
+const MECH_LABEL = {guardrail:'Guardrail', sanitizer:'Sanitizer', hitl:'HITL', eval:'Evaluation', evalevent:'Eval — event', cigate:'CI gate'};
+const MECH_VAR   = {guardrail:'--guardrail', sanitizer:'--sanitizer', hitl:'--hitl', eval:'--eval', evalevent:'--eval', cigate:'--cigate'};
+
+/* ---------- presets ---------- */
+const PRESETS = {
+  loan:     {jur:['eu','us-co'], sec:['financial'], risk:'high', pd:['personal'], cap:['chat','decide'], fw:['nist']},
+  clinical: {jur:['eu','us-fed'], sec:['health'],   risk:'high', pd:['personal','health'], cap:['decide'], fw:['nist']},
+  hiring:   {jur:['us-nyc','us-co'], sec:['employment'], risk:'high', pd:['personal'], cap:['decide'], fw:[]},
+};
+
+/* ---------- state ---------- */
+let idx = 0;
+const facts = { jur:[], sec:[], risk:undefined, pd:[], cap:[], fw:[] };
+const expanded = new Set();   // regulations expanded on the right; empty = all collapsed
+
+/* ---------- derivation ---------- */
+function condOk(c){
+  const f = facts[c.f];
+  if(c.op==='eq') return f === c.v;
+  const arr = Array.isArray(f) ? f : (f==null ? [] : [f]);
+  return c.v.some(v => arr.includes(v));
+}
+function applicable(){ return CONTROLS.filter(ctl => ctl.when.every(condOk)); }
+
+/* ---------- render ---------- */
+const qcard=document.getElementById('qcard'), dotsEl=document.getElementById('dots'),
+      qnum=document.getElementById('qnum'), qcat=document.getElementById('qcat'),
+      resList=document.getElementById('resList'), cCount=document.getElementById('cCount'), rCount=document.getElementById('rCount'),
+      prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
+document.getElementById('qtot').textContent = QS.length;
+
+function renderQuestion(){
+  const Q = QS[idx];
+  qnum.textContent = idx+1;
+  qcat.textContent = Q.cat;
+  let html = '<div class="rs-q">'+Q.q+'</div>';
+  if(Q.sub) html += '<div class="rs-qsub">'+Q.sub+'</div>';
+  html += '<div class="rs-opts">';
+  Q.opts.forEach(o=>{
+    const sel = Q.multi ? facts[Q.id].includes(o.v) : facts[Q.id]===o.v;
+    html += '<button type="button" class="rs-opt'+(Q.multi?'':' single')+(sel?' on':'')+'" data-v="'+o.v+'"><span class="rs-box"></span><span class="rs-otext">'+o.t+'</span></button>';
+  });
+  html += '</div>';
+  qcard.innerHTML = html;
+  qcard.querySelectorAll('.rs-opt').forEach(b=>b.addEventListener('click',()=>choose(Q,b.dataset.v)));
+  prevBtn.disabled = idx===0;
+  nextBtn.textContent = idx===QS.length-1 ? 'Done' : 'Next →';
+  renderDots();
+}
+function choose(Q, v){
+  if(Q.multi){
+    const a = facts[Q.id]; const i = a.indexOf(v);
+    if(i>=0) a.splice(i,1); else a.push(v);
+    if(v==='none' && a.includes('none')) facts[Q.id] = ['none'];
+    else facts[Q.id] = a.filter(x=>x!=='none');
+  } else {
+    facts[Q.id] = v;
+  }
+  renderQuestion(); renderResults();
+}
+function renderDots(){
+  dotsEl.innerHTML='';
+  QS.forEach((Q,i)=>{
+    const answered = Q.multi ? facts[Q.id].length>0 : facts[Q.id]!==undefined;
+    const d=document.createElement('span');
+    d.className='rs-dot'+(i===idx?' on':(answered?' done':''));
+    d.addEventListener('click',()=>{idx=i; renderQuestion();});
+    dotsEl.appendChild(d);
+  });
+}
+function renderResults(){
+  const apps = applicable();
+  cCount.textContent = apps.length;
+  const regsHit = [...new Set(apps.map(a=>a.reg))];
+  rCount.textContent = regsHit.length;
+  if(apps.length===0){
+    resList.innerHTML='<div class="rs-empty">Answer a question and the controls your system must satisfy appear here, grouped by regulation. Click a regulation to expand it.</div>';
+    return;
+  }
+  let html='';
+  Object.keys(REGS).forEach(rk=>{
+    const rows = apps.filter(a=>a.reg===rk);
+    if(!rows.length) return;
+    const open = expanded.has(rk);
+    html += '<div class="rs-reg"><button type="button" class="rs-reg-name'+(open?' open':'')+'" data-reg="'+rk+'">'
+         +  '<span class="rs-tri">▶</span><span class="rs-reg-t">'+REGS[rk]+'</span><span class="n">'+rows.length+'</span></button>';
+    html += '<div class="rs-reg-ctls"'+(open?'':' hidden')+'>';
+    rows.forEach(c=>{
+      html += '<div class="rs-ctl"><span class="rs-mech" style="background:var('+MECH_VAR[c.mech]+')"></span>'
+           +  '<span class="rs-ctl-body"><span class="rs-ctl-title">'+c.title+'</span>'
+           +  '<span class="rs-ctl-meta">'+MECH_LABEL[c.mech]+' &middot; <span class="cite">'+c.cite+'</span></span></span></div>';
+    });
+    html += '</div></div>';
+  });
+  resList.innerHTML = html;
+  resList.querySelectorAll('.rs-reg-name').forEach(b=>b.addEventListener('click',()=>{
+    const rk=b.dataset.reg;
+    if(expanded.has(rk)) expanded.delete(rk); else expanded.add(rk);
+    renderResults();
+  }));
+}
+
+prevBtn.addEventListener('click',()=>{ if(idx>0){idx--; renderQuestion();} });
+nextBtn.addEventListener('click',()=>{ if(idx<QS.length-1){idx++; renderQuestion();} });
+
+document.querySelectorAll('.rs-presets button').forEach(b=>b.addEventListener('click',()=>{
+  const p = b.dataset.preset;
+  if(p==='reset'){ facts.jur=[]; facts.sec=[]; facts.risk=undefined; facts.pd=[]; facts.cap=[]; facts.fw=[]; expanded.clear(); idx=0; }
+  else { const P=PRESETS[p]; facts.jur=[...P.jur]; facts.sec=[...P.sec]; facts.risk=P.risk; facts.pd=[...P.pd]; facts.cap=[...P.cap]; facts.fw=[...P.fw]; idx=QS.length-1; }
+  renderQuestion(); renderResults();
+}));
+
+renderQuestion(); renderResults();
+</script>
+</body>
+</html>

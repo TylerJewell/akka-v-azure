@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka Verify — AI, under control.</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --yellow:#F5C518; --black:#000; --dark:#07070C; --white:#fff;
+    --green:#28C840; --line:#2A2A2A; --muted:#b8b8b8; --dim:#888;
+  }
+  html{background:var(--black); scroll-behavior:smooth;}
+  body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:hidden;}
+  section{position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:64px 6vw; overflow:hidden;}
+  .inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
+  section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
+  .eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:16px;}
+  .eyebrow::before{content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle;}
+  h1,h2{letter-spacing:-0.03em; line-height:1.05; font-weight:700;}
+  .accent{color:var(--yellow);}
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s cubic-bezier(.16,1,.3,1);}
+  .reveal.visible{opacity:1; transform:none;}
+  .shead{font-size:clamp(30px,4.4vw,58px); margin-bottom:14px; max-width:22ch;}
+  .ssub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
+
+  /* title */
+  #s0{background:radial-gradient(ellipse at 50% 40%, #0d0d10 0%, #000 70%);}
+  #s0 .inner{text-align:center;}
+  #s0 h1{font-size:clamp(56px,9vw,132px); font-weight:700;}
+  #s0 .proven{font-size:clamp(22px,3vw,40px); color:var(--yellow); font-weight:600; margin-top:12px; letter-spacing:-0.01em;}
+  #s0 .tag{font-size:clamp(15px,1.4vw,20px); color:var(--muted); margin-top:28px; max-width:640px; margin-left:auto; margin-right:auto; line-height:1.5;}
+  .scrollhint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:2px; color:#555; text-transform:uppercase; z-index:2;}
+  .scrollhint span{display:block; width:9px; height:9px; border-right:2px solid #555; border-bottom:2px solid #555; transform:rotate(45deg); margin:10px auto 0; animation:bd 1.6s ease infinite;}
+  @keyframes bd{0%,100%{transform:rotate(45deg) translate(0,0);}50%{transform:rotate(45deg) translate(3px,3px);}}
+
+  /* production readiness — 3-column table */
+  .probrows{max-width:1200px; margin:0 auto; border-right:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:0 0 12px 12px; overflow:hidden;}
+  .prow{display:grid; grid-template-columns:0.95fr 1.3fr 0.9fr; align-items:stretch;}
+  .prow > div{padding:20px 26px; border-top:1px solid var(--line); border-left:1px solid var(--line); display:flex; flex-direction:column; justify-content:center;}
+  .phead > div{padding:13px 26px;}
+  .phead > div:nth-child(1), .phead > div:nth-child(2){border:none;}
+  .akkahdr{background:rgba(245,197,24,0.10); color:var(--yellow); font-weight:800; font-size:clamp(14px,1.3vw,18px); letter-spacing:-0.01em;}
+  .akkacell{background:rgba(245,197,24,0.05);}
+  .pq{font-size:clamp(17px,1.6vw,23px); font-weight:700; color:var(--white); letter-spacing:-0.02em; margin-bottom:6px;}
+  .pd{font-size:clamp(12.5px,1vw,14.5px); color:var(--muted); line-height:1.4;}
+  .pcat{display:flex; align-items:center; gap:9px; font-size:clamp(14px,1.3vw,18px); font-weight:700; color:#cfcfcf; letter-spacing:-0.01em; margin-bottom:11px;}
+  .pcat::before{content:''; width:7px; height:7px; border-radius:50%; background:#666; flex:none;}
+  .pchips{display:flex; flex-wrap:nowrap; gap:7px;}
+  .pchip{font-size:12px; color:#c0c0c0; border:1px solid #333; border-radius:100px; padding:5px 12px; background:rgba(255,255,255,0.03); white-space:nowrap;}
+  .ak-v{font-size:clamp(15px,1.4vw,20px); font-weight:700; color:var(--yellow); letter-spacing:-0.01em; margin-bottom:5px;}
+  .ak-d{font-size:clamp(12.5px,1vw,14.5px); color:var(--muted); line-height:1.4;}
+
+  /* triad */
+  .triad{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:28px;}
+  .tcol{border:1px solid var(--line); border-top:2px solid var(--yellow); border-radius:10px; padding:26px 24px; background:rgba(255,255,255,0.025);}
+  .tcol h3{font-size:clamp(22px,2.2vw,31px); font-weight:700; letter-spacing:-0.02em; margin-bottom:12px;}
+  .tcol p{font-size:clamp(14px,1.15vw,16.5px); color:var(--muted); line-height:1.5;}
+  .triadfoot{font-size:clamp(14px,1.2vw,17px); color:var(--dim);}
+  .triadfoot .accent{color:var(--yellow); font-weight:600;}
+
+  /* definition + ascii */
+  .defhead{font-size:clamp(27px,3.3vw,46px); line-height:1.1; letter-spacing:-0.025em; font-weight:700; max-width:26ch; margin-bottom:14px;}
+  .vz{display:grid; grid-template-columns:0.78fr 1fr; gap:26px; margin-top:24px; align-items:stretch;}
+  .vz-flow{border:1px solid var(--line); border-radius:12px; background:#0a0a0d; padding:24px 26px 26px;}
+  .vz-src2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .vz-agent{font-size:12.5px; color:var(--muted); letter-spacing:.2px; text-align:center; border:1px solid var(--line); border-radius:8px; padding:9px 10px; background:rgba(255,255,255,0.02);}
+  .vz-arrows2{display:grid; grid-template-columns:1fr 1fr; gap:14px; color:#4a4a4a; font-size:15px; line-height:1; margin:5px 0 3px;}
+  .vz-arrows2 span{text-align:center;}
+  .vz-trace{width:100%; display:block; text-align:left; border:1px solid rgba(245,197,24,0.35); background:rgba(245,197,24,0.06); border-radius:10px; padding:13px 18px; cursor:pointer; transition:border-color .2s, background .2s;}
+  .vz-trace:hover{border-color:rgba(245,197,24,0.6);}
+  .vz-trace.on{border-color:var(--yellow); background:rgba(245,197,24,0.12);}
+  .vz-trace .tt{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .vz-trace .tt b{font-size:14px; letter-spacing:1px; color:var(--yellow); font-weight:700;}
+  .vz-trace .tt .td{font-size:12px; color:var(--dim);}
+  .vz-nodes{position:relative; margin-top:14px; padding-left:24px; display:flex; flex-direction:column; gap:8px;}
+  .vz-nodes::before{content:''; position:absolute; left:8px; top:-8px; bottom:19px; width:1px; background:var(--line);}
+  .vznode{position:relative; width:100%; display:flex; align-items:center; gap:11px; border:1px solid var(--line); border-radius:9px; padding:12px 16px; background:rgba(255,255,255,0.02); cursor:pointer; text-align:left; color:var(--white); transition:border-color .2s, background .2s;}
+  .vznode::before{content:''; position:absolute; left:-16px; top:50%; width:12px; height:1px; background:var(--line);}
+  .vznode:hover{border-color:#4a4a4a;}
+  .vznode.on{border-color:var(--yellow); background:rgba(245,197,24,0.07);}
+  .vznode .dotmark{width:7px; height:7px; border-radius:50%; background:#555; flex:none; transition:background .2s;}
+  .vznode.on .dotmark{background:var(--yellow);}
+  .vznode .nn{font-size:14.5px; font-weight:600;}
+  .vznode .nd{font-size:12px; color:var(--dim); margin-left:auto; text-align:right;}
+  .vz-detail{border:1px solid var(--line); border-radius:12px; background:linear-gradient(160deg,#0e0e12,#08080b); padding:30px 32px; display:flex; flex-direction:column; justify-content:center;}
+  .vz-detail .de{font-size:11px; text-transform:uppercase; letter-spacing:2.5px; color:var(--yellow); font-weight:600; margin-bottom:13px;}
+  .vz-detail .dh{font-size:clamp(19px,2vw,26px); font-weight:700; letter-spacing:-0.02em; line-height:1.16; margin-bottom:15px;}
+  .vz-detail .dbody{font-size:clamp(14px,1.15vw,16.5px); color:var(--muted); line-height:1.6;}
+  .evx{margin-top:20px; width:100%; border-collapse:collapse; font-size:12px;}
+  .evx th{text-align:left; text-transform:uppercase; letter-spacing:.8px; font-size:9.5px; color:var(--dim); font-weight:600; padding:0 14px 9px 0; border-bottom:1px solid var(--line);}
+  .evx td{padding:9px 14px 9px 0; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; line-height:1.3;}
+  .evx tr:last-child td{border-bottom:none;}
+  .evx .id{color:var(--yellow); font-weight:700; white-space:nowrap;}
+  .evx .ctl{color:#e6e6e6;}
+  .evx .mech{color:#cfcfcf; white-space:nowrap; font-weight:600;}
+  .evx .src{color:var(--dim); white-space:nowrap;}
+  .evx .cg{color:#e6e6e6; font-weight:600; white-space:nowrap; padding-right:22px;}
+  .evx .ty{color:var(--muted);}
+  .evx--2{font-size:11.5px;}
+  .evx--2 td{padding:7px 14px 7px 0;}
+  /* single-trace span waterfall */
+  .trv{margin-top:20px; border:1px solid var(--line); border-radius:9px; background:#08080b; padding:12px 15px 13px;}
+  .trv-hd{display:flex; justify-content:space-between; font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); padding-bottom:9px; margin-bottom:5px; border-bottom:1px solid var(--line);}
+  .trv-row{display:grid; grid-template-columns:150px 1fr 40px; align-items:center; gap:11px; padding:3px 0;}
+  .trv-lbl{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:#cfcfcf; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .trv-lbl.ch{padding-left:12px; color:#a9a9a9;}
+  .trv-lbl.ch2{padding-left:24px; color:#a9a9a9;}
+  .trv-track{position:relative; height:11px; background:rgba(255,255,255,0.035); border-radius:3px;}
+  .trv-bar{position:absolute; top:0; height:100%; border-radius:3px; background:#585858;}
+  .trv-bar.vf{background:var(--yellow);}
+  .trv-t{font-family:'SF Mono','Consolas',monospace; font-size:10px; color:var(--dim); text-align:right;}
+  .trv-cap{display:flex; align-items:center; gap:8px; margin-top:11px; font-size:10.5px; color:var(--dim);}
+  .trv-cap i{width:8px; height:8px; border-radius:2px; background:var(--yellow); flex:none;}
+  /* mini graphics: guardrail + sanitizer */
+  .mgfx{margin-top:20px; border:1px solid var(--line); border-radius:9px; background:#08080b; padding:18px 16px;}
+  .grd-flow{display:flex; align-items:center; justify-content:center; gap:11px; flex-wrap:wrap;}
+  .grd-node{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:7px; padding:9px 13px; background:rgba(255,255,255,0.02); white-space:nowrap;}
+  .grd-gate{font-size:12px; font-weight:700; color:var(--yellow); border:1px solid var(--yellow); border-radius:7px; padding:9px 15px; background:rgba(245,197,24,0.08); white-space:nowrap;}
+  .grd-ar{color:#4a4a4a; font-size:10px;}
+  .grd-out{display:flex; justify-content:center; gap:11px; margin-top:13px;}
+  .grd-pill{font-size:11px; padding:5px 12px; border-radius:100px; border:1px solid var(--line); display:inline-flex; align-items:center; gap:6px; letter-spacing:.3px;}
+  .grd-pill.ok{color:var(--green); border-color:rgba(40,200,64,.4);}
+  .grd-pill.no{color:#ff6b60; border-color:rgba(255,107,96,.4);}
+  .grd2{display:flex; align-items:center; gap:15px;}
+  .grd2-agent{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:7px; padding:11px 15px; background:rgba(255,255,255,0.02); white-space:nowrap; flex:none;}
+  .grd2-lanes{display:flex; flex-direction:column; gap:9px; flex:1;}
+  .grd2-lane{display:flex; align-items:center; gap:11px;}
+  .grd2-ar{color:#4a4a4a; font-size:10px; flex:none;}
+  .grd2-gate{font-size:12px; font-weight:600; color:var(--yellow); border:1px solid rgba(245,197,24,0.5); border-radius:7px; padding:8px 13px; background:rgba(245,197,24,0.07); white-space:nowrap; flex:1;}
+  .grd2-lane.no .grd2-gate{color:#ff8a80; border-color:rgba(255,107,96,.45); background:rgba(255,107,96,.06);}
+  .grd-pill{white-space:nowrap;}
+  .san-row{display:flex; align-items:center; gap:10px;}
+  .san-tag{font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); width:26px; flex:none;}
+  .san-code{font-family:'SF Mono','Consolas',monospace; font-size:11px; color:#cfcfcf; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:6px; padding:8px 11px; flex:1; overflow-x:auto; white-space:nowrap;}
+  .san-code b{color:var(--yellow); font-weight:600; letter-spacing:1px;}
+  .san-mid{display:flex; align-items:center; gap:9px; padding:9px 0 9px 36px;}
+  .san-ar{color:#4a4a4a; font-size:10px;}
+  .san-op{font-size:10.5px; color:var(--yellow); letter-spacing:.3px;}
+  .hl2{display:flex; flex-direction:column; gap:12px;}
+  .hl2-card{border:1px solid var(--line); border-radius:9px; padding:14px 16px 15px; background:rgba(255,255,255,0.02);}
+  .hl2-kind{font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--yellow); font-weight:600; margin-bottom:11px;}
+  .hl2-flow{display:flex; align-items:center; gap:9px; flex-wrap:wrap;}
+  .hl2-chip{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:100px; padding:6px 13px; white-space:nowrap; background:rgba(255,255,255,0.02);}
+  .hl2-chip.hu{color:#fff; font-weight:600; border-color:rgba(245,197,24,0.55); background:rgba(245,197,24,0.08);}
+  .hl2-ar{color:#4a4a4a; font-size:11px;}
+  .hl2-note{font-size:11px; color:var(--muted); margin-top:10px; letter-spacing:.2px;}
+  .fbw{flex:1; min-width:180px; border:1px solid rgba(245,197,24,0.4); border-radius:8px; background:rgba(245,197,24,0.05); padding:9px 11px;}
+  .fbw-hd{font-size:9px; text-transform:uppercase; letter-spacing:1px; color:var(--yellow); font-weight:600; margin-bottom:7px;}
+  .fbw-msg{font-size:11px; line-height:1.3; padding:5px 9px; border-radius:7px; margin-top:5px; max-width:90%;}
+  .fbw-msg.out{background:rgba(255,255,255,0.05); color:#cfcfcf; border:1px solid var(--line);}
+  .fbw-msg.in{background:rgba(245,197,24,0.14); color:#fff; margin-left:auto; text-align:right;}
+  .fbw-alert{font-size:10.5px; color:#ff8a80; letter-spacing:.2px;}
+  .hl2-outs{display:flex; flex-direction:column; gap:6px; flex:none;}
+  .grd-pill.fb{color:var(--yellow); border-color:rgba(245,197,24,.45);}
+  /* event-sourced hash-chained audit log */
+  .elog{border:1px solid var(--line); border-radius:9px; background:#08080b; padding:13px 15px 14px;}
+  .elog-hd{display:flex; justify-content:space-between; font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .elog-rows{position:relative; margin-top:10px; padding-left:20px;}
+  .elog-rows::before{content:''; position:absolute; left:5px; top:10px; bottom:10px; width:1px; background:var(--line);}
+  .elog-row{position:relative; display:grid; grid-template-columns:42px 1fr auto; align-items:center; gap:12px; padding:7px 0;}
+  .elog-row::before{content:''; position:absolute; left:-18px; top:50%; transform:translateY(-50%); width:7px; height:7px; border-radius:50%; background:#585858; border:2px solid #08080b;}
+  .elog-seq{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:var(--dim);}
+  .elog-ev{font-family:'SF Mono','Consolas',monospace; font-size:11.5px; color:#cfcfcf; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .elog-hash{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:var(--dim); white-space:nowrap; display:inline-flex; align-items:center; gap:6px;}
+  .elog-prev{font-style:normal; color:#666;}
+  .elog-cn{color:#4a4a4a;}
+  .elog-hash b{color:var(--yellow); font-weight:600;}
+  .elog-note{font-size:10.5px; color:var(--dim); margin-top:12px; line-height:1.45;}
+  .vzcap{margin-top:14px; font-size:12.5px; color:var(--dim); letter-spacing:.3px;}
+  @media (max-width:820px){ .vz{grid-template-columns:1fr;} }
+  .defcallout{margin-top:18px; font-size:clamp(15px,1.4vw,20px); font-weight:600; color:#e8e8e8; line-height:1.5; border-left:2px solid var(--yellow); padding-left:16px; max-width:72ch;}
+
+  /* specifications (from overview slide 06) */
+  .spec-head { margin-bottom: 64px; }
+  .spec-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: var(--yellow); font-weight: 600; margin-bottom: 14px; opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1); }
+  .spec-eyebrow.visible { opacity: 1; transform: none; }
+  .spec-eyebrow::before { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--yellow); margin-right: 10px; vertical-align: middle; }
+  .spec-headline { font-size: clamp(34px, 4.5vw, 60px); font-weight: 700; line-height: 1.06; letter-spacing: -0.03em; color: var(--white); margin-bottom: 12px; opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1); }
+  .spec-headline.visible { opacity: 1; transform: none; }
+  .spec-headline .accent { color: var(--yellow); }
+  .spec-sub { font-size: clamp(17px, 1.5vw, 22px); color: #b8b8b8; line-height: 1.45; max-width: 1100px; opacity: 0; transform: translateY(16px); transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s; }
+  .spec-sub.visible { opacity: 1; transform: none; }
+  .spec-flow { display: grid; grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr; grid-template-areas: "blabel barrow bart hub merge" "glabel garrow gart hub merge"; grid-template-rows: 1fr 1fr; gap: 56px 18px; align-items: stretch; opacity: 0; transition: opacity .55s ease; }
+  .spec-track--build > .spec-track-label { grid-area: blabel; }
+  .spec-track--build > .spec-track-arrow { grid-area: barrow; }
+  .spec-track--build > .spec-artifact { grid-area: bart; }
+  .spec-track--govern > .spec-track-label { grid-area: glabel; }
+  .spec-track--govern > .spec-track-arrow { grid-area: garrow; }
+  .spec-track--govern > .spec-artifact { grid-area: gart; }
+  .spec-track-arrow { width: 100%; height: 16px; align-self: center; overflow: visible; }
+  .spec-flow.visible { opacity: 1; }
+  .spec-track { display: contents; }
+  .spec-track-label { display: flex; flex-direction: column; justify-content: center; border-left: 2px solid var(--yellow); padding: 6px 0 6px 14px; }
+  .spec-track-name { font-size: clamp(22px, 2.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; color: var(--white); line-height: 1; text-transform: uppercase; }
+  .spec-track-personas { font-size: clamp(11px, 0.95vw, 13px); letter-spacing: 1.4px; text-transform: uppercase; color: #b8b8b8; font-weight: 500; margin-top: 10px; line-height: 1.5; }
+  .spec-artifact { display: flex; flex-direction: column; padding: 14px 18px; background: rgba(245,197,24,0.04); border: 1px solid rgba(245,197,24,0.3); border-left: 3px solid var(--yellow); border-radius: 3px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); position: relative; }
+  .spec-artifact::after { content: ''; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: linear-gradient(135deg, transparent 50%, rgba(245,197,24,0.3) 50%); }
+  .spec-artifact-tag { font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; margin-bottom: 10px; }
+  .spec-artifact-title { font-size: clamp(18px, 1.6vw, 22px); color: var(--white); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .spec-artifact-quote { font-size: clamp(13px, 1.0vw, 15px); color: #cfcfcf; line-height: 1.5; margin: 4px 0 12px; padding-left: 12px; border-left: 2px solid rgba(245,197,24,0.35); font-weight: 500; }
+  .spec-artifact-meta { font-size: 10px; letter-spacing: 1.2px; color: #888; font-family: 'SF Mono', Menlo, Consolas, monospace; margin-top: auto; }
+  .spec-hub { grid-area: hub; display: flex; align-items: center; justify-content: center; border: 2px solid var(--yellow); background: rgba(245,197,24,0.06); border-radius: 4px; position: relative; }
+  .spec-hub::before, .spec-hub::after { content: ''; position: absolute; left: -10px; width: 10px; height: 1px; background: var(--yellow); }
+  .spec-hub::before { top: 30%; }
+  .spec-hub::after { top: 70%; }
+  .spec-hub-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px 14px; text-align: center; width: 100%; }
+  .spec-hub-name { font-size: clamp(22px, 2.1vw, 30px); font-weight: 800; letter-spacing: -0.02em; color: var(--white); line-height: 1; text-align: center; }
+  .spec-hub-foot { font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: #aaa; font-weight: 500; }
+  .spec-merge { grid-area: merge; display: flex; align-items: stretch; gap: 0; position: relative; }
+  .spec-merge-arrows { width: 60px; height: 100%; flex-shrink: 0; overflow: visible; }
+  .spec-merge-arrows .spec-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; }
+  .spec-merge-arrows .spec-arrowhead { opacity: 0; }
+  .spec-flow.visible .spec-merge-arrows .spec-arrow { animation: spec-draw .55s ease-out forwards; }
+  .spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(1) { animation-delay: 1.0s; }
+  .spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(2) { animation-delay: 1.05s; }
+  .spec-flow.visible .spec-merge-arrows .spec-arrow:nth-of-type(3) { animation-delay: 1.45s; }
+  .spec-flow.visible .spec-merge-arrows .spec-arrowhead { animation: spec-fade .15s ease-out 1.85s forwards; }
+  .spec-merge-card { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 18px 22px; background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%); border: 1px solid var(--yellow); border-radius: 3px; opacity: 0; transform: translateX(-8px); transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1); transition-delay: 1.7s; }
+  .spec-flow.visible .spec-merge-card { opacity: 1; transform: none; }
+  .spec-merge-tag { font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; margin-bottom: 10px; }
+  .spec-merge-title { font-size: clamp(22px, 2.1vw, 30px); color: var(--white); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .spec-merge-list { display: flex; flex-direction: column; gap: 6px; font-size: clamp(14px, 1.15vw, 17px); color: #e4e4e4; line-height: 1.4; }
+  .spec-merge-plus { display: block; text-align: center; font-size: clamp(20px, 1.8vw, 26px); font-weight: 700; color: var(--yellow); line-height: 1; padding: 2px 0; }
+  .spec-flow.visible .spec-track--build > * { animation: spec-rise .5s ease-out forwards; }
+  .spec-flow.visible .spec-track--build > .spec-track-label { animation-delay: 0.15s; }
+  .spec-flow.visible .spec-track--build > .spec-artifact { animation-delay: 0.65s; }
+  .spec-flow.visible .spec-track--govern > * { animation: spec-rise .5s ease-out forwards; }
+  .spec-flow.visible .spec-track--govern > .spec-track-label { animation-delay: 0.30s; }
+  .spec-flow.visible .spec-track--govern > .spec-artifact { animation-delay: 0.80s; }
+  .spec-flow .spec-track > * { opacity: 0; transform: translateY(14px); }
+  .spec-flow.visible .spec-hub { animation: spec-pop .5s ease-out 0.55s forwards; opacity: 0; transform: scale(0.96); }
+  @keyframes spec-rise { to { opacity: 1; transform: none; } }
+  @keyframes spec-pop { to { opacity: 1; transform: scale(1); } }
+  @keyframes spec-draw { to { stroke-dashoffset: 0; } }
+  @keyframes spec-fade { to { opacity: 1; } }
+  .spec-loop { margin-top: 16px; padding-top: 4px; position: relative; opacity: 0; transition: opacity .55s ease 1.9s; }
+  .spec-loop.visible { opacity: 1; }
+  .spec-loop-svg { width: 100%; height: 44px; display: block; overflow: visible; }
+  .spec-loop-path { stroke-dasharray: 100; stroke-dashoffset: 100; }
+  .spec-loop.visible .spec-loop-path { animation: spec-loop-trace .9s ease-out 2.0s forwards; }
+  .spec-loop-arrowhead { opacity: 0; }
+  .spec-loop.visible .spec-loop-arrowhead { animation: spec-fade .15s ease-out 2.85s forwards; }
+  @keyframes spec-loop-trace { to { stroke-dashoffset: 0; } }
+  .spec-loop-label { position: absolute; left: 44.5%; top: calc(44px + 8px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; white-space: nowrap; }
+  .spec-loop-tag { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; flex-shrink: 0; }
+  .spec-loop-text { font-size: clamp(13px, 1.1vw, 16px); color: #d4d4d4; line-height: 1.4; font-weight: 500; }
+  .govframe { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0a0a0d; margin-top:8px; }
+  .govframe iframe { display:block; width:100%; height:min(60vh,560px); border:0; }
+  @media (max-width: 1100px) { .spec-flow { grid-template-columns: 120px 1fr 90px 200px 0.9fr; gap: 10px 12px; } }
+  @media (max-width: 820px) {
+    .spec-head { margin-bottom: 40px; }
+    .spec-flow { display: flex; flex-direction: column; grid-template-areas: none; gap: 16px; }
+    .spec-track { display: flex; flex-direction: column; gap: 12px; }
+    .spec-track-arrow { display: none; }
+    .spec-hub { order: 1; }
+    .spec-hub::before, .spec-hub::after { display: none; }
+    .spec-merge { order: 2; flex-direction: column; }
+    .spec-merge-arrows { display: none; }
+    .spec-loop-svg { display: none; }
+    .spec-loop-label { position: static; transform: none; white-space: normal; margin-top: 8px; }
+  }
+
+  /* catalog */
+  .catgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .cat{border:1px solid var(--line); border-radius:9px; padding:18px; background:rgba(255,255,255,0.02);}
+  .cat h4{font-size:clamp(14px,1.2vw,17px); font-weight:700; margin:0 0 10px; letter-spacing:-0.01em; line-height:1.2;}
+  .cat .ex{font-size:12px; color:#9a9a9a; line-height:1.4;}
+  .cat .ex em{color:var(--green); font-style:normal; font-weight:600;}
+  .runsin{margin-top:30px; text-align:center; font-size:clamp(15px,1.5vw,21px); color:var(--white); font-weight:600;}
+  .runsin .accent{color:var(--yellow);}
+
+  /* extra on akka — thesis + tabs */
+  .thesis{font-size:clamp(19px,2.05vw,29px); font-weight:600; line-height:1.4; letter-spacing:-0.02em; max-width:1120px; color:#d8d8d8; margin-bottom:40px;}
+  .thesis .them{color:var(--dim);} .thesis .us{color:var(--white); font-weight:700;} .thesis .hl{color:var(--yellow);}
+  .main{display:grid; grid-template-columns:minmax(240px,300px) 1fr; gap:30px;}
+  .tabs{display:flex; flex-direction:column; gap:8px;}
+  .tab{appearance:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:12px; text-align:left; color:var(--dim); background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:8px; padding:14px 17px; transition:.2s; flex:1 1 0;}
+  .tab:hover{color:#d4d4d4; border-color:#3a3a3a;}
+  .tab .lbl{font-size:clamp(13.5px,1.1vw,16px); font-weight:700; line-height:1.2;}
+  .tab.active{color:var(--black); background:var(--yellow); border-color:var(--yellow);}
+  .pwrap{border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,0.02); padding:32px 34px; display:grid;}
+  .panel{grid-area:1/1; display:flex; flex-direction:column; visibility:hidden; opacity:0;}
+  .panel.active{visibility:visible; opacity:1; animation:in .3s ease;}
+  @keyframes in{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:none;}}
+  .pc{font-size:clamp(22px,2.4vw,34px); font-weight:700; line-height:1.12; letter-spacing:-0.025em; margin-bottom:18px; max-width:22ch;}
+  .pb{font-size:clamp(14px,1.15vw,17px); line-height:1.55; color:var(--muted); max-width:62ch; margin-bottom:26px;}
+  .contrast{display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:auto;}
+  .cc{padding:16px 18px;} .cc.them{background:rgba(255,255,255,.015); border-right:1px solid var(--line);} .cc.us{background:rgba(40,200,64,.05);}
+  .ct{font-size:10.5px; text-transform:uppercase; letter-spacing:1.8px; font-weight:700; margin-bottom:8px;} .cc.them .ct{color:var(--dim);} .cc.us .ct{color:var(--green);}
+  .cx{font-size:clamp(12.5px,1vw,15px); line-height:1.45; color:#c4c4c4;} .cc.them .cx{color:#9a9a9a;}
+
+  /* console */
+  .console{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0a0a0d;}
+  .console .bar{display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--line); background:rgba(255,255,255,0.02);}
+  .console .dot{width:11px; height:11px; border-radius:50%;}
+  .console .bar .t{margin-left:12px; font-size:12px; color:var(--dim); letter-spacing:1px;}
+  .console .body{height:min(58vh,540px); display:flex; align-items:center; justify-content:center; text-align:center; padding:40px;}
+  .console .body .ph{max-width:520px;}
+  .console .body .ph .big{font-size:clamp(20px,2vw,28px); font-weight:700; margin-bottom:12px;}
+  .console .body .ph p{color:var(--muted); font-size:15px; line-height:1.5;}
+  .console .body .ph .note{margin-top:18px; font-size:12px; color:#5a5a5a; letter-spacing:.5px;}
+
+  /* stats */
+  #s7{background:radial-gradient(ellipse at 50% 50%, #0d0d10 0%, #000 75%);}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:16px; max-width:960px; margin-left:auto; margin-right:auto;}
+  .stat{text-align:center;}
+  .stat .v{font-size:clamp(42px,6vw,86px); font-weight:700; letter-spacing:-0.04em; color:var(--yellow); line-height:1; font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:clamp(13px,1.05vw,15px); color:var(--muted); margin-top:14px; line-height:1.4;}
+
+  /* close */
+  #s8{background:radial-gradient(ellipse at 50% 45%, #0d0d10 0%, #000 70%);}
+  #s8 .inner{text-align:center;}
+  #s8 h2{font-size:clamp(44px,7vw,104px);}
+  #s8 .proven{font-size:clamp(20px,2.4vw,34px); color:var(--yellow); font-weight:600; margin-top:10px;}
+  .cta{display:inline-block; margin-top:38px; background:var(--yellow); color:var(--black); font-weight:700; font-size:17px; padding:15px 34px; border-radius:100px; text-decoration:none; letter-spacing:.2px;}
+
+  @media (max-width:1000px){
+    .stats{grid-template-columns:1fr 1fr;}
+    .catgrid{grid-template-columns:1fr 1fr;}
+    .main{grid-template-columns:1fr;} .tabs{flex-direction:row; flex-wrap:wrap;} .tab{flex:1 1 auto;}
+    .contrast{grid-template-columns:1fr;} .cc.them{border-right:none; border-bottom:1px solid var(--line);}
+  }
+  @media (max-width:620px){
+    .stats,.catgrid{grid-template-columns:1fr;}
+    .prow{grid-template-columns:1fr;} .prow > div{border-left:none; border-right:none;} .pchips{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE -->
+<section id="s0">
+  <div class="inner">
+    <div class="eyebrow" style="display:inline-block;">Evaluate · Enforce · Govern</div>
+    <h1>Akka <span class="accent">Verify</span></h1>
+    <div class="proven">AI, under control.</div>
+    <p class="tag">Evaluate, enforce, and govern agents.</p>
+  </div>
+  <div class="scrollhint">Scroll<span></span></div>
+</section>
+
+<!-- STAKES -->
+<section id="s7">
+  <div class="inner">
+    <div class="eyebrow reveal" style="text-align:center;">Why it matters</div>
+    <h2 class="shead reveal" style="text-align:center; margin:0 auto 44px; max-width:24ch;">The cost of getting governance <span class="accent">wrong.</span></h2>
+    <div class="stats reveal">
+      <div class="stat"><div class="v" data-count="191">0</div><div class="l">AI regulations worldwide</div></div>
+      <div class="stat"><div class="v" data-count="133">0</div><div class="l">carry financial penalties</div></div>
+      <div class="stat"><div class="v" data-prefix="&euro;" data-count="35" data-suffix="M">0</div><div class="l">max EU AI Act penalty</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="s1">
+  <div class="inner">
+    <div class="eyebrow reveal">Production readiness</div>
+    <h2 class="shead reveal">A working agent is a long way from a <span class="accent">production-ready one.</span></h2>
+    <p class="ssub reveal">When evaluation, guardrails, and governance are separate systems, you lack a uniform way to see what your agents are doing, stop them, and answer for their actions.</p>
+    <div class="probrows reveal">
+      <div class="prow phead">
+        <div></div>
+        <div></div>
+        <div class="akkahdr">Akka Verify</div>
+      </div>
+      <div class="prow">
+        <div class="left"><div class="pq">Is it good?</div><div class="pd">Does it do what you built it to do.</div></div>
+        <div class="right"><div class="pcat">Evaluation</div><div class="pchips"><span class="pchip">LangSmith</span><span class="pchip">Braintrust</span><span class="pchip">Arize</span><span class="pchip">Langfuse</span></div></div>
+        <div class="akkacell"><div class="ak-v">Evaluate</div><div class="ak-d">Scores every response.</div></div>
+      </div>
+      <div class="prow">
+        <div class="left"><div class="pq">Will it stay in bounds?</div><div class="pd">Something has to stop it when it goes wrong.</div></div>
+        <div class="right"><div class="pcat">Guardrails</div><div class="pchips"><span class="pchip">Guardrails AI</span><span class="pchip">NVIDIA NeMo</span><span class="pchip">Patronus</span><span class="pchip">Llama Guard</span></div></div>
+        <div class="akkacell"><div class="ak-v">Enforce</div><div class="ak-d">Guardrails, sanitizers, HITL, halts.</div></div>
+      </div>
+      <div class="prow">
+        <div class="left"><div class="pq">Can you answer for it?</div><div class="pd">A record an auditor or regulator will accept.</div></div>
+        <div class="right"><div class="pcat">Governance</div><div class="pchips"><span class="pchip">Credo AI</span><span class="pchip">IBM watsonx</span><span class="pchip">Fiddler</span></div></div>
+        <div class="akkacell"><div class="ak-v">Govern</div><div class="ak-d">Policies and tamper-evident audit trail.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT AKKA VERIFY IS -->
+<section id="s3">
+  <div class="inner">
+    <div class="eyebrow reveal">Akka Verify</div>
+    <h2 class="defhead reveal">Akka Verify is continuous <span class="accent">evaluation and governance</span> for agentic AI.</h2>
+    <div class="vz reveal">
+      <div class="vz-flow">
+        <div class="vz-src2">
+          <div class="vz-agent">Akka agents</div>
+          <div class="vz-agent">3rd party agents</div>
+        </div>
+        <div class="vz-arrows2"><span>↓</span><span>↓</span></div>
+        <button class="vz-trace on" data-k="trace">
+          <span class="tt"><b>TRACE</b></span>
+        </button>
+        <div class="vz-nodes" id="vzNodes">
+          <button class="vznode" data-k="policies"><span class="dotmark"></span><span class="nn">Policies</span><span class="nd">allow, block, or report</span></button>
+          <button class="vznode" data-k="evaluations"><span class="dotmark"></span><span class="nn">Evaluations</span><span class="nd">observe, grade, score</span></button>
+          <button class="vznode" data-k="guardrails"><span class="dotmark"></span><span class="nn">Guardrails</span><span class="nd">act inline</span></button>
+          <button class="vznode" data-k="sanitizers"><span class="dotmark"></span><span class="nn">Sanitizers</span><span class="nd">redact, mask, reshape</span></button>
+          <button class="vznode" data-k="hitl"><span class="dotmark"></span><span class="nn">HITL Escalations</span><span class="nd">a human in the loop</span></button>
+          <button class="vznode" data-k="audit"><span class="dotmark"></span><span class="nn">Audit &amp; attestation</span><span class="nd">tamper-evident</span></button>
+        </div>
+      </div>
+      <div class="vz-detail">
+        <div class="de" id="vzE">Trace</div>
+        <div class="dh" id="vzH">The event-sourced log of every agent interaction</div>
+        <div class="dbody" id="vzB">Akka agents have traces transparently captured without extra coding. Traces from third party agents are ingested through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.</div>
+        <div class="vzx" id="vzX"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEFINE YOUR RISK (survey pulled from the governance console, embed mode) -->
+<section id="s-risk">
+  <div class="inner">
+    <div class="eyebrow reveal">Define your risk</div>
+    <h2 class="shead reveal">Define policies based upon your <span class="accent">risk profile.</span></h2>
+    <p class="ssub reveal">Identify policies and controls that are required from 191 regulations by answering questions that define your AI risk profile. A selection of risk survey questions are sampled below.</p>
+    <div class="govframe reveal">
+      <iframe src="risk-survey/index.html" title="Define your risk" loading="lazy" allow="fullscreen"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- EXTRA ON AKKA -->
+<section id="s5">
+  <div class="inner">
+    <div class="eyebrow reveal">When your agents run on Akka</div>
+    <h2 class="shead reveal">Evaluation runs <span class="accent">where the agent runs.</span></h2>
+    <p class="thesis reveal">
+      <span class="them">Akka can evaluate third party agents using their logs. Agents written in Akka run co-resident with evaluations enabling real-time interrupts and audit-grade evidence.</span>
+      <span class="us"><span class="hl">Real execution, as it happens, inside the runtime.</span></span>
+    </p>
+    <div class="main reveal">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-i="0"><span class="lbl">Provenance</span></button>
+        <button class="tab" data-i="1"><span class="lbl">Fidelity</span></button>
+        <button class="tab" data-i="2"><span class="lbl">Actuation</span></button>
+        <button class="tab" data-i="3"><span class="lbl">Replay &amp; counterfactual</span></button>
+        <button class="tab" data-i="4"><span class="lbl">Data residency</span></button>
+        <button class="tab" data-i="5"><span class="lbl">Coverage &amp; economics</span></button>
+        <button class="tab" data-i="6"><span class="lbl">Meta-audit</span></button>
+      </div>
+      <div class="pwrap" id="panels">
+        <div class="panel active"><div class="pc">Every record and trace is immutable.</div><div class="pb">The trace is the runtime's own event-sourced record and tamper-evident. Nothing is serialized to a second system that could drop, reorder, or alter it. This lets you establish chain of custody for a regulator.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">Evaluates a copy shipped over the wire.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">Evaluates the authoritative log itself.</div></div></div></div>
+        <div class="panel"><div class="pc">Akka evaluates what the agent did.</div><div class="pb">Because evaluation runs in the same runtime, it sees the agent's full internal state, including the post-template prompt, tool arguments and results, retrieval chunks, model parameters, and the agent's own durable memory. It can check whether a response contradicts something the agent said earlier in the conversation, because it reads the same memory the agent does.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">Sees only what the SDK instrumented and serialized.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">Nothing is dropped at the serialization boundary.</div></div></div></div>
+        <div class="panel"><div class="pc">Evaluation can act in time to stop a response.</div><div class="pb">An evaluation can run passively, observing runs after they complete, or inline in the transactional path as an Akka guardrail. When it runs inline, a failing verdict can block, re-prompt, or escalate a response before it is emitted, and the action, its verdict, and the audit record commit together in a single transaction.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">The verdict returns later, in another system.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">The verdict acts on the response as it happens.</div></div></div></div>
+        <div class="panel"><div class="pc">Run tomorrow's guardrail against last quarter's real traffic.</div><div class="pb">Because the runtime is event-sourced, it can replay the true historical execution. You can run a new evaluator against past traffic and see exactly what it would have caught. After an incident, that lets you show a new control catches it.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">Can only replay its copy of the spans.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">Replays the real execution, deterministically.</div></div></div></div>
+        <div class="panel"><div class="pc">Govern the data without letting it leave.</div><div class="pb">Evaluation runs inside your own trust boundary, so your PII, prompts, and proprietary context are never sent to a third-party service to be judged. The data stays where the agent runs.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">Sensitive data leaves the boundary to be evaluated.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">The data never crosses the boundary.</div></div></div></div>
+        <div class="panel"><div class="pc">Every interaction is evaluated.</div><div class="pb">Evaluation shares the agent's actor compute instead of running on a separate ingestion tier, so every interaction can be evaluated by default. The same trace substrate also feeds Akka Token Shredder to lower the model bill.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">Samples to control cost, so most traffic goes ungraded.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">Full coverage on shared compute.</div></div></div></div>
+        <div class="panel"><div class="pc">The evaluator is governed too.</div><div class="pb">The evaluator itself runs in the same governed runtime, so its own behavior is traced, versioned, and audited by the same substrate. You can show which evaluator version judged which interaction.</div><div class="contrast"><div class="cc them"><div class="ct">Off Akka</div><div class="cx">The vendor's judge model cannot be inspected.</div></div><div class="cc us"><div class="ct">On Akka</div><div class="cx">The evaluator is on the record.</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section id="s8">
+  <div class="inner">
+    <div class="eyebrow reveal" style="display:inline-block;">Akka Verify</div>
+    <h2 class="reveal">AI, <span class="accent">under control.</span></h2>
+    <div class="proven reveal">Evaluate, enforce, and govern agents.</div>
+    <a class="cta reveal" href="#s0">Get started →</a>
+  </div>
+</section>
+
+<script>
+  const VZ={
+    trace:{e:'Trace',h:'The event-sourced log of every agent interaction',b:"Akka agents have traces transparently captured without extra coding. Traces from third party agents are ingested through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.",x:'<div class="trv"><div class="trv-hd"><span>span</span><span>trace &middot; triage-agent &middot; 1.84s</span></div><div class="trv-row"><span class="trv-lbl">agent.invoke</span><span class="trv-track"><i class="trv-bar" style="left:0%;width:100%"></i></span><span class="trv-t">1.84s</span></div><div class="trv-row"><span class="trv-lbl ch">guardrail &middot; prompt-injection</span><span class="trv-track"><i class="trv-bar vf" style="left:0%;width:2%"></i></span><span class="trv-t">.03s</span></div><div class="trv-row"><span class="trv-lbl ch">memory.read</span><span class="trv-track"><i class="trv-bar" style="left:2%;width:5%"></i></span><span class="trv-t">.09s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.plan</span><span class="trv-track"><i class="trv-bar" style="left:6%;width:31%"></i></span><span class="trv-t">.56s</span></div><div class="trv-row"><span class="trv-lbl ch2">tool.call &middot; lookup_account</span><span class="trv-track"><i class="trv-bar" style="left:37%;width:15%"></i></span><span class="trv-t">.27s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.respond</span><span class="trv-track"><i class="trv-bar" style="left:52%;width:36%"></i></span><span class="trv-t">.67s</span></div><div class="trv-row"><span class="trv-lbl ch">sanitizer &middot; pii-redact</span><span class="trv-track"><i class="trv-bar vf" style="left:88%;width:2%"></i></span><span class="trv-t">.04s</span></div><div class="trv-row"><span class="trv-lbl ch">eval &middot; faithfulness</span><span class="trv-track"><i class="trv-bar vf" style="left:90%;width:8%"></i></span><span class="trv-t">.14s</span></div></div>'},
+    policies:{e:'Policies',h:'Define safeguards and controls',b:"Create policies from AI regulations or your corporate standards. Policies are natural language controls. Akka provides a control plane that enforces execution of the controls against your agents.",x:'<table class="evx"><thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Source</th></tr></thead><tbody><tr><td class="id">guardrail2</td><td class="ctl">Block protected attributes in response</td><td class="mech">Guardrail</td><td class="src">EU AI Act Art. 10(2)(f)</td></tr><tr><td class="id">sanitizer1</td><td class="ctl">Redact PII before the model sees it</td><td class="mech">Sanitizer</td><td class="src">GDPR Art. 5(1)(b)&ndash;(c)</td></tr><tr><td class="id">hitl1</td><td class="ctl">Human approval on loans over &euro;5000</td><td class="mech">HITL</td><td class="src">corporate</td></tr><tr><td class="id">eval-periodic1</td><td class="ctl">Demographic-parity drift watch, monthly</td><td class="mech">Eval &ndash; periodic</td><td class="src">EU AI Act Art. 10(2)(f)</td></tr></tbody></table>'},
+    evaluations:{e:'Evaluations',h:'Evaluations observe, grade, and score agents',b:"Akka continuously executes evaluations against the inputs and outputs of agents. Akka executes evaluations with our distributed, actor-based concurrency making them faster and more efficient than Python evaluators.",x:'<table class="evx evx--2"><thead><tr><th>Category</th><th>Evaluators</th></tr></thead><tbody><tr><td class="cg">Quality &amp; RAG metrics</td><td class="ty">faithfulness, answer relevance, context precision, groundedness</td></tr><tr><td class="cg">Agent trajectory</td><td class="ty">tool selection, path efficiency, step correctness, task completion</td></tr><tr><td class="cg">Observability platforms</td><td class="ty">trace scoring, span analysis, run comparison</td></tr><tr><td class="cg">Managed cloud eval</td><td class="ty">hosted LLM-judge scoring</td></tr><tr><td class="cg">Red-teaming &amp; adversarial</td><td class="ty">jailbreak, prompt injection, adversarial probes</td></tr><tr><td class="cg">Runtime guardrails</td><td class="ty">PII, toxicity, hallucination, off-topic detection</td></tr><tr><td class="cg">Open-weight judges</td><td class="ty">open judge models, self-hosted scoring</td></tr><tr><td class="cg">Fairness &amp; RAI auditing</td><td class="ty">bias, disparate impact, demographic parity</td></tr><tr><td class="cg">Data quality &amp; PII scanning</td><td class="ty">PII detection, leakage, redaction coverage</td></tr><tr><td class="cg">Conversational simulation</td><td class="ty">multi-turn user simulation, scenario replay</td></tr><tr><td class="cg">Benchmarks &amp; harnesses</td><td class="ty">standard test suites, regression scoring</td></tr><tr><td class="cg">Governance &amp; compliance</td><td class="ty">policy conformance, control mapping</td></tr></tbody></table>'},
+    guardrails:{e:'Guardrails',h:"Act on a response before it's emitted",b:"Guardrails are blocking actions that run inline in the transactional path of an agent. They execute before or after the agent calls a tool, accesses memory, or calls a model.",x:'<div class="mgfx"><div class="grd2"><div class="grd2-agent">agent</div><div class="grd2-lanes"><div class="grd2-lane"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; model</span><span class="grd-pill ok">allow &#10003;</span></div><div class="grd2-lane no"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; tools</span><span class="grd-pill no">block &#10007;</span></div><div class="grd2-lane"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; memory</span><span class="grd-pill ok">allow &#10003;</span></div></div></div></div>'},
+    sanitizers:{e:'Sanitizers',h:'Reshape content before it leaves',b:"Transform sensitive data prior to making a tool call, invoking a model, or updating the audit log. Create destination-aware behavior that alters the form of redaction or transformation.",x:'<div class="mgfx"><div class="san-row"><span class="san-tag">in</span><code class="san-code">name: Jane Doe &middot; SSN 123-45-6789 &middot; card 4242 4242 4242 4242</code></div><div class="san-mid"><span class="san-ar">&#9660;</span><span class="san-op">sanitizer &middot; redact, mask</span></div><div class="san-row"><span class="san-tag">out</span><code class="san-code">name: Jane Doe &middot; SSN <b>&bull;&bull;&bull;-&bull;&bull;-&bull;&bull;&bull;&bull;</b> &middot; card <b>&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242</b></code></div></div>'},
+    hitl:{e:'HITL Escalations',h:'Bring a human in when a policy demands it',b:"Escalate to a human for feedback as either an application concern (e.g. asking the user in a chat for comments) or as a system concern (e.g. an operator must assess risk after a model degradation detected).",x:'<div class="mgfx"><div class="hl2"><div class="hl2-card"><div class="hl2-kind">Application concern</div><div class="hl2-flow"><span class="hl2-chip">agent pauses</span><span class="hl2-ar">&#9656;</span><div class="fbw"><div class="fbw-hd">user of your app</div><div class="fbw-msg out">Is this summary correct?</div><div class="fbw-msg in">Yes, but flag the date.</div></div><span class="hl2-ar">&#9656;</span><span class="hl2-chip">agent resumes</span></div></div><div class="hl2-card"><div class="hl2-kind">System concern</div><div class="hl2-flow"><span class="hl2-chip">agent keeps running</span><span class="hl2-ar">&#9656;</span><div class="fbw"><div class="fbw-hd">operator reviews</div><div class="fbw-alert">&#9888; model degradation detected</div><div class="fbw-msg in">Latency up, accuracy down 4%.</div></div><span class="hl2-ar">&#9656;</span><span class="hl2-outs"><span class="grd-pill no">halt &#10007;</span><span class="grd-pill fb">send feedback</span></span></div></div></div></div>'},
+    audit:{e:'Audit & attestation',h:'Evidence an auditor will accept',b:"A tamper-evident, event-sourced log of every verdict and action. It generates the conformity reports and evidence a regulator or risk team asks for.",x:'<div class="mgfx"><div class="elog"><div class="elog-hd"><span>append-only audit log</span><span>SHA-256 chained</span></div><div class="elog-rows"><div class="elog-row"><span class="elog-seq">#1041</span><span class="elog-ev">guardrail.block &middot; tools</span><span class="elog-hash"><i class="elog-prev">0000</i><span class="elog-cn">&#8594;</span><b>9f3a</b></span></div><div class="elog-row"><span class="elog-seq">#1042</span><span class="elog-ev">llm.respond</span><span class="elog-hash"><i class="elog-prev">9f3a</i><span class="elog-cn">&#8594;</span><b>c7e1</b></span></div><div class="elog-row"><span class="elog-seq">#1043</span><span class="elog-ev">sanitizer.pii-redact</span><span class="elog-hash"><i class="elog-prev">c7e1</i><span class="elog-cn">&#8594;</span><b>4b8d</b></span></div><div class="elog-row"><span class="elog-seq">#1044</span><span class="elog-ev">eval.faithfulness &middot; pass</span><span class="elog-hash"><i class="elog-prev">4b8d</i><span class="elog-cn">&#8594;</span><b>e29a</b></span></div></div><div class="elog-note">Each record hashes the one before it. Change any event and every hash after it breaks.</div></div></div>'}
+  };
+  const vzItems=[...document.querySelectorAll('.vz-trace,.vznode')];
+  const vzE=document.getElementById('vzE'),vzH=document.getElementById('vzH'),vzB=document.getElementById('vzB'),vzX=document.getElementById('vzX');
+  vzItems.forEach(el=>el.addEventListener('click',()=>{
+    const d=VZ[el.dataset.k];if(!d)return;
+    vzItems.forEach(x=>x.classList.toggle('on',x===el));
+    vzE.textContent=d.e;vzH.textContent=d.h;vzB.textContent=d.b;
+    vzX.innerHTML=d.x||'';
+  }));
+  vzX.innerHTML=VZ.trace.x;
+
+  const tabs=[...document.querySelectorAll('.tab')], panels=[...document.querySelectorAll('#panels .panel')];
+  document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;const i=+b.dataset.i;tabs.forEach(t=>t.classList.toggle('active',t===b));panels.forEach((p,k)=>p.classList.toggle('active',k===i));});
+  const io=new IntersectionObserver((es)=>{es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');io.unobserve(x.target);}})},{threshold:.18});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const cio=new IntersectionObserver((es)=>{es.forEach(x=>{if(!x.isIntersecting)return;const el=x.target,target=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.dataset.suffix||'';let s=0;const step=Math.max(1,Math.round(target/45));const t=setInterval(()=>{s+=step;if(s>=target){s=target;clearInterval(t);}el.textContent=pre+s+suf;},22);cio.unobserve(el);})},{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+  const views=[...document.querySelectorAll('section')];
+  const docTop=el=>el.getBoundingClientRect().top+(window.scrollY||window.pageYOffset);
+  function currentIndex(){const y=(window.scrollY||window.pageYOffset)+4;let best=0;for(let i=0;i<views.length;i++){if(docTop(views[i])<=y)best=i;}return best;}
+  function goTo(i){if(i<0||i>=views.length)return;window.scrollTo({top:docTop(views[i]),behavior:'smooth'});}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goTo(currentIndex()+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goTo(currentIndex()-1);}
+  });
+</script>
+</body>
+</html>
