@@ -12,7 +12,7 @@
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   :root{
     --yellow:#F5C518; --black:#000; --dark:#07070C; --white:#fff;
-    --green:#28C840; --line:#2A2A2A; --muted:#b8b8b8; --dim:#888;
+    --green:#28C840; --line:#2A2A2A; --muted:#b8b8b8; --dim:#888; --blue:#4A9EFF;
   }
   html{background:var(--black); scroll-behavior:smooth;}
   body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:hidden;}
@@ -72,7 +72,8 @@
   .vz-arrows2{display:grid; grid-template-columns:1fr 1fr; gap:14px; color:#4a4a4a; font-size:15px; line-height:1; margin:5px 0 3px;}
   .vz-arrows2 span{text-align:center;}
   .vz-trace{width:100%; display:block; text-align:left; border:1px solid rgba(245,197,24,0.35); background:rgba(245,197,24,0.06); border-radius:10px; padding:13px 18px; cursor:pointer; transition:border-color .2s, background .2s;}
-  .vz-trace:hover{border-color:rgba(245,197,24,0.6);}
+  .vz-trace:hover{border-color:var(--blue);}
+  .vz-trace:hover .tt b{color:var(--blue);}
   .vz-trace.on{border-color:var(--yellow); background:rgba(245,197,24,0.12);}
   .vz-trace .tt{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
   .vz-trace .tt b{font-size:14px; letter-spacing:1px; color:var(--yellow); font-weight:700;}
@@ -81,7 +82,9 @@
   .vz-nodes::before{content:''; position:absolute; left:8px; top:-8px; bottom:19px; width:1px; background:var(--line);}
   .vznode{position:relative; width:100%; display:flex; align-items:center; gap:11px; border:1px solid var(--line); border-radius:9px; padding:12px 16px; background:rgba(255,255,255,0.02); cursor:pointer; text-align:left; color:var(--white); transition:border-color .2s, background .2s;}
   .vznode::before{content:''; position:absolute; left:-16px; top:50%; width:12px; height:1px; background:var(--line);}
-  .vznode:hover{border-color:#4a4a4a;}
+  .vznode:hover{border-color:var(--blue);}
+  .vznode:hover .nn{color:var(--blue);}
+  .vznode:hover .dotmark{background:var(--blue);}
   .vznode.on{border-color:var(--yellow); background:rgba(245,197,24,0.07);}
   .vznode .dotmark{width:7px; height:7px; border-radius:50%; background:#555; flex:none; transition:background .2s;}
   .vznode.on .dotmark{background:var(--yellow);}
@@ -276,12 +279,12 @@
   .runsin .accent{color:var(--yellow);}
 
   /* extra on akka — thesis + tabs */
-  .thesis{font-size:clamp(19px,2.05vw,29px); font-weight:600; line-height:1.4; letter-spacing:-0.02em; max-width:1120px; color:#d8d8d8; margin-bottom:40px;}
+  .thesis{font-size:clamp(15px,1.35vw,19px); font-weight:400; line-height:1.55; max-width:72ch; color:var(--muted); margin-bottom:40px;}
   .thesis .them{color:var(--dim);} .thesis .us{color:var(--white); font-weight:700;} .thesis .hl{color:var(--yellow);}
   .main{display:grid; grid-template-columns:minmax(240px,300px) 1fr; gap:30px;}
   .tabs{display:flex; flex-direction:column; gap:8px;}
   .tab{appearance:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:12px; text-align:left; color:var(--dim); background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:8px; padding:14px 17px; transition:.2s; flex:1 1 0;}
-  .tab:hover{color:#d4d4d4; border-color:#3a3a3a;}
+  .tab:hover{color:var(--blue); border-color:var(--blue);}
   .tab .lbl{font-size:clamp(13.5px,1.1vw,16px); font-weight:700; line-height:1.2;}
   .tab.active{color:var(--black); background:var(--yellow); border-color:var(--yellow);}
   .pwrap{border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,0.02); padding:32px 34px; display:grid;}
@@ -318,7 +321,8 @@
   #s8 .inner{text-align:center;}
   #s8 h2{font-size:clamp(44px,7vw,104px);}
   #s8 .proven{font-size:clamp(20px,2.4vw,34px); color:var(--yellow); font-weight:600; margin-top:10px;}
-  .cta{display:inline-block; margin-top:38px; background:var(--yellow); color:var(--black); font-weight:700; font-size:17px; padding:15px 34px; border-radius:100px; text-decoration:none; letter-spacing:.2px;}
+  .cta{display:inline-block; margin-top:38px; background:transparent; color:var(--white); font-weight:700; font-size:17px; padding:15px 34px; border:1px solid var(--blue); border-radius:4px; text-decoration:none; letter-spacing:.2px; transition:background .2s, color .2s;}
+  .cta:hover{background:var(--blue); color:var(--black);}
 
   @media (max-width:1000px){
     .stats{grid-template-columns:1fr 1fr;}
@@ -350,7 +354,6 @@
     <div class="eyebrow" style="display:inline-block;">Evaluate · Enforce · Govern</div>
     <h1>Akka <span class="accent">Verify</span></h1>
     <div class="proven">AI, under control.</div>
-    <p class="tag">Evaluate, enforce, and govern agents.</p>
   </div>
   <div class="scrollhint">Scroll<span></span></div>
 </section>
@@ -359,7 +362,7 @@
 <section id="s7">
   <div class="inner">
     <div class="eyebrow reveal" style="text-align:center;">Why it matters</div>
-    <h2 class="shead reveal" style="text-align:center; margin:0 auto 44px; max-width:24ch;">The cost of getting governance <span class="accent">wrong.</span></h2>
+    <h2 class="shead reveal" style="text-align:center; margin:0 auto 44px; max-width:24ch;">The cost of getting governance <span style="color:#ff5a4d;">wrong</span></h2>
     <div class="stats reveal">
       <div class="stat"><div class="v" data-count="191">0</div><div class="l">AI regulations worldwide</div></div>
       <div class="stat"><div class="v" data-count="133">0</div><div class="l">carry financial penalties</div></div>
@@ -426,7 +429,7 @@
       <div class="vz-detail">
         <div class="de" id="vzE">Trace</div>
         <div class="dh" id="vzH">The event-sourced log of every agent interaction</div>
-        <div class="dbody" id="vzB">Akka agents have traces transparently captured without extra coding. Traces from third party agents are ingested through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.</div>
+        <div class="dbody" id="vzB">Akka agents have traces transparently captured without extra coding. Traces from 3rd party logs are ingested into Akka through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.</div>
         <div class="vzx" id="vzX"></div>
       </div>
     </div>
@@ -489,7 +492,7 @@
 
 <script>
   const VZ={
-    trace:{e:'Trace',h:'The event-sourced log of every agent interaction',b:"Akka agents have traces transparently captured without extra coding. Traces from third party agents are ingested through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.",x:'<div class="trv"><div class="trv-hd"><span>span</span><span>trace &middot; triage-agent &middot; 1.84s</span></div><div class="trv-row"><span class="trv-lbl">agent.invoke</span><span class="trv-track"><i class="trv-bar" style="left:0%;width:100%"></i></span><span class="trv-t">1.84s</span></div><div class="trv-row"><span class="trv-lbl ch">guardrail &middot; prompt-injection</span><span class="trv-track"><i class="trv-bar vf" style="left:0%;width:2%"></i></span><span class="trv-t">.03s</span></div><div class="trv-row"><span class="trv-lbl ch">memory.read</span><span class="trv-track"><i class="trv-bar" style="left:2%;width:5%"></i></span><span class="trv-t">.09s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.plan</span><span class="trv-track"><i class="trv-bar" style="left:6%;width:31%"></i></span><span class="trv-t">.56s</span></div><div class="trv-row"><span class="trv-lbl ch2">tool.call &middot; lookup_account</span><span class="trv-track"><i class="trv-bar" style="left:37%;width:15%"></i></span><span class="trv-t">.27s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.respond</span><span class="trv-track"><i class="trv-bar" style="left:52%;width:36%"></i></span><span class="trv-t">.67s</span></div><div class="trv-row"><span class="trv-lbl ch">sanitizer &middot; pii-redact</span><span class="trv-track"><i class="trv-bar vf" style="left:88%;width:2%"></i></span><span class="trv-t">.04s</span></div><div class="trv-row"><span class="trv-lbl ch">eval &middot; faithfulness</span><span class="trv-track"><i class="trv-bar vf" style="left:90%;width:8%"></i></span><span class="trv-t">.14s</span></div></div>'},
+    trace:{e:'Trace',h:'The event-sourced log of every agent interaction',b:"Akka agents have traces transparently captured without extra coding. Traces from 3rd party logs are ingested into Akka through OpenTelemetry. These interaction logs provide source data for evaluations, simulations, A/B testing, and SLM grading.",x:'<div class="trv"><div class="trv-hd"><span>span</span><span>trace &middot; triage-agent &middot; 1.84s</span></div><div class="trv-row"><span class="trv-lbl">agent.invoke</span><span class="trv-track"><i class="trv-bar" style="left:0%;width:100%"></i></span><span class="trv-t">1.84s</span></div><div class="trv-row"><span class="trv-lbl ch">guardrail &middot; prompt-injection</span><span class="trv-track"><i class="trv-bar vf" style="left:0%;width:2%"></i></span><span class="trv-t">.03s</span></div><div class="trv-row"><span class="trv-lbl ch">memory.read</span><span class="trv-track"><i class="trv-bar" style="left:2%;width:5%"></i></span><span class="trv-t">.09s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.plan</span><span class="trv-track"><i class="trv-bar" style="left:6%;width:31%"></i></span><span class="trv-t">.56s</span></div><div class="trv-row"><span class="trv-lbl ch2">tool.call &middot; lookup_account</span><span class="trv-track"><i class="trv-bar" style="left:37%;width:15%"></i></span><span class="trv-t">.27s</span></div><div class="trv-row"><span class="trv-lbl ch">llm.respond</span><span class="trv-track"><i class="trv-bar" style="left:52%;width:36%"></i></span><span class="trv-t">.67s</span></div><div class="trv-row"><span class="trv-lbl ch">sanitizer &middot; pii-redact</span><span class="trv-track"><i class="trv-bar vf" style="left:88%;width:2%"></i></span><span class="trv-t">.04s</span></div><div class="trv-row"><span class="trv-lbl ch">eval &middot; faithfulness</span><span class="trv-track"><i class="trv-bar vf" style="left:90%;width:8%"></i></span><span class="trv-t">.14s</span></div></div>'},
     policies:{e:'Policies',h:'Define safeguards and controls',b:"Create policies from AI regulations or your corporate standards. Policies are natural language controls. Akka provides a control plane that enforces execution of the controls against your agents.",x:'<table class="evx"><thead><tr><th>ID</th><th>Control (obligation)</th><th>Mechanism</th><th>Source</th></tr></thead><tbody><tr><td class="id">guardrail2</td><td class="ctl">Block protected attributes in response</td><td class="mech">Guardrail</td><td class="src">EU AI Act Art. 10(2)(f)</td></tr><tr><td class="id">sanitizer1</td><td class="ctl">Redact PII before the model sees it</td><td class="mech">Sanitizer</td><td class="src">GDPR Art. 5(1)(b)&ndash;(c)</td></tr><tr><td class="id">hitl1</td><td class="ctl">Human approval on loans over &euro;5000</td><td class="mech">HITL</td><td class="src">corporate</td></tr><tr><td class="id">eval-periodic1</td><td class="ctl">Demographic-parity drift watch, monthly</td><td class="mech">Eval &ndash; periodic</td><td class="src">EU AI Act Art. 10(2)(f)</td></tr></tbody></table>'},
     evaluations:{e:'Evaluations',h:'Evaluations observe, grade, and score agents',b:"Akka continuously executes evaluations against the inputs and outputs of agents. Akka executes evaluations with our distributed, actor-based concurrency making them faster and more efficient than Python evaluators.",x:'<table class="evx evx--2"><thead><tr><th>Category</th><th>Evaluators</th></tr></thead><tbody><tr><td class="cg">Quality &amp; RAG metrics</td><td class="ty">faithfulness, answer relevance, context precision, groundedness</td></tr><tr><td class="cg">Agent trajectory</td><td class="ty">tool selection, path efficiency, step correctness, task completion</td></tr><tr><td class="cg">Observability platforms</td><td class="ty">trace scoring, span analysis, run comparison</td></tr><tr><td class="cg">Managed cloud eval</td><td class="ty">hosted LLM-judge scoring</td></tr><tr><td class="cg">Red-teaming &amp; adversarial</td><td class="ty">jailbreak, prompt injection, adversarial probes</td></tr><tr><td class="cg">Runtime guardrails</td><td class="ty">PII, toxicity, hallucination, off-topic detection</td></tr><tr><td class="cg">Open-weight judges</td><td class="ty">open judge models, self-hosted scoring</td></tr><tr><td class="cg">Fairness &amp; RAI auditing</td><td class="ty">bias, disparate impact, demographic parity</td></tr><tr><td class="cg">Data quality &amp; PII scanning</td><td class="ty">PII detection, leakage, redaction coverage</td></tr><tr><td class="cg">Conversational simulation</td><td class="ty">multi-turn user simulation, scenario replay</td></tr><tr><td class="cg">Benchmarks &amp; harnesses</td><td class="ty">standard test suites, regression scoring</td></tr><tr><td class="cg">Governance &amp; compliance</td><td class="ty">policy conformance, control mapping</td></tr></tbody></table>'},
     guardrails:{e:'Guardrails',h:"Act on a response before it's emitted",b:"Guardrails are blocking actions that run inline in the transactional path of an agent. They execute before or after the agent calls a tool, accesses memory, or calls a model.",x:'<div class="mgfx"><div class="grd2"><div class="grd2-agent">agent</div><div class="grd2-lanes"><div class="grd2-lane"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; model</span><span class="grd-pill ok">allow &#10003;</span></div><div class="grd2-lane no"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; tools</span><span class="grd-pill no">block &#10007;</span></div><div class="grd2-lane"><span class="grd2-ar">&#9654;</span><span class="grd2-gate">guardrail &middot; memory</span><span class="grd-pill ok">allow &#10003;</span></div></div></div></div>'},

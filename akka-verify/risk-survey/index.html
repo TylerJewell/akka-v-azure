@@ -11,7 +11,7 @@
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --yellow:#F5C518; --bg:#0a0a0d; --line:#2a2a2a; --white:#fff; --muted:#b8b8b8; --dim:#888;
+    --yellow:#F5C518; --bg:#0a0a0d; --line:#2a2a2a; --white:#fff; --muted:#b8b8b8; --dim:#888; --blue:#4A9EFF;
     --head:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
     --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
     --guardrail:#F5C518; --sanitizer:#2ED6C1; --hitl:#8AB4FF; --eval:#28C840; --cigate:#C08CFF;
@@ -39,7 +39,7 @@
   .rs-qsub b{color:var(--yellow); font-weight:600;}
   .rs-opts{display:flex; flex-direction:column; gap:7px;}
   .rs-opt{display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:9px; padding:9px 15px; cursor:pointer; transition:border-color .15s, background .15s; text-align:left; color:var(--white); background:rgba(255,255,255,0.015);}
-  .rs-opt:hover{border-color:#4a4a4a;}
+  .rs-opt:hover{border-color:var(--blue); color:var(--blue);}
   .rs-opt.on{border-color:var(--yellow); background:rgba(245,197,24,0.08);}
   .rs-box{width:16px; height:16px; border:1.5px solid #555; border-radius:4px; flex:none; display:flex; align-items:center; justify-content:center; transition:border-color .15s, background .15s;}
   .rs-opt.single .rs-box{border-radius:50%;}
@@ -69,7 +69,7 @@
   .rs-empty{font-size:12.5px; color:var(--dim); line-height:1.5; padding:12px 2px;}
   .rs-reg{margin-bottom:6px;}
   .rs-reg-name{width:100%; display:flex; align-items:center; gap:8px; background:transparent; border:none; cursor:pointer; padding:7px 4px; text-align:left; color:#e6e6e6;}
-  .rs-reg-name:hover{color:#fff;}
+  .rs-reg-name:hover{color:var(--blue);}
   .rs-tri{color:var(--yellow); font-size:13px; line-height:1; transition:transform .15s; flex:none; width:13px; text-align:center;}
   .rs-reg-name.open .rs-tri{transform:rotate(90deg);}
   .rs-reg-t{font-size:12.5px; font-weight:700; letter-spacing:.2px; flex:1;}
