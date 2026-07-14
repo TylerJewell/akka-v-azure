@@ -28,6 +28,7 @@ PRESENTATIONS = [
     {"link": "sales-presentation/generated/token-shredder/",
      "title": "AI that lowers its own bill.", "sub": "AKKA TOKEN SHREDDER"},
     {"link": "akka-verify/", "title": "AI, under control.", "sub": "AKKA VERIFY"},
+    {"link": "akka-overview/", "title": "Reliable AI for Every Industry.", "sub": "AKKA OVERVIEW"},
     {"link": "case-studies/", "title": "Akka Customer Stories", "sub": "CASE STUDIES"},
     {"link": "website/", "title": "Akka Industry Stories", "sub": "INDUSTRIES"},
 ]

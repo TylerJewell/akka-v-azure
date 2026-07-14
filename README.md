@@ -87,6 +87,58 @@ To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
 `<name>-presentation/generated/overview/` or a single-file deck) — then re-run it and
 commit `index.html`.
 
+## Design system
+
+The rulebook for how these decks look. Every deck is dark-themed, built on the
+palette below, and set in **Instrument Sans** (headings/body) with **JetBrains Mono**
+for labels, code, and stat numbers.
+
+### Color palette (canonical)
+
+These are the official brand values. Use them by name; do not invent near-equivalents.
+
+| Name | Hex | Use |
+|---|---|---|
+| **Black** | `#000000` | Primary background. |
+| **Medium Black** | `#141414` | Backgrounds for tables and called-out content boxes. |
+| **White** | `#F1F1F1` | Primary text — body copy and headlines. |
+| **Spark Yellow** | `#FFCE4A` | Primary accent color; often used in subheadlines. |
+| **River Blue** | `#00DBDD` | Primary hyperlink color (and clickable / hover affordances). |
+| **Fire Red** | `#FF5400` | Signifies a negative idea or a bad outcome. |
+| **Electric Green** | `#72D35B` | Signifies a positive idea or a good outcome. |
+| **Soft Grey** | `#A6A6A6` | Subtext that is still important to read easily. |
+| **Medium Grey** | `#4E4E4E` | Very minor points — sources, footnotes, and some backgrounds. |
+
+Drop-in CSS custom properties for a new deck:
+
+```css
+:root {
+  --black:#000000; --medium-black:#141414; --white:#F1F1F1;
+  --yellow:#FFCE4A;        /* Spark Yellow — accent / subheads */
+  --blue:#00DBDD;          /* River Blue — links / hover */
+  --red:#FF5400;           /* Fire Red — negative */
+  --green:#72D35B;         /* Electric Green — positive */
+  --soft-grey:#A6A6A6;     /* important subtext */
+  --medium-grey:#4E4E4E;   /* footnotes, sources, minor backgrounds */
+}
+```
+
+### Applying it
+
+- **One accent.** Spark Yellow is the single accent. Reserve it for the accented span
+  in a headline, subheadlines, and key emphasis — not for large fills.
+- **Links and interactivity in River Blue.** Hyperlinks are River Blue; interactive
+  elements signal clickability by shifting to River Blue on hover (border and label).
+- **Red/Green are semantic only.** Fire Red for a bad outcome, Electric Green for a good
+  one — never decoratively.
+- **Text hierarchy:** White for primary copy, Soft Grey for secondary-but-readable
+  subtext, Medium Grey for footnotes/sources.
+- **Surfaces:** Black is the page; Medium Black lifts a table or a called-out box off it.
+
+> Note: some earlier decks predate this guide and use near-equivalents (e.g. `#F5C518`
+> yellow, `#28C840` green, `#fff` white). Reconcile to the canonical values above when
+> touching those files.
+
 ## HubSpot import builds
 
 Every sales deliverable is published in **two** forms from one source:
