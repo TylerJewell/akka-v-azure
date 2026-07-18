@@ -1,8 +1,7 @@
 (function(){
   var views = [
-    'ts-title','ts1-wrapper','ts2-wrapper','ts3-wrapper','ts4-wrapper',
-    'ts5-wrapper','ts6-wrapper','ts7-wrapper','ts8-wrapper','ts9-wrapper',
-    'ts-closing'
+    'ts-title','ts1-wrapper','eco-wrapper','ts2-wrapper','ts3-wrapper',
+    'ts4-wrapper','arc-wrapper','cog-wrapper','family','ts-closing'
   ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
 
   function docTop(el){

@@ -1,7 +1,7 @@
 const views = [
-    'title','hero-wrapper','stax-wrapper','spwhat-wrapper','spec-wrapper',
-    's5-wrapper','s13-wrapper','platform-pattern-wrapper','pkg-wrapper',
-    's4-wrapper','closing'
+    'title','spwhat-wrapper','spec-wrapper',
+    's5-wrapper','platform-pattern-wrapper','stax-wrapper',
+    'pkg-wrapper','family','closing'
   ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
 
   function docTop(el){

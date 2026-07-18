@@ -86,7 +86,7 @@ committing/pushing — never commit a deck mid-restructure:
    ```bash
    python3 builder/build.py                                                              # overview
    python3 builder/build.py --registry specify-registry.json        --nav nav-specify.js  --out generated/specify/index.html
-   python3 builder/build.py --registry token-shredder-6-registry.json --nav nav-shredder6.js --out generated/token-shredder/index.html
+   python3 builder/build.py --registry token-shredder-registry.json --nav nav-shredder.js --out generated/token-shredder/index.html
    ```
 5. **Update `builder/image-registry.json`** `used_in` values if any slide ids
    changed (documentation only — not read by the build — but keep it correct).

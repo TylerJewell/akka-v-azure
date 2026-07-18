@@ -1,0 +1,112 @@
+<div id="eco-wrapper">
+  <div class="eco-inner">
+    <div class="eco-eyebrow" data-eco="0">The economics</div>
+    <div class="eco-headline" data-eco="0">The savings <span class="accent">potential.</span></div>
+    <div class="eco-sub" data-eco="0">A 2,000-developer org spends about $60M a year on frontier agent tokens. Specialized SLMs cut that to ~$11M &mdash; 81% saved &mdash; and drop cost per verified task nearly 80% while quality rises, with break-even in roughly eight days.</div>
+    <div class="eco-body" data-eco="1">
+      <div class="econ">
+        <div class="epanel e-baseline">
+          <div class="ph">Baseline</div>
+          <div class="e-basegrid">
+            <div class="e-formula">annual spend = <span class="acc">developers</span> × <span class="acc">$ / dev·month</span> × 12</div>
+            <div class="e-tiles">
+              <div class="e-tile acc"><b>$60.0M</b><span>per year · the annual bill</span></div>
+              <div class="e-tile"><b>$2,500</b><span>per developer · month (assumed)</span></div>
+              <div class="e-tile"><b>2,000</b><span>developers</span></div>
+            </div>
+            <div class="e-drivers">cost drivers: GPT-5.5 · Codex (⅔)  +  Opus 4.8 · Claude Code (⅓)</div>
+          </div>
+        </div>
+        <div class="epanel e-price">
+          <div class="ph">Price risk</div>
+          <svg viewBox="0 0 380 212" aria-label="Price risk">
+            <text x="0" y="12" font-family="var(--mono)" font-size="10" fill="#888" letter-spacing="1">ONE DEVELOPER · 3 MONTHS · 57.9B TOKENS</text>
+            <text x="0" y="34" font-size="10.5" fill="#b8b8b8">metered at frontier API</text>
+            <rect x="0" y="42" width="205" height="26" rx="3" fill="#4E4E4E"/>
+            <rect x="205" y="42" width="145" height="26" rx="3" fill="#3a3a3a"/>
+            <text x="9" y="59" font-size="10" fill="#fff">GPT-5.6 Sol $170K</text>
+            <text x="212" y="59" font-size="10" fill="#d6d6d6">Fable 5 $150K</text>
+            <text x="0" y="88" font-family="var(--mono)" font-size="14" fill="#fff">≈ $320K</text>
+            <text x="82" y="88" font-size="10.5" fill="#888">· peak days ~$10K</text>
+            <text x="0" y="110" font-size="10.5" fill="#b8b8b8">billed on subsidized seats</text>
+            <rect x="0" y="116" width="4" height="18" rx="1" fill="#F5C518"/>
+            <text x="10" y="130" font-family="var(--mono)" font-size="13" fill="#F5C518">$1,300</text>
+            <rect x="0" y="148" width="380" height="58" rx="6" fill="#0f0f12" stroke="#F5C518"/>
+            <text x="16" y="187" font-family="var(--mono)" font-size="30" fill="#F5C518">~99.6%</text>
+            <text x="152" y="172" font-size="11" fill="#b8b8b8">how far frontier API prices</text>
+            <text x="152" y="188" font-size="11" fill="#b8b8b8">must fall to match subscriptions</text>
+          </svg>
+        </div>
+        <div class="epanel e-unit">
+          <div class="ph">Unit cost</div>
+          <svg viewBox="0 0 380 210" aria-label="Unit cost">
+            <text x="0" y="13" font-family="var(--mono)" font-size="11.5" fill="#b8b8b8">cost/task = <tspan fill="#F5C518">price/tok</tspan> × <tspan fill="#F5C518">tok/task</tspan></text>
+            <line x1="30" y1="30" x2="30" y2="170" stroke="#2A2A2A"/>
+            <line x1="30" y1="170" x2="366" y2="170" stroke="#2A2A2A"/>
+            <text x="24" y="34" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#666">1.0</text>
+            <text x="24" y="172" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#666">0</text>
+            <rect x="60" y="30" width="78" height="140" rx="2" fill="#4E4E4E"/>
+            <text x="99" y="24" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">1.00</text>
+            <text x="99" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">leased</text>
+            <rect x="168" y="128" width="78" height="42" rx="2" fill="#F5C518" fill-opacity="0.4"/>
+            <text x="207" y="122" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">0.30</text>
+            <text x="207" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">self-provide</text>
+            <rect x="276" y="146" width="78" height="24" rx="2" fill="#F5C518"/>
+            <text x="315" y="140" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#F5C518">0.17</text>
+            <text x="315" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">adapted</text>
+            <text x="30" y="204" font-family="var(--mono)" font-size="9.5" fill="#888">× 0.30 price/tok  ·  × 0.55 tok/task</text>
+          </svg>
+        </div>
+        <div class="epanel e-cost">
+          <div class="ph">Savings from SLMs</div>
+          <svg viewBox="0 0 380 210" aria-label="Savings from SLMs">
+            <line x1="30" y1="170" x2="352" y2="170" stroke="#2A2A2A"/>
+            <rect x="40" y="30" width="64" height="140" rx="2" fill="#4E4E4E"/>
+            <text x="72" y="24" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">$60.0M</text>
+            <text x="72" y="186" text-anchor="middle" font-size="9.5" fill="#b8b8b8">leased today</text>
+            <rect x="190" y="146" width="64" height="24" rx="2" fill="#4E4E4E"/>
+            <rect x="190" y="143" width="64" height="4" rx="2" fill="#8A8A8A"/>
+            <text x="222" y="138" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">$11.2M</text>
+            <text x="165" y="163" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#b8b8b8">serve $10.2M</text>
+            <text x="165" y="147" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#8A8A8A">train $1.0M</text>
+            <line x1="162" y1="160" x2="188" y2="158" stroke="#4E4E4E" stroke-width="0.8"/>
+            <line x1="162" y1="145" x2="188" y2="145" stroke="#8A8A8A" stroke-width="0.8"/>
+            <text x="222" y="186" text-anchor="middle" font-size="9.5" fill="#b8b8b8">self-provide</text>
+            <line x1="104" y1="30" x2="262" y2="30" stroke="#72D35B" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <line x1="254" y1="144" x2="262" y2="144" stroke="#72D35B" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <line x1="262" y1="30" x2="262" y2="144" stroke="#72D35B" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <polygon points="262,30 258,40 266,40" fill="#72D35B"/>
+            <polygon points="262,144 258,134 266,134" fill="#72D35B"/>
+            <text x="272" y="82" font-family="var(--mono)" font-size="17" fill="#72D35B">$48.8M</text>
+            <text x="272" y="100" font-size="10.5" fill="#b8b8b8">saved · 81%</text>
+            <text x="30" y="204" font-family="var(--mono)" font-size="9.5" fill="#888">your GPUs: capex · managed inference: metered opex</text>
+          </svg>
+        </div>
+        <div class="epanel e-break">
+          <div class="ph">Break-even</div>
+          <svg viewBox="0 0 1180 180" aria-label="Break-even">
+            <line x1="60" y1="20" x2="60" y2="146" stroke="#2A2A2A"/>
+            <line x1="60" y1="146" x2="600" y2="146" stroke="#2A2A2A"/>
+            <text x="592" y="164" text-anchor="end" font-family="var(--mono)" font-size="10" fill="#666">time (days) →</text>
+            <line x1="60" y1="146" x2="540" y2="36" stroke="#4E4E4E" stroke-width="2.5"/>
+            <text x="548" y="38" font-size="12" fill="#b8b8b8">leased</text>
+            <line x1="60" y1="114" x2="540" y2="94" stroke="#F5C518" stroke-width="2.5"/>
+            <text x="548" y="96" font-size="12" fill="#F5C518">self-provided</text>
+            <circle cx="60" cy="114" r="3.5" fill="#F5C518"/>
+            <text x="70" y="108" font-family="var(--mono)" font-size="10" fill="#888">fixed $1.0M</text>
+            <line x1="230" y1="20" x2="230" y2="146" stroke="#666" stroke-dasharray="4,3"/>
+            <circle cx="230" cy="107" r="4" fill="#fff"/>
+            <text x="240" y="62" font-size="12.5" fill="#fff">crossover ≈ 8 days</text>
+            <text x="700" y="56" font-family="var(--mono)" font-size="13" fill="#b8b8b8">cost / verified task</text>
+            <text x="700" y="100" font-family="var(--mono)" font-size="34" fill="#fff">$0.0152</text>
+            <text x="928" y="100" font-family="var(--mono)" font-size="28" fill="#888">→</text>
+            <text x="984" y="100" font-family="var(--mono)" font-size="34" fill="#F5C518">$0.0031</text>
+            <text x="700" y="134" font-family="var(--mono)" font-size="15" fill="#72D35B">−80% · +2 pts quality</text>
+            <text x="700" y="162" font-family="var(--mono)" font-size="12" fill="#888">3,900 → 760 tokens / task · fewer tokens is why the cost falls</text>
+          </svg>
+        </div>
+        <div class="e-src">Sources: OpenAI &amp; Anthropic API pricing — GPT-5.5 $5/$30, Opus 4.8 $5/$25, GPT-5.6 Sol $5/$30, Claude Fable 5 $10/$50 per 1M tokens (Jun–Jul 2026) · Fireworks serverless &amp; fine-tuning pricing · OpenRouter, "Open Weight Models that Matter," Jun 2026. Baseline: 2,000 developers × $2,500/dev·month (assumed effective rate) = $60.0M/yr. Price risk: one developer, 3 months = 57.9B tokens, billed ≈$1,300 on subsidized seats vs ≈$320K metered at today's frontier (≈190–250×).</div>
+      </div>
+    </div>
+  </div>
+</div>

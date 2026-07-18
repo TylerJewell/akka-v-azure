@@ -1,0 +1,22 @@
+{
+  "id": "ts-07-costgov",
+  "nav_id": "cog-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "120vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": "[data-cog]",
+        "threshold": 0.12
+      }
+    ]
+  },
+  "images": [],
+  "include_in": [
+    "overview",
+    "shareable"
+  ]
+}

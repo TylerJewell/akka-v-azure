@@ -19,6 +19,9 @@ from hubspot import to_hubspot_fragment
 
 BASE    = os.path.dirname(os.path.abspath(__file__))
 ROOT    = os.path.dirname(BASE)
+
+sys.path.insert(0, os.path.join(os.path.dirname(ROOT), '_build'))
+import corpus_counts
 SLIDES  = os.path.join(ROOT, 'slides')
 SHELL   = os.path.join(ROOT, 'shell')
 GEN     = os.path.join(ROOT, 'generated')
@@ -320,6 +323,30 @@ result = result.replace('{{NAV_JS}}',      nav_js)
 result = result.replace('{{KIOSK_JS}}',    kiosk_js)
 result = result.replace('{{PAGE_TITLE}}',  registry.get('title', 'Reliable AI for every industry — Akka'))
 
+# ── Corpus claims ─────────────────────────────────────────────────────────────
+# Regulation/control counts are read live from the corpus at build time, never
+# hand-maintained. An unresolved token fails the build rather than shipping a
+# stale or invented number.
+
+corpus_values = corpus_counts.values()
+
+def apply_corpus(text):
+    for name, value in corpus_values.items():
+        text = text.replace('{{CORPUS_%s}}' % name.upper().replace('-', '_'), value)
+    return text
+
+def assert_no_corpus_tokens(text, where):
+    leftover = sorted(set(re.findall(r'\{\{CORPUS_[A-Z_]+\}\}', text)))
+    if leftover:
+        sys.exit(f'Unresolved corpus token(s) in {where}: {", ".join(leftover)}\n'
+                 f'Known claims: {", ".join(sorted(corpus_values))}')
+
+result = apply_corpus(result)
+assert_no_corpus_tokens(result, 'deck HTML')
+
+# Shared family slide: highlight the product whose deck this is.
+result = result.replace('{{ACTIVE_PRODUCT}}', registry.get('product', ''))
+
 # Inject CDN scripts from external inlines just before </head>
 if head_script_tags:
     injection = '\n'.join(head_script_tags) + '\n'
@@ -367,6 +394,19 @@ if os.path.exists(governance_src):
     if os.path.exists(governance_dst):
         shutil.rmtree(governance_dst)
     shutil.copytree(governance_src, governance_dst)
+
+    # Copied assets bypass the substitution above, so resolve their tokens here.
+    for gov_root, _, gov_files in os.walk(governance_dst):
+        for fname in gov_files:
+            if not fname.endswith(('.html', '.js')):
+                continue
+            fpath = os.path.join(gov_root, fname)
+            text = read(fpath)
+            if '{{CORPUS_' not in text:
+                continue
+            text = apply_corpus(text)
+            assert_no_corpus_tokens(text, os.path.relpath(fpath, ROOT))
+            write(fpath, text)
 
 size_kb = os.path.getsize(out_path) // 1024
 

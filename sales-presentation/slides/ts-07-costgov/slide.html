@@ -1,0 +1,151 @@
+<div id="cog-wrapper">
+  <div class="cog-inner">
+    <div class="cog-eyebrow" data-cog="0">Cost governance</div>
+    <div class="cog-headline" data-cog="0">Visibility, control and <span class="accent">accountability.</span></div>
+    <div class="cog-sub" data-cog="0">Continuously attribute every dollar to an owner, track savings against quality, and identify opportunities to improve.</div>
+    <div class="cog-body" data-cog="1">
+      <div class="dashgrid">
+
+        <div class="dash">
+          <div class="dashhd"><h4>Budget owner</h4><p>Am I within budget — and is the saving real?</p></div>
+          <div class="tile">
+            <div class="tl">Spend this period</div>
+            <div class="tv">$48.2K<small>of $60K cap</small></div>
+            <div class="meter"><i style="width:80%"></i></div>
+            <div class="ts good">projected $57.1K at period end · within cap</div>
+          </div>
+          <div class="tilerow">
+            <div class="tile">
+              <div class="tl">Realized saving</div>
+              <div class="tv" style="font-size:22px">$181K</div>
+              <div class="ts">vs pinned frontier<br>counterfactual · 79% below</div>
+            </div>
+            <div class="tile">
+              <div class="tl">Cost per task</div>
+              <div class="tv" style="font-size:22px">$0.0031</div>
+              <div class="ts good">▼ 68% vs 90d · per task</div>
+            </div>
+          </div>
+          <div class="tile">
+            <div class="tl">Where the spend sits</div>
+            <div class="brow"><span>claims-extract</span><span class="bt" style="width:100%"></span><span class="bv">$19.1K</span></div>
+            <div class="brow"><span>code-review</span><span class="bt" style="width:60%"></span><span class="bv">$11.4K</span></div>
+            <div class="brow"><span>deploy-agent</span><span class="bt" style="width:38%"></span><span class="bv">$7.2K</span></div>
+            <div class="brow"><span>all others</span><span class="bt mut" style="width:55%"></span><span class="bv">$10.5K</span></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Rollback exposure</div>
+            <div class="tv" style="font-size:22px">71%<small>of traffic on SLMs</small></div>
+            <div class="ts">if every adapter reverted to frontier tomorrow,<br>run rate goes <b style="color:#fff">$12K/mo → $47K/mo</b></div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what">Spending is on track to reach <b>$63.1K</b> against a $60K cap</div>
+              <div class="meta"><span class="old">open 6 days</span> · at the cap the throttle engages and ~12% of requests degrade</div>
+              <div class="acts"><span class="btn go">Approve the overspend</span><span class="btn">Let it throttle</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what"><b>code-review</b> went over its cost-per-task ceiling 14 times this week</div>
+              <div class="meta">open 2 days · $0.0041 against a $0.0035 ceiling</div>
+              <div class="acts"><span class="btn go">Raise its ceiling</span><span class="btn">Move it to a cheaper tier</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash">
+          <div class="dashhd"><h4>AI owner</h4><p>What is worth training next — and is what I promoted still holding?</p></div>
+          <div class="tile">
+            <div class="tl">Candidate pipeline · 90d</div>
+            <div class="brow"><span>observed</span><span class="bt" style="width:100%"></span><span class="bv">47</span></div>
+            <div class="brow"><span>admitted</span><span class="bt" style="width:26%"></span><span class="bv">12</span></div>
+            <div class="brow"><span>in training</span><span class="bt" style="width:9%"></span><span class="bv">3</span></div>
+            <div class="brow"><span>in ladder</span><span class="bt" style="width:6%"></span><span class="bv">2</span></div>
+            <div class="brow"><span>promoted</span><span class="bt" style="width:20%"></span><span class="bv">9</span></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Why 35 were not admitted</div>
+            <div class="brow"><span>ungradeable</span><span class="bt mut" style="width:100%"></span><span class="bv">19</span></div>
+            <div class="brow"><span>volume</span><span class="bt mut" style="width:58%"></span><span class="bv">11</span></div>
+            <div class="brow"><span>consent</span><span class="bt mut" style="width:26%"></span><span class="bv">5</span></div>
+            <div class="ts">19 agents become eligible once a deterministic<br>grader exists for their task shape</div>
+          </div>
+          <div class="tile">
+            <div class="tl">Promoted models — how quality has moved</div>
+            <table class="dtab">
+              <thead><tr><th>Agent</th><th>frontier → proved → now</th><th>$/task</th><th>State</th></tr></thead>
+              <tbody>
+                <tr><td>claims-extract <span style="color:#777">v5</span></td><td class="q">0.93 → 0.96 → <b>0.96</b></td><td class="m">$0.0028</td><td><span class="st">holding</span></td></tr>
+                <tr><td>code-review <span style="color:#777">v3</span></td><td class="q">0.91 → 0.94 → <b style="color:#ff6b60">0.89</b></td><td class="m">$0.0041</td><td><span class="st warn">drifting</span></td></tr>
+                <tr><td>deploy-agent <span style="color:#777">v2</span></td><td class="q">0.88 → 0.92 → <b>0.92</b></td><td class="m">$0.0035</td><td><span class="st">holding</span></td></tr>
+              </tbody>
+            </table>
+            <div class="ts">code-review still beats the model it replaced, but answers<br>worse than when it was approved — so S3 re-opens T1</div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what"><b>claims-extract v6</b> passed all four steps, and this agent is one where a mistake would be costly</div>
+              <div class="meta"><span class="old">open 9 days</span> · holding $1,240 / mo · sitting at 5% of traffic</div>
+              <div class="acts"><span class="btn go">Promote to the fleet</span><span class="btn">Hold at canary</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what"><b>code-review</b> is answering worse than it did when you approved it, though still better than the model it replaced</div>
+              <div class="meta">open 3 days · scored 0.94 when approved, 0.89 now · holding $890 / mo</div>
+              <div class="acts"><span class="btn go">Train it again</span><span class="btn warn">Return it to frontier</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash">
+          <div class="dashhd"><h4>System behavior</h4><p>Is the optimization loop running — and is it failing safe when it fails?</p></div>
+          <div class="tile">
+            <div class="tl">Loop throughput · 30d</div>
+            <div class="srow"><span>Training runs started → completed</span><b>12 → 9</b></div>
+            <div class="srow"><span>Promotions to fleet</span><b>6</b></div>
+            <div class="srow"><span>Rollbacks</span><b class="bad">1</b></div>
+            <div class="srow"><span>Candidates retired at a check</span><b>4</b></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Evaluation ladder — pass rate per rung</div>
+            <div class="brow"><span>offline eval</span><span class="bt" style="width:74%"></span><span class="bv">14/19</span></div>
+            <div class="brow"><span>shadow</span><span class="bt" style="width:64%"></span><span class="bv">9/14</span></div>
+            <div class="brow"><span>canary</span><span class="bt" style="width:78%"></span><span class="bv">7/9</span></div>
+            <div class="ts">each rung that rejects a candidate stops a<br>regression before it reaches the fleet</div>
+          </div>
+          <div class="tile">
+            <div class="tl">Serving health</div>
+            <div class="srow"><span>Latency p50 / p95</span><b>340ms / 1.2s</b></div>
+            <div class="srow"><span>Frontier fallback rate</span><b class="bad">2.1% ▲</b></div>
+            <div class="srow"><span>Error rate</span><b class="good">0.02%</b></div>
+            <div class="srow"><span>Policy vetoes · scrub failures</span><b>14 · 0</b></div>
+          </div>
+          <div class="tile">
+            <div class="tl">GPU allocation</div>
+            <div class="stack">
+              <span style="width:38%;background:#F5C518"></span>
+              <span style="width:54%;background:#7a6410"></span>
+              <span style="width:8%;background:#2A2A2A"></span>
+            </div>
+            <div class="key"><span><i style="background:#F5C518"></i>train 38%</span><span><i style="background:#7a6410"></i>serve 54%</span><span><i style="background:#2A2A2A"></i>idle 8%</span></div>
+            <div class="ts">the same GPUs do both — T2 reserves its share within<br>the serving tier's latency budget</div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what"><b>sre-triage</b> has no rule for when an answer is too weak to send, so it never escalates</div>
+              <div class="meta"><span class="old">open 7 days</span> · it fails open rather than falling back to the frontier</div>
+              <div class="acts"><span class="btn go">Set the rule</span><span class="btn">Leave it off</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what">Whether the <b>claims-v2</b> data class may be trained on, not only logged</div>
+              <div class="meta">open 2 days · 19 agents cannot be scored until it is answered · $3,100 / mo</div>
+              <div class="acts"><span class="btn go">Clear it for training</span><span class="btn warn">Keep it audit-only</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,8 +11,9 @@
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   :root{
-    --yellow:#F5C518; --black:#000; --dark:#07070C; --white:#fff;
-    --green:#28C840; --line:#2A2A2A; --muted:#b8b8b8; --dim:#888; --blue:#4A9EFF;
+    --yellow:#FFCE4A; --black:#000000; --dark:#141414; --white:#F1F1F1;
+    --green:#72D35B; --line:#2A2A2A; --muted:#A6A6A6; --dim:#888; --blue:#00DBDD;
+    --red:#FF5400; --faint:#4E4E4E;
   }
   html{background:var(--black); scroll-behavior:smooth;}
   body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:hidden;}
@@ -34,7 +35,7 @@
   #s0 h1{font-size:clamp(56px,9vw,132px); font-weight:700;}
   #s0 .proven{font-size:clamp(22px,3vw,40px); color:var(--yellow); font-weight:600; margin-top:12px; letter-spacing:-0.01em;}
   #s0 .tag{font-size:clamp(15px,1.4vw,20px); color:var(--muted); margin-top:28px; max-width:640px; margin-left:auto; margin-right:auto; line-height:1.5;}
-  .scrollhint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:2px; color:#555; text-transform:uppercase; z-index:2;}
+  .scrollhint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:2px; color:var(--faint); text-transform:uppercase; z-index:2;}
   .scrollhint span{display:block; width:9px; height:9px; border-right:2px solid #555; border-bottom:2px solid #555; transform:rotate(45deg); margin:10px auto 0; animation:bd 1.6s ease infinite;}
   @keyframes bd{0%,100%{transform:rotate(45deg) translate(0,0);}50%{transform:rotate(45deg) translate(3px,3px);}}
 
@@ -48,10 +49,10 @@
   .akkacell{background:rgba(245,197,24,0.05);}
   .pq{font-size:clamp(17px,1.6vw,23px); font-weight:700; color:var(--white); letter-spacing:-0.02em; margin-bottom:6px;}
   .pd{font-size:clamp(12.5px,1vw,14.5px); color:var(--muted); line-height:1.4;}
-  .pcat{display:flex; align-items:center; gap:9px; font-size:clamp(14px,1.3vw,18px); font-weight:700; color:#cfcfcf; letter-spacing:-0.01em; margin-bottom:11px;}
+  .pcat{display:flex; align-items:center; gap:9px; font-size:clamp(14px,1.3vw,18px); font-weight:700; color:var(--muted); letter-spacing:-0.01em; margin-bottom:11px;}
   .pcat::before{content:''; width:7px; height:7px; border-radius:50%; background:#666; flex:none;}
   .pchips{display:flex; flex-wrap:nowrap; gap:7px;}
-  .pchip{font-size:12px; color:#c0c0c0; border:1px solid #333; border-radius:100px; padding:5px 12px; background:rgba(255,255,255,0.03); white-space:nowrap;}
+  .pchip{font-size:12px; color:var(--muted); border:1px solid #333; border-radius:100px; padding:5px 12px; background:rgba(255,255,255,0.03); white-space:nowrap;}
   .ak-v{font-size:clamp(15px,1.4vw,20px); font-weight:700; color:var(--yellow); letter-spacing:-0.01em; margin-bottom:5px;}
   .ak-d{font-size:clamp(12.5px,1vw,14.5px); color:var(--muted); line-height:1.4;}
 
@@ -69,7 +70,7 @@
   .vz-flow{border:1px solid var(--line); border-radius:12px; background:#0a0a0d; padding:24px 26px 26px;}
   .vz-src2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .vz-agent{font-size:12.5px; color:var(--muted); letter-spacing:.2px; text-align:center; border:1px solid var(--line); border-radius:8px; padding:9px 10px; background:rgba(255,255,255,0.02);}
-  .vz-arrows2{display:grid; grid-template-columns:1fr 1fr; gap:14px; color:#4a4a4a; font-size:15px; line-height:1; margin:5px 0 3px;}
+  .vz-arrows2{display:grid; grid-template-columns:1fr 1fr; gap:14px; color:var(--faint); font-size:15px; line-height:1; margin:5px 0 3px;}
   .vz-arrows2 span{text-align:center;}
   .vz-trace{width:100%; display:block; text-align:left; border:1px solid rgba(245,197,24,0.35); background:rgba(245,197,24,0.06); border-radius:10px; padding:13px 18px; cursor:pointer; transition:border-color .2s, background .2s;}
   .vz-trace:hover{border-color:var(--blue);}
@@ -100,10 +101,10 @@
   .evx td{padding:9px 14px 9px 0; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top; line-height:1.3;}
   .evx tr:last-child td{border-bottom:none;}
   .evx .id{color:var(--yellow); font-weight:700; white-space:nowrap;}
-  .evx .ctl{color:#e6e6e6;}
-  .evx .mech{color:#cfcfcf; white-space:nowrap; font-weight:600;}
+  .evx .ctl{color:var(--white);}
+  .evx .mech{color:var(--muted); white-space:nowrap; font-weight:600;}
   .evx .src{color:var(--dim); white-space:nowrap;}
-  .evx .cg{color:#e6e6e6; font-weight:600; white-space:nowrap; padding-right:22px;}
+  .evx .cg{color:var(--white); font-weight:600; white-space:nowrap; padding-right:22px;}
   .evx .ty{color:var(--muted);}
   .evx--2{font-size:11.5px;}
   .evx--2 td{padding:7px 14px 7px 0;}
@@ -111,9 +112,9 @@
   .trv{margin-top:20px; border:1px solid var(--line); border-radius:9px; background:#08080b; padding:12px 15px 13px;}
   .trv-hd{display:flex; justify-content:space-between; font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); padding-bottom:9px; margin-bottom:5px; border-bottom:1px solid var(--line);}
   .trv-row{display:grid; grid-template-columns:150px 1fr 40px; align-items:center; gap:11px; padding:3px 0;}
-  .trv-lbl{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:#cfcfcf; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .trv-lbl.ch{padding-left:12px; color:#a9a9a9;}
-  .trv-lbl.ch2{padding-left:24px; color:#a9a9a9;}
+  .trv-lbl{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .trv-lbl.ch{padding-left:12px; color:var(--muted);}
+  .trv-lbl.ch2{padding-left:24px; color:var(--muted);}
   .trv-track{position:relative; height:11px; background:rgba(255,255,255,0.035); border-radius:3px;}
   .trv-bar{position:absolute; top:0; height:100%; border-radius:3px; background:#585858;}
   .trv-bar.vf{background:var(--yellow);}
@@ -123,42 +124,42 @@
   /* mini graphics: guardrail + sanitizer */
   .mgfx{margin-top:20px; border:1px solid var(--line); border-radius:9px; background:#08080b; padding:18px 16px;}
   .grd-flow{display:flex; align-items:center; justify-content:center; gap:11px; flex-wrap:wrap;}
-  .grd-node{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:7px; padding:9px 13px; background:rgba(255,255,255,0.02); white-space:nowrap;}
+  .grd-node{font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:9px 13px; background:rgba(255,255,255,0.02); white-space:nowrap;}
   .grd-gate{font-size:12px; font-weight:700; color:var(--yellow); border:1px solid var(--yellow); border-radius:7px; padding:9px 15px; background:rgba(245,197,24,0.08); white-space:nowrap;}
-  .grd-ar{color:#4a4a4a; font-size:10px;}
+  .grd-ar{color:var(--faint); font-size:10px;}
   .grd-out{display:flex; justify-content:center; gap:11px; margin-top:13px;}
   .grd-pill{font-size:11px; padding:5px 12px; border-radius:100px; border:1px solid var(--line); display:inline-flex; align-items:center; gap:6px; letter-spacing:.3px;}
   .grd-pill.ok{color:var(--green); border-color:rgba(40,200,64,.4);}
-  .grd-pill.no{color:#ff6b60; border-color:rgba(255,107,96,.4);}
+  .grd-pill.no{color:var(--red); border-color:rgba(255,107,96,.4);}
   .grd2{display:flex; align-items:center; gap:15px;}
-  .grd2-agent{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:7px; padding:11px 15px; background:rgba(255,255,255,0.02); white-space:nowrap; flex:none;}
+  .grd2-agent{font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:11px 15px; background:rgba(255,255,255,0.02); white-space:nowrap; flex:none;}
   .grd2-lanes{display:flex; flex-direction:column; gap:9px; flex:1;}
   .grd2-lane{display:flex; align-items:center; gap:11px;}
-  .grd2-ar{color:#4a4a4a; font-size:10px; flex:none;}
+  .grd2-ar{color:var(--faint); font-size:10px; flex:none;}
   .grd2-gate{font-size:12px; font-weight:600; color:var(--yellow); border:1px solid rgba(245,197,24,0.5); border-radius:7px; padding:8px 13px; background:rgba(245,197,24,0.07); white-space:nowrap; flex:1;}
-  .grd2-lane.no .grd2-gate{color:#ff8a80; border-color:rgba(255,107,96,.45); background:rgba(255,107,96,.06);}
+  .grd2-lane.no .grd2-gate{color:var(--red); border-color:rgba(255,107,96,.45); background:rgba(255,107,96,.06);}
   .grd-pill{white-space:nowrap;}
   .san-row{display:flex; align-items:center; gap:10px;}
   .san-tag{font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); width:26px; flex:none;}
-  .san-code{font-family:'SF Mono','Consolas',monospace; font-size:11px; color:#cfcfcf; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:6px; padding:8px 11px; flex:1; min-width:0; overflow-x:auto; white-space:nowrap;}
+  .san-code{font-family:'SF Mono','Consolas',monospace; font-size:11px; color:var(--muted); background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:6px; padding:8px 11px; flex:1; min-width:0; overflow-x:auto; white-space:nowrap;}
   .san-code b{color:var(--yellow); font-weight:600; letter-spacing:1px;}
   .san-mid{display:flex; align-items:center; gap:9px; padding:9px 0 9px 36px;}
-  .san-ar{color:#4a4a4a; font-size:10px;}
+  .san-ar{color:var(--faint); font-size:10px;}
   .san-op{font-size:10.5px; color:var(--yellow); letter-spacing:.3px;}
   .hl2{display:flex; flex-direction:column; gap:12px;}
   .hl2-card{border:1px solid var(--line); border-radius:9px; padding:14px 16px 15px; background:rgba(255,255,255,0.02);}
   .hl2-kind{font-size:9.5px; text-transform:uppercase; letter-spacing:1px; color:var(--yellow); font-weight:600; margin-bottom:11px;}
   .hl2-flow{display:flex; align-items:center; gap:9px; flex-wrap:wrap;}
-  .hl2-chip{font-size:12px; color:#cfcfcf; border:1px solid var(--line); border-radius:100px; padding:6px 13px; white-space:nowrap; background:rgba(255,255,255,0.02);}
-  .hl2-chip.hu{color:#fff; font-weight:600; border-color:rgba(245,197,24,0.55); background:rgba(245,197,24,0.08);}
-  .hl2-ar{color:#4a4a4a; font-size:11px;}
+  .hl2-chip{font-size:12px; color:var(--muted); border:1px solid var(--line); border-radius:100px; padding:6px 13px; white-space:nowrap; background:rgba(255,255,255,0.02);}
+  .hl2-chip.hu{color:var(--white); font-weight:600; border-color:rgba(245,197,24,0.55); background:rgba(245,197,24,0.08);}
+  .hl2-ar{color:var(--faint); font-size:11px;}
   .hl2-note{font-size:11px; color:var(--muted); margin-top:10px; letter-spacing:.2px;}
   .fbw{flex:1; min-width:180px; border:1px solid rgba(245,197,24,0.4); border-radius:8px; background:rgba(245,197,24,0.05); padding:9px 11px;}
   .fbw-hd{font-size:9px; text-transform:uppercase; letter-spacing:1px; color:var(--yellow); font-weight:600; margin-bottom:7px;}
   .fbw-msg{font-size:11px; line-height:1.3; padding:5px 9px; border-radius:7px; margin-top:5px; max-width:90%;}
-  .fbw-msg.out{background:rgba(255,255,255,0.05); color:#cfcfcf; border:1px solid var(--line);}
-  .fbw-msg.in{background:rgba(245,197,24,0.14); color:#fff; margin-left:auto; text-align:right;}
-  .fbw-alert{font-size:10.5px; color:#ff8a80; letter-spacing:.2px;}
+  .fbw-msg.out{background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--line);}
+  .fbw-msg.in{background:rgba(245,197,24,0.14); color:var(--white); margin-left:auto; text-align:right;}
+  .fbw-alert{font-size:10.5px; color:var(--red); letter-spacing:.2px;}
   .hl2-outs{display:flex; flex-direction:column; gap:6px; flex:none;}
   .grd-pill.fb{color:var(--yellow); border-color:rgba(245,197,24,.45);}
   /* event-sourced hash-chained audit log */
@@ -169,15 +170,15 @@
   .elog-row{position:relative; display:grid; grid-template-columns:42px 1fr auto; align-items:center; gap:12px; padding:7px 0;}
   .elog-row::before{content:''; position:absolute; left:-18px; top:50%; transform:translateY(-50%); width:7px; height:7px; border-radius:50%; background:#585858; border:2px solid #08080b;}
   .elog-seq{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:var(--dim);}
-  .elog-ev{font-family:'SF Mono','Consolas',monospace; font-size:11.5px; color:#cfcfcf; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .elog-ev{font-family:'SF Mono','Consolas',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .elog-hash{font-family:'SF Mono','Consolas',monospace; font-size:10.5px; color:var(--dim); white-space:nowrap; display:inline-flex; align-items:center; gap:6px;}
-  .elog-prev{font-style:normal; color:#666;}
-  .elog-cn{color:#4a4a4a;}
+  .elog-prev{font-style:normal; color:var(--faint);}
+  .elog-cn{color:var(--faint);}
   .elog-hash b{color:var(--yellow); font-weight:600;}
   .elog-note{font-size:10.5px; color:var(--dim); margin-top:12px; line-height:1.45;}
   .vzcap{margin-top:14px; font-size:12.5px; color:var(--dim); letter-spacing:.3px;}
   @media (max-width:820px){ .vz{grid-template-columns:1fr;} }
-  .defcallout{margin-top:18px; font-size:clamp(15px,1.4vw,20px); font-weight:600; color:#e8e8e8; line-height:1.5; border-left:2px solid var(--yellow); padding-left:16px; max-width:72ch;}
+  .defcallout{margin-top:18px; font-size:clamp(15px,1.4vw,20px); font-weight:600; color:var(--white); line-height:1.5; border-left:2px solid var(--yellow); padding-left:16px; max-width:72ch;}
 
   /* specifications (from overview slide 06) */
   .spec-head { margin-bottom: 64px; }
@@ -187,7 +188,7 @@
   .spec-headline { font-size: clamp(34px, 4.5vw, 60px); font-weight: 700; line-height: 1.06; letter-spacing: -0.03em; color: var(--white); margin-bottom: 12px; opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1); }
   .spec-headline.visible { opacity: 1; transform: none; }
   .spec-headline .accent { color: var(--yellow); }
-  .spec-sub { font-size: clamp(17px, 1.5vw, 22px); color: #b8b8b8; line-height: 1.45; max-width: 1100px; opacity: 0; transform: translateY(16px); transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s; }
+  .spec-sub { font-size: clamp(17px, 1.5vw, 22px); color: var(--muted); line-height: 1.45; max-width: 1100px; opacity: 0; transform: translateY(16px); transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s; }
   .spec-sub.visible { opacity: 1; transform: none; }
   .spec-flow { display: grid; grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr; grid-template-areas: "blabel barrow bart hub merge" "glabel garrow gart hub merge"; grid-template-rows: 1fr 1fr; gap: 56px 18px; align-items: stretch; opacity: 0; transition: opacity .55s ease; }
   .spec-track--build > .spec-track-label { grid-area: blabel; }
@@ -201,20 +202,20 @@
   .spec-track { display: contents; }
   .spec-track-label { display: flex; flex-direction: column; justify-content: center; border-left: 2px solid var(--yellow); padding: 6px 0 6px 14px; }
   .spec-track-name { font-size: clamp(22px, 2.2vw, 30px); font-weight: 700; letter-spacing: -0.02em; color: var(--white); line-height: 1; text-transform: uppercase; }
-  .spec-track-personas { font-size: clamp(11px, 0.95vw, 13px); letter-spacing: 1.4px; text-transform: uppercase; color: #b8b8b8; font-weight: 500; margin-top: 10px; line-height: 1.5; }
+  .spec-track-personas { font-size: clamp(11px, 0.95vw, 13px); letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-top: 10px; line-height: 1.5; }
   .spec-artifact { display: flex; flex-direction: column; padding: 14px 18px; background: rgba(245,197,24,0.04); border: 1px solid rgba(245,197,24,0.3); border-left: 3px solid var(--yellow); border-radius: 3px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); position: relative; }
   .spec-artifact::after { content: ''; position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: linear-gradient(135deg, transparent 50%, rgba(245,197,24,0.3) 50%); }
   .spec-artifact-tag { font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; margin-bottom: 10px; }
   .spec-artifact-title { font-size: clamp(18px, 1.6vw, 22px); color: var(--white); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 8px; }
-  .spec-artifact-quote { font-size: clamp(13px, 1.0vw, 15px); color: #cfcfcf; line-height: 1.5; margin: 4px 0 12px; padding-left: 12px; border-left: 2px solid rgba(245,197,24,0.35); font-weight: 500; }
-  .spec-artifact-meta { font-size: 10px; letter-spacing: 1.2px; color: #888; font-family: 'SF Mono', Menlo, Consolas, monospace; margin-top: auto; }
+  .spec-artifact-quote { font-size: clamp(13px, 1.0vw, 15px); color: var(--muted); line-height: 1.5; margin: 4px 0 12px; padding-left: 12px; border-left: 2px solid rgba(245,197,24,0.35); font-weight: 500; }
+  .spec-artifact-meta { font-size: 10px; letter-spacing: 1.2px; color: var(--dim); font-family: 'SF Mono', Menlo, Consolas, monospace; margin-top: auto; }
   .spec-hub { grid-area: hub; display: flex; align-items: center; justify-content: center; border: 2px solid var(--yellow); background: rgba(245,197,24,0.06); border-radius: 4px; position: relative; }
   .spec-hub::before, .spec-hub::after { content: ''; position: absolute; left: -10px; width: 10px; height: 1px; background: var(--yellow); }
   .spec-hub::before { top: 30%; }
   .spec-hub::after { top: 70%; }
   .spec-hub-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px 14px; text-align: center; width: 100%; }
   .spec-hub-name { font-size: clamp(22px, 2.1vw, 30px); font-weight: 800; letter-spacing: -0.02em; color: var(--white); line-height: 1; text-align: center; }
-  .spec-hub-foot { font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: #aaa; font-weight: 500; }
+  .spec-hub-foot { font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
   .spec-merge { grid-area: merge; display: flex; align-items: stretch; gap: 0; position: relative; }
   .spec-merge-arrows { width: 60px; height: 100%; flex-shrink: 0; overflow: visible; }
   .spec-merge-arrows .spec-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; }
@@ -228,7 +229,7 @@
   .spec-flow.visible .spec-merge-card { opacity: 1; transform: none; }
   .spec-merge-tag { font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; margin-bottom: 10px; }
   .spec-merge-title { font-size: clamp(22px, 2.1vw, 30px); color: var(--white); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; }
-  .spec-merge-list { display: flex; flex-direction: column; gap: 6px; font-size: clamp(14px, 1.15vw, 17px); color: #e4e4e4; line-height: 1.4; }
+  .spec-merge-list { display: flex; flex-direction: column; gap: 6px; font-size: clamp(14px, 1.15vw, 17px); color: var(--white); line-height: 1.4; }
   .spec-merge-plus { display: block; text-align: center; font-size: clamp(20px, 1.8vw, 26px); font-weight: 700; color: var(--yellow); line-height: 1; padding: 2px 0; }
   .spec-flow.visible .spec-track--build > * { animation: spec-rise .5s ease-out forwards; }
   .spec-flow.visible .spec-track--build > .spec-track-label { animation-delay: 0.15s; }
@@ -252,7 +253,7 @@
   @keyframes spec-loop-trace { to { stroke-dashoffset: 0; } }
   .spec-loop-label { position: absolute; left: 44.5%; top: calc(44px + 8px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; white-space: nowrap; }
   .spec-loop-tag { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--yellow); font-weight: 700; flex-shrink: 0; }
-  .spec-loop-text { font-size: clamp(13px, 1.1vw, 16px); color: #d4d4d4; line-height: 1.4; font-weight: 500; }
+  .spec-loop-text { font-size: clamp(13px, 1.1vw, 16px); color: var(--muted); line-height: 1.4; font-weight: 500; }
   .govframe { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0a0a0d; margin-top:8px; }
   .govframe iframe { display:block; width:100%; height:min(60vh,560px); border:0; }
   @media (max-width: 1100px) { .spec-flow { grid-template-columns: 120px 1fr 90px 200px 0.9fr; gap: 10px 12px; } }
@@ -273,7 +274,7 @@
   .catgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
   .cat{border:1px solid var(--line); border-radius:9px; padding:18px; background:rgba(255,255,255,0.02);}
   .cat h4{font-size:clamp(14px,1.2vw,17px); font-weight:700; margin:0 0 10px; letter-spacing:-0.01em; line-height:1.2;}
-  .cat .ex{font-size:12px; color:#9a9a9a; line-height:1.4;}
+  .cat .ex{font-size:12px; color:var(--muted); line-height:1.4;}
   .cat .ex em{color:var(--green); font-style:normal; font-weight:600;}
   .runsin{margin-top:30px; text-align:center; font-size:clamp(15px,1.5vw,21px); color:var(--white); font-weight:600;}
   .runsin .accent{color:var(--yellow);}
@@ -296,7 +297,7 @@
   .contrast{display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:auto;}
   .cc{padding:16px 18px;} .cc.them{background:rgba(255,255,255,.015); border-right:1px solid var(--line);} .cc.us{background:rgba(40,200,64,.05);}
   .ct{font-size:10.5px; text-transform:uppercase; letter-spacing:1.8px; font-weight:700; margin-bottom:8px;} .cc.them .ct{color:var(--dim);} .cc.us .ct{color:var(--green);}
-  .cx{font-size:clamp(12.5px,1vw,15px); line-height:1.45; color:#c4c4c4;} .cc.them .cx{color:#9a9a9a;}
+  .cx{font-size:clamp(12.5px,1vw,15px); line-height:1.45; color:var(--muted);} .cc.them .cx{color:var(--muted);}
 
   /* console */
   .console{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0a0a0d;}
@@ -304,17 +305,63 @@
   .console .dot{width:11px; height:11px; border-radius:50%;}
   .console .bar .t{margin-left:12px; font-size:12px; color:var(--dim); letter-spacing:1px;}
   .console .body{height:min(58vh,540px); display:flex; align-items:center; justify-content:center; text-align:center; padding:40px;}
+
+  /* integrated platform - mirrors #s-routes in akka-overview/index.html and
+     sales-presentation/slides/family-platform. Keep all three in sync.
+     No extra bloom layer here: the box's own glow matches the overview. */
+  #family h2{font-size:clamp(30px,4.4vw,58px); line-height:1.05; margin-bottom:14px;}
+  .fam-sub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
+  .fam-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:56px; align-items:start; margin-top:46px;}
+  .fam-grid > *{min-width:0;}
+  .cake-wrap{position:relative; border:1.5px solid rgba(245,197,24,0.85); border-radius:16px; padding:40px 34px 34px; background:rgba(245,197,24,0.02); box-shadow:0 0 90px -28px rgba(245,197,24,0.55);}
+  .cake-tab{position:absolute; top:0; left:50%; transform:translate(-50%,-50%); background:linear-gradient(90deg, transparent 0, var(--black) 14%, var(--black) 86%, transparent 100%); padding:2px 30px; font-size:clamp(20px,2vw,30px); letter-spacing:-0.02em; color:var(--yellow); font-weight:700; white-space:nowrap;}
+  .cake{display:flex; flex-direction:column;}
+  .layer{display:grid; grid-template-columns:98px 1fr; gap:0 22px; align-items:stretch;}
+  .role{align-self:center; text-align:right; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; text-transform:uppercase; letter-spacing:2px; font-size:10px; font-weight:600; color:var(--dim); line-height:1.7;}
+  .role b{color:var(--muted); font-weight:600; display:block;}
+  .cards{display:grid; grid-template-columns:1fr; gap:14px;}
+  .cards.two{grid-template-columns:1fr 1fr;}
+  .cards.two.govwide{grid-template-columns:0.8fr 1.2fr;}
+  .ocard{border:1px solid var(--line); border-radius:11px; padding:26px 24px; text-align:center; background:rgba(255,255,255,0.025); transition:border-color .2s, transform .2s;}
+  .ocard:hover{border-color:rgba(245,197,24,0.5); transform:translateY(-2px);}
+  .oname{font-size:clamp(16px,1.6vw,21px); font-weight:600; letter-spacing:-0.01em; color:var(--white);}
+  .osub{margin-top:12px; color:var(--muted); font-size:clamp(11.5px,0.92vw,13px); letter-spacing:.2px; line-height:1.5; white-space:nowrap;}
+  .osub .d{color:var(--yellow); font-weight:600; padding:0 4px;}
+  #family .osub-wrap{white-space:normal; line-height:1.7;}
+  .conn{display:grid; grid-template-columns:98px 1fr; gap:0 22px; height:26px;}
+  .conn .rail{display:grid;}
+  .conn.two .rail{grid-template-columns:1fr 1fr;}
+  .conn.one .rail{grid-template-columns:1fr;}
+  .conn .rail span{justify-self:center; width:2px; height:100%; background:linear-gradient(var(--yellow) 0 45%, transparent 45% 100%); background-size:100% 8px; opacity:.55; animation:famflow .9s linear infinite;}
+  @keyframes famflow{from{background-position:0 0;}to{background-position:0 8px;}}
+  .rt-pick{cursor:pointer;}
+  .rt-pick:focus-visible{outline:2px solid var(--yellow); outline-offset:3px;}
+  .rt-pick[aria-pressed="true"]{background:linear-gradient(160deg, rgba(245,197,24,0.13), rgba(245,197,24,0.035)); border-color:rgba(245,197,24,0.55); box-shadow:0 0 60px -22px rgba(245,197,24,0.6);}
+  .rt-pick[aria-pressed="true"] .oname{color:var(--yellow);}
+  #family .rt-comp{white-space:nowrap; color:var(--muted); cursor:pointer; text-decoration:none; border-bottom:1px dotted rgba(245,197,24,0.5); transition:color .2s, border-color .2s;}
+  #family .rt-comp:hover{color:var(--yellow); border-bottom-color:var(--yellow);}
+  #family .rt-comp:focus-visible{outline:2px solid var(--yellow); outline-offset:2px;}
+  #family .rt-comp[aria-pressed="true"]{color:var(--yellow); border-bottom-color:var(--yellow); font-weight:600;}
+  .rt-panel{align-self:start; padding-top:6px;}
+  .rt-panel h3{font-size:clamp(20px,2vw,29px); font-weight:700; letter-spacing:-0.02em; color:var(--yellow); margin-bottom:18px;}
+  .rt-panel p{font-size:clamp(15px,1.32vw,19px); line-height:1.66; color:var(--muted);}
+  .rt-panel p + p{margin-top:18px;}
+  .rt-panel .accent{color:var(--yellow); font-weight:600;}
+  .rt-panel code{font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:0.9em;}
+  .rt-panel-body[hidden]{display:none;}
+  @media (max-width:900px){ .fam-grid{grid-template-columns:1fr; gap:34px;} }
   .console .body .ph{max-width:520px;}
   .console .body .ph .big{font-size:clamp(20px,2vw,28px); font-weight:700; margin-bottom:12px;}
   .console .body .ph p{color:var(--muted); font-size:15px; line-height:1.5;}
-  .console .body .ph .note{margin-top:18px; font-size:12px; color:#5a5a5a; letter-spacing:.5px;}
+  .console .body .ph .note{margin-top:18px; font-size:12px; color:var(--faint); letter-spacing:.5px;}
 
   /* stats */
   #s7{background:radial-gradient(ellipse at 50% 50%, #0d0d10 0%, #000 75%);}
-  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:16px; max-width:960px; margin-left:auto; margin-right:auto;}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:26px; margin-top:16px; max-width:960px; margin-left:auto; margin-right:auto;}
   .stat{text-align:center;}
   .stat .v{font-size:clamp(42px,6vw,86px); font-weight:700; letter-spacing:-0.04em; color:var(--yellow); line-height:1; font-variant-numeric:tabular-nums;}
-  .stat .l{font-size:clamp(13px,1.05vw,15px); color:var(--muted); margin-top:14px; line-height:1.4;}
+  .stat .l{font-size:clamp(12px,0.95vw,14px); color:var(--muted); margin-top:14px; line-height:1.45;}
+  .stat .l em{font-style:normal; color:var(--yellow); font-weight:600;}
 
   /* close */
   #s8{background:radial-gradient(ellipse at 50% 45%, #0d0d10 0%, #000 70%);}
@@ -362,11 +409,12 @@
 <section id="s7">
   <div class="inner">
     <div class="eyebrow reveal" style="text-align:center;">Why it matters</div>
-    <h2 class="shead reveal" style="text-align:center; margin:0 auto 44px; max-width:24ch;">The cost of getting governance <span style="color:#ff5a4d;">wrong</span></h2>
+    <h2 class="shead reveal" style="text-align:center; margin:0 auto 44px; max-width:24ch;">The cost of getting governance <span style="color:var(--red);">wrong</span></h2>
     <div class="stats reveal">
-      <div class="stat"><div class="v" data-count="191">0</div><div class="l">AI regulations worldwide</div></div>
-      <div class="stat"><div class="v" data-count="133">0</div><div class="l">carry financial penalties</div></div>
-      <div class="stat"><div class="v" data-prefix="&euro;" data-count="35" data-suffix="M">0</div><div class="l">max EU AI Act penalty</div></div>
+      <div class="stat"><div class="v" data-corpus="regulations" data-count="190">0</div><div class="l">AI regulations worldwide</div></div>
+      <div class="stat"><div class="v" data-corpus="penalty-regulations" data-count="109">0</div><div class="l">carry financial penalties</div></div>
+      <div class="stat"><div class="v" data-count="7" data-suffix="%">0</div><div class="l">EU AI Act maximum penalty</div></div>
+      <div class="stat"><div class="v" data-count="79" data-suffix="%">0</div><div class="l">of avoidable token spend</div></div>
     </div>
   </div>
 </section>
@@ -441,7 +489,7 @@
   <div class="inner">
     <div class="eyebrow reveal">Define your risk</div>
     <h2 class="shead reveal">Define policies based upon your <span class="accent">risk profile.</span></h2>
-    <p class="ssub reveal">Identify policies and controls that are required from 191 regulations by answering questions that define your AI risk profile. A selection of risk survey questions are sampled below.</p>
+    <p class="ssub reveal">Identify policies and controls that are required from <!--corpus:regulations-->190<!--/corpus--> regulations by answering questions that define your AI risk profile. A selection of risk survey questions are sampled below.</p>
     <div class="govframe reveal">
       <iframe src="risk-survey/index.html" title="Define your risk" loading="lazy" allow="fullscreen"></iframe>
     </div>
@@ -481,6 +529,133 @@
 </section>
 
 <!-- CLOSE -->
+<section id="family" data-active="shredder">
+  <div class="inner">
+    <div class="eyebrow reveal" style="display:inline-block;">The Akka Agentic AI Platform</div>
+    <h2 class="reveal">An <span class="accent">integrated platform.</span></h2>
+    <div class="fam-sub reveal">Akka&rsquo;s products all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
+
+    <div class="fam-grid reveal">
+      <div class="cake-wrap">
+        <div class="cake-tab">Akka Agentic AI Platform</div>
+        <div class="cake">
+          <div class="layer">
+            <div class="role">Deliver<b>&amp; Govern</b></div>
+            <div class="cards two govwide">
+              <div class="ocard rt-pick" data-rt="specify" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Specify</div>
+                <div class="osub">specs<span class="d">·</span>generation<span class="d">·</span>modernization</div>
+              </div>
+              <div class="ocard rt-pick" data-rt="verify" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Verify</div>
+                <div class="osub">evaluations<span class="d">·</span>guardrails<span class="d">·</span>policies<span class="d">·</span>evidence</div>
+              </div>
+            </div>
+          </div>
+          <div class="conn two"><div></div><div class="rail"><span></span><span></span></div></div>
+          <div class="layer">
+            <div class="role">Build<b>&amp; Run</b></div>
+            <div class="cards">
+              <div class="ocard rt-pick" data-rt="sdk" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka SDK</div>
+                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">Agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">Autonomous Agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">Workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">Event Sourced Entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">Key Value Entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">Views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">Timed Actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">Consumers</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="conn one"><div></div><div class="rail"><span></span></div></div>
+          <div class="layer">
+            <div class="role">Models<b>&amp; Compute</b></div>
+            <div class="cards">
+              <div class="ocard rt-pick" data-rt="shredder" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Token Shredder</div>
+                <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rt-panel">
+      <div class="rt-panel-body" data-rt-body="specify" hidden>
+        <h3>Akka Specify</h3>
+        <p>Six specifications become <span class="accent">one governed system</span>. You describe what the system must do, and the platform generates the agents, workflows, APIs, memory, integrations, guardrails, evaluations, and tests that deliver it.</p>
+        <p>Because the specs are versioned and reviewed like code, agentic delivery moves <span class="accent">inside the enterprise SDLC</span> instead of around it. The same path modernizes systems you already run.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="verify" hidden>
+        <h3>Akka Verify</h3>
+        <p>A working agent is not a production agent. Verify evaluates behaviour, enforces policy, and records what happened &mdash; <span class="accent">inline, and never sampled</span>.</p>
+        <p>Every run leaves a durable evidence record you can hand to an auditor, mapped against a corpus of <span class="accent"><!--corpus:regulations-->190<!--/corpus--> AI regulations</span>. It governs agents built on Akka and agents built elsewhere.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="sdk" hidden>
+        <h3>Akka SDK</h3>
+        <p>Eleven components cover what an agentic system actually needs: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
+        <p>State is durable by default and replayable from its event journal, so an agent that fails mid-task <span class="accent">resumes rather than restarts</span>.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="agents" hidden>
+        <h3>Agents</h3>
+        <p>An agent interacts with an AI model to perform a specific task. It keeps contextual history in <span class="accent">session memory</span>, which can be shared with other agents working toward the same goal.</p>
+        <p>It can expose function tools and call them when the model asks for them.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="autonomous" hidden>
+        <h3>Autonomous Agents</h3>
+        <p>A model-driven component that runs as a <span class="accent">durable process</span>. It works on typed tasks, each with its own instructions and result schema, and the runtime drives the model through a decision loop until the task is done. Agent and task state persist as it goes, so work <span class="accent">survives crashes and restarts</span>.</p>
+        <p>Coordination is part of the component model: an agent can delegate to specialists, hand off to peers, or lead a team sharing a task list. The runtime exposes these as tools, so multi-agent systems are assembled from focused agents <span class="accent">without writing orchestration code</span>.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="workflows" hidden>
+        <h3>Workflows</h3>
+        <p>Workflows run <span class="accent">long-running, multi-step business processes</span> while you write only the domain logic. They provide durability and consistency, and can call other components and services.</p>
+        <p>A business transaction lives in one place, and the workflow either keeps it moving or <span class="accent">rolls it back</span> when a step fails.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="ese" hidden>
+        <h3>Event Sourced Entities</h3>
+        <p>Instead of storing the current state, these persist <span class="accent">every event that led to it</span>, written to a journal with ACID semantics.</p>
+        <p>State is rebuilt by replaying those events, which scales horizontally and isolates failures &mdash; and gives you a complete history of how the state came to be.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="kve" hidden>
+        <h3>Key Value Entities</h3>
+        <p>These persist state as a <span class="accent">single current value</span>, keyed by id.</p>
+        <p>Akka guarantees exactly one instance of each entity across the whole cluster, so commands are handled <span class="accent">one at a time</span> with no concurrency to reason about. Active state is held in memory and recovered from durable storage after a restart or rebalance.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="views" hidden>
+        <h3>Views</h3>
+        <p>Views let you read <span class="accent">across many entities</span>, or find an entity by something other than its id.</p>
+        <p>Each view is built for a specific access pattern and updates as the underlying entity state changes.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="http" hidden>
+        <h3>HTTP Endpoints</h3>
+        <p>An endpoint is how a service is exposed to the outside world. HTTP endpoints accept and return <span class="accent">JSON</span> by default.</p>
+        <p>Lower-level APIs are available when you need full control over what data is accepted and returned.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="grpc" hidden>
+        <h3>gRPC Endpoints</h3>
+        <p>gRPC endpoints expose a service through <span class="accent">protobuf contracts</span> defined in <code>.proto</code> files, so the service contract is explicit rather than implied.</p>
+        <p>Binary serialization and protobuf&rsquo;s forward and backward compatibility make service-to-service calls fast and <span class="accent">safe to evolve</span> without breaking existing clients.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="mcp" hidden>
+        <h3>MCP Endpoints</h3>
+        <p>MCP endpoints expose a service to <span class="accent">MCP clients</span> &mdash; LLM desktop applications, and agents running on other services.</p>
+        <p>What you expose becomes tools the model can call on its own behalf.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="timers" hidden>
+        <h3>Timed Actions</h3>
+        <p>Timers schedule a call to run later &mdash; useful for checking whether something completed after the fact.</p>
+        <p>They are stored by the runtime and guaranteed to run <span class="accent">at least once</span>: if the call fails, the timer reschedules itself until it succeeds.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="consumers" hidden>
+        <h3>Consumers</h3>
+        <p>Consumers read a <span class="accent">stream of events</span> &mdash; from an entity&rsquo;s journal, from key value state changes, or from a message broker topic.</p>
+        <p>They also produce events outward, which is how an Akka service interacts with systems beyond it.</p>
+      </div>
+      <div class="rt-panel-body" data-rt-body="shredder" hidden>
+        <h3>Akka Token Shredder</h3>
+        <p>Frontier model spend rises with every call. Token Shredder uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
+        <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="s8">
   <div class="inner">
     <div class="eyebrow reveal" style="display:inline-block;">Akka Verify</div>
@@ -524,6 +699,29 @@
     if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goTo(currentIndex()+1);}
     else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goTo(currentIndex()-1);}
   });
+
+  /* integrated platform: pick a product box or an SDK component */
+  (function(){
+    var root = document.getElementById('family');
+    if (!root) return;
+    var picks = root.querySelectorAll('.rt-pick');
+    var comps = root.querySelectorAll('.rt-comp');
+    var bodies = root.querySelectorAll('.rt-panel-body');
+    function show(bodyKey, boxKey){
+      picks.forEach(function(p){ p.setAttribute('aria-pressed', String(p.dataset.rt === boxKey)); });
+      comps.forEach(function(c){ c.setAttribute('aria-pressed', String(c.dataset.comp === bodyKey)); });
+      bodies.forEach(function(b){ b.hidden = (b.dataset.rtBody !== bodyKey); });
+    }
+    picks.forEach(function(p){
+      p.addEventListener('click', function(){ show(p.dataset.rt, p.dataset.rt); });
+      p.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(p.dataset.rt, p.dataset.rt);} });
+    });
+    comps.forEach(function(c){
+      c.addEventListener('click', function(e){ e.stopPropagation(); show(c.dataset.comp, 'sdk'); });
+      c.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); show(c.dataset.comp, 'sdk');} });
+    });
+    show(root.dataset.active || 'shredder', root.dataset.active || 'shredder');
+  })();
 </script>
 </body>
 </html>

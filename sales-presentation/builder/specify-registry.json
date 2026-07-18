@@ -1,16 +1,42 @@
 {
   "title": "Production AI, delivered — Akka",
   "slides": [
-    { "id": "sp-00-title",    "folder": "slides/sp-00-title" },
-    { "id": "sp-01-hero",     "folder": "slides/sp-01-hero" },
-    { "id": "sp-02-choice",   "folder": "slides/sp-02-choice" },
-    { "id": "sp-03-what",     "folder": "slides/sp-03-what" },
-    { "id": "sp-04-specs",    "folder": "slides/sp-04-specs" },
-    { "id": "sp-05-weeks",    "folder": "slides/sp-05-weeks" },
-    { "id": "sp-06-smart",    "folder": "slides/sp-06-smart" },
-    { "id": "sp-07-runs",     "folder": "slides/sp-07-runs" },
-    { "id": "sp-08-price",    "folder": "slides/sp-08-price" },
-    { "id": "sp-09-platform", "folder": "slides/sp-09-platform" },
-    { "id": "sp-10-close",    "folder": "slides/sp-10-close" }
-  ]
+    {
+      "id": "sp-00-title",
+      "folder": "slides/sp-00-title"
+    },
+    {
+      "id": "sp-01-what",
+      "folder": "slides/sp-01-what"
+    },
+    {
+      "id": "sp-02-specs",
+      "folder": "slides/sp-02-specs"
+    },
+    {
+      "id": "sp-03-weeks",
+      "folder": "slides/sp-03-weeks"
+    },
+    {
+      "id": "sp-04-runs",
+      "folder": "slides/sp-04-runs"
+    },
+    {
+      "id": "sp-05-choice",
+      "folder": "slides/sp-05-choice"
+    },
+    {
+      "id": "sp-06-price",
+      "folder": "slides/sp-06-price"
+    },
+    {
+      "id": "family-platform",
+      "folder": "slides/family-platform"
+    },
+    {
+      "id": "sp-07-close",
+      "folder": "slides/sp-07-close"
+    }
+  ],
+  "product": "verify"
 }
