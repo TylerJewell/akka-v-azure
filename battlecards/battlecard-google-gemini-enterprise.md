@@ -6,7 +6,7 @@ Canonical: https://akka.io/compare/akka-vs-google-gemini-enterprise
 
 ---
 
-> **The Gemini Enterprise Agent Platform is a bundle of pieces you assemble; Akka is one governed platform you run.** At Cloud Next 2026 Google rebranded Vertex AI as the Gemini Enterprise Agent Platform — combining a code-first kit (ADK), a low-code builder (Agent Studio), and a managed runtime (Agent Engine) under a new name. The capability is real, but it is a **collection of Google Cloud services the customer integrates**, under active rebrand, with the agent runtime explicitly excluded from the platform SLA, and bound to Google Cloud for identity, models, and data. Akka delivers agents, memory, streaming, APIs, and runtime governance as one platform — at six-nines availability, backed by indemnities.
+> **The Gemini Enterprise Agent Platform is a bundle of pieces you assemble; Akka is one governed platform you run.** At Cloud Next 2026 Google rebranded Vertex AI as the Gemini Enterprise Agent Platform — combining a code-first kit (ADK), a low-code builder (Agent Studio), and a managed runtime (Agent Engine) under a new name. The capability is real, but it is a **collection of Google Cloud services the customer integrates**, under active rebrand, with the agent runtime explicitly excluded from the platform SLA, and bound to Google Cloud for identity, models, and data. The Akka Agentic AI Platform delivers agents, memory, streaming, APIs, and runtime governance as one platform that guarantees resilience and scalability — at six-nines availability, backed by indemnities.
 
 ---
 
@@ -26,11 +26,11 @@ Canonical: https://akka.io/compare/akka-vs-google-gemini-enterprise
 
 | Dimension | Gemini Enterprise Agent Platform | Akka |
 |---|---|---|
-| What it is | A rebrand of Vertex AI (Cloud Next 2026): a set of Google Cloud services — ADK, Agent Studio, Agent Engine, Agent/Model Garden — for building agents | A full-stack agentic systems platform |
+| What it is | A rebrand of Vertex AI (Cloud Next 2026): a set of Google Cloud services — ADK, Agent Studio, Agent Engine, Agent/Model Garden — for building agents | The Akka Agentic AI Platform — a platform that guarantees resilience and scalability |
 | Scope | Build tools plus a managed agent runtime; memory, governance enforcement, and the API/streaming tier are assembled from separate Google Cloud services | Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime |
 | Availability SLA | 99.9% online inference (custom models on 2+ nodes); 99.5% Pipelines; the Agent Runtime is excluded from the SLA | 99.9999% — entire platform, backed by indemnities |
 | RTO / RPO | Per underlying Google Cloud service; customer-architected across regions | Sub-1-minute RTO; zero-byte RPO; active-active |
-| Naming / churn | Renamed repeatedly: Enterprise Search → Generative AI App Builder → Vertex AI Search & Conversation → AI Applications → Agent Builder → Gemini Enterprise Agent Platform | Stable platform; 18 years; 100,000+ deployments |
+| Naming / churn | Renamed repeatedly: Enterprise Search → Generative AI App Builder → Vertex AI Search & Conversation → AI Applications → Agent Builder → Gemini Enterprise Agent Platform | Stable platform; since 2007; 100,000+ deployments |
 | Governance / EU AI Act | Infrastructure governance: IAM, VPC-SC, CMEK, DLP, audit logs, data residency — no inline AI-policy enforcement, classification, or sealed audit artifact | Aspect-woven runtime enforcement + full pre-production governance |
 | Lock-in | Google Cloud IAM identity, GCP-project data residency, models served through GCP | Deploy on Akka cloud, any hyperscaler VPC, own Kubernetes, on-prem, or sovereign cloud; portable specs |
 | Cost model | Pay-as-you-go: $0.0864/vCPU-hour + $0.0090/GB-hour runtime, $0.25 per 1,000 stored memories, per-token model calls, per-query search | Shared compute; up to 90% lower infrastructure for the same workload; fixed annual fee |
@@ -55,7 +55,7 @@ Akka delivers all of it as one runtime with one SLA. The customer does not integ
 
 ## Rebrand and Naming Churn
 
-The product the customer would standardize on has been renamed repeatedly. The lineage runs Enterprise Search → Generative AI App Builder → Vertex AI Search & Conversation → AI Applications → Agent Builder → and now, at Cloud Next 2026, the Gemini Enterprise Agent Platform. The rebrand is additive — existing Vertex AI workloads run unchanged under the new namespace, SDKs, billing, and APIs were migrated, and no breaking changes were introduced. But the churn is real and recent: the `vertexai.generative_models` Python SDK was deprecated June 24, 2025, with removal scheduled for June 24, 2026 — a live migration deadline. Akka has been one stable platform across 18 years and 100,000+ production deployments; the name on the contract has not changed under the customer.
+The product the customer would standardize on has been renamed repeatedly. The lineage runs Enterprise Search → Generative AI App Builder → Vertex AI Search & Conversation → AI Applications → Agent Builder → and now, at Cloud Next 2026, the Gemini Enterprise Agent Platform. The rebrand is additive — existing Vertex AI workloads run unchanged under the new namespace, SDKs, billing, and APIs were migrated, and no breaking changes were introduced. But the churn is real and recent: the `vertexai.generative_models` Python SDK was deprecated June 24, 2025, with removal scheduled for June 24, 2026 — a live migration deadline. Akka has been one stable platform since 2007 and 100,000+ production deployments; the name on the contract has not changed under the customer.
 
 ## Availability and Disaster Recovery
 
@@ -89,7 +89,7 @@ The Gemini Enterprise Agent Platform provides strong infrastructure governance: 
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72).
 
-**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against 189 regulations and 962 controls (574 carrying a financial penalty) before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance the customer would otherwise assemble around Google Cloud's infrastructure controls, Akka enforces inline.
+**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against 190 regulations and 1,040 controls (671 carrying a financial penalty) before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance the customer would otherwise assemble around Google Cloud's infrastructure controls, Akka enforces inline.
 
 ## Two Lifecycles, One Certified System
 
@@ -110,7 +110,7 @@ Google Cloud is durable; that is not the question. The question is the **product
 
 | Buyer concern | Gemini Enterprise Agent Platform | Akka |
 |---|---|---|
-| Product maturity | Rebranded at Cloud Next 2026 (April); GA core, with agent components actively evolving; the prior SDK is being removed June 2026 | Stable platform; 18 years; 100,000+ deployments (52 banks) |
+| Product maturity | Rebranded at Cloud Next 2026 (April); GA core, with agent components actively evolving; the prior SDK is being removed June 2026 | Stable platform; since 2007; 100,000+ deployments (52 banks) |
 | Naming / churn | Renamed five times (Enterprise Search → Agent Builder → Gemini Enterprise Agent Platform) | One platform, one name under the customer |
 | Scope of accountability | The buyer integrates and operates ADK, Agent Engine, memory, streaming, and governance as separate Google Cloud services | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Availability commitment | 99.9% inference; Agent Runtime excluded from the SLA | 99.9999% across the platform, with indemnities |
@@ -140,10 +140,10 @@ The decision is scope, accountability, and portability: the Gemini Enterprise Ag
 The platform gives you good building blocks — ADK, Agent Studio, Agent Engine, Model Garden. A production agentic system also needs durable memory, streaming, an API tier, and inline runtime governance unified under one SLA. On Google Cloud you integrate those from separate services and own the seams; the Agent Runtime itself is excluded from the SLA. Akka delivers them as one platform at 99.9999%, and runs in your Google Cloud VPC if you want to stay there.
 
 **Vertex AI was just renamed, not removed — doesn't that mean it is stable?**
-The rebrand is additive and existing workloads run unchanged. But the agent layer has been renamed five times in a few years, and the prior generative-models SDK is being removed in June 2026. That is the kind of churn enterprise buyers weigh when they standardize. Akka has run as one platform under the same name for 18 years and 100,000+ deployments.
+The rebrand is additive and existing workloads run unchanged. But the agent layer has been renamed five times in a few years, and the prior generative-models SDK is being removed in June 2026. That is the kind of churn enterprise buyers weigh when they standardize. Akka has run as one platform under the same name since 2007 and 100,000+ deployments.
 
 **Can we govern for the EU AI Act with the platform's security controls?**
-You get IAM, VPC-SC, CMEK, DLP, audit logs, and data residency — infrastructure governance. The EU AI Act also expects AI-policy enforcement inline to the runtime: immutable records witnessed as they happen, human override of running agents, pre-deployment classification, and a sealed audit artifact. Akka embeds all of this and classifies a system against 189 regulations and 962 controls before it ships.
+You get IAM, VPC-SC, CMEK, DLP, audit logs, and data residency — infrastructure governance. The EU AI Act also expects AI-policy enforcement inline to the runtime: immutable records witnessed as they happen, human override of running agents, pre-deployment classification, and a sealed audit artifact. Akka embeds all of this and classifies a system against 190 regulations and 1,040 controls before it ships.
 
 **Isn't pay-as-you-go cheaper than a platform fee?**
 Pay-as-you-go means several meters that scale with load — runtime vCPU/GB-hours, stored memories, per-token model calls, per-query search — plus per-seat subscriptions on the app layer. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on a fixed annual fee finance can forecast.
@@ -161,6 +161,6 @@ Pay-as-you-go means several meters that scale with load — runtime vCPU/GB-hour
 - **Governance / lock-in:** docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/general/vpc-service-controls; /build/runtime — IAM, VPC-SC, CMEK, DLP, Access Transparency, audit logging, data residency (DRZ).
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies.
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python.
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital largest shareholder.
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with a financial penalty; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital largest shareholder.
 
 *Comparison reflects publicly available information as of June 2026. Product names and figures are Google's own published terms; Akka figures per akka.io and trust.akka.io.*

@@ -101,7 +101,7 @@
 </div>
 
 <div class="oneliner">
-  <strong>Azure AI Foundry is a collection of Azure services to integrate, not a platform &mdash; and its Agent Service has no availability or state-durability SLA.</strong> Microsoft's own documentation states the Agent Service has no SLA, no automatic failover, and that the recovery point for agent state "can be total loss." Akka delivers agents, memory, streaming, APIs, and governance as one runtime at a contractual 99.9999% SLA, sub-1-minute RTO, and zero-byte RPO.
+  <strong>Azure AI Foundry is a collection of Azure services to integrate, not a platform &mdash; and its Agent Service has no availability or state-durability SLA.</strong> Microsoft's own documentation states the Agent Service has no SLA, no automatic failover, and that the recovery point for agent state "can be total loss." The Akka Agentic AI Platform delivers agents, memory, streaming, APIs, and governance as one runtime that guarantees resilience and scalability, at a contractual 99.9999% SLA, sub-1-minute RTO, and zero-byte RPO.
 </div>
 
 <div class="stats-row">
@@ -113,7 +113,7 @@
 
 <table class="summary-table">
   <tr><th>Dimension</th><th>Azure AI Foundry (Microsoft Foundry)</th><th>Akka</th></tr>
-  <tr><td>What it is</td><td class="comp-col">An agent service orchestrating a set of separately provisioned Azure services</td><td class="akka-col">A full-stack agentic systems platform on one runtime</td></tr>
+  <tr><td>What it is</td><td class="comp-col">An agent service orchestrating a set of separately provisioned Azure services</td><td class="akka-col">The Akka Agentic AI Platform &mdash; a platform that guarantees resilience and scalability, on one runtime</td></tr>
   <tr><td>Scope</td><td class="comp-col">Agent runtime + bring-your-own Cosmos DB, AI Search, Storage, Key Vault, OpenAI, API Management, Monitor &mdash; integrated and operated by you</td><td class="akka-col">Agents, memory, streaming, APIs, orchestration, observability, and governance on one runtime</td></tr>
   <tr><td>Availability SLA</td><td class="comp-col">No SLA on Agent Service availability or state durability</td><td class="akka-col">99.9999% &mdash; entire platform, backed by indemnities</td></tr>
   <tr><td>HA / DR</td><td class="comp-col">No automatic failover; no built-in DR; no active-active multi-region replication</td><td class="akka-col">Active-active HA/DR; sub-1-min RTO; zero-byte RPO</td></tr>
@@ -208,7 +208,7 @@
       </table>
     </div>
   </div>
-  <p style="margin-top:4px;">Akka's governance is <strong>aspect-woven into the runtime</strong>: inline guardrails, policies, LLMs-as-a-judge, and sanitizers execute within the agents; evidence is hash-chained and immutable; humans can pause, override, or nudge a running process; PII is scrubbed and explained atomically. Before a system ships, Akka classifies it against <strong>189 regulations and 962 controls (574 carrying financial penalties)</strong>, routes change events to the right reviewers, and emits a sealed Governance Posture Package. Akka Verify proves conformance from the running system.</p>
+  <p style="margin-top:4px;">Akka's governance is <strong>aspect-woven into the runtime</strong>: inline guardrails, policies, LLMs-as-a-judge, and sanitizers execute within the agents; evidence is hash-chained and immutable; humans can pause, override, or nudge a running process; PII is scrubbed and explained atomically. Before a system ships, Akka classifies it against <strong>190 regulations and 1,040 controls (671 carrying financial penalties)</strong>, routes change events to the right reviewers, and emits a sealed Governance Posture Package. Akka Verify proves conformance from the running system.</p>
 </div>
 
 <div class="section">
@@ -263,7 +263,7 @@
   <p>Microsoft is a durable company; the question is the maturity of the <strong>product</strong>. Foundry Agent Service reached general availability at Build in May 2025, and the product is mid-rebrand from "Azure AI Foundry" to "Microsoft Foundry," with RBAC roles renamed from "Azure AI User/Owner/Project Manager" to "Foundry User/Owner/Project Manager" as the change rolls out. (<a href="https://learn.microsoft.com/en-us/azure/foundry/how-to/high-availability-resiliency">HA/DR for Foundry</a>) It is a young, evolving agent layer assembled over a set of Azure services &mdash; and that layer ships today with no availability or state-durability SLA.</p>
   <table class="cmp-table">
     <tr><th style="width:18%;">Buyer concern</th><th>Azure AI Foundry</th><th>Akka</th></tr>
-    <tr><td>Product maturity</td><td class="bad">GA May 2025; active rebrand (Azure AI Foundry &rarr; Microsoft Foundry) and RBAC rename in progress</td><td class="good">18 years; 100,000+ production deployments; 52 banks; 2B+ people reached daily</td></tr>
+    <tr><td>Product maturity</td><td class="bad">GA May 2025; active rebrand (Azure AI Foundry &rarr; Microsoft Foundry) and RBAC rename in progress</td><td class="good">since 2007; 100,000+ production deployments; 52 banks; 2B+ people reached daily</td></tr>
     <tr><td>Scope of accountability</td><td class="bad">Customer integrates and operates Cosmos DB, AI Search, Storage, gateway, OpenAI; Agent Service has no SLA</td><td class="good">One platform, one SLA, 24/7 SRE &mdash; Akka owns the running system</td></tr>
     <tr><td>Risk transfer</td><td class="bad">Standard Azure terms; no Agent Service availability/durability SLA</td><td class="good">Availability and data-integrity guarantees backed by contractual indemnities</td></tr>
     <tr><td>HA / DR</td><td class="bad">No automatic failover; "total loss" recovery point</td><td class="good">Active-active; sub-1-min RTO; zero-byte RPO</td></tr>
@@ -322,7 +322,7 @@
     <strong>Azure OpenAI / PTU pricing (third-party):</strong> cloudzero.com/blog/azure-openai-pricing; opslyft.com/blog/azure-openai-pricing &mdash; PTU minimum reservations and multi-meter cost<br>
     <strong>Azure outages:</strong> azure.status.microsoft/en-us/status/history &mdash; Oct 29 2025 Front Door global fault; May 29 2026 Azure OpenAI multi-region outage (Europe / Australia East)<br>
     <strong>Akka performance:</strong> akka.io/blog/go-slow-to-go-fast &mdash; Manulife up to 300% more concurrency, 30&ndash;50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python<br>
-    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with penalties; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital<br>
+    <strong>Akka platform:</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with penalties; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital<br>
     <strong>Akka trust center:</strong> trust.akka.io &mdash; 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies<br>
     <strong>Manulife:</strong> akka.io/blog/manulife-selects-akka-to-operationalize-agentic-ai (March 10, 2026)
   </p>

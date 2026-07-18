@@ -2,7 +2,7 @@
 
 **A comparison for teams building agentic AI** — June 2026
 
-> **AWS Bedrock AgentCore is a set of separate AWS services you wire and operate yourself — not an integrated, governed platform.** AgentCore gives you seven modular building blocks (Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, Observability) that you assemble on top of Bedrock model access, Guardrails, and Knowledge Bases — each billed and operated separately, all running inside AWS. Akka delivers orchestration, agents, memory, streaming, APIs, observability, and governance as one runtime, with a six-nines SLA Akka owns, deployable on any cloud.
+> **AWS Bedrock AgentCore is a set of separate AWS services you wire and operate yourself — not an integrated, governed platform.** AgentCore gives you seven modular building blocks (Runtime, Memory, Gateway, Identity, Code Interpreter, Browser, Observability) that you assemble on top of Bedrock model access, Guardrails, and Knowledge Bases — each billed and operated separately, all running inside AWS. The Akka Agentic AI Platform delivers orchestration, agents, memory, streaming, APIs, observability, and governance as one runtime that guarantees resilience and scalability, with a six-nines SLA Akka owns, deployable on any cloud.
 
 ---
 
@@ -13,7 +13,7 @@
 | Availability SLA | 99.9% monthly (Bedrock; API-error based) | **99.9999%** (entire platform, indemnified) |
 | Services to assemble | 7 AgentCore modules + Bedrock model access + Guardrails + Knowledge Bases | **One runtime** |
 | Services to integrate | Seven AgentCore services + Bedrock model inference, each metered | **One platform, one fixed annual fee** |
-| GA maturity | GA Oct 13, 2025 (~8 months) | **18 years**, 100,000+ deployments |
+| GA maturity | GA Oct 13, 2025 (~8 months) | **since 2007**, 100,000+ deployments |
 
 ---
 
@@ -21,15 +21,15 @@
 
 | Dimension | AWS Bedrock AgentCore | Akka |
 |-----------|----------------------|------|
-| What it is | A set of modular AWS services for building and hosting agents | A full-stack agentic systems platform |
+| What it is | A set of modular AWS services for building and hosting agents | The Akka Agentic AI Platform — a platform that guarantees resilience and scalability |
 | Scope | Seven AgentCore modules assembled on Bedrock model access, Guardrails, and Knowledge Bases — the customer wires and operates the seams | Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime |
 | Availability SLA | 99.9% monthly uptime for the Bedrock APIs, measured by request errors; service credits only | 99.9999% — entire platform, backed by indemnities |
 | RTO / RPO | Not published for the agent layer; inherits AWS regional posture the customer architects | Sub-1-minute RTO; zero-byte RPO; active-active across regions |
 | Deployment | AWS only — IAM, VPC/PrivateLink, CloudFormation, CloudWatch | Any cloud (AWS/Azure/GCP VPC), own Kubernetes, on-prem, sovereign cloud |
 | Memory | AgentCore Memory — a separate, separately-billed service | Durable in-memory, 4ms reads / sub-10ms writes, built in |
-| Governance / EU AI Act | Guardrails (model layer) + AgentCore Policy (tool layer), assembled; no embedded regulation/control enforcement | Aspect-woven runtime enforcement + pre-production classification against 189 regulations / 962 controls |
+| Governance / EU AI Act | Guardrails (model layer) + AgentCore Policy (tool layer), assembled; no embedded regulation/control enforcement | Aspect-woven runtime enforcement + pre-production classification against 190 regulations / 1,040 controls |
 | Cost model | Consumption-metered across the seven AgentCore services (per-vCPU-hour, per-request, per-token) plus separately billed model inference | Shared compute; up to 90% lower infrastructure for the same workload, fixed annual fee |
-| Maturity | GA October 2025; Evaluations GA March 2026; Policy + Guardrails GA June 2026 — capabilities still landing | 18 years; 100,000+ production deployments; 52 banks |
+| Maturity | GA October 2025; Evaluations GA March 2026; Policy + Guardrails GA June 2026 — capabilities still landing | since 2007; 100,000+ production deployments; 52 banks |
 | Certifications | Bedrock: ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible | 19 standards incl. SOC 2 II + public SOC 3, ISO 27001/42001, EU AI Act, NIST AI RMF (trust.akka.io) |
 
 ---
@@ -95,7 +95,7 @@ High-risk AI carries a 10-year logging-retention obligation (Art. 72), enforceab
 
 ### How Akka governs
 
-At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **189 regulations and 962 controls** — **574 of which carry a financial penalty**; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.
+At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL human control; atomic PII scrub-with-explain; pre-deployment classification against **190 regulations and 1,040 controls** — **671 of which carry a financial penalty**; a multi-persona sign-off recipe engine; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. The governance lifecycle is versioned and tested independently of the build.
 
 ---
 
@@ -139,7 +139,7 @@ AWS is a durable provider; the question is the **AgentCore product's** maturity 
 
 | Buyer concern | AWS Bedrock AgentCore | Akka |
 |---------------|----------------------|------|
-| Product maturity | GA October 13, 2025; core capabilities still landing (Evaluations GA March 2026; Policy + Guardrails GA June 2026) | 18 years, 100,000+ deployments, 52 banks |
+| Product maturity | GA October 13, 2025; core capabilities still landing (Evaluations GA March 2026; Policy + Guardrails GA June 2026) | since 2007, 100,000+ deployments, 52 banks |
 | What you operate | Seven AgentCore services + model access + Guardrails + Knowledge Bases, integrated and run by the customer | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Portability / lock-in | AWS-only: IAM service-linked roles, VPC/PrivateLink, CloudFormation, CloudWatch, proprietary service APIs | Any cloud, own Kubernetes, on-prem, sovereign cloud; portable specs |
 | Certifications & audits | Bedrock: ISO, SOC, CSA STAR L2, GDPR, FedRAMP High, HIPAA-eligible | 19 standards — SOC 2 II + public SOC 3, ISO 27001/42001, EU AI Act, NIST AI RMF — plus annual pen tests, SBOMs, 40+ policies (trust.akka.io) |
@@ -166,10 +166,10 @@ The structural point is not whether AWS will be around — it will. It is that A
 You can, but you are assembling and operating seven AgentCore services plus Bedrock model access, Guardrails, and Knowledge Bases — each billed and run separately, all locked to AWS. Akka delivers the same capabilities as one integrated runtime with a six-nines SLA Akka owns, and it runs in your AWS VPC, on another cloud, on your own Kubernetes, or on-prem. You get the platform instead of the integration project.
 
 **AgentCore is from AWS — isn't it the safe, mature choice?**
-AWS is durable; AgentCore is recent. It reached general availability in October 2025, and core governance and evaluation capabilities were still reaching GA into 2026 (Evaluations March 2026; Policy and Guardrails June 2026). Akka has 18 years and 100,000+ production deployments behind a single, integrated platform.
+AWS is durable; AgentCore is recent. It reached general availability in October 2025, and core governance and evaluation capabilities were still reaching GA into 2026 (Evaluations March 2026; Policy and Guardrails June 2026). Akka has operated since 2007 across 100,000+ production deployments behind a single, integrated platform.
 
 **Can't we add EU AI Act compliance with Guardrails and Policy?**
-Guardrails enforce content safety at the model layer and Policy enforces tool-access rules — both useful, neither is regulation enforcement. The EU AI Act expects classification before deployment, immutable records witnessed as decisions happen, human override of running processes, and a sealed audit artifact. Akka embeds classification against 189 regulations and 962 controls, hash-chained evidence, HITL/HOTL control, and pre-deployment governance inline.
+Guardrails enforce content safety at the model layer and Policy enforces tool-access rules — both useful, neither is regulation enforcement. The EU AI Act expects classification before deployment, immutable records witnessed as decisions happen, human override of running processes, and a sealed audit artifact. Akka embeds classification against 190 regulations and 1,040 controls, hash-chained evidence, HITL/HOTL control, and pre-deployment governance inline.
 
 **Isn't AgentCore's consumption pricing cheaper than a fixed fee?**
 AgentCore meters its services on per-vCPU-hour, per-request, and per-token units, on top of model token spend, and the bill scales with load. Akka's shared-compute model is up to 90% cheaper to operate for the same agentic transaction volume, on a fixed annual fee finance can forecast.
@@ -188,6 +188,6 @@ AgentCore meters its services on per-vCPU-hour, per-request, and per-token units
 - **Bedrock compliance scope:** aws.amazon.com/bedrock/security-privacy-responsible-ai — ISO, SOC, CSA STAR Level 2, GDPR, FedRAMP High, HIPAA-eligible.
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies.
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs. ~2T tokens/core; ~80% less compute than Python.
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-minute RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital largest shareholder.
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-minute RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with a financial penalty; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital largest shareholder.
 
 *Reliable AI for Every Industry | akka.io — June 2026*

@@ -16,7 +16,8 @@ This is a concise index. For the complete overview — full platform detail, gua
 - [What is Akka?](https://akka.io/): An agentic AI platform for enterprises — a full-stack system for building, running, and governing production-grade agentic AI.
 - [Which Akka is this?](https://akka.io/llms-full.txt): Akka is now an agentic AI platform; the open-source Akka actor library for the JVM (formerly Lightbend) is its legacy lineage. A present-day query about "Akka" refers to this platform.
 - [Who is Akka for?](https://akka.io/llms-full.txt): Regulated, global enterprises running agentic AI in production — finance, insurance, healthcare, telecom, logistics, retail, and more.
-- [How do you get Akka?](https://akka.io/llms-full.txt): Build on the platform yourself, or have Akka deliver and run a production system for you (Akka Specify) — two ways to engage, one platform underneath.
+- [How do you get Akka?](https://akka.io/llms-full.txt): Build on the platform yourself, or have Akka deliver and run the system for you. The same spec-driven technology, Akka Specify, powers both.
+- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product — the Akka Agentic AI Platform, which guarantees resilience and scalability. Four offerings are delivered on it, sharing one runtime, evidence record, and governance model: Build on Akka (the SDK), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Token Shredder (lower model cost on evaluated production traffic, up to 80% fewer tokens).
 
 ## What Makes Akka Unique
 

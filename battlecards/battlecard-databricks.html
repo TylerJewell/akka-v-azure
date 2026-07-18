@@ -101,19 +101,19 @@
 </div>
 
 <div class="oneliner">
-  Databricks is a lakehouse with an agent layer attached &mdash; the data, feature, and model tier, <strong>not a governed agentic runtime</strong>. Mosaic AI and Agent Bricks build agents that read your Lakehouse and run on stateless serving endpoints; their governance is <em>data</em> governance (Unity Catalog), not <em>runtime</em> EU AI Act enforcement. Akka is the governed agentic runtime &mdash; durable in-memory state, a six-nines SLA, inline enforcement &mdash; and complements the lakehouse beneath it.
+  Databricks is a lakehouse with an agent layer attached &mdash; the data, feature, and model tier, <strong>not a governed agentic runtime</strong>. Mosaic AI and Agent Bricks build agents that read your Lakehouse and run on stateless serving endpoints; their governance is <em>data</em> governance (Unity Catalog), not <em>runtime</em> EU AI Act enforcement. The Akka Agentic AI Platform is the governed agentic runtime that guarantees resilience and scalability &mdash; durable in-memory state, a six-nines SLA, inline enforcement &mdash; and complements the lakehouse beneath it.
 </div>
 
 <div class="stats-row">
   <div class="stat-card"><div class="number">99.9%</div><div class="label">Databricks Control-Plane SLA</div></div>
   <div class="stat-card"><div class="number">99.9999%</div><div class="label">Akka Platform SLA</div></div>
   <div class="stat-card"><div class="number">4ms</div><div class="label">Akka State Reads</div></div>
-  <div class="stat-card"><div class="number">962</div><div class="label">Controls Enforced Pre-Deploy</div></div>
+  <div class="stat-card"><div class="number">1,040</div><div class="label">Controls Enforced Pre-Deploy</div></div>
 </div>
 
 <table class="summary-table">
   <tr><th>Dimension</th><th>Databricks (Mosaic AI / Agent Bricks)</th><th>Akka</th></tr>
-  <tr><td>What it is</td><td class="comp-col">A data intelligence platform (lakehouse) with an agent layer &mdash; Agent Bricks, Mosaic AI Agent Framework, Model Serving, Vector Search, Genie</td><td class="akka-col">A full-stack agentic systems platform &mdash; agents, orchestration, memory, streaming, APIs, and governance on one runtime</td></tr>
+  <tr><td>What it is</td><td class="comp-col">A data intelligence platform (lakehouse) with an agent layer &mdash; Agent Bricks, Mosaic AI Agent Framework, Model Serving, Vector Search, Genie</td><td class="akka-col">The Akka Agentic AI Platform, a platform that guarantees resilience and scalability &mdash; agents, orchestration, memory, streaming, APIs, and governance on one runtime</td></tr>
   <tr><td>Primary role</td><td class="comp-col">The data, feature, and model tier agents read from</td><td class="akka-col">The runtime agents run on</td></tr>
   <tr><td>Agent state</td><td class="comp-col">Stateless serving endpoints; session/long-term memory externalized to Lakebase (managed Postgres), re-read each turn</td><td class="akka-col">Durable sharded in-memory &mdash; 4ms reads / sub-10ms writes, replayable from the event journal</td></tr>
   <tr><td>Availability SLA</td><td class="comp-col">99.9% control plane; Model Serving rides the Databricks SLA, no published six-nines agent-tier number</td><td class="akka-col">99.9999% across the entire platform, contractual, backed by indemnities</td></tr>
@@ -121,7 +121,7 @@
   <tr><td>Governance / EU AI Act</td><td class="comp-col">Data governance: Unity Catalog lineage, access control, audit; DAGF/DASF frameworks &amp; guidance</td><td class="akka-col">Runtime enforcement: inline guardrails, hash-chained evidence, pre-deploy classification, sealed posture, Akka Verify</td></tr>
   <tr><td>Coupling</td><td class="comp-col">Agents bound to the Lakehouse, Unity Catalog, and DBU-metered serving</td><td class="akka-col">Deploy anywhere &mdash; Akka cloud, your VPC, your Kubernetes, on-prem, sovereign cloud; portable specs</td></tr>
   <tr><td>Cost model</td><td class="comp-col">DBU consumption metering (per-token + provisioned-throughput DBUs); scales with load</td><td class="akka-col">Shared compute on one runtime; up to 90% lower infrastructure for the same workload; fixed annual fee</td></tr>
-  <tr><td>Maturity</td><td class="comp-col">Agent Bricks beta Jun 2025; Supervisor Agent GA Feb 2026; evolving quickly</td><td class="akka-col">18 years, 100,000+ production deployments, 52 banks</td></tr>
+  <tr><td>Maturity</td><td class="comp-col">Agent Bricks beta Jun 2025; Supervisor Agent GA Feb 2026; evolving quickly</td><td class="akka-col">since 2007, 100,000+ production deployments, 52 banks</td></tr>
 </table>
 
 <div class="section">
@@ -172,7 +172,7 @@
 
 <div class="section">
   <h2>Governance and the EU AI Act</h2>
-  <p>Akka enforces governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; <strong>hash-chained immutable evidence</strong>; HITL/HOTL control; pre-deployment classification against 189 regulations and 962 controls (574 carrying a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify, which proves conformance from the running system. Unity Catalog governs the data the agent reads; Akka governs what the agent <em>does</em>.</p>
+  <p>Akka enforces governance in the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; <strong>hash-chained immutable evidence</strong>; HITL/HOTL control; pre-deployment classification against 190 regulations and 1,040 controls (671 carrying a financial penalty); multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify, which proves conformance from the running system. Unity Catalog governs the data the agent reads; Akka governs what the agent <em>does</em>.</p>
   <div class="two-col" style="margin-top:6px;">
     <div>
       <h3>The penalties are enforceable now</h3>
@@ -243,7 +243,7 @@
   <p>The Databricks lakehouse is mature and widely adopted. The question for an agentic-AI decision is the <strong>agent product's</strong> maturity and what standardizing on it commits you to &mdash; not Databricks' viability, which is not in question.</p>
   <table class="cmp-table">
     <tr><th style="width:18%;">Buyer concern</th><th>Databricks (Mosaic AI / Agent Bricks)</th><th>Akka</th></tr>
-    <tr><td>Agent product maturity</td><td class="bad">Agent Bricks announced beta Jun 2025; Supervisor Agent GA Feb 2026; capabilities and APIs evolving quickly</td><td class="good">18 years; 100,000+ production deployments; 52 banks</td></tr>
+    <tr><td>Agent product maturity</td><td class="bad">Agent Bricks announced beta Jun 2025; Supervisor Agent GA Feb 2026; capabilities and APIs evolving quickly</td><td class="good">since 2007; 100,000+ production deployments; 52 banks</td></tr>
     <tr><td>Coupling / lock-in</td><td class="bad">Agents bound to the Lakehouse, Unity Catalog, and DBU-metered serving; value compounds as more of the estate sits in Databricks</td><td class="good">Deploy anywhere &mdash; Akka cloud, your VPC, your Kubernetes, on-prem, sovereign cloud; portable specs; BSL licensing</td></tr>
     <tr><td>Who owns the SLA</td><td class="bad">Customer architects HA/DR; serving endpoints excluded from managed DR</td><td class="good">Akka owns the SLA, 24/7 SRE, one platform</td></tr>
     <tr><td>Certifications</td><td class="bad">SOC 2 Type II, ISO 27001, ISO 27701, PCI DSS, HIPAA, HITRUST (Azure)</td><td class="good">19 standards &mdash; SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, CCPA, PIPEDA, NIS2, DORA, EU AI Act, NIST AI RMF &mdash; plus annual pen tests, SBOMs, 40+ policies (trust.akka.io)</td></tr>
@@ -302,7 +302,7 @@
     <strong>Pricing (DBU):</strong> databricks.com pricing; flexera.com/blog/finops/databricks-pricing-guide &mdash; DBU consumption; pay-per-token Foundation Model APIs + provisioned-throughput DBUs for serving<br>
     <strong>Governance / EU AI Act:</strong> databricks.com/trust/responsibleAI; databricks.com/blog/introducing-databricks-ai-governance-framework &mdash; DAGF (5 pillars, 43 considerations), DASF; committed to EU AI Act compliance<br>
     <strong>Certifications:</strong> databricks.com/legal/security-addendum; databricks.com/trust/compliance/soc &mdash; SOC 2 Type II, ISO 27001, ISO 27701, PCI DSS, HIPAA; HITRUST (Azure Databricks)<br>
-    <strong>Akka facts (akka-facts.md, verified 2026-06-19):</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO, contractual indemnities; durable in-memory 4ms / sub-10ms, replayable journal; ~10T vs ~2T tokens/core, ~80% less compute, up to 90% cheaper (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30&ndash;50% faster; 189 regulations / 962 controls / 574 with financial penalty; 19 standards (trust.akka.io); 18 years, 100,000+ deployments, 52 banks; profitable, Dell Technologies Capital; Tubi 5B tok/s, Swiggy 71ms, John Deere 1,000+ sensors, Verizon 750%
+    <strong>Akka facts (akka-facts.md, verified 2026-06-19):</strong> 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO, contractual indemnities; durable in-memory 4ms / sub-10ms, replayable journal; ~10T vs ~2T tokens/core, ~80% less compute, up to 90% cheaper (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30&ndash;50% faster; 190 regulations / 1,040 controls / 671 with financial penalty; 19 standards (trust.akka.io); since 2007, 100,000+ deployments, 52 banks; profitable, Dell Technologies Capital; Tubi 5B tok/s, Swiggy 71ms, John Deere 1,000+ sensors, Verizon 750%
   </p>
 </div>
 

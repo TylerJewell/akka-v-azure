@@ -2,7 +2,7 @@
 
 **A comparison for teams building agentic AI** — June 2026
 
-> **CrewAI gets you to a multi-agent demo fast; with Akka the production system — durability, availability, and governance — is owned by the platform, not by you.** CrewAI is an ergonomic Python framework for prototyping role-based crews and event-driven flows. It does not provide a durable execution runtime, active-active HA/DR, a numeric availability SLA, or embedded governance — those you build, integrate, and operate yourself. Akka delivers them as one runtime, under contract.
+> **CrewAI gets you to a multi-agent demo fast; with Akka the production system — durability, availability, and governance — is owned by the platform, not by you.** CrewAI is an ergonomic Python framework for prototyping role-based crews and event-driven flows. It does not provide a durable execution runtime, active-active HA/DR, a numeric availability SLA, or embedded governance — those you build, integrate, and operate yourself. The Akka Agentic AI Platform delivers them as one runtime that guarantees resilience and scalability, under contract.
 
 ---
 
@@ -17,7 +17,7 @@
 
 | Dimension | CrewAI | Akka |
 |-----------|--------|------|
-| What it is | A Python multi-agent framework (Crews + Flows), plus the AMP control plane | A full-stack agentic systems platform |
+| What it is | A Python multi-agent framework (Crews + Flows), plus the AMP control plane | The Akka Agentic AI Platform, which guarantees resilience and scalability |
 | Scope | Agent authoring and orchestration; durable runtime, HA/DR, streaming, and governance are sourced, integrated, and operated by the customer | Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime |
 | Durable execution | `@persist()` saves flow state; crash recovery is not built in — failures are detected and replayed manually; the inner agent loop is not persisted | Event-sourced durable state; runtime handles recovery automatically |
 | Availability SLA | None published | 99.9999% — entire platform, backed by indemnities |
@@ -27,7 +27,7 @@
 | Governance / EU AI Act | Guardrails, tracing, and audit logging; no inline EU AI Act enforcement, classification, or sealed audit artifact | Aspect-woven runtime enforcement + full pre-production governance |
 | Cost model | Execution-metered (Enterprise: up to 30,000 executions/mo, then $0.50 each) + separate infra for the rest | Shared compute; up to 90% lower infrastructure for the same workload, fixed annual fee |
 | Certifications | SOC 2, HIPAA, GDPR | 19 standards (SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF) |
-| Viability | Venture-funded: $18M total, Series A led by Insight Partners (Oct 2024) | Profitable; Dell Technologies Capital largest shareholder; 18 years, 100,000+ deployments |
+| Viability | Venture-funded: $18M total, Series A led by Insight Partners (Oct 2024) | Profitable; Dell Technologies Capital largest shareholder; since 2007, 100,000+ deployments |
 
 ---
 
@@ -89,7 +89,7 @@ CrewAI provides task guardrails, tracing, audit logging, and RBAC, and holds SOC
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72).
 
-**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; classification against 189 regulations and 962 controls — 574 carrying a financial penalty — before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance CrewAI leaves to a bolt-on, Akka enforces inline.
+**How Akka governs.** At the runtime: inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; atomic PII scrub-with-explain; classification against 190 regulations and 1,040 controls — 671 carrying a financial penalty — before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance CrewAI leaves to a bolt-on, Akka enforces inline.
 
 ---
 
@@ -133,7 +133,7 @@ CrewAI has no streaming engine; real-time pipelines are provisioned separately. 
 | Scope of accountability | Agent framework + control plane; you integrate and operate the durable runtime, HA/DR, and governance | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Availability commitment | No published numeric SLA | 99.9999%, backed by contractual indemnities |
 | Risk transfer | Standard cloud terms | Availability and data-integrity guarantees backed by contractual indemnities |
-| Track record & funding model | Venture-funded: $18M total, Series A led by Insight Partners (Oct 2024); used across many Fortune 500 firms | Profitable and self-funding; 18 years and 100,000+ deployments (52 banks); Dell Technologies Capital is largest shareholder, a customer, and an AI partner |
+| Track record & funding model | Venture-funded: $18M total, Series A led by Insight Partners (Oct 2024); used across many Fortune 500 firms | Profitable and self-funding; since 2007 and 100,000+ deployments (52 banks); Dell Technologies Capital is largest shareholder, a customer, and an AI partner |
 | Budget predictability | Per-execution metering that scales with load | Fixed annual fee finance can forecast |
 
 CrewAI has real enterprise traction — it reports use across a large share of the Fortune 500 and hundreds of millions of agent executions a month. The decision is not whether CrewAI works for prototyping; it is who owns production. With CrewAI the customer owns the durable runtime, the availability target, the DR plan, and the governance stack. With Akka the platform owns them, under contract.
@@ -176,6 +176,6 @@ The core framework is open source, but production CrewAI means CrewAI Enterprise
 - **CrewAI funding & traction:** siliconangle.com/2024/10/22 (SiliconANGLE); insightpartners.com — $18M total, Series A led by Insight Partners, Oct 2024; used across a large share of the Fortune 500; ~450M agents/month (Jan 2026)
 - **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 carrying a financial penalty; 100,000+ deployments / 18 years; profitable; Dell Technologies Capital
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 carrying a financial penalty; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital
 
 *June 2026*

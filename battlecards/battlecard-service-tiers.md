@@ -7,7 +7,7 @@
 
 ## The Bottom Line
 
-Every Akka deployment runs on one of five service tiers, from a low-overhead evaluation sandbox to a fully sovereign, country-isolated production environment. Every tier can be built and operated by the customer's own team, or delivered and operated by **Akka Specify** as a guaranteed outcome — in weeks, for one fixed price covering the platform, the infrastructure, every inference and training token, delivery of the system, and 24/7 operations.
+Every deployment of the Akka Agentic AI Platform runs on one of five service tiers, from a low-overhead evaluation sandbox to a fully sovereign, country-isolated production environment. Every tier can be built and operated by the customer's own team, or delivered and operated by **Akka Specify** as a guaranteed outcome — in weeks, for one fixed price covering the platform, the infrastructure, every inference and training token, delivery of the system, and 24/7 operations.
 
 ---
 

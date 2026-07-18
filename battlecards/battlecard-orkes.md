@@ -8,7 +8,7 @@ Canonical URL: https://akka.io/compare/akka-vs-orkes
 
 ## Bottom line (the wedge)
 
-**Orkes Conductor orchestrates your agents; Akka runs your whole agentic system — and guarantees it.** Orkes Conductor is a durable workflow and agent-orchestration engine descended from Netflix Conductor — proven, event-driven, and one layer. It coordinates steps and tools well, but you bring the agents, the durable memory, the real-time streaming, the runtime governance, and the application platform around it. Akka delivers those as one platform, at higher guarantees.
+**Orkes Conductor orchestrates your agents; Akka runs your whole agentic system — and guarantees it.** Orkes Conductor is a durable workflow and agent-orchestration engine descended from Netflix Conductor — proven, event-driven, and one layer. It coordinates steps and tools well, but you bring the agents, the durable memory, the real-time streaming, the runtime governance, and the application platform around it. The Akka Agentic AI Platform delivers those as one system that guarantees resilience and scalability.
 
 ---
 
@@ -16,7 +16,7 @@ Canonical URL: https://akka.io/compare/akka-vs-orkes
 
 | Dimension | Orkes (Conductor) | Akka |
 |---|---|---|
-| What it is | A durable workflow / agent-orchestration engine (managed Netflix Conductor) | A full-stack agentic systems platform |
+| What it is | A durable workflow / agent-orchestration engine (managed Netflix Conductor) | The Akka Agentic AI Platform — guarantees resilience and scalability |
 | Scope | Orchestration core; agents, durable memory, streaming, and AI governance are sourced, integrated, and operated by the customer | Orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime |
 | Availability SLA | Up to 99.99% (multi-region clusters); 99.9% on managed clusters | 99.9999% — entire platform, backed by indemnities |
 | RTO / RPO | Not published as a numeric guarantee | Sub-1-minute RTO; zero-byte RPO; active-active HA/DR |
@@ -77,7 +77,7 @@ The EU AI Act penalties are enforceable now:
 
 High-risk AI carries a 10-year logging-retention obligation (Art. 72).
 
-**How Akka governs:** at the runtime — inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against **189 regulations and 962 controls** (574 carrying a financial penalty) before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance Orkes would have to bolt on, Akka enforces inline.
+**How Akka governs:** at the runtime — inline guardrails, policies, LLMs-as-a-judge, and sanitizers; hash-chained immutable evidence; HITL/HOTL control; classification against **190 regulations and 1,040 controls** (671 carrying a financial penalty) before a system ships; multi-persona sign-offs; a sealed Governance Posture Package; and Akka Verify proving conformance from the running system. Governance Orkes would have to bolt on, Akka enforces inline.
 
 ## Two Lifecycles, One Certified System
 
@@ -98,7 +98,7 @@ Orkes carries a genuine maturity advantage in orchestration: Conductor was open-
 
 | Buyer concern | Orkes (Conductor) | Akka |
 |---|---|---|
-| Orchestration maturity | Strong — Netflix lineage, proven OSS, large deployments | Durable execution substrate, 18 years, 100,000+ deployments |
+| Orchestration maturity | Strong — Netflix lineage, proven OSS, large deployments | Durable execution substrate, since 2007, 100,000+ deployments |
 | Certifications & audits | SOC 2 Type II; HIPAA via isolated deployment | 19 standards — SOC 2 II + public SOC 3, ISO 27001/42001, HIPAA, PCI DSS, GDPR, NIS2, DORA, EU AI Act, NIST AI RMF — plus annual pen tests, SBOMs, 40+ policies (trust.akka.io) |
 | Scope of accountability | The orchestration platform; you integrate and operate the rest | One platform, one SLA, 24/7 SRE — Akka owns the running system |
 | Risk transfer | Service credits on confirmed SLA breach | Availability and data-integrity guarantees backed by contractual indemnities |
@@ -145,4 +145,4 @@ Conductor's orchestration maturity is real and an advantage in that layer. But s
 - **Orkes security:** SOC 2 Type II; HIPAA via isolated deployment; RBAC, audit logs, secrets — orkes.io/blog/orkes-is-now-soc-2-type-2-compliant; orkes.io/security
 - **Akka trust center:** 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies — trust.akka.io
 - **Akka performance:** Manulife up to 300% more concurrency, 30–50% faster; ~10T vs ~2T tokens/core; ~80% less compute than Python — akka.io/blog/go-slow-to-go-fast
-- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 189 regulations / 962 controls / 574 with financial penalty; profitable; Dell Technologies Capital — akka.io/platform-overview; akka.io/llms.txt
+- **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with financial penalty; profitable; Dell Technologies Capital — akka.io/platform-overview; akka.io/llms.txt
