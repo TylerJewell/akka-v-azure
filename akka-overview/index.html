@@ -157,10 +157,14 @@
     .layer, .conn{grid-template-columns:1fr; gap:7px;}
     .role{text-align:left; margin-bottom:2px;}
     .role b{display:inline;}
+    .role b::before{content:"\00a0";}  /* "Deliver" + "& Govern" render inline; restore the space */
     .conn{display:none;}
     .cards.two, .cards.two.govwide{grid-template-columns:1fr;}
-    /* chip lists are joined by · with no whitespace — allow breaks between chips so the card can't force the cake wider than the viewport */
-    #s-routes .osub, #s-routes .osub-wrap{white-space:normal; overflow-wrap:anywhere;}
+    /* chip lists are joined by · with no whitespace. Add a zero-width break
+       opportunity after each separator so they wrap at chip boundaries (never
+       mid-word) and can't force the cake wider than the viewport. */
+    #s-routes .osub, #s-routes .osub-wrap{white-space:normal; overflow-wrap:break-word;}
+    #s-routes .osub .d::after, #s-routes .osub-wrap .d::after{content:"\200B";}
   }
 
   /* title slide */
