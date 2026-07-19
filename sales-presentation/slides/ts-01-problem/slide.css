@@ -4,7 +4,7 @@
 }
 #ts1-sticky {
   position: sticky; top: 0;
-  height: 100vh;
+  height: 100vh; height: 100dvh;
   display: flex; flex-direction: column; justify-content: center;
   padding: 0 var(--pad-6);
   background: var(--black);
@@ -132,4 +132,20 @@
 
 @media (max-width: 1100px) {
   .ts1-body { grid-template-columns: 1fr; gap: 32px; }
+}
+
+@media (max-width: 820px) {
+  #ts1-wrapper { height: auto; }
+  #ts1-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .ts1-body { grid-template-columns: 1fr; gap: 32px; }
+  .ts1-eyebrow { letter-spacing: 2px; }
+  .ts1-chart-title { letter-spacing: 1px; }
+  .ts1-axis-label { letter-spacing: 1.2px; }
+  .ts1-bar-note { letter-spacing: 0.5px; }
+  .ts1-tick { font-size: 22px; }
+  .ts1-series { font-size: 20px; letter-spacing: 0.4px; }
+  .ts1-bar-row { grid-template-columns: 110px 1fr 44px; gap: 8px; }
 }

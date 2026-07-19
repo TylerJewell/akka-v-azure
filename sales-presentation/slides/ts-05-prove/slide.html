@@ -41,6 +41,36 @@
         <line x1="830" y1="204" x2="830" y2="240" class="ts4-el-dash"/>
         <text x="830" y="258" text-anchor="middle" class="ts4-nls ts4-dimtext">Do not promote if no improvement</text>
       </svg>
+      <!-- Mobile stacked variant of the SVG above. The two carry the same copy —
+           keep them in sync when either is edited. -->
+      <div class="ts4-m">
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">live traffic</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">Incumbent</div>
+          <div class="ts4-m-nls">frontier API</div>
+          <div class="ts4-m-nls">quality 0.87 &middot; 100% tokens</div>
+        </div>
+        <div class="ts4-m-node ts4-m-y">
+          <div class="ts4-m-nl">Candidate</div>
+          <div class="ts4-m-nls">your SLM</div>
+          <div class="ts4-m-nls ts4-m-nls-y">quality 0.89 &middot; 21% tokens</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node ts4-m-y">
+          <div class="ts4-m-nl">GATE</div>
+          <div class="ts4-m-nls ts4-m-nls-w">quality &ge; baseline &nbsp;&#10003;</div>
+          <div class="ts4-m-nls ts4-m-nls-w">token drop &ge; target &nbsp;&#10003;</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">Promote</div>
+          <div class="ts4-m-nls">canary &rarr; fleet</div>
+        </div>
+        <div class="ts4-m-note">Do not promote if no improvement</div>
+      </div>
     </div>
 
     <div class="ts4-benchmark" data-ts4="2">Every promotion ships with an auto-generated before/after benchmark &mdash; computed by your evaluations, on your traffic, stored on the audit record.</div>

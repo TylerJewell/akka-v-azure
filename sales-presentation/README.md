@@ -90,6 +90,30 @@ committing/pushing — never commit a deck mid-restructure:
    ```
 5. **Update `builder/image-registry.json`** `used_in` values if any slide ids
    changed (documentation only — not read by the build — but keep it correct).
+6. **Mobile design pass.** Audit every regenerated deck at ~360–430px (and
+   ~768px) for content that clips, overflows, or loses its diagram flow. Use the
+   isolated screenshot harness (headless Edge over a per-slide harness with
+   reveals forced visible) rather than eyeballing CSS. Redraw diagrams as
+   mobile HTML variants — don't scale a diagram tiny or blindly stack its boxes.
+
+## Shared "integrated platform" cake
+
+The cake graphic on the *integrated platform* slide lives in **four** places:
+the canonical `slides/family-platform/` (used by the built decks specify /
+token-shredder / overview-long), plus hand-authored inline copies in
+`akka-overview/index.html` and `akka-verify/index.html`.
+
+The **HTML body** (markup + panels, between the `<!-- CAKE:BODY:START/END -->`
+markers in the canonical slide) is single-sourced. After editing the cake in
+`family-platform/slide.html`, propagate to the standalone decks:
+
+```bash
+python3 ../_build/sync_cake.py     # inject canonical cake body into the two standalone decks
+python3 ../_build/apply_corpus.py  # refresh the corpus number markers
+```
+
+Each deck keeps its own cake **CSS/JS** (scope id + accent color legitimately
+differ). Run `sync_cake.py --check` to verify the standalone copies are current.
 
 ## Updating the Governance Section
 

@@ -300,6 +300,7 @@ body {
 
 /* Flow grid: two track rows + hub spanning both rows.
    Columns: track-label | plain-language input | signed artifact | AKKA SPECIFY hub | generated/run merge */
+.spec-diagram { display: contents; }
 .spec-flow {
   display: grid;
   grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr;
@@ -692,30 +693,44 @@ body {
   #spec-wrapper { height: auto; }
   #spec-sticky {
     position: static; height: auto;
-    padding-top: 64px; padding-bottom: 64px;
+    padding: 56px 12px;
   }
-  .spec-head { margin-bottom: 32px; }
+  .spec-head { margin-bottom: 28px; }
 
-  /* Reflow the grid diagram into a single stacked column */
+  /* Redraw the diagram top-down at readable size and let the user scroll.
+     Build & Govern stay side by side as parallel input tracks, then the
+     flow converges down into the hub and then the delivered system.
+     Down-arrows carry the flow direction; the Verify loop-back is dropped. */
   .spec-flow {
-    display: flex; flex-direction: column; gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "build govern"
+      "hub   hub"
+      "merge merge";
+    gap: 32px 12px;
+    align-items: start;
   }
-  .spec-track-arrow,
-  .spec-merge-arrows,
-  .spec-loop-svg { display: none; }
+  .spec-track--build  { grid-area: build;  display: flex; flex-direction: column; gap: 10px; }
+  .spec-track--govern { grid-area: govern; display: flex; flex-direction: column; gap: 10px; }
+  .spec-hub   { grid-area: hub;   display: block; align-self: start; position: relative; }
+  .spec-merge { grid-area: merge; display: block; align-self: start; position: relative; }
+  .spec-track-arrow, .spec-merge-arrows { display: none; }
 
-  .spec-hub-inner { padding: 14px; }
-  .spec-merge { display: flex; }
-
-  /* Verify-loop caption flows below instead of floating over the arrow */
-  .spec-loop { padding-top: 0; margin-top: 4px; }
-  .spec-loop-label {
-    position: static; left: auto; top: auto;
-    transform: none;
-    align-items: flex-start; text-align: left;
-    white-space: normal;
+  /* Down-arrow connectors sit in the row gap ABOVE the hub and the output card,
+     showing the flow converging downward. The hub's ::after desktop nub is dropped;
+     ::before is repurposed as the arrow, positioned above the box. */
+  .spec-hub::after { display: none; }
+  .spec-hub::before, .spec-merge::before {
+    content: '\2193'; position: absolute; top: -26px; left: 50%;
+    transform: translateX(-50%);
+    width: auto; height: auto; background: none;
+    color: var(--yellow); font-size: 22px; line-height: 1;
   }
-  .spec-tagline { flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+  /* No loop-back on mobile */
+  .spec-loop { display: none; }
 }
 
 
@@ -934,6 +949,8 @@ body {
 .s5-arch-body svg {
   width: 100%; height: auto; display: block;
 }
+/* Mobile-only readable variant of the architecture SVG (default hidden) */
+.s5-arch-m { display: none; }
 
 @media (max-width: 1000px) {
   .s5-main { flex-direction: column; padding-left: var(--pad-6); }
@@ -957,10 +974,31 @@ body {
   /* Terminal keeps a usable height once it's no longer flex-filling a 100vh frame */
   .s5-terminal { min-height: 260px; }
   .s5-term-body { max-height: 340px; }
-  /* Architecture SVG text is sized in viewBox units — bump so it stays legible
-     as the diagram scales down to phone width (Recipe 3) */
-  #s5Arch .nl { font-size: 15px; }
-  #s5Arch .nl-s { font-size: 12px; }
+
+  /* Architecture SVG text overflows its fixed-width boxes at phone width —
+     hide the SVG and show the readable stacked variant instead (Recipe 2b). */
+  #s5Arch .s5-arch-body svg { display: none; }
+  .s5-arch-m { display: block; }
+  .s5-arch-m .am-groups { display: flex; flex-direction: column; gap: 14px; margin-top: 2px; }
+  .s5-arch-m .am-group { display: flex; flex-direction: column; }
+  .s5-arch-m .am-node {
+    border: 1px solid var(--yellow); background: #141414;
+    border-radius: 6px; padding: 8px 12px; text-align: center;
+  }
+  .s5-arch-m .am-node.am-endpoints { background: #1a1700; }
+  .s5-arch-m .am-node b {
+    display: block; color: #ccc; font-size: 14px; font-weight: 600;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .s5-arch-m .am-node.am-endpoints b { color: var(--yellow); }
+  .s5-arch-m .am-node span {
+    display: block; color: #777; font-size: 11px; margin-top: 2px;
+    font-family: 'SF Mono', 'Consolas', monospace;
+  }
+  .s5-arch-m .am-down {
+    text-align: center; color: var(--yellow); font-size: 16px;
+    line-height: 1; margin: 6px 0;
+  }
 }
 
 /* ── sp-04-runs ── */
@@ -1676,6 +1714,19 @@ body {
 
 @media (max-width: 900px) { .fam-grid { grid-template-columns: 1fr; gap: 34px; } }
 
+@media (max-width: 820px) {
+  .cake-wrap { padding: 34px 18px 26px; }
+  .cake-tab { white-space: normal; text-align: center; line-height: 1.2; font-size: 18px; padding: 2px 16px; max-width: calc(100% - 24px); }
+  .layer { grid-template-columns: 1fr; gap: 8px; }
+  .role { text-align: left; align-self: start; }
+  .cards.two, .cards.two.govwide { grid-template-columns: 1fr; }
+  .ocard { padding: 18px 16px; }
+  .osub, #family .osub-wrap { white-space: normal; overflow-wrap: anywhere; }
+  .conn { grid-template-columns: 1fr; height: 20px; }
+  .conn > div:first-child { display: none; }
+  .conn .rail, .conn.two .rail { grid-template-columns: 1fr; }
+}
+
 
 /* ── sp-07-close ── */
 #closing {
@@ -1822,12 +1873,8 @@ body {
           <div class="hero-stat-number"><span>SMART</span></div>
           <div class="hero-stat-label">Improves in production</div>
         </div>
-        <div>
-          <div class="hero-stat-number"><span>FIXED</span></div>
-          <div class="hero-stat-label">One monthly price</div>
-        </div>
       </div>
-      <p class="spwhat-para">Akka Specify delivers production-grade agentic AI systems as a <b>guaranteed outcome</b>: you provide a handful of plain-language specifications, and Akka generates, governs, and runs the entire system for you. What you get is a governed, mission-critical AI system &mdash; delivered <b>in weeks</b> and kept up, safe, and continuously improving &mdash; for <b>one fixed monthly price</b>.</p>
+      <p class="spwhat-para">Akka Specify delivers production-grade agentic AI systems as a <b>guaranteed outcome</b>: you provide a handful of plain-language specifications, and Akka generates, governs, and runs the entire system for you. What you get is a governed, mission-critical AI system &mdash; delivered <b>in weeks</b> and kept up, safe, and continuously improving.</p>
     </div>
   </div>
 
@@ -1844,6 +1891,8 @@ body {
       <div class="spec-sub" data-spec="0">Continuous build. Continuous governance. Akka certifies and runs the AI system that satisfies both.</div>
     </div>
 
+    <!-- .spec-diagram groups the flow + loop. On mobile the flow is redrawn top-down (see slide.css) and the loop-back is hidden. -->
+    <div class="spec-diagram">
     <div class="spec-flow" data-spec="1">
 
       <!-- BUILD TRACK -->
@@ -1934,6 +1983,7 @@ body {
         <span class="spec-loop-text">Continuously validated and improved from your production data.</span>
       </div>
     </div>
+    </div><!-- /.spec-diagram -->
 
   </div>
 </div>
@@ -2066,6 +2116,28 @@ body {
             <text x="360" y="129" text-anchor="middle" class="nl-s">Cron: daily</text>
 
           </svg>
+          <!-- Mobile-only variant of the architecture SVG above. KEEP IN SYNC — same nodes, same entity→view mapping. On mobile the SVG text overflows its fixed boxes, so it's hidden and this readable stacked version is shown. -->
+          <div class="s5-arch-m">
+            <div class="am-node am-endpoints"><b>REST Endpoints</b></div>
+            <div class="am-down">&#8595;</div>
+            <div class="am-groups">
+              <div class="am-group">
+                <div class="am-node"><b>LoyaltyAccount</b><span>Event Sourced</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>CustomerDashboard</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>RewardsProgram</b><span>Key Value</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>AdminOverview</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>Redemption</b><span>Workflow</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>ExpiryTimer</b><span>Cron: daily</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2246,7 +2318,7 @@ body {
     <div class="fam-sub fam-reveal">Akka&rsquo;s offerings all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
 
     <div class="fam-grid fam-reveal">
-
+<!-- CAKE:BODY:START — canonical integrated-platform cake. Standalone decks (akka-overview, akka-verify) are synced from here by _build/sync_cake.py; edit the cake here only. -->
       <div class="cake-wrap">
         <div class="cake-tab">Akka Agentic AI Platform</div>
         <div class="cake">
@@ -2369,6 +2441,7 @@ body {
           <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
         </div>
       </div>
+<!-- CAKE:BODY:END -->
 
     </div>
   </div>

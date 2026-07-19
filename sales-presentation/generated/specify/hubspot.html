@@ -191,6 +191,7 @@
   opacity: 0; transform: translateY(16px);
   transition: opacity .55s ease .08s, transform .55s cubic-bezier(0.16,1,0.3,1) .08s; }
 .akka-embed .spec-sub.visible { opacity: 1; transform: none; }
+.akka-embed .spec-diagram { display: contents; }
 .akka-embed .spec-flow { display: grid;
   grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr;
   grid-template-areas:
@@ -456,18 +457,28 @@
 @media (max-width: 820px) {
 .akka-embed #spec-wrapper { height: auto; }
 .akka-embed #spec-sticky { position: static; height: auto;
-    padding-top: 64px; padding-bottom: 64px; }
-.akka-embed .spec-head { margin-bottom: 32px; }
-.akka-embed .spec-flow { display: flex; flex-direction: column; gap: 16px; }
-.akka-embed .spec-track-arrow, .akka-embed .spec-merge-arrows, .akka-embed .spec-loop-svg { display: none; }
-.akka-embed .spec-hub-inner { padding: 14px; }
-.akka-embed .spec-merge { display: flex; }
-.akka-embed .spec-loop { padding-top: 0; margin-top: 4px; }
-.akka-embed .spec-loop-label { position: static; left: auto; top: auto;
-    transform: none;
-    align-items: flex-start; text-align: left;
-    white-space: normal; }
-.akka-embed .spec-tagline { flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    padding: 56px 12px; }
+.akka-embed .spec-head { margin-bottom: 28px; }
+.akka-embed .spec-flow { display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "build govern"
+      "hub   hub"
+      "merge merge";
+    gap: 32px 12px;
+    align-items: start; }
+.akka-embed .spec-track--build { grid-area: build;  display: flex; flex-direction: column; gap: 10px; }
+.akka-embed .spec-track--govern { grid-area: govern; display: flex; flex-direction: column; gap: 10px; }
+.akka-embed .spec-hub { grid-area: hub;   display: block; align-self: start; position: relative; }
+.akka-embed .spec-merge { grid-area: merge; display: block; align-self: start; position: relative; }
+.akka-embed .spec-track-arrow, .akka-embed .spec-merge-arrows { display: none; }
+.akka-embed .spec-hub::after { display: none; }
+.akka-embed .spec-hub::before, .akka-embed .spec-merge::before { content: '\2193'; position: absolute; top: -26px; left: 50%;
+    transform: translateX(-50%);
+    width: auto; height: auto; background: none;
+    color: var(--yellow); font-size: 22px; line-height: 1; }
+.akka-embed .spec-loop { display: none; }
 }
 .akka-embed #s5-wrapper { height: 140vh;
   position: relative; }
@@ -596,6 +607,7 @@
   pointer-events: none; }
 .akka-embed .s5-arch-body { padding: 16px 20px 20px; }
 .akka-embed .s5-arch-body svg { width: 100%; height: auto; display: block; }
+.akka-embed .s5-arch-m { display: none; }
 @media (max-width: 1000px) {
 .akka-embed .s5-main { flex-direction: column; padding-left: var(--pad-6); }
 .akka-embed .s5-term-col { width: 100%; }
@@ -613,8 +625,20 @@
 .akka-embed .s5-props { max-width: none; }
 .akka-embed .s5-terminal { min-height: 260px; }
 .akka-embed .s5-term-body { max-height: 340px; }
-.akka-embed #s5Arch .nl { font-size: 15px; }
-.akka-embed #s5Arch .nl-s { font-size: 12px; }
+.akka-embed #s5Arch .s5-arch-body svg { display: none; }
+.akka-embed .s5-arch-m { display: block; }
+.akka-embed .s5-arch-m .am-groups { display: flex; flex-direction: column; gap: 14px; margin-top: 2px; }
+.akka-embed .s5-arch-m .am-group { display: flex; flex-direction: column; }
+.akka-embed .s5-arch-m .am-node { border: 1px solid var(--yellow); background: #141414;
+    border-radius: 6px; padding: 8px 12px; text-align: center; }
+.akka-embed .s5-arch-m .am-node.am-endpoints { background: #1a1700; }
+.akka-embed .s5-arch-m .am-node b { display: block; color: #ccc; font-size: 14px; font-weight: 600;
+    font-family: 'Instrument Sans', sans-serif; }
+.akka-embed .s5-arch-m .am-node.am-endpoints b { color: var(--yellow); }
+.akka-embed .s5-arch-m .am-node span { display: block; color: #777; font-size: 11px; margin-top: 2px;
+    font-family: 'SF Mono', 'Consolas', monospace; }
+.akka-embed .s5-arch-m .am-down { text-align: center; color: var(--yellow); font-size: 16px;
+    line-height: 1; margin: 6px 0; }
 }
 .akka-embed ﻿#platform-pattern-wrapper { height: 180vh;
   position: relative; }
@@ -1084,6 +1108,18 @@
 @media (max-width: 900px) {
 .akka-embed .fam-grid { grid-template-columns: 1fr; gap: 34px; }
 }
+@media (max-width: 820px) {
+.akka-embed .cake-wrap { padding: 34px 18px 26px; }
+.akka-embed .cake-tab { white-space: normal; text-align: center; line-height: 1.2; font-size: 18px; padding: 2px 16px; max-width: calc(100% - 24px); }
+.akka-embed .layer { grid-template-columns: 1fr; gap: 8px; }
+.akka-embed .role { text-align: left; align-self: start; }
+.akka-embed .cards.two, .akka-embed .cards.two.govwide { grid-template-columns: 1fr; }
+.akka-embed .ocard { padding: 18px 16px; }
+.akka-embed .osub, .akka-embed #family .osub-wrap { white-space: normal; overflow-wrap: anywhere; }
+.akka-embed .conn { grid-template-columns: 1fr; height: 20px; }
+.akka-embed .conn > div:first-child { display: none; }
+.akka-embed .conn .rail, .akka-embed .conn.two .rail { grid-template-columns: 1fr; }
+}
 .akka-embed #closing { height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
@@ -1199,12 +1235,8 @@
           <div class="hero-stat-number"><span>SMART</span></div>
           <div class="hero-stat-label">Improves in production</div>
         </div>
-        <div>
-          <div class="hero-stat-number"><span>FIXED</span></div>
-          <div class="hero-stat-label">One monthly price</div>
-        </div>
       </div>
-      <p class="spwhat-para">Akka Specify delivers production-grade agentic AI systems as a <b>guaranteed outcome</b>: you provide a handful of plain-language specifications, and Akka generates, governs, and runs the entire system for you. What you get is a governed, mission-critical AI system &mdash; delivered <b>in weeks</b> and kept up, safe, and continuously improving &mdash; for <b>one fixed monthly price</b>.</p>
+      <p class="spwhat-para">Akka Specify delivers production-grade agentic AI systems as a <b>guaranteed outcome</b>: you provide a handful of plain-language specifications, and Akka generates, governs, and runs the entire system for you. What you get is a governed, mission-critical AI system &mdash; delivered <b>in weeks</b> and kept up, safe, and continuously improving.</p>
     </div>
   </div>
 
@@ -1221,6 +1253,8 @@
       <div class="spec-sub" data-spec="0">Continuous build. Continuous governance. Akka certifies and runs the AI system that satisfies both.</div>
     </div>
 
+    <!-- .spec-diagram groups the flow + loop. On mobile the flow is redrawn top-down (see slide.css) and the loop-back is hidden. -->
+    <div class="spec-diagram">
     <div class="spec-flow" data-spec="1">
 
       <!-- BUILD TRACK -->
@@ -1311,6 +1345,7 @@
         <span class="spec-loop-text">Continuously validated and improved from your production data.</span>
       </div>
     </div>
+    </div><!-- /.spec-diagram -->
 
   </div>
 </div>
@@ -1436,6 +1471,28 @@
             <text x="360" y="129" text-anchor="middle" class="nl-s">Cron: daily</text>
 
           </svg>
+          <!-- Mobile-only variant of the architecture SVG above. KEEP IN SYNC — same nodes, same entity→view mapping. On mobile the SVG text overflows its fixed boxes, so it's hidden and this readable stacked version is shown. -->
+          <div class="s5-arch-m">
+            <div class="am-node am-endpoints"><b>REST Endpoints</b></div>
+            <div class="am-down">&#8595;</div>
+            <div class="am-groups">
+              <div class="am-group">
+                <div class="am-node"><b>LoyaltyAccount</b><span>Event Sourced</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>CustomerDashboard</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>RewardsProgram</b><span>Key Value</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>AdminOverview</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>Redemption</b><span>Workflow</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>ExpiryTimer</b><span>Cron: daily</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1616,7 +1673,7 @@
     <div class="fam-sub fam-reveal">Akka&rsquo;s offerings all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
 
     <div class="fam-grid fam-reveal">
-
+<!-- CAKE:BODY:START — canonical integrated-platform cake. Standalone decks (akka-overview, akka-verify) are synced from here by _build/sync_cake.py; edit the cake here only. -->
       <div class="cake-wrap">
         <div class="cake-tab">Akka Agentic AI Platform</div>
         <div class="cake">
@@ -1739,6 +1796,7 @@
           <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
         </div>
       </div>
+<!-- CAKE:BODY:END -->
 
     </div>
   </div>

@@ -57,6 +57,7 @@
 
 /* Flow grid: two track rows + hub spanning both rows.
    Columns: track-label | plain-language input | signed artifact | AKKA SPECIFY hub | generated/run merge */
+.spec-diagram { display: contents; }
 .spec-flow {
   display: grid;
   grid-template-columns: 140px 100px minmax(340px, 420px) 180px 1fr;
@@ -449,28 +450,42 @@
   #spec-wrapper { height: auto; }
   #spec-sticky {
     position: static; height: auto;
-    padding-top: 64px; padding-bottom: 64px;
+    padding: 56px 12px;
   }
-  .spec-head { margin-bottom: 32px; }
+  .spec-head { margin-bottom: 28px; }
 
-  /* Reflow the grid diagram into a single stacked column */
+  /* Redraw the diagram top-down at readable size and let the user scroll.
+     Build & Govern stay side by side as parallel input tracks, then the
+     flow converges down into the hub and then the delivered system.
+     Down-arrows carry the flow direction; the Verify loop-back is dropped. */
   .spec-flow {
-    display: flex; flex-direction: column; gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "build govern"
+      "hub   hub"
+      "merge merge";
+    gap: 32px 12px;
+    align-items: start;
   }
-  .spec-track-arrow,
-  .spec-merge-arrows,
-  .spec-loop-svg { display: none; }
+  .spec-track--build  { grid-area: build;  display: flex; flex-direction: column; gap: 10px; }
+  .spec-track--govern { grid-area: govern; display: flex; flex-direction: column; gap: 10px; }
+  .spec-hub   { grid-area: hub;   display: block; align-self: start; position: relative; }
+  .spec-merge { grid-area: merge; display: block; align-self: start; position: relative; }
+  .spec-track-arrow, .spec-merge-arrows { display: none; }
 
-  .spec-hub-inner { padding: 14px; }
-  .spec-merge { display: flex; }
-
-  /* Verify-loop caption flows below instead of floating over the arrow */
-  .spec-loop { padding-top: 0; margin-top: 4px; }
-  .spec-loop-label {
-    position: static; left: auto; top: auto;
-    transform: none;
-    align-items: flex-start; text-align: left;
-    white-space: normal;
+  /* Down-arrow connectors sit in the row gap ABOVE the hub and the output card,
+     showing the flow converging downward. The hub's ::after desktop nub is dropped;
+     ::before is repurposed as the arrow, positioned above the box. */
+  .spec-hub::after { display: none; }
+  .spec-hub::before, .spec-merge::before {
+    content: '\2193'; position: absolute; top: -26px; left: 50%;
+    transform: translateX(-50%);
+    width: auto; height: auto; background: none;
+    color: var(--yellow); font-size: 22px; line-height: 1;
   }
-  .spec-tagline { flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+  /* No loop-back on mobile */
+  .spec-loop { display: none; }
 }

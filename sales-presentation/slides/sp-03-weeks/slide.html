@@ -125,6 +125,28 @@
             <text x="360" y="129" text-anchor="middle" class="nl-s">Cron: daily</text>
 
           </svg>
+          <!-- Mobile-only variant of the architecture SVG above. KEEP IN SYNC — same nodes, same entity→view mapping. On mobile the SVG text overflows its fixed boxes, so it's hidden and this readable stacked version is shown. -->
+          <div class="s5-arch-m">
+            <div class="am-node am-endpoints"><b>REST Endpoints</b></div>
+            <div class="am-down">&#8595;</div>
+            <div class="am-groups">
+              <div class="am-group">
+                <div class="am-node"><b>LoyaltyAccount</b><span>Event Sourced</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>CustomerDashboard</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>RewardsProgram</b><span>Key Value</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>AdminOverview</b></div>
+              </div>
+              <div class="am-group">
+                <div class="am-node"><b>Redemption</b><span>Workflow</span></div>
+                <div class="am-down">&#8595;</div>
+                <div class="am-node"><b>ExpiryTimer</b><span>Cron: daily</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

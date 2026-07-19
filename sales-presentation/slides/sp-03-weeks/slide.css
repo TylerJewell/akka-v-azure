@@ -212,6 +212,8 @@
 .s5-arch-body svg {
   width: 100%; height: auto; display: block;
 }
+/* Mobile-only readable variant of the architecture SVG (default hidden) */
+.s5-arch-m { display: none; }
 
 @media (max-width: 1000px) {
   .s5-main { flex-direction: column; padding-left: var(--pad-6); }
@@ -235,8 +237,29 @@
   /* Terminal keeps a usable height once it's no longer flex-filling a 100vh frame */
   .s5-terminal { min-height: 260px; }
   .s5-term-body { max-height: 340px; }
-  /* Architecture SVG text is sized in viewBox units — bump so it stays legible
-     as the diagram scales down to phone width (Recipe 3) */
-  #s5Arch .nl { font-size: 15px; }
-  #s5Arch .nl-s { font-size: 12px; }
+
+  /* Architecture SVG text overflows its fixed-width boxes at phone width —
+     hide the SVG and show the readable stacked variant instead (Recipe 2b). */
+  #s5Arch .s5-arch-body svg { display: none; }
+  .s5-arch-m { display: block; }
+  .s5-arch-m .am-groups { display: flex; flex-direction: column; gap: 14px; margin-top: 2px; }
+  .s5-arch-m .am-group { display: flex; flex-direction: column; }
+  .s5-arch-m .am-node {
+    border: 1px solid var(--yellow); background: #141414;
+    border-radius: 6px; padding: 8px 12px; text-align: center;
+  }
+  .s5-arch-m .am-node.am-endpoints { background: #1a1700; }
+  .s5-arch-m .am-node b {
+    display: block; color: #ccc; font-size: 14px; font-weight: 600;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .s5-arch-m .am-node.am-endpoints b { color: var(--yellow); }
+  .s5-arch-m .am-node span {
+    display: block; color: #777; font-size: 11px; margin-top: 2px;
+    font-family: 'SF Mono', 'Consolas', monospace;
+  }
+  .s5-arch-m .am-down {
+    text-align: center; color: var(--yellow); font-size: 16px;
+    line-height: 1; margin: 6px 0;
+  }
 }

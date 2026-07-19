@@ -115,6 +115,10 @@
   .tst-headline { font-size: clamp(38px, 10vw, 56px); }
   .tst-sub { letter-spacing: 3px; }
   .tst-loop { width: 100%; }
+  .tst-loop-stages { gap: 8px; }
+  .tst-loop-stages span { font-size: 15px; letter-spacing: 1.2px; }
+  .tst-loop-arrow { width: 24px; }
+  .tst-loop-return { width: calc(100% - 48px); }
 }
 .tst-scroll-arrow {
   width:18px; height:18px;
