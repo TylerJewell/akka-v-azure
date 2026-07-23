@@ -2642,12 +2642,12 @@ body {
 
     #s6-rf *, #s6-rf *::before, #s6-rf *::after { box-sizing: border-box; margin: 0; padding: 0; }
     #s6-rf {
-      --bg: #1a1a1a; --fg: #f5f5f5; --card: #2f2f2f; --card-fg: #e5e5e5;
-      --muted: #434343; --muted-fg: #c9c9c9; --border: #434343;
-      --primary: #00d8dd; --primary-fg: #1a1a1a;
-      --accent: #ffce4a; --accent-fg: #1a1a1a;
+      --bg: #000000; --fg: #f5f5f5; --card: #141414; --card-fg: #e5e5e5;
+      --muted: #1f1f1f; --muted-fg: #c9c9c9; --border: #262626;
+      --primary: #00d8dd; --primary-fg: #000000;
+      --accent: #ffce4a; --accent-fg: #000000;
       --destructive: #ff5400; --destructive-fg: #ffffff;
-      --secondary: #313131; --secondary-fg: #e5e5e5;
+      --secondary: #1e1e1e; --secondary-fg: #e5e5e5;
       --radius: 0.625rem;
       --cyan: #00d8dd; --cyan-dk: #02a4a7;
       --yellow: #ffce4a; --yellow-dk: #f5b60b;
@@ -2676,7 +2676,7 @@ body {
 
     /* Scrollbar styling for dark theme */
     #s6-rf ::-webkit-scrollbar { width: 6px; }
-    #s6-rf ::-webkit-scrollbar-track { background: #2f2f2f; border-radius: 3px; }
+    #s6-rf ::-webkit-scrollbar-track { background: #141414; border-radius: 3px; }
     #s6-rf ::-webkit-scrollbar-thumb { background: #606060; border-radius: 3px; }
     #s6-rf ::-webkit-scrollbar-thumb:hover { background: #c9c9c9; }
 
@@ -4592,7 +4592,7 @@ body {
 
       const getColor = (status) => ({ active: "#72d35b", stopping: "#d45a00", starting: "#00d8dd", failed: "#d70023" }[status] || "#606060");
       const getIcon = (status) => {
-        const c = (status === 'failed' || status === 'active' || status === 'stopping') ? "white" : "#1a1a1a";
+        const c = (status === 'failed' || status === 'active' || status === 'stopping') ? "white" : "#000000";
         if (status === 'active') return <CheckCircleIcon size={16} color={c} />;
         if (status === 'stopping') return <RefreshIcon size={16} color={c} spin />;
         if (status === 'starting') return <RefreshIcon size={16} color={c} spin />;
@@ -4636,7 +4636,7 @@ body {
                   onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)"}
                 >
                   <div>{getIcon(inst.status)}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: (inst.status === 'failed' || inst.status === 'active' || inst.status === 'stopping') ? "white" : "#1a1a1a" }}>Node {inst.nodeId}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: (inst.status === 'failed' || inst.status === 'active' || inst.status === 'stopping') ? "white" : "#000000" }}>Node {inst.nodeId}</div>
                 </div>
 
                 {/* Token count below */}
@@ -4676,14 +4676,14 @@ body {
                       <th key={h} style={{
                         padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700,
                         color: "#606060", letterSpacing: "0.08em",
-                        borderBottom: "1px solid #313131", whiteSpace: "nowrap",
+                        borderBottom: "1px solid #262626", whiteSpace: "nowrap",
                       }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {txLog.length === 0 ? (
-                    <tr><td colSpan={6} style={{ padding: "12px 10px", color: "#434343" }}>Waiting for transactions...</td></tr>
+                    <tr><td colSpan={6} style={{ padding: "12px 10px", color: "#606060" }}>Waiting for transactions...</td></tr>
                   ) : (
                     txLog.map(entry => (
                       <tr key={entry.id} style={{ color: entry.action === 'READ' ? '#00d8dd' : '#ffce4a' }}>
@@ -4715,7 +4715,7 @@ body {
             <div>
               <h3 className="font-semibold" style={{ marginBottom: 12 }}>Team Control</h3>
               <button className="btn btn-primary btn-lg" style={{ width: "100%" }} onClick={onLaunchTeam}>
-                <PlayIcon size={16} color="#1a1a1a" />&nbsp;&nbsp;Launch New Agent Team
+                <PlayIcon size={16} color="#000000" />&nbsp;&nbsp;Launch New Agent Team
               </button>
             </div>
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
@@ -4724,7 +4724,7 @@ body {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {nodes.map(node => {
                   const bg = NODE_COLORS[node.status] || "#606060";
-                  const fg = (node.status === 'failed' || node.status === 'stopping' || node.status === 'active') ? "white" : "#1a1a1a";
+                  const fg = (node.status === 'failed' || node.status === 'stopping' || node.status === 'active') ? "white" : "#000000";
                   const transitioning = node.status === 'stopping' || node.status === 'starting';
                   return (
                     <button key={node.id} className="btn"
@@ -4822,7 +4822,7 @@ body {
             <div>
               <h3 className="font-semibold" style={{ marginBottom: 12 }}>Team Control</h3>
               <button className="btn btn-primary btn-lg" style={{ width: "100%" }} onClick={onLaunchTeam}>
-                <PlayIcon size={16} color="#1a1a1a" />&nbsp;&nbsp;Launch New Agent Team
+                <PlayIcon size={16} color="#000000" />&nbsp;&nbsp;Launch New Agent Team
               </button>
             </div>
             <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
@@ -5042,14 +5042,14 @@ body {
                       <th key={h} style={{
                         padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700,
                         color: "#606060", letterSpacing: "0.08em",
-                        borderBottom: "1px solid #313131", whiteSpace: "nowrap",
+                        borderBottom: "1px solid #262626", whiteSpace: "nowrap",
                       }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {txLog.length === 0 ? (
-                    <tr><td colSpan={6} style={{ padding: "12px 10px", color: "#434343" }}>Waiting for transactions...</td></tr>
+                    <tr><td colSpan={6} style={{ padding: "12px 10px", color: "#606060" }}>Waiting for transactions...</td></tr>
                   ) : (
                     txLog.map(entry => (
                       <tr key={entry.id} style={{ color: entry.action === 'READ' ? '#00d8dd' : entry.replicated ? '#d2a8ff' : '#ffce4a' }}>
@@ -5537,7 +5537,7 @@ body {
       const hadrAvgWrite = hadrTeams.length > 0 ? Math.floor(hadrTeams.reduce((s, t) => s + t.avgWriteLatency, 0) / hadrTeams.length) : 0;
 
       return (
-        <div style={{ minHeight: "100vh", background: "#1a1a1a", padding: 24 }}>
+        <div style={{ minHeight: "100vh", background: "#000000", padding: 24 }}>
           <div style={{ maxWidth: 1800, margin: "0 auto" }}>
             <div style={{ marginBottom: 24 }}>
               <h1 className="text-3xl font-bold">Akka Reliability Tester</h1>

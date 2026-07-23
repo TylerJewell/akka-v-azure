@@ -335,6 +335,25 @@
   #family h2{font-size:clamp(30px,4.4vw,58px); line-height:1.05; margin-bottom:14px;}
   .fam-sub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
   .fam-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:56px; align-items:start; margin-top:46px;}
+  /* Short viewports (laptops): compress the platform-cake slide so the graphic fits one screen */
+  @media (max-height:880px){
+    #family{ padding-top:34px; padding-bottom:34px; }
+    #family h2{ font-size:clamp(26px,3.4vw,42px); margin-bottom:10px; }
+    #family .fam-sub{ margin-bottom:18px; }
+    #family .fam-grid{ margin-top:20px; }
+    #family .cake-wrap{ padding:26px 30px 22px; }
+    #family .ocard{ padding:16px 22px; }
+    #family .conn{ height:16px; }
+    #family .rt-panel h3{ margin-bottom:12px; }
+  }
+  @media (max-height:720px){
+    #family{ padding-top:24px; padding-bottom:24px; }
+    #family .fam-sub{ margin-bottom:12px; }
+    #family .fam-grid{ margin-top:14px; }
+    #family .cake-wrap{ padding:22px 26px 18px; }
+    #family .ocard{ padding:12px 20px; }
+    #family .conn{ height:12px; }
+  }
   .fam-grid > *{min-width:0;}
   .cake-wrap{position:relative; border:1.5px solid rgba(245,197,24,0.85); border-radius:16px; padding:40px 34px 34px; background:rgba(245,197,24,0.02); box-shadow:0 0 90px -28px rgba(245,197,24,0.55);}
   .cake-tab{position:absolute; top:0; left:50%; transform:translate(-50%,-50%); background:linear-gradient(90deg, transparent 0, var(--black) 14%, var(--black) 86%, transparent 100%); padding:2px 30px; font-size:clamp(20px,2vw,30px); letter-spacing:-0.02em; color:var(--yellow); font-weight:700; white-space:nowrap;}

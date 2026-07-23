@@ -1105,6 +1105,24 @@
 .akka-embed .rt-panel .accent { color: var(--yellow); font-weight: 600; }
 .akka-embed .rt-panel code { font-family: 'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size: 0.9em; }
 .akka-embed .rt-panel-body[hidden] { display: none; }
+@media (max-height: 880px) {
+.akka-embed #family { padding-top: 34px; padding-bottom: 34px; }
+.akka-embed .fam-head { font-size: clamp(26px,3.4vw,42px); margin-bottom: 10px; }
+.akka-embed .fam-sub { margin-bottom: 18px; }
+.akka-embed .fam-grid { margin-top: 20px; }
+.akka-embed .cake-wrap { padding: 26px 30px 22px; }
+.akka-embed .ocard { padding: 16px 22px; }
+.akka-embed .conn { height: 16px; }
+.akka-embed .rt-panel h3 { margin-bottom: 12px; }
+}
+@media (max-height: 720px) {
+.akka-embed #family { padding-top: 24px; padding-bottom: 24px; }
+.akka-embed .fam-sub { margin-bottom: 12px; }
+.akka-embed .fam-grid { margin-top: 14px; }
+.akka-embed .cake-wrap { padding: 22px 26px 18px; }
+.akka-embed .ocard { padding: 12px 20px; }
+.akka-embed .conn { height: 12px; }
+}
 @media (max-width: 900px) {
 .akka-embed .fam-grid { grid-template-columns: 1fr; gap: 34px; }
 }

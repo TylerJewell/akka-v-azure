@@ -38,7 +38,7 @@ DECKS = [
     [],  # overview — defaults
     ['--registry', 'specify-registry.json', '--nav', 'nav-specify.js',
      '--out', 'generated/specify/index.html'],
-    ['--registry', 'token-shredder-6-registry.json', '--nav', 'nav-shredder6.js',
+    ['--registry', 'token-shredder-registry.json', '--nav', 'nav-shredder.js',
      '--out', 'generated/token-shredder/index.html'],
 ]
 for extra in DECKS:
