@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>Akka + Kyivstar — Sovereign Agentic AI, Delivered | Partnership Exploration</title>
+<meta name="description" content="A partnership exploration between Akka and Kyivstar: a hosted, multi-tenant serverless Akka environment for Kyivstar's 95,000 SMBs and private AAO installations for its enterprise accounts — running as a sovereign agentic AI service inside Kyivstar's own datacenter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── case-study.css (inlined for a self-contained, shareable single file) ── */
+:root{
+  --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+  --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+  --gold:#FFCE4A; --gold-deep:#E9B426;
+  --display:"Instrument Sans",system-ui,sans-serif;
+  --text:"Roboto",system-ui,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400;
+  -webkit-font-smoothing:antialiased;}
+a{color:var(--ink);text-decoration:none}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{background:var(--black);color:#fff;padding:88px 0 72px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,206,74,.05) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 22px;
+  display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--gold)}
+.hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.025em;
+  font-size:clamp(34px,5.2vw,56px);line-height:1.05;margin:0 0 22px;color:#fff;
+  text-wrap:balance}
+.hero h1 .hl{color:var(--gold)}
+.subtitle{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.2vw,23px);
+  line-height:1.45;color:#C9C9CE;margin:0;max-width:44ch}
+.meta{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;
+  margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:#9A9AA2;text-transform:uppercase}
+.meta b{color:var(--gold);font-weight:500}
+.lead{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.4vw,25px);
+  line-height:1.5;color:var(--ink);margin:56px 0 8px}
+.lead .hl{background:linear-gradient(transparent 62%,rgba(255,206,74,.5) 62%);font-weight:500}
+.scorecard{margin:52px 0 8px}
+.sc-kicker{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.18em;font-size:12px;color:var(--gold-deep);margin:0 0 18px}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--wash);border:1px solid var(--line);border-radius:10px;
+  padding:24px 22px;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+.card h3{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em;
+  margin:0 0 12px;color:var(--ink)}
+.card .big{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;
+  letter-spacing:-.03em;color:var(--ink);margin:0 0 8px}
+.card p{font-size:14px;line-height:1.55;color:var(--muted);margin:0}
+.outcome{margin:20px 0 0;font-size:15px;color:var(--muted);font-style:italic}
+.outcome b{color:var(--ink);font-style:normal;font-weight:600}
+section.body{padding:8px 0}
+.body h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(24px,3vw,32px);line-height:1.15;color:var(--ink);margin:52px 0 18px}
+.body p{margin:0 0 20px}
+.body p b, .body strong{color:var(--ink);font-weight:700}
+.num{font-family:var(--mono);font-weight:500;color:var(--ink);
+  background:rgba(255,206,74,.16);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.pullstat{margin:44px 0;padding:36px 32px;background:var(--black);color:#fff;border-radius:12px;
+  display:flex;align-items:baseline;gap:28px;flex-wrap:wrap}
+.pullstat .n{font-family:var(--display);font-weight:700;font-size:clamp(56px,10vw,88px);
+  line-height:.9;letter-spacing:-.04em;color:var(--gold)}
+.pullstat .t{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.4vw,22px);
+  line-height:1.35;color:#D8D8DC;max-width:30ch}
+.bridge{border-left:4px solid var(--gold);background:var(--wash);
+  padding:26px 28px;border-radius:0 10px 10px 0;margin:8px 0 0}
+.bridge p:last-child{margin-bottom:0}
+.quote{margin:44px 0;padding:2px 0 0 26px;border-left:4px solid var(--gold)}
+.quote p{font-family:var(--display);font-weight:400;font-size:clamp(21px,2.8vw,28px);
+  line-height:1.32;letter-spacing:-.02em;color:var(--ink);margin:0;text-wrap:balance}
+.quote cite{display:block;margin-top:18px;font-family:var(--mono);font-style:normal;
+  font-size:13px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.quote cite b{color:var(--ink);font-weight:500}
+.sources{margin:56px 0 0;padding:22px 0 0;border-top:1px solid var(--line);
+  font-size:14px;color:var(--muted)}
+.sources a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:2px}
+.cta{background:var(--black);color:#fff;text-align:center;padding:80px 24px;margin-top:80px}
+.cta h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(28px,4vw,42px);margin:0 0 28px;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;
+  font-size:16px;background:var(--gold);color:#111;padding:15px 30px;border-radius:8px;
+  transition:transform .15s ease,background .15s ease}
+.btn:hover{background:#fff;transform:translateY(-1px)}
+.btn .arw{transition:transform .15s ease}
+.btn:hover .arw{transform:translateX(3px)}
+@media(max-width:680px){
+  body{font-size:17px}
+  .sc-grid{grid-template-columns:1fr}
+  .hero{padding:64px 0 52px}
+  .pullstat{gap:14px}
+}
+</style>
+<style>
+  /* ── Deal-brief extensions to case-study.css ── */
+  .wrap{max-width:1066px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 0}
+  .panel{background:var(--wash);border:1px solid var(--line);border-radius:10px;padding:24px 24px 12px;position:relative;overflow:hidden}
+  .panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .panel.yes::before{background:var(--gold)}
+  .panel.no::before{background:var(--muted)}
+  .panel h3{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em;margin:0 0 14px;color:var(--ink)}
+  .panel ul{list-style:none;margin:0;padding:0}
+  .panel li{font-size:15px;line-height:1.5;color:var(--body);padding:0 0 12px 26px;position:relative}
+  .panel li b{color:var(--ink);font-weight:600}
+  .panel.yes li::before{content:"+";position:absolute;left:0;top:-1px;font-family:var(--mono);font-weight:500;color:var(--gold-deep)}
+  .panel.no li::before{content:"\2013";position:absolute;left:0;top:-1px;font-family:var(--mono);font-weight:500;color:var(--muted)}
+  /* model split */
+  .models{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 0}
+  .model{border:1px solid var(--line);border-radius:10px;padding:24px}
+  .model .tag{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 8px}
+  .model h3{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink)}
+  .model p{font-size:15px;line-height:1.55;color:var(--body);margin:0 0 12px}
+  .model p:last-child{margin-bottom:0}
+  /* commercial constructs list */
+  .constructs{margin:8px 0 0;padding:0;list-style:none}
+  .constructs li{padding:18px 0;border-top:1px solid var(--line)}
+  .constructs li:first-child{border-top:none}
+  .constructs .h{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);margin:0 0 4px}
+  .constructs .d{font-size:15px;line-height:1.55;color:var(--body);margin:0}
+  /* who-manages-what table */
+  .access{overflow-x:auto;margin:8px 0 0}
+  .access table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+  .access th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px 12px;border-bottom:2px solid var(--line);vertical-align:bottom}
+  .access th:first-child{color:var(--ink)}
+  .access td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45;color:var(--body)}
+  .access td.row-h{font-family:var(--display);font-weight:600;color:var(--ink);white-space:nowrap}
+  .access td.off{color:var(--muted);text-align:center}
+  .access tbody tr:hover{background:var(--wash)}
+  @media(max-width:680px){.twocol,.models{grid-template-columns:1fr}}
+  /* ── Integrated platform "cake" (ported from akka-overview) ── */
+  .platform{margin:44px 0 0;background:var(--black);border-radius:16px;padding:56px 40px 44px}
+  .platform .cap{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.18em;font-size:12px;color:var(--gold);text-align:center;margin:0 0 34px}
+  .cake-wrap{position:relative;max-width:940px;margin:0 auto;border:1px solid rgba(255,206,74,.28);border-radius:16px;padding:44px 34px 34px;background:rgba(255,206,74,.012)}
+  .cake-tab{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:linear-gradient(90deg,transparent 0,var(--black) 14%,var(--black) 86%,transparent 100%);padding:2px 30px;font-family:var(--display);font-size:clamp(19px,2vw,26px);letter-spacing:-.02em;color:var(--gold);font-weight:700;white-space:nowrap}
+  .cake{display:flex;flex-direction:column}
+  .cake .layer{display:grid;grid-template-columns:98px 1fr;gap:0 22px;align-items:stretch}
+  .cake .role{align-self:center;text-align:right;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:600;color:#6A6A72;line-height:1.7}
+  .cake .role b{color:#9A9AA2;font-weight:600;display:block}
+  .cake .cards{display:grid;grid-template-columns:1fr;gap:16px}
+  .cake .cards.two{grid-template-columns:1fr 1fr}
+  .cake .cards.two.govwide{grid-template-columns:.8fr 1.2fr}
+  .cake .ocard{min-width:0;border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:22px 20px;text-align:center;background:rgba(255,255,255,.025)}
+  .cake .oname{font-size:clamp(15px,1.6vw,20px);font-weight:600;letter-spacing:-.01em;color:#fff}
+  .cake .osub{margin-top:10px;color:#9A9AA2;font-size:12px;letter-spacing:.2px;line-height:1.5;overflow-wrap:break-word}
+  .cake .osub-wrap{white-space:normal;line-height:1.7}
+  .cake .osub .d{color:var(--gold);font-weight:600;padding:0 4px}
+  .cake .osub .d::after{content:"\200B"}
+  .cake .conn{display:grid;grid-template-columns:98px 1fr;gap:0 22px;height:24px}
+  .cake .conn .rail{display:grid}
+  .cake .conn.two .rail{grid-template-columns:1fr 1fr}
+  .cake .conn.one .rail{grid-template-columns:1fr}
+  .cake .conn .rail span{justify-self:center;width:2px;height:100%;background:linear-gradient(var(--gold) 0 45%,transparent 45% 100%);background-size:100% 8px;opacity:.5}
+  /* link lists */
+  .linklist{list-style:none;padding:0;margin:8px 0 0}
+  .linklist li{padding:7px 0;font-size:16px;line-height:1.4}
+  .linklist li b{color:var(--ink);font-weight:600}
+  .linklist a{color:#0090A6;text-decoration:underline;text-underline-offset:2px}
+  .linklist.cols{columns:3;column-gap:32px}
+  .linklist.cols li{break-inside:avoid;font-size:15px}
+  @media(max-width:680px){.linklist.cols{columns:1}}
+  .custflow{margin:8px 0 0;font-size:15px;line-height:2;color:var(--muted)}
+  .custflow a{color:#0090A6;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+  .custflow .d{color:var(--line);padding:0 8px}
+  .custflow .d::after{content:"\200B"}
+  @media(max-width:680px){
+    .platform{padding:40px 18px 30px}
+    .cake .layer,.cake .conn{grid-template-columns:1fr}
+    .cake .cards.two,.cake .cards.two.govwide{grid-template-columns:1fr}
+    .cake .role{text-align:left;margin-bottom:4px}
+    .cake .role b{display:inline}
+    .cake .conn{display:none}
+  }
+  /* ── Print: keep blocks whole, densify panels/tables (must come last to win source-order) ── */
+  @media print{
+    @page{size:letter;margin:1.3cm}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .body h2{break-after:avoid}
+    .pbreak{break-before:page}
+    .platform,.scorecard,.pullstat,.twocol,.models,.card,.model,.access{break-inside:avoid}
+    .constructs li,.linklist li{break-inside:avoid}
+    .twocol{gap:12px}
+    .panel{padding:12px 15px 3px}
+    .panel h3{font-size:12.5px;margin-bottom:7px}
+    .panel li{font-size:10.5px;line-height:1.32;padding:0 0 5px 17px}
+    .models{gap:12px}
+    .model{padding:16px}
+    .model .tag{font-size:10.5px}
+    .model h3{font-size:17px;margin-bottom:7px}
+    .model p{font-size:12.5px;line-height:1.45;margin-bottom:8px}
+    .access table{min-width:0;font-size:11.5px}
+    .access th{padding:0 9px 8px}
+    .access td{padding:9px}
+    .constructs li{padding:11px 0}
+    .constructs .h{font-size:14.5px}
+    .constructs .d{font-size:12.5px;line-height:1.45}
+  }
+</style>
+</head>
+<body>
+
+ <header class="hero">
+ <div class="wrap">
+ <p class="eyebrow">Partnership Exploration</p>
+ <h1>Akka + Kyivstar: sovereign agentic AI, <span class="hl">delivered</span>.</h1>
+ <p class="subtitle">A hosted Akka platform inside Kyivstar's datacenters — serverless for its SMBs, private installations for its enterprise accounts, operated as a sovereign service across its territories.</p>
+ <div class="meta">
+ <span>Partner&nbsp;·&nbsp;<b>Kyivstar</b></span>
+ <span>Model&nbsp;·&nbsp;<b>OEM / Hosted + Private Install</b></span>
+ <span>Territories&nbsp;·&nbsp;<b>All Kyivstar markets</b></span>
+ </div>
+ </div>
+ </header>
+
+ <div class="wrap">
+
+ <p class="lead">This is an overview of a potential partnership between Akka and Kyivstar for Kyivstar to host the <span class="hl">Akka Agentic AI Platform</span> in its own datacenters and deliver it to its 100,000 business customers — a multi-tenant serverless environment for the 95,000 SMBs, and private, single-tenant installations of Akka Automated Operations (AAO) for its larger 5,000 enterprise accounts. Data and compute stay resident in-country across the territories Kyivstar serves. Akka installs and maintains the platform remotely and, optionally, eventually enables Kyivstar's ops teams to manage the installations independently.</p>
+
+ <!-- Scorecard -->
+ <div class="scorecard">
+ <p class="sc-kicker">Partnership at a Glance</p>
+ <div class="sc-grid">
+ <div class="card">
+ <h3>Serverless for SMB</h3>
+ <div class="big">95,000</div>
+ <p>SMB customers served from one multi-tenant, high-density Akka environment Kyivstar hosts and offers as a service.</p>
+ </div>
+ <div class="card">
+ <h3>Private for Enterprise</h3>
+ <div class="big">Isolated</div>
+ <p>Single-tenant AAO regions installed per enterprise account for data and traffic isolation.</p>
+ </div>
+ <div class="card">
+ <h3>Sovereign &amp; Resilient</h3>
+ <div class="big">99.9999%</div>
+ <p>availability for a customer when multiple AAO regions are installed and active-active replicate AI state — HA/DR embedded. Data stays resident in-country.</p>
+ </div>
+ </div>
+ </div>
+
+ <section class="body">
+
+ <h2>How it works — two delivery models</h2>
+ <div class="models">
+ <div class="model">
+ <p class="tag">SMB · 95,000 accounts</p>
+ <h3>Serverless, multi-tenant</h3>
+ <p>Kyivstar hosts a shared, multi-tenant Akka environment — similar to what Akka runs at akka.io — with the billing model tailored to Kyivstar's requirements. Services from many customers run concurrently on shared compute and data infrastructure, a high-density model that keeps per-tenant cost low; customers self-serve through Kyivstar's portal.</p>
+ <p>This port would require <b>more significant R&amp;D alignment</b> between the two teams than standing up the private AAO installation.</p>
+ </div>
+ <div class="model">
+ <p class="tag">Enterprise · named accounts</p>
+ <h3>Private AAO installation</h3>
+ <p>For enterprise accounts that require dedicated data and traffic isolation, Akka installs a single-tenant AAO region inside Kyivstar's (or the customer's) cloud account — the same platform, with full multi-region HA/DR and independent scaling.</p>
+ <p>Single-tenant to Kyivstar, but <b>multi-tenanted for the customer</b>: many AI projects, developers, and services run within the one install. Persistence storage can be <b>further isolated per service</b> so those services' data is partitioned from one another inside the region.</p>
+ <p><b>Two operating options:</b> Akka maintains each environment remotely per account, or Akka trains and enables Kyivstar's SREs to operate and maintain the installations independently. The second option requires close coordination — Kyivstar's team would parrot Akka's fleet-management operations across hundreds of installations.</p>
+ </div>
+ </div>
+
+ <h2>Agentic AI: what the platform delivers, what Kyivstar brings</h2>
+ <p>Akka is the agentic runtime — the components that build, run, and govern agents, and with the <b>Token Shredder</b> extension it also routes model traffic and generates and hosts small language models (SLMs). Kyivstar supplies the heavy substrate — the GPU fleet, foundation-model training, and MLOps — and can host models the gateway steers to. The AAO overview details the full component set; the essentials:</p>
+ <div class="twocol pbreak">
+ <div class="panel yes">
+ <h3>In the Akka platform</h3>
+ <ul>
+ <li><b>Akka SDK</b> — the full toolchain to design, build, and test agentic systems: SDK, CLI, MCP server, local console, and testkit.</li>
+ <li><b>Akka Specify</b> — spec-driven delivery: describe what the system must do, and generate the agents, workflows, APIs, memory, integrations, guardrails, evaluations, and tests that deliver it.</li>
+ <li><b>Agents</b> — model-driven components with session memory and function tools, built against Akka's <a href="https://doc.akka.io/java/model-provider-details.html" style="text-decoration:underline;text-underline-offset:2px;color:#0090A6">model provider interface</a>. Akka would help develop and maintain model providers for each local-language LLM under consideration.</li>
+ <li><b>Autonomous agents &amp; multi-agent coordination</b> — durable decision loops, delegation, and hand-off without orchestration code.</li>
+ <li><b>Workflows</b> — durable, long-running orchestration that resumes rather than restarts.</li>
+ <li><b>Durable memory &amp; state</b> — event-sourced entities and views, active-active replicated across regions.</li>
+ <li><b>Tools &amp; MCP</b> — MCP client and server, function tools, and model gateways.</li>
+ <li><b>Endpoints, streaming, timers, consumers</b> — everything agents use to talk to the outside world.</li>
+ <li><b>Governance</b> — evaluations, guardrails, policies, and a durable evidence record.</li>
+ <li><b>Token Shredder</b> (extension) — the AI gateway that routes and steers model traffic by cost, performance, or task, plus the services to identify SLM candidates from that traffic, train new SLMs, and run inference for open-weight models on Kubernetes.</li>
+ </ul>
+ </div>
+ <div class="panel no">
+ <h3>Kyivstar brings (the AI/ML substrate)</h3>
+ <ul>
+ <li><b>GPU reservations</b> — accelerated compute capacity for inference and training.</li>
+ <li><b>Foundation-model training &amp; fine-tuning</b> — building and tuning the large models Akka's gateway routes to.</li>
+ <li><b>MLOps</b> — model serving, registry, and lifecycle management at scale.</li>
+ <li><b>Foundation models</b> — the LLMs and their hosting; Akka's gateway calls and steers to them.</li>
+ <li><b>Semantic storage</b> — vector / embedding stores for retrieval.</li>
+ <li><b>Graph storage</b> — knowledge-graph and relationship stores.</li>
+ </ul>
+ </div>
+ </div>
+
+ <div class="platform">
+ <p class="cap">The integrated platform</p>
+ <div class="cake-wrap">
+ <div class="cake-tab">Akka Agentic AI Platform</div>
+ <div class="cake">
+ <div class="layer">
+ <div class="role">Deliver<b>&amp; Govern</b></div>
+ <div class="cards two govwide">
+ <div class="ocard"><div class="oname">Akka Specify</div><div class="osub">specs<span class="d">·</span>generation<span class="d">·</span>modernization</div></div>
+ <div class="ocard"><div class="oname">Akka Verify</div><div class="osub">evaluations<span class="d">·</span>guardrails<span class="d">·</span>policies<span class="d">·</span>evidence</div></div>
+ </div>
+ </div>
+ <div class="conn two"><div></div><div class="rail"><span></span><span></span></div></div>
+ <div class="layer">
+ <div class="role">Build<b>&amp; Run</b></div>
+ <div class="cards">
+ <div class="ocard"><div class="oname">Akka SDK</div><div class="osub osub-wrap">Agents<span class="d">·</span>Autonomous&nbsp;Agents<span class="d">·</span>Workflows<span class="d">·</span>Event&nbsp;Sourced&nbsp;Entities<span class="d">·</span>Key&nbsp;Value&nbsp;Entities<span class="d">·</span>Views<span class="d">·</span>HTTP&nbsp;Endpoints<span class="d">·</span>gRPC&nbsp;Endpoints<span class="d">·</span>MCP&nbsp;Endpoints<span class="d">·</span>Timed&nbsp;Actions<span class="d">·</span>Consumers</div></div>
+ </div>
+ </div>
+ <div class="conn one"><div></div><div class="rail"><span></span></div></div>
+ <div class="layer">
+ <div class="role">Models<b>&amp; Compute</b></div>
+ <div class="cards">
+ <div class="ocard"><div class="oname">Akka Token Shredder</div><div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div></div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>Explore the four offerings</h2>
+ <ul class="linklist">
+ <li><b>Akka Agentic AI Platform</b> — reliable AI for every industry · <a href="https://tylerjewell.github.io/presentations/akka-overview/">deeper dive &rarr;</a></li>
+ <li><b>Akka Specify</b> — spec-driven production AI · <a href="https://tylerjewell.github.io/presentations/sales-presentation/generated/specify/">deeper dive &rarr;</a></li>
+ <li><b>Akka Verify</b> — AI, under control · <a href="https://tylerjewell.github.io/presentations/akka-verify/">deeper dive &rarr;</a></li>
+ <li><b>Akka Token Shredder</b> — AI that lowers its own bill · <a href="https://tylerjewell.github.io/presentations/sales-presentation/generated/token-shredder/">deeper dive &rarr;</a></li>
+ </ul>
+
+ <h2>Akka customers</h2>
+ <p class="custflow">
+ <a href="https://akka.io/blog/manulife-selects-akka-to-operationalize-agentic-ai">Manulife</a><span class="d">·</span><a href="https://akka.io/customer-stories/john-deere">John Deere</a><span class="d">·</span><a href="https://akka.io/customer-stories/swiggy">Swiggy</a><span class="d">·</span><a href="https://akka.io/customer-stories/tubi">Tubi</a><span class="d">·</span><a href="https://akka.io/customer-stories/verizon">Verizon</a><span class="d">·</span><a href="https://akka.io/customer-stories/capital-one">Capital One</a><span class="d">·</span><a href="https://akka.io/customer-stories/walmart">Walmart</a><span class="d">·</span><a href="https://akka.io/customer-stories/doctolib">Doctolib</a><span class="d">·</span><a href="https://akka.io/customer-stories/norwegian-cruise-line">Norwegian Cruise Line</a><span class="d">·</span><a href="https://akka.io/customer-stories/cern">CERN</a><span class="d">·</span><a href="https://akka.io/customer-stories/renault">Renault</a><span class="d">·</span><a href="https://akka.io/customer-stories/eero">Amazon eero</a><span class="d">·</span><a href="https://akka.io/blog/news-akka-and-deloitte">Deloitte</a><span class="d">·</span><a href="https://akka.io/customer-stories/hpe">HPE</a><span class="d">·</span><a href="https://akka.io/customer-stories/mcm-spa">MCM SpA</a><span class="d">·</span><a href="https://akka.io/customer-stories/icon-solutions">Icon Solutions</a><span class="d">·</span><a href="https://akka.io/customer-stories/dream11">Dream11</a><span class="d">·</span><a href="https://akka.io/customer-stories/deductive-ai">DeductiveAI</a><span class="d">·</span><a href="https://akka.io/customer-stories/coho-ai">Coho AI</a><span class="d">·</span><a href="https://akka.io/customer-stories/trust1team">Trust1Team</a><span class="d">·</span><a href="https://akka.io/customer-stories/esdiac">Esdiac</a><span class="d">·</span><a href="https://akka.io/customer-stories/yields">Yields</a><span class="d">·</span><a href="https://akka.io/customer-stories/llaama">Llaama</a><span class="d">·</span><a href="https://akka.io/customer-stories/ramen">Ramen</a><span class="d">·</span><a href="https://akka.io/customer-stories/kodou">Kodou</a><span class="d">·</span><a href="https://akka.io/customer-stories/leap-rail">Leap Rail</a><span class="d">·</span><a href="https://akka.io/customer-stories/judopay">Judopay</a><span class="d">·</span><a href="https://akka.io/customer-stories/cone-center">Cone Center</a><span class="d">·</span><a href="https://akka.io/customer-stories/mrcall">MrCall</a><span class="d">·</span><a href="https://akka.io/customer-stories/55rush">55Rush</a><span class="d">·</span><a href="https://akka.io/customer-stories/klubraum">Klubraum</a><span class="d">·</span><a href="https://akka.io/customer-stories/simplifier">Simplifier</a><span class="d">·</span><a href="https://akka.io/customer-stories/teammood">TeamMood</a><span class="d">·</span><a href="https://akka.io/customer-stories/datylon">Datylon</a><span class="d">·</span><a href="https://akka.io/customer-stories/horn">Horn</a><span class="d">·</span><a href="https://akka.io/customer-stories/retisio">RETISIO</a><span class="d">·</span><a href="https://akka.io/customer-stories/giist">Giist Social</a>
+ </p>
+
+ <h2>What Akka provides — and what it does not</h2>
+ <div class="twocol">
+ <div class="panel yes">
+ <h3>Akka provides</h3>
+ <ul>
+ <li>The <b>Akka Agentic AI Platform</b> — SDK, CLI, MCP server, and the durable, elastic runtime for building and running agents.</li>
+ <li><b>AAO managed regions</b> installed inside Kyivstar's datacenter — both the multi-tenant serverless environment and single-tenant private installs.</li>
+ <li><b>Day-2 operations</b>: runtime patching, rolling zero-downtime updates, elastic autoscaling, HA/DR, and cross-region failover — installed and actively maintained remotely.</li>
+ <li><b>Multi-tenancy</b> for SMB density and <b>single-tenant isolation</b> for enterprise, from one platform.</li>
+ <li><b>Sovereignty controls</b>: data resident in Kyivstar's environment, encryption at rest and in transit, mTLS zero-trust between regions, IAM integration.</li>
+ <li><b>Observability</b> via the Control Tower and forwarding to Kyivstar's chosen vendor.</li>
+ <li>A <b>regulator-approved</b> runtime already deployed in financial institutions under supervision.</li>
+ </ul>
+ </div>
+ <div class="panel no">
+ <h3>Akka does not provide</h3>
+ <ul>
+<li><b>Datacenter or cloud infrastructure.</b> Kyivstar supplies the compute, storage, and network the platform runs on.</li>
+<li><b>The customer-facing portal / marketplace</b> and metering-to-invoice for the 100,000 businesses — Kyivstar builds and owns it.</li>
+ <li><b>The agents themselves.</b> Applications are built by customers, Kyivstar, or SIs on the SDK; Akka supplies the platform, not the use cases.</li>
+ <li><b>End-customer L1/L2 support and onboarding</b> — Kyivstar fronts the customer relationship; Akka provides L3 platform support.</li>
+ </ul>
+ </div>
+ </div>
+
+ <h2>Who manages what</h2>
+ <p>The cleanest way to frame roles is by the interfaces each team touches. Kyivstar owns the customer relationship and the experience around it; its ops teams run the day-to-day; Akka's SRE teams keep the platform itself healthy.</p>
+ <div class="access">
+ <table>
+ <thead>
+ <tr><th>Interface</th><th>Kyivstar's customers</th><th>Kyivstar internal ops</th><th>Akka SRE</th></tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td class="row-h">Portal &amp; storefront</td>
+ <td class="on">Sign up, provision, self-serve, view usage &amp; billing</td>
+ <td class="on">Build and brand the portal; onboard and support tenants</td>
+ <td class="off">—</td>
+ </tr>
+ <tr>
+ <td class="row-h">Akka SDK / CLI / MCP</td>
+ <td class="on">Build and deploy their own agents locally</td>
+ <td class="on">Build agents; template starter apps for tenants</td>
+ <td class="off">—</td>
+ </tr>
+ <tr>
+ <td class="row-h">Service deployment &amp; scaling</td>
+ <td class="on">Deploy and scale within their own tenant</td>
+ <td class="on">Manage tenant quotas, capacity, and environments</td>
+ <td class="on">Underlying autoscaling &amp; elasticity</td>
+ </tr>
+ <tr>
+ <td class="row-h">Observability</td>
+ <td class="on">Logs, traces, evals for their own services</td>
+ <td class="on">Fleet-wide monitoring via the Control Tower</td>
+ <td class="on">Platform health, patching, incident response</td>
+ </tr>
+ <tr>
+ <td class="row-h">Region install &amp; day-2 ops</td>
+ <td class="off">—</td>
+ <td class="on">Provide windows &amp; cloud account — or, if trained, run day-2 ops</td>
+ <td class="on">Install &amp; patch; maintain remotely, or train Kyivstar to operate</td>
+ </tr>
+ <tr>
+ <td class="row-h">Federation plane / accounts</td>
+ <td class="off">—</td>
+ <td class="on">Org, roles, access control, billing metadata</td>
+ <td class="on">Operate the coordination plane</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ <p><b>Ops maturity path.</b> With enough experience and training, Kyivstar's internal ops team could over time take on the Akka SRE functions — installation, patching, HA/DR, and failover — running the fleet independently under Akka's coordination.</p>
+ <p><b>Go-to-market.</b> Akka frequently co-sells with its partners, and we would expect the same here: explaining the state of agentic AI to the market, helping sell to the customer against their specific business needs, and co-delivering custom POCs for large enterprises that need to see the system working before they buy.</p>
+ <p>On branding: the customer-facing layer — portal, storefront, onboarding, billing — is Kyivstar's to design and brand, with co-branding open to discussion. White-labeling the developer toolchain (<b>SDK, CLI, MCP server</b>) and the platform-management interfaces is <b>possible but not the default</b>: producing Kyivstar-flavored builds of that tooling is an Akka engineering effort that has to be scoped separately, as it requires significant custom R&amp;D. The base case ships the Akka-branded toolchain.</p>
+
+ <h2>Architecture, in brief</h2>
+ <p>Today Akka separates a global <b>Federation Plane</b> (accounts, billing metadata, deployment coordination, operated by Akka) from the <b>Application Planes</b> that run workloads inside Kyivstar's infrastructure. Application data never leaves the application plane, and if the Federation Plane is unavailable, running applications continue uninterrupted. Within the next <b>6–9 months</b> Akka will ship a version of AAO that requires no Federation Plane at all — a fully self-contained installation, which further strengthens the sovereignty story for Kyivstar's territories. There are more details on how it works in the accompanying <b>AAO Technical Overview</b>.</p>
+
+ <h2>Installation and maintenance</h2>
+ <p>Akka installs a region into a prepared cloud account, provisioning networking, DNS, a Kubernetes cluster, an encrypted persistence store, a registry, and the Akka operators — then patches and upgrades it through a recurring maintenance window. Environment provisioning and ongoing configuration are driven by a <b>Crossplane</b>-based control substrate.</p>
+ <p>To date, that substrate has been engineered against the VPCs of the major hyperscalers (AWS, GCP, Azure). Installing into Kyivstar's own datacenter and cloud fabric is an <b>engineering effort</b>: the Crossplane providers and environment-management substrate would have to be adapted to Kyivstar's infrastructure primitives. Scoping that adaptation is a required early step and a gating item for timeline.</p>
+
+ <h2>Commercial constructs to explore</h2>
+ <ul class="constructs">
+ <li>
+ <p class="h">OEM / wholesale pricing</p>
+ <p class="d">Kyivstar acquires platform capacity at a wholesale rate and resells to its customers at its own price — Akka is not a party to the SMB revenue. Wholesale basis to define: consumption (throughput / compute) versus per-active-tenant capacity blocks.</p>
+ </li>
+ <li>
+ <p class="h">Private-install licensing (enterprise)</p>
+ <p class="d">Per-region license plus an annual operations-and-support fee for each single-tenant AAO installation, with Kyivstar as reseller of record to the enterprise account.</p>
+ </li>
+ <li>
+ <p class="h">Operating model &amp; support tiering</p>
+ <p class="d">Choose per deployment: Akka operates each environment remotely, or Akka trains and certifies Kyivstar's SREs to run the fleet themselves — the latter structured as enablement plus ongoing coordination. Either way, Kyivstar fronts L1/L2 to end customers and Akka provides L3.</p>
+ </li>
+ <li>
+ <p class="h">Territory, term &amp; sovereignty commitments</p>
+ <p class="d">Scope of territories (all markets Kyivstar operates in), exclusivity if any, contract term, and written commitments that data and compute remain resident in-country per territory.</p>
+ </li>
+ <li>
+ <p class="h">Branding &amp; IP boundaries</p>
+ <p class="d">Scope of co-branding at Kyivstar's portal layer and trademark and usage terms; any white-labeling of the SDK, CLI, MCP, or platform would require a more involved conversation.</p>
+ </li>
+ </ul>
+
+ </section>
+ </div>
+
+
+</body>
+</html>
