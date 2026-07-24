@@ -87,6 +87,32 @@ To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
 `<name>-presentation/generated/overview/` or a single-file deck) — then re-run it and
 commit `index.html`.
 
+### 6. Corpus numbers (regulations / controls / penalties)
+Compliance counts are **live from the corpus, never hardcoded from memory**. Any time you
+edit content that cites them — a deck, an llms file, a battlecard, the website, anything —
+re-read the numbers from the corpus before publishing. Do not carry a number forward from a
+prior edit.
+
+The corpus is a separate repository (`../explain`, i.e. `C:\Users\tyler\explain`). Before
+reading:
+1. Go into the corpus repo and pull the latest, so any newly merged PRs are reflected. The
+   numbers depend on which branch is checked out — confirm you are on the branch that is
+   canonical for publishing.
+2. Read the counts with the script here, pointing it at the corpus:
+
+   ```bash
+   AKKA_CORPUS_PATH="C:/Users/tyler/explain/framework/regulations" python _build/corpus_counts.py
+   ```
+
+   It emits `regulations`, `controls` (authored, placeholders excluded), and penalty-bearing
+   `controls` / `regulations`. This script is the single source of truth — it supersedes any
+   manual grep counts. It refuses to guess: if the corpus is unreachable, the build fails
+   rather than shipping a stale number.
+
+3. Apply the same set everywhere the edit touches. For deck sources, fix the slide/asset then
+   rebuild `generated/`; for marker-based pages, `_build/apply_corpus.py` rewrites the marked
+   numbers in place.
+
 ## Design system
 
 The rulebook for how these decks look. Every deck is dark-themed, built on the
