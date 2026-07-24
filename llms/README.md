@@ -5,12 +5,13 @@ published on akka.io, so divergence can be seen and reconciled deliberately.
 
 ## Files
 
-**Canonical pair (deliverables):**
+**Canonical deliverables:**
 
 | File | Source | Notes |
 |---|---|---|
 | `llms.txt` | Merged (this repo) | Thin, spec-compliant companion index — H1, blockquote, curated link sections, `## Optional`. Generated from `llms-master.txt`. All links verified 200 / no-redirect against the live site 2026-07-11. |
-| `llms-master.txt` | Merged (this repo) | Full-content overview (the `llms-full.txt` equivalent). Union of the local superset + both web files, on a standard-aligned skeleton. 451 lines. Adopts the live 4-dimension framing (Never Fail / Self-Governing / Self-Improving / For Every Team) and live install commands. |
+| `llms-master.txt` | Merged (this repo) | Full-content overview (the `llms-full.txt` equivalent). Restructured 2026-07-12 around the single-runtime differentiator, the three advantages (fastest way to production / cheapest AI to run / continuous enforcement), and the four-offering stack (Akka Agentic AI Platform, Akka Token Shredder, Akka Specify, Akka Verify). Retired the 4-dimension framing (Never Fail / Self-Governing / Self-Improving / For Every Team). Full prove/proof scrub applied; corpus numbers updated to 191 regs / 969 controls / 133 with penalties (verify against corpus before publishing). |
+| `llms-full.txt` | Merged (this repo) + `doc.akka.io` | Generated 2026-07-13. The comprehensive machine-ingest file: the full corporate positioning (all of `llms-master.txt`) followed by the complete developer documentation content pulled from `doc.akka.io/llms-full.txt` (an index of every doc page plus the full text of each). ~1.5 MB, ~29,300 lines. Rebuild by concatenating `llms-master.txt` + a fresh `curl -sSL https://doc.akka.io/llms-full.txt`. This is the candidate for what `akka.io/llms-full.txt` should serve. |
 
 **Raw sources / snapshots (reference):**
 

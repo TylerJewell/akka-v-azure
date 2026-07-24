@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Akka Governance — four-stage demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --black: #060606;
+    --panel: #0D0D0D;
+    --border: #1C1C1C;
+    --yellow: #F5C518;
+    --white: #fff;
+    --muted: #888;
+    --green: #28C840;
+    --blue: #5BA3F5;
+    --red: #ff6b6b;
+    --pad: 32px;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--black); color: #ddd; margin: 0;
+    font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    height: 100%; overflow: hidden;
+  }
+  body {
+    display: flex; flex-direction: column;
+    padding: 24px var(--pad) 24px 0;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
+    background-size: 48px 48px; pointer-events:none; z-index:0;
+  }
+
+  /* ── Top: eyebrow + headline + phase pills ── */
+  .gd-top {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 0 var(--pad); margin-bottom: 20px;
+    gap: 32px; flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .gd-eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--yellow); font-weight: 600; margin-bottom: 8px;
+  }
+  .gd-eyebrow::before {
+    content: ''; display: inline-block; width: 28px; height: 2px;
+    background: var(--yellow); margin-right: 10px; vertical-align: middle;
+  }
+  .gd-headline {
+    font-size: clamp(22px, 2.5vw, 34px); font-weight: 700;
+    line-height: 1.1; letter-spacing: -0.02em; color: var(--white);
+  }
+  .gd-headline .accent { color: var(--yellow); }
+
+  .gd-phases {
+    display: flex; gap: 12px; flex-shrink: 0;
+  }
+  .gd-phase {
+    border-left: 3px solid #222; padding: 6px 14px;
+    min-width: 130px; cursor: pointer;
+    transition: border-color .3s, color .3s, background .3s;
+  }
+  .gd-phase:hover { background: rgba(245,197,24,0.04); }
+  .gd-phase-num {
+    font-family: 'SF Mono', Consolas, monospace; font-size: 10px;
+    color: #555; letter-spacing: 1px;
+  }
+  .gd-phase-title {
+    font-size: 13px; font-weight: 700; color: #777;
+    letter-spacing: -0.01em;
+  }
+  .gd-phase.active { border-left-color: var(--yellow); }
+  .gd-phase.active .gd-phase-title { color: var(--yellow); }
+  .gd-phase.done { border-left-color: var(--green); }
+  .gd-phase.done .gd-phase-title { color: #999; }
+  .gd-phase.done .gd-phase-title::after { content: ' ✔'; color: var(--green); }
+
+  /* Terminal tabs */
+  .gd-tabs {
+    display: flex; flex-shrink: 0;
+    background: #070707; border-bottom: 1px solid var(--border);
+  }
+  .gd-tab {
+    flex: 1; padding: 10px 14px; cursor: pointer;
+    font-size: 11px; font-weight: 600;
+    color: #666; letter-spacing: 1px; text-transform: uppercase;
+    border-right: 1px solid var(--border);
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    transition: color .2s, background .2s, border-color .2s;
+    display: flex; align-items: center; gap: 8px;
+    user-select: none;
+  }
+  .gd-tab:last-child { border-right: none; }
+  .gd-tab:hover { background: rgba(245,197,24,0.04); color: #aaa; }
+  .gd-tab.active {
+    color: var(--yellow);
+    background: #0A0A0A;
+    border-bottom-color: var(--yellow);
+  }
+  .gd-tab.done span::after { content: ' ✔'; color: var(--green); }
+  .gd-tab.done:not(.active) { color: #888; }
+
+  /* ── Main: terminal + artifact ── */
+  .gd-main {
+    flex: 1; min-height: 0;
+    display: flex; gap: 28px;
+    padding-left: 0;
+    position: relative; z-index: 1;
+  }
+  .gd-term-col {
+    width: 48%; flex-shrink: 0;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .gd-terminal {
+    background: #0A0A0A;
+    border: 1px solid var(--border);
+    border-top-right-radius: 12px; border-bottom-right-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 120px rgba(245,197,24,0.05);
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .gd-term-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    font-family: 'SF Mono', Consolas, monospace; font-size: 12px;
+  }
+  .gd-term-header .p-bracket { color: #555; }
+  .gd-term-header .p-user { color: var(--green); font-weight: 600; }
+  .gd-term-header .p-at { color: #555; }
+  .gd-term-header .p-host { color: var(--blue); font-weight: 600; }
+  .gd-term-header .p-dir { color: #555; }
+  .gd-term-header .p-dollar { color: var(--yellow); font-weight: 700; margin-left: 2px; }
+  .gd-term-body {
+    padding: 14px 24px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 15px; line-height: 1.6;
+    flex: 1; min-height: 0; overflow-y: auto;
+  }
+  .gd-term-body::-webkit-scrollbar { width: 4px; }
+  .gd-term-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+  .gd-tline { white-space: pre-wrap; }
+  .gd-tline .prompt { color: var(--yellow); user-select: none; }
+  .gd-tline .cmd { color: var(--white); }
+  .gd-tline .ai { color: #d4d4d4; font-style: italic; }
+  .gd-tline .success { color: var(--green); }
+  .gd-tline .warn { color: var(--yellow); font-weight: 600; }
+  .gd-tline .user-ans { color: var(--blue); }
+  .gd-tline .ai-prefix { color: var(--blue); font-weight: 700; user-select: none; }
+  .gd-tline .ai-indent { color: transparent; user-select: none; white-space: pre; }
+  .gd-stage-rule {
+    border-top: 1px dashed #333; margin: 16px 0 12px;
+    color: #555; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    padding-top: 8px;
+  }
+
+  .gd-cursor {
+    display: inline-block; width: 7px; height: 13px;
+    background: var(--yellow); vertical-align: middle;
+    animation: gdblink 1s step-end infinite;
+  }
+  @keyframes gdblink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* ── Artifact panel (right) ── */
+  .gd-artifact-col {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .gd-artifact {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .gd-art-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+  }
+  .gd-art-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--yellow); font-weight: 600;
+  }
+  .gd-art-sub {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11px; color: #555; margin-left: auto;
+  }
+  .gd-art-body {
+    flex: 1; min-height: 0; overflow-y: auto; overflow-x: auto;
+    padding: 14px 18px;
+  }
+  .gd-art-body::-webkit-scrollbar { width: 4px; }
+  .gd-art-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+  /* Stage 1: control rows */
+  .gd-row {
+    border-left: 2px solid var(--yellow);
+    background: rgba(245,197,24,0.04);
+    padding: 12px 14px; margin-bottom: 10px;
+    border-radius: 0 6px 6px 0;
+    opacity: 0; transform: translateX(-12px);
+    transition: opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+    font-size: 14px; line-height: 1.5;
+  }
+  .gd-row.show { opacity: 1; transform: none; }
+  .gd-row-top {
+    display: flex; justify-content: space-between; gap: 10px;
+    margin-bottom: 4px; align-items: baseline;
+  }
+  .gd-row-title { color: var(--white); font-weight: 600; }
+  .gd-row-cite {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 11.5px; color: var(--yellow);
+    background: rgba(245,197,24,0.1); padding: 2px 7px; border-radius: 3px;
+    white-space: nowrap;
+  }
+  .gd-row-desc { color: #bbb; font-size: 13.5px; }
+
+  /* Stage 2: matrix table */
+  .gd-matrix {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  .gd-matrix th {
+    text-align: left; color: var(--yellow); font-weight: 600;
+    text-transform: uppercase; font-size: 9.5px; letter-spacing: 1.5px;
+    padding: 5px 7px; border-bottom: 1px solid #222;
+    position: sticky; top: 0; background: var(--panel);
+    white-space: nowrap;
+  }
+  .gd-matrix td {
+    padding: 5px 7px; border-bottom: 1px solid #181818;
+    vertical-align: middle; color: #bbb;
+    white-space: nowrap;
+  }
+  .gd-matrix tr {
+    opacity: 0; transform: translateY(-4px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .gd-matrix tr.show { opacity: 1; transform: none; }
+  .gd-mx-kind {
+    display: inline-block; padding: 2px 6px; border-radius: 3px;
+    font-size: 10px; font-weight: 600; white-space: nowrap;
+  }
+  .gd-mx-kind.guardrail     { background: rgba(91,163,245,0.15); color: var(--blue); }
+  .gd-mx-kind.hitl          { background: rgba(245,197,24,0.15); color: var(--yellow); }
+  .gd-mx-kind.eval          { background: rgba(40,200,64,0.15); color: var(--green); }
+  .gd-mx-kind.eval-periodic { background: rgba(40,200,64,0.15); color: var(--green); }
+  .gd-mx-kind.eval-event    { background: rgba(126,200,227,0.15); color: #7EC8E3; }
+  .gd-mx-kind.sanitizer     { background: rgba(199,146,234,0.15); color: #c792ea; }
+  .gd-mx-kind.hotl          { background: rgba(255,107,107,0.15); color: var(--red); }
+  .gd-mx-kind.ci-gate       { background: rgba(150,150,150,0.15); color: #aaa; }
+  .gd-mx-kind.halt          { background: rgba(255,110,199,0.15); color: #ff6ec7; }
+  .gd-mx-kind.doc           { background: rgba(150,150,150,0.15); color: #aaa; }
+  /* .gd-erow-sub retired — subtitle removed from row headers to compress rows. */
+  .gd-mx-src {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 10px; color: #777;
+  }
+
+  /* Stage 3: code block */
+  .gd-code {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 13px; line-height: 1.7; color: #ccc;
+    white-space: pre; padding: 4px 0;
+  }
+  .gd-code .kw   { color: #c792ea; }
+  .gd-code .typ  { color: var(--yellow); }
+  .gd-code .ann  { color: var(--blue); }
+  .gd-code .str  { color: #c3e88d; }
+  .gd-code .com  { color: #555; font-style: italic; }
+  .gd-code .id   { color: #ddd; }
+  .gd-line {
+    display: block; padding: 0 12px;
+    border-left: 2px solid transparent;
+    transition: background .6s ease, border-color .6s ease;
+  }
+  .gd-line.hit {
+    background: rgba(245,197,24,0.07);
+    border-left-color: var(--yellow);
+  }
+  .gd-callout {
+    color: var(--yellow); font-style: normal;
+    background: rgba(245,197,24,0.12); padding: 1px 6px;
+    border-radius: 3px; margin-left: 8px; font-size: 10.5px;
+  }
+
+  /* Stage 3: expandable enforce matrix */
+  /* The enforce-row list now scrolls vertically as a unit — each expanded
+     row takes exactly as much height as its content requires, instead of
+     all rows being clamped to the same fixed height. */
+  .gd-enforce {
+    display: block;            /* not flex — let each row's height be its own */
+    height: 100%; min-height: 0; overflow-y: auto;
+    padding-right: 4px;
+  }
+  .gd-enforce > .gd-erow + .gd-erow { margin-top: 6px; }
+  .gd-erow {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    overflow: hidden;
+    transition: background .2s, border-color .2s;
+  }
+  .gd-erow:hover { border-color: #2a2a2a; }
+  .gd-erow.expanded {
+    border-color: var(--yellow);
+    background: rgba(245,197,24,0.04);
+  }
+  .gd-erow.flash { animation: gd-flash .8s ease; }
+  @keyframes gd-flash {
+    0%   { background: rgba(245,197,24,0.25); }
+    100% { background: rgba(245,197,24,0.04); }
+  }
+  .gd-erow-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12.5px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .gd-erow-chevron {
+    color: #666; font-family: 'SF Mono', Consolas, monospace;
+    width: 12px; text-align: center;
+    transition: transform .2s, color .2s;
+  }
+  .gd-erow.expanded .gd-erow-chevron {
+    color: var(--yellow); transform: rotate(90deg);
+  }
+  .gd-erow-title { color: #ddd; flex: 1; font-weight: 500; }
+  .gd-erow .gd-mx-kind { font-size: 10px; }
+  .gd-erow-cite {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 10.5px; color: #888;
+  }
+  .gd-erow-bodywrap {
+    display: none;
+    border-top: 1px solid var(--border);
+    background: #060606;
+  }
+  .gd-erow.expanded .gd-erow-bodywrap { display: block; }
+  .gd-erow-filename {
+    color: var(--blue); font-size: 11px;
+    font-family: 'SF Mono', Consolas, monospace;
+    padding: 6px 14px;
+    background: rgba(91,163,245,0.05);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .gd-erow-body {
+    padding: 12px 14px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12.5px; line-height: 1.6;
+    color: #ddd;
+    white-space: pre-wrap;       /* soft-wrap long lines so configuration is fully readable */
+    word-break: break-word;
+  }
+  .gd-erow-body::-webkit-scrollbar { width: 4px; }
+  .gd-erow-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  .gd-erow-body .kw  { color: #c792ea; }
+  .gd-erow-body .ann { color: var(--blue); }
+  .gd-erow-body .typ { color: var(--yellow); }
+  .gd-erow-body .str { color: #c3e88d; }
+  .gd-erow-body .com { color: #555; font-style: italic; }
+  .gd-erow-body .key { color: var(--yellow); }
+
+  /* Stage 4: drift panel */
+  .gd-drift-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; margin-bottom: 8px;
+    border-radius: 6px; font-size: 13.5px;
+    border-left: 2px solid #333;
+    background: rgba(255,255,255,0.02);
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .gd-drift-row.show { opacity: 1; transform: none; }
+  .gd-drift-row.pass { border-left-color: var(--green); }
+  .gd-drift-row.warn { border-left-color: var(--yellow); background: rgba(245,197,24,0.06); }
+  .gd-drift-row.fail { border-left-color: var(--red); background: rgba(255,107,107,0.06); }
+  .gd-drift-name { color: var(--white); }
+  .gd-drift-cite { font-family: 'SF Mono', Consolas, monospace; font-size: 10px; color: #777; }
+  .gd-drift-status { font-size: 11px; font-weight: 600; }
+  .gd-drift-status.pass { color: var(--green); }
+  .gd-drift-status.warn { color: var(--yellow); }
+  .gd-drift-status.fail { color: var(--red); }
+
+  .gd-change-card {
+    margin-top: 16px; padding: 14px;
+    background: rgba(91,163,245,0.06);
+    border: 1px solid rgba(91,163,245,0.3);
+    border-radius: 8px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .gd-change-card.show { opacity: 1; transform: none; }
+  .gd-change-card h4 {
+    margin: 0 0 8px; color: var(--blue);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .gd-change-card ul {
+    margin: 0; padding: 0; list-style: none;
+    font-size: 12px; color: #ccc; line-height: 1.7;
+  }
+  .gd-change-card li::before {
+    content: '→'; color: var(--blue); margin-right: 8px;
+  }
+
+  /* Stub placeholder for unfinished stages */
+  .gd-stub {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; color: #555; font-size: 13px;
+    text-align: center; padding: 40px;
+    line-height: 1.6;
+  }
+  .gd-stub strong { color: var(--yellow); display: block; margin-bottom: 8px; }
+
+  /* Hint bar */
+  .gd-hint {
+    position: fixed; bottom: 12px; right: 16px;
+    font-size: 11px; color: #555;
+    font-family: 'SF Mono', Consolas, monospace;
+    z-index: 10;
+  }
+  .gd-hint kbd {
+    background: #222; border: 1px solid #333; border-radius: 3px;
+    padding: 1px 6px; color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+<div class="gd-top">
+  <div>
+    <div class="gd-eyebrow">Governance demo</div>
+    <div class="gd-headline">Define risk. Identify controls. <span class="accent">Enforce. Improve.</span></div>
+  </div>
+  <div class="gd-phases">
+    <div class="gd-phase" data-phase="1"><div class="gd-phase-title">Define risk</div></div>
+    <div class="gd-phase" data-phase="2"><div class="gd-phase-title">Identify controls</div></div>
+    <div class="gd-phase" data-phase="3"><div class="gd-phase-title">Enforce posture</div></div>
+    <div class="gd-phase" data-phase="4"><div class="gd-phase-title">Improve and adapt</div></div>
+  </div>
+</div>
+
+<div class="gd-main">
+  <div class="gd-term-col">
+    <div class="gd-terminal">
+      <div class="gd-tabs" id="termTabs">
+        <div class="gd-tab" data-tab="1"><span>Define risk</span></div>
+        <div class="gd-tab" data-tab="2"><span>Identify controls</span></div>
+        <div class="gd-tab" data-tab="3"><span>Enforce posture</span></div>
+        <div class="gd-tab" data-tab="4"><span>Improve and adapt</span></div>
+      </div>
+      <div class="gd-term-body" id="termBody"></div>
+    </div>
+  </div>
+
+  <div class="gd-artifact-col">
+    <div class="gd-artifact">
+      <div class="gd-art-header">
+        <span class="gd-art-label" id="artLabel">0 Regulations &middot; 0 Controls</span>
+      </div>
+      <div class="gd-art-body" id="artBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const termBody  = document.getElementById('termBody');
+  const artLabel  = document.getElementById('artLabel');
+  const artBody   = document.getElementById('artBody');
+  const phaseEls  = document.querySelectorAll('.gd-phase');
+
+  // Extract framework name from a citation, or null for project/corporate rules.
+  function frameworkOf(cite){
+    if (!cite) return null;
+    if (/project|policy|Acme/i.test(cite)) return null;
+    const m = cite.match(/^([A-Z][A-Za-z\s]+?)(?:\s+(Art\.|Rec\.|§|\+|v\d))/);
+    return (m ? m[1] : cite).trim();
+  }
+  function refreshRegulationLabel(){
+    const rows = artBody.querySelectorAll('.gd-row .gd-row-cite');
+    const fwks = new Set();
+    rows.forEach(el => {
+      const f = frameworkOf(el.textContent);
+      if (f) fwks.add(f);
+    });
+    artLabel.textContent = fwks.size + ' Regulations · ' + rows.length + ' Controls';
+  }
+
+  // ── Script: each entry runs one terminal step.
+  // Types: cmd, ai, user, ok, warn, blank, divider, lines, art-set, art-add, art-replace, phase, pause
+  const STAGE1 = [
+    { type:'phase', phase:1, label:'0 Regulations · 0 Controls' },
+    { type:'cmd', text:'akka ai survey start "loan-adjudication-assistant"' },
+    { type:'ok',  text:'[survey] new risk survey started · 7 areas, 14 questions estimated' },
+    { type:'blank' },
+
+    { type:'ai',   text:'Where does this system operate? (countries / regions)' },
+    { type:'user', text:'EU — Italy, France. Plus UK.' },
+    { type:'art-add', row: {
+      title: 'EU AI Act applies (high-risk pathway possible)',
+      cite: 'EU AI Act',
+      desc: 'System operating in EU member states is subject to the AI Act; Annex III classification pending later answers.',
+      src: 'derived from: jurisdiction'
+    }},
+    { type:'art-add', row: {
+      title: 'UK ICO automated-decision rules apply',
+      cite: 'UK GDPR Art. 22',
+      desc: 'Operating in the UK invokes ICO guidance on automated decision-making.',
+      src: 'derived from: jurisdiction'
+    }},
+    { type:'blank' },
+
+    { type:'ai',   text:'Does the system inform decisions that affect a person’s job, housing, credit, or benefits?' },
+    { type:'user', text:'Yes — consumer-loan credit decisions.' },
+    { type:'art-add', row: {
+      title: 'High-risk AI: credit scoring (Annex III §5b)',
+      cite: 'EU AI Act Art. 6',
+      desc: 'Consumer-credit decisioning is Annex III high-risk → conformity assessment, technical file, post-market monitoring.',
+      src: 'derived from: decision domain'
+    }},
+    { type:'art-add', row: {
+      title: 'GDPR right to human review of automated decisions',
+      cite: 'GDPR Art. 22',
+      desc: 'Subjects must be able to contest a fully-automated decision and request human intervention.',
+      src: 'derived from: decision domain'
+    }},
+    { type:'blank' },
+
+    { type:'ai',   text:'Will a human review every decision before it is final?' },
+    { type:'user', text:'No — auto-approve under €5000; human review above.' },
+    { type:'art-add', row: {
+      title: 'Effective human oversight on auto-approved cases',
+      cite: 'EU AI Act Art. 14',
+      desc: 'Auto-approval path requires real (not nominal) oversight: monitoring, override capability, periodic sampling.',
+      src: 'derived from: oversight model'
+    }},
+    { type:'art-add', row: {
+      title: 'Explanation of the decision available on request',
+      cite: 'UK ICO + GDPR Rec. 71',
+      desc: 'Applicant must be able to obtain the meaningful logic of the credit decision.',
+      src: 'derived from: oversight model + jurisdiction'
+    }},
+    { type:'blank' },
+
+    { type:'ai',   text:'…50+ more survey questions cover data, retention, residency, refusals, workforce literacy, prohibited capabilities, third-party agents, incident reporting, organisational size, sectoral law, and supervisors. Skipping for this demo.' },
+    { type:'blank' },
+    { type:'warn', text:'✨ 6 controls derived from this slice · 50+ questions still to ask · ready for Eval Matrix derivation' },
+  ];
+
+  const STAGE2 = [
+    { type:'phase', phase:2, label:'Eval Matrix v1', sub:'8 regulation · 3 corporate · 1 project' },
+    { type:'art-set', kind:'matrix' },
+    { type:'cmd', text:'akka ai policy import acme-corp/refusal-rules.md' },
+    { type:'ok',  text:'[policy] 4 corporate rules imported ✔' },
+    { type:'cmd', text:'akka ai policy import acme-corp/escalation-thresholds.md' },
+    { type:'ok',  text:'[policy] 2 thresholds imported ✔' },
+    { type:'cmd', text:'akka ai matrix generate --corpus v2026.06' },
+    { type:'ok',  text:'[matrix] Deriving Eval Matrix v1 from survey + corpus...' },
+    { type:'blank' },
+
+    { type:'matrix-add', row: ['sanitizer',     'Strip PII before model sees it',          'GDPR Art. 5',                     'sanitizer · PII flavor · before-llm-call'] },
+    { type:'matrix-add', row: ['guardrail',     'Block protected-characteristic mentions', 'eu-ai-act.art10.2.f-inline',      'guardrail · after-llm-response'] },
+    { type:'matrix-add', row: ['guardrail',     'Refuse postal-code-primary decisions',    'Acme refusal rules',              'guardrail · before-tool-call'] },
+    { type:'matrix-add', row: ['hitl',          'Authorize high-impact tool calls',        'eu-ai-act.art14.4.c',             'HITL · guardrail flavor · before-tool-call'] },
+    { type:'matrix-add', row: ['hitl',          'Human approval for loans > €5000',        'Acme policy',                     'HITL · application flavor · pre-decision-pause'] },
+    { type:'matrix-add', row: ['eval-periodic', 'Demographic-parity drift watch, monthly', 'eu-ai-act.art10.2.f-aggregate',   'eval-periodic · drift-fairness-watch'] },
+    { type:'matrix-add', row: ['eval-event',    'Serious-incident detection',              'eu-ai-act.art73.detection',       'eval-event · on-incident-reporter'] },
+    { type:'matrix-add', row: ['doc',           'Incident reporting workflow (72h SLA)',   'eu-ai-act.art73.reporting-workflow','ci-gate · documentation-gate'] },
+    { type:'matrix-add', row: ['hotl',          'Deployer monitors and adjusts policy live','eu-ai-act.art26.1',              'hotl · deployer-runtime-monitoring'] },
+    { type:'matrix-add', row: ['doc',           'DPIA on file, refreshed annually',        'GDPR Art. 35',                    'ci-gate · documentation-gate'] },
+    { type:'matrix-add', row: ['halt',          'Operator stop button',                    'eu-ai-act.art14.4.e',             'halt · operator-regulator-stop'] },
+    { type:'matrix-add', row: ['halt',          'Graceful degradation on threshold breach','Acme threshold',                  'halt · graceful-degradation'] },
+
+    { type:'blank' },
+    { type:'warn', text:'✨ Eval Matrix v1 ready for sign-off · 12 controls' },
+  ];
+
+  const STAGE3 = [
+    { type:'phase', phase:3, label:'Generated bindings' },
+    { type:'art-set', kind:'enforce' },
+    { type:'cmd', text:'akka ai scaffold --from matrix' },
+    { type:'ok',  text:'[scaffold] Merging Eval Matrix with system design...' },
+    { type:'ok',  text:'[scaffold] Generating LoanAdjudicationWorkflow.java' },
+    { type:'ok',  text:'[scaffold] Injecting 9 enforcement points across 7 mechanisms...' },
+    { type:'blank' },
+
+    { type:'code-hit', line: 'sanitizer',   note: 'sanitizer · PII flavor · before-llm-call' },
+    { type:'ok',  text:'[scaffold] ✔ PII sanitizer wired at before-llm-call' },
+    { type:'code-hit', line: 'guardrail',   note: 'guardrail · before-tool-call · Acme refusal' },
+    { type:'ok',  text:'[scaffold] ✔ refusal guardrail attached at before-tool-call' },
+    { type:'code-hit', line: 'hotl',        note: 'HITL · guardrail flavor · before-tool-call' },
+    { type:'ok',  text:'[scaffold] ✔ HITL (guardrail flavor) wired → agent suspends inline pending authorization' },
+    { type:'code-hit', line: 'hitl',        note: 'HITL · application flavor · pre-decision-pause' },
+    { type:'ok',  text:'[scaffold] ✔ HITL workflow pause inserted → reviewer queue auto-generated' },
+    { type:'code-hit', line: 'eval',        note: 'eval-periodic · drift-fairness-watch' },
+    { type:'ok',  text:'[scaffold] ✔ periodic drift watch generated → monthly schedule registered' },
+    { type:'code-hit', line: 'event',       note: 'eval-event · on-incident-reporter' },
+    { type:'ok',  text:'[scaffold] ✔ incident-reporter event consumer → 72h SLA timer' },
+    { type:'code-hit', line: 'hotl-runtime', note: 'hotl · deployer-runtime-monitoring' },
+    { type:'ok',  text:'[scaffold] ✔ HOTL surface generated → live runtime feedback, no redeploy' },
+    { type:'code-hit', line: 'doc',         note: 'ci-gate · documentation-gate' },
+    { type:'ok',  text:'[scaffold] ✔ DPIA documentation gate wired into CI' },
+    { type:'code-hit', line: 'halt',        note: 'halt · operator-regulator-stop' },
+    { type:'ok',  text:'[scaffold] ✔ operator stop button registered as system-level halt' },
+
+    { type:'blank' },
+    { type:'cmd', text:'akka ai check --against matrix' },
+    { type:'ok',  text:'[check] 23 of 23 controls bound 1:1 to a single Akka primitive ✔' },
+    { type:'ok',  text:'[check] mechanism-coverage clean · survey-fact-coverage clean ✔' },
+    { type:'ok',  text:'[check] Audit trail covers every signed row ✔' },
+    { type:'warn', text:'✨ system generated · every control has a binding and a proof' },
+  ];
+
+  const STAGE4 = [
+    { type:'phase', phase:4, label:'Posture vs Eval Matrix' },
+    { type:'art-set', kind:'drift' },
+
+    { type:'cmd', text:'akka ai drift scan --window 30d' },
+    { type:'ok',  text:'[audit] mechanism-coverage clean · survey-fact-coverage clean · 714 controls' },
+    { type:'ok',  text:'[drift] Replaying 12,847 production interactions against Eval Matrix v1...' },
+    { type:'drift-add', row: { status:'pass', name:'PII sanitizer',                cite:'GDPR Art. 5',       msg:'0 leaks · 12,847 / 12,847' } },
+    { type:'drift-add', row: { status:'pass', name:'Refusal guardrail',            cite:'Acme refusal',      msg:'tripped 42× · all logged' } },
+    { type:'drift-add', row: { status:'pass', name:'HITL gate (> €5000)',     cite:'Acme policy',       msg:'1,204 reviewed · 0 bypass' } },
+    { type:'drift-add', row: { status:'warn', name:'Demographic parity',           cite:'EU AI Act Art. 15', msg:'disparity 0.18 · threshold 0.10' } },
+    { type:'drift-add', row: { status:'warn', name:'Refusal-rate HOTL',            cite:'Acme threshold',    msg:'9.2% / 24h · HOTL fired 3×' } },
+    { type:'drift-add', row: { status:'pass', name:'Special-category input guard', cite:'GDPR Art. 9',       msg:'blocked 7 · 0 leakage' } },
+    { type:'drift-add', row: { status:'pass', name:'Explanation quality',          cite:'UK ICO',            msg:'avg 0.91 · floor 0.85' } },
+    { type:'blank' },
+    { type:'warn', text:'[drift] 5 of 7 controls passing · 2 flagged for re-assessment' },
+    { type:'blank' },
+
+    { type:'cmd', text:'akka ai change declare --type model-swap --to gpt-4.1' },
+    { type:'ok',  text:'[change] Tier-1 change detected (model layer)' },
+    { type:'blank' },
+
+    { type:'cmd', text:'akka ai replay --traffic prod/last-90d --candidate gpt-4.1' },
+    { type:'ok',  text:'[replay] Loading 38,402 historical interactions from production journal...' },
+    { type:'ok',  text:'[replay] Re-running candidate against recorded decisions in sandbox...' },
+    { type:'drift-add', row: { status:'pass', name:'Replay coverage',                       cite:'90-day window',         msg:'38,402 cases · 96.3% match recorded outcome' } },
+    { type:'drift-add', row: { status:'warn', name:'Divergence cases',                      cite:'candidate vs baseline', msg:'1,411 differ · 87% are borderline approvals' } },
+    { type:'drift-add', row: { status:'pass', name:'No protected-characteristic regressions', cite:'EU AI Act Art. 10',     msg:'parity holds across every divergence cluster' } },
+    { type:'blank' },
+
+    { type:'cmd', text:'akka ai eval run --battery all --candidate gpt-4.1' },
+    { type:'ok',  text:'[eval] Running 12 matrix-derived evals against the candidate...' },
+    { type:'drift-add', row: { status:'pass', name:'Demographic parity → 0.07', cite:'EU AI Act Art. 15', msg:'was 0.18 · now under 0.10 threshold' } },
+    { type:'drift-add', row: { status:'pass', name:'Refusal rate → 7.2%',       cite:'Acme threshold',    msg:'was 9.2% · now under 8% threshold' } },
+    { type:'drift-add', row: { status:'pass', name:'Explanation quality → 0.93',     cite:'UK ICO',            msg:'was 0.91 · still above 0.85 floor' } },
+    { type:'blank' },
+
+    { type:'cmd', text:'akka ai finetune queue --from divergence-cases' },
+    { type:'ok',  text:'[finetune] 1,411 divergence cases queued for human-labeled review' },
+    { type:'ok',  text:'[finetune] Approved labels → training set for next candidate' },
+    { type:'ok',  text:'[finetune] Scheduled re-eval after next training run' },
+    { type:'blank' },
+
+    { type:'warn', text:'✨ The new model passed every check. Ready to run side-by-side with production for a final test. Flagged cases are queued to improve the next version.' },
+  ];
+
+  const STAGES = { 1: STAGE1, 2: STAGE2, 3: STAGE3, 4: STAGE4 };
+  const tabEls = document.querySelectorAll('#termTabs .gd-tab');
+  let currentStage = 1;
+  let stageScript = STAGE1;
+
+  // ── timing
+  const CMD_CHAR_MS  = 22;
+  const PAUSE_AFTER_CMD = 280;
+  const WAIT_BEFORE_RESPONSE = 380;
+  const PAUSE_AFTER_STEP = 320;
+  const PAUSE_AFTER_DIVIDER = 700;
+  const USER_DELAY = 600;
+
+  let idx = 0;
+  let token = 0;
+  let cursorEl = null;
+  let running = false;
+
+  function scrollTerm(){ termBody.scrollTop = termBody.scrollHeight; }
+  function scrollArt(){ artBody.scrollTop = artBody.scrollHeight; }
+  function removeCursor(){ if (cursorEl) { cursorEl.remove(); cursorEl = null; } }
+  function addCursor(parent){
+    removeCursor();
+    cursorEl = document.createElement('span');
+    cursorEl.className = 'gd-cursor';
+    parent.appendChild(cursorEl);
+  }
+  function appendLine(html){
+    const div = document.createElement('div');
+    div.className = 'gd-tline';
+    div.innerHTML = html;
+    termBody.appendChild(div);
+    scrollTerm();
+    return div;
+  }
+  function instantLine(cls, text, prefix=true){
+    appendLine(
+      (prefix ? '<span class="ai-prefix">AI &rarr; </span>' : '<span class="ai-indent">       </span>')
+      + '<span class="' + cls + '">' + escapeHtml(text) + '</span>'
+    );
+  }
+  function escapeHtml(s){
+    return s.replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
+  }
+
+  function typeText(span, text, charMs, cb, tk){
+    let i = 0;
+    function tick(){
+      if (tk !== token) return;
+      if (i < text.length){
+        span.textContent += text[i]; i++;
+        scrollTerm();
+        setTimeout(tick, charMs);
+      } else { cb && cb(); }
+    }
+    tick();
+  }
+
+  function setPhase(n){
+    phaseEls.forEach(p => {
+      const pn = +p.getAttribute('data-phase');
+      p.classList.toggle('active', pn === n);
+    });
+  }
+  function markPhaseDone(n){
+    phaseEls.forEach(p => {
+      const pn = +p.getAttribute('data-phase');
+      if (pn === n) { p.classList.remove('active'); p.classList.add('done'); }
+    });
+  }
+
+  // ── artifact renderers
+  function setArtifactKind(kind, label){
+    if (label) artLabel.textContent = label;
+    artBody.innerHTML = '';
+    artBody.dataset.kind = kind;
+    if (kind === 'matrix') {
+      artBody.innerHTML =
+        '<table class="gd-matrix"><thead><tr>'
+        + '<th>Kind</th><th>Control</th><th>Source</th><th>Enforcement</th>'
+        + '</tr></thead><tbody id="mxBody"></tbody></table>';
+    }
+    if (kind === 'code') {
+      artBody.innerHTML = renderCodeBlock();
+    }
+    if (kind === 'enforce') {
+      artBody.style.padding = '12px 14px';
+      artBody.innerHTML = renderEnforceMatrix();
+      bindEnforceClicks();
+    } else {
+      artBody.style.padding = '';
+    }
+    if (kind === 'drift') {
+      artBody.innerHTML = '<div id="driftBody"></div>';
+    }
+  }
+
+  // Stage 3 expandable rows: each has a generated artifact (code, config, monitor, etc.)
+  // One row per mechanism family — the 1:1 invariant means each row binds to a single mechanism.
+  const ENFORCE_ROWS = [
+    {
+      key: 'sanitizer',
+      kind: 'sanitizer',
+      title: 'Redact PII before the model sees it',
+      subtitle: 'Sanitizer · PII flavor · before-llm-call',
+      cite: 'GDPR Art. 5',
+      filename: '.akka/sanitizers/pii-sanitizer.yaml  (configuration)',
+      body:
+'<span class="com"># sanitizer · PII flavor · runs at before-llm-call</span>\n' +
+'<span class="key">mechanism</span>: sanitizer\n' +
+'<span class="key">flavor</span>: pii\n' +
+'<span class="key">hook</span>: before-llm-call\n' +
+'<span class="key">detect</span>:\n' +
+'  - email\n' +
+'  - iban\n' +
+'  - credit-card\n' +
+'  - tax-id\n' +
+'  - postal-code\n' +
+'<span class="key">action</span>: redact\n' +
+'<span class="key">preserve-length</span>: true\n' +
+'<span class="key">evidence</span>:\n' +
+'  emit: guardrail.sanitizer.redaction\n' +
+'  retain: 7y\n'
+    },
+    {
+      key: 'guardrail',
+      kind: 'guardrail',
+      title: 'Refuse postal-code-primary decisions',
+      subtitle: 'Guardrail · before-tool-call',
+      cite: 'Acme refusal',
+      filename: 'PostalCodeGuardrail.java  (generated code)',
+      body:
+'<span class="ann">@ComplianceControl</span>(\n' +
+'    id = <span class="str">"acme.refusal.postal-code"</span>,\n' +
+'    framework = Framework.<span class="typ">ACME_POLICY</span>,\n' +
+'    mechanism = <span class="str">"guardrail"</span>,\n' +
+'    hook = <span class="str">"before-tool-call"</span>,\n' +
+'    addons = {},\n' +
+'    flavor = <span class="str">""</span>)\n' +
+'<span class="kw">public class</span> <span class="typ">PostalCodeGuardrail</span>\n' +
+'    <span class="kw">implements</span> <span class="typ">BeforeToolCallGuard</span> {\n' +
+'\n' +
+'  <span class="ann">@Override</span>\n' +
+'  <span class="kw">public</span> Verdict check(ToolCallDraft d) {\n' +
+'    <span class="kw">if</span> (d.primarySignals().contains(<span class="str">"postal_code"</span>))\n' +
+'      <span class="kw">return</span> Verdict.refuse(\n' +
+'        <span class="str">"postal code may not be a primary signal"</span>);\n' +
+'    <span class="kw">return</span> Verdict.pass();\n' +
+'  }\n' +
+'}\n'
+    },
+    {
+      key: 'hotl',
+      kind: 'hitl',
+      title: 'Authorize high-impact tool calls',
+      subtitle: 'HITL · guardrail flavor · before-tool-call',
+      cite: 'EU AI Act Art. 14(4)(c)',
+      filename: '.akka/hitl/authorize-tool.yaml  (HITL · guardrail flavor)',
+      body:
+'<span class="com"># HITL · guardrail flavor — agent suspends inline until reviewer responds</span>\n' +
+'<span class="key">mechanism</span>: hitl\n' +
+'<span class="key">flavor</span>: guardrail\n' +
+'<span class="key">hook</span>: before-tool-call\n' +
+'<span class="key">applies-when</span>: tool.impact == high\n' +
+'<span class="key">reviewer-queue</span>: high-impact-tools@acme.com\n' +
+'<span class="key">sla</span>: 30m\n' +
+'<span class="key">on-timeout</span>: deny\n' +
+'<span class="key">evidence</span>:\n' +
+'  emit: hitl.guardrail.decision\n'
+    },
+    {
+      key: 'hitl',
+      kind: 'hitl',
+      title: 'Human approval for loans > €5000',
+      subtitle: 'HITL · application flavor · pre-decision-pause',
+      cite: 'Acme policy',
+      filename: 'LoanAdjudicationWorkflow.assess()  (workflow injection)',
+      body:
+'<span class="com">// hitl · pre-decision-pause — injected into Step("assess")</span>\n' +
+'<span class="kw">var</span> draft = agent.draftDecision(safe);\n' +
+'\n' +
+'<span class="kw">if</span> (draft.amount &gt; 5000) {\n' +
+'  <span class="kw">return</span> effects()\n' +
+'    .pause(humanApproval(<span class="str">"loan-approver-queue"</span>))\n' +
+'    .thenReply(<span class="kw">this</span>::onApproverDecision);\n' +
+'}\n' +
+'\n' +
+'<span class="com">// auto-generated: reviewer queue + audit trail + 7-day SLA</span>\n'
+    },
+    {
+      key: 'eval',
+      kind: 'eval-periodic',
+      title: 'Demographic-parity drift watch, monthly',
+      subtitle: 'Eval - periodic · drift-fairness-watch',
+      cite: 'EU AI Act Art. 10(2)(f)',
+      filename: 'DemographicParityWatch.java  (eval-periodic)',
+      body:
+'<span class="ann">@ComplianceControl</span>(\n' +
+'    id = <span class="str">"eu-ai-act.art10.2.f-aggregate"</span>,\n' +
+'    framework = Framework.<span class="typ">EU_AI_ACT</span>,\n' +
+'    mechanism = <span class="str">"eval-periodic"</span>,\n' +
+'    hook = <span class="str">""</span>,\n' +
+'    flavor = <span class="str">"drift-fairness-watch"</span>)\n' +
+'<span class="ann">@EvalPeriodic</span>(schedule = <span class="str">"monthly"</span>)\n' +
+'<span class="kw">public class</span> <span class="typ">DemographicParityWatch</span> {\n' +
+'\n' +
+'  <span class="ann">@Eval</span>\n' +
+'  <span class="kw">public</span> EvalReport check(EvalContext ctx) {\n' +
+'    <span class="kw">var</span> sample = ctx.sample(Duration.ofDays(30));\n' +
+'    <span class="kw">return</span> Parity.measure(sample.groupByProtected())\n' +
+'                 .require(<span class="str">0.10</span>)\n' +
+'                 .emitEvidence();\n' +
+'  }\n' +
+'}\n'
+    },
+    {
+      key: 'event',
+      kind: 'eval-event',
+      title: 'Serious incidents reported in 72h',
+      subtitle: 'Eval - event · on-incident-reporter',
+      cite: 'EU AI Act Art. 72',
+      filename: 'IncidentReporter.java  (eval-event consumer)',
+      body:
+'<span class="ann">@EvalEvent</span>(flavor = <span class="str">"on-incident-reporter"</span>)\n' +
+'<span class="kw">public class</span> <span class="typ">IncidentReporter</span>\n' +
+'    <span class="kw">implements</span> <span class="typ">Consumer</span>&lt;SeriousIncident&gt; {\n' +
+'\n' +
+'  <span class="ann">@Override</span>\n' +
+'  <span class="kw">public</span> Effect on(SeriousIncident e) {\n' +
+'    <span class="kw">return</span> effects()\n' +
+'      .classify(e)\n' +
+'      .notify(<span class="str">"market-surveillance@authority.eu"</span>)\n' +
+'      .deadline(Duration.ofHours(<span class="str">72</span>));\n' +
+'  }\n' +
+'}\n'
+    },
+    {
+      key: 'hotl-runtime',
+      kind: 'hotl',
+      title: 'Deployer monitors and adjusts policy live',
+      subtitle: 'HOTL · deployer-runtime-monitoring (no redeploy)',
+      cite: 'EU AI Act Art. 26',
+      filename: '.akka/hotl/deployer-monitor.yaml  (runtime feedback)',
+      body:
+'<span class="com"># HOTL · agent does NOT wait — feedback updates runtime state</span>\n' +
+'<span class="key">mechanism</span>: hotl\n' +
+'<span class="key">flavor</span>: deployer-runtime-monitoring\n' +
+'<span class="key">surface</span>:\n' +
+'  dashboard: /governance/live\n' +
+'  metrics: [refusal_rate, parity, latency]\n' +
+'<span class="key">controls</span>:\n' +
+'  - <span class="key">name</span>: tighten-refusal-threshold\n' +
+'    <span class="key">hot-update</span>: guardrails/refusal.yaml\n' +
+'  - <span class="key">name</span>: freeze-auto-approval\n' +
+'    <span class="key">hot-update</span>: workflows/loan.yaml\n' +
+'<span class="key">evidence</span>:\n' +
+'  emit: hotl.runtime-adjustment\n'
+    },
+    {
+      key: 'doc',
+      kind: 'doc',
+      title: 'DPIA signed and current to deploy',
+      subtitle: 'CI-gate · documentation-gate',
+      cite: 'GDPR Art. 35',
+      filename: '.akka/gates/dpia-current.yaml  (ci-gate)',
+      body:
+'<span class="com"># ci-gate · documentation-gate</span>\n' +
+'<span class="key">gate</span>: deploy\n' +
+'<span class="key">flavor</span>: documentation-gate\n' +
+'<span class="key">artifact</span>: dpia/loan-adjudication.pdf\n' +
+'<span class="key">require</span>:\n' +
+'  <span class="key">signed-by</span>: dpo@acme.com\n' +
+'  <span class="key">age-max</span>: 365d\n' +
+'  <span class="key">covers-version</span>: ${current}\n' +
+'<span class="key">on-missing</span>: block-deploy\n'
+    },
+    {
+      key: 'halt',
+      kind: 'halt',
+      title: 'Operator stop button',
+      subtitle: 'Halt · operator-regulator-stop',
+      cite: 'EU AI Act Art. 14(4)(e)',
+      filename: 'OperatorHaltEndpoint.java  (halt)',
+      body:
+'<span class="ann">@HaltCapability</span>(flavor = <span class="str">"operator-regulator-stop"</span>)\n' +
+'<span class="ann">@HttpEndpoint</span>(<span class="str">"/governance/halt"</span>)\n' +
+'<span class="kw">public class</span> <span class="typ">OperatorHaltEndpoint</span> {\n' +
+'\n' +
+'  <span class="ann">@Post</span>(<span class="str">"/stop"</span>)\n' +
+'  <span class="kw">public</span> Effect stop(HaltRequest r) {\n' +
+'    <span class="kw">return</span> effects()\n' +
+'      .authorize(<span class="str">"role:operator|regulator"</span>)\n' +
+'      .haltSystem(r.reason())\n' +
+'      .emit(<span class="str">"halt.invoked"</span>);\n' +
+'  }\n' +
+'}\n'
+    }
+  ];
+
+  function renderEnforceMatrix(){
+    let html = '<div class="gd-enforce">';
+    ENFORCE_ROWS.forEach(r => {
+      html +=
+        '<div class="gd-erow" data-key="' + r.key + '">'
+      +   '<div class="gd-erow-head">'
+      +     '<span class="gd-erow-chevron">▶</span>'
+      +     '<span class="gd-mx-kind ' + r.kind + '">' + r.kind.toUpperCase() + '</span>'
+      +     '<span class="gd-erow-title">' + escapeHtml(r.title) + '</span>'
+      +     '<span class="gd-erow-cite">' + escapeHtml(r.cite) + '</span>'
+      +   '</div>'
+      +   '<div class="gd-erow-bodywrap">'
+      +     '<div class="gd-erow-filename">' + escapeHtml(r.filename) + '</div>'
+      +     '<div class="gd-erow-body">' + r.body + '</div>'
+      +   '</div>'
+      + '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function expandEnforceRow(key, flash){
+    const rows = artBody.querySelectorAll('.gd-erow');
+    rows.forEach(el => {
+      if (el.getAttribute('data-key') === key){
+        el.classList.add('expanded');
+        if (flash){
+          el.classList.remove('flash');
+          void el.offsetWidth;            // reflow to retrigger animation
+          el.classList.add('flash');
+        }
+      } else {
+        el.classList.remove('expanded');
+      }
+    });
+  }
+
+  function bindEnforceClicks(){
+    artBody.querySelectorAll('.gd-erow').forEach(el => {
+      el.querySelector('.gd-erow-head').addEventListener('click', () => {
+        const key = el.getAttribute('data-key');
+        if (el.classList.contains('expanded')){
+          el.classList.remove('expanded');
+        } else {
+          expandEnforceRow(key, false);
+        }
+      });
+    });
+  }
+
+  function renderCodeBlock(){
+    // Lines with data-hit ids for callout targeting.
+    const lines = [
+      ['plain', '<span class="ann">@Workflow</span>'],
+      ['plain', '<span class="kw">public class</span> <span class="typ">LoanAdjudicationWorkflow</span> {'],
+      ['plain', ''],
+      ['plain', '  <span class="ann">@Step</span>(<span class="str">"assess"</span>)'],
+      ['plain', '  <span class="kw">public</span> Effect&lt;Decision&gt; assess(LoanRequest req) {'],
+      ['sanitizer', '    <span class="kw">var</span> safe = sanitizers.stripPII(req);'],
+      ['guardrail', '    guardrails.checkRefusalRules(safe);'],
+      ['plain', '    <span class="kw">var</span> draft = agent.draftDecision(safe);'],
+      ['plain', ''],
+      ['hitl', '    <span class="kw">if</span> (draft.amount &gt; 5000)'],
+      ['hitl', '      <span class="kw">return</span> effects().pause(humanApproval());'],
+      ['plain', ''],
+      ['plain', '    <span class="kw">return</span> effects().reply(draft);'],
+      ['plain', '  }'],
+      ['plain', ''],
+      ['eval', '  <span class="ann">@MonthlyEval</span>(<span class="str">"demographic-parity"</span>)'],
+      ['eval', '  <span class="kw">public</span> EvalReport parityCheck() { ... }'],
+      ['plain', ''],
+      ['hotl', '  <span class="ann">@OnSignal</span>(RefusalRateSpike.class)'],
+      ['hotl', '  <span class="kw">public void</span> escalate(SpikeEvent e) { ... }'],
+      ['plain', '}']
+    ];
+    return '<div class="gd-code">' +
+      lines.map(([tag, html]) =>
+        '<span class="gd-line" data-tag="' + tag + '">' + (html || '&nbsp;') + '</span>'
+      ).join('') +
+      '</div>';
+  }
+
+  // ── step handlers
+  function handle(step, cb){
+    if (step.type === 'phase'){
+      setPhase(step.phase);
+      setArtifactKind('rows', step.label || '0 Regulations · 0 Controls');
+      cb();
+    } else if (step.type === 'phase-done'){
+      markPhaseDone(step.phase);
+      cb();
+    } else if (step.type === 'art-set'){
+      const k = step.kind;
+      const labels = {
+        matrix:  'Eval Matrix v1',
+        code:    'Generated workflow',
+        enforce: 'Generated bindings',
+        drift:   'Posture vs Eval Matrix'
+      }[k] || 'Artifact';
+      setArtifactKind(k, labels);
+      cb();
+
+    } else if (step.type === 'art-add'){
+      const r = step.row;
+      const div = document.createElement('div');
+      div.className = 'gd-row';
+      div.innerHTML =
+        '<div class="gd-row-top">'
+        +   '<span class="gd-row-title">' + escapeHtml(r.title) + '</span>'
+        +   '<span class="gd-row-cite">' + escapeHtml(r.cite) + '</span>'
+        + '</div>'
+        + '<div class="gd-row-desc">' + escapeHtml(r.desc) + '</div>';
+      artBody.appendChild(div);
+      requestAnimationFrame(() => div.classList.add('show'));
+      refreshRegulationLabel();
+      scrollArt();
+      cb();
+
+    } else if (step.type === 'matrix-add'){
+      const [kind, ctl, src, enf] = step.row;
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><span class="gd-mx-kind ' + kind + '">' + kind.toUpperCase() + '</span></td>'
+      + '<td>' + escapeHtml(ctl) + '</td>'
+      + '<td><span class="gd-mx-src">' + escapeHtml(src) + '</span></td>'
+      + '<td>' + escapeHtml(enf) + '</td>';
+      document.getElementById('mxBody').appendChild(tr);
+      requestAnimationFrame(() => tr.classList.add('show'));
+      scrollArt();
+      cb();
+
+    } else if (step.type === 'code-hit'){
+      const tag = step.line;
+      if (artBody.dataset.kind === 'enforce') {
+        expandEnforceRow(tag, true);
+      } else {
+        artBody.querySelectorAll('.gd-line[data-tag="' + tag + '"]').forEach(el => {
+          el.classList.add('hit');
+          if (!el.querySelector('.gd-callout')){
+            const c = document.createElement('span');
+            c.className = 'gd-callout';
+            c.textContent = '◀ ' + step.note;
+            el.appendChild(c);
+          }
+        });
+      }
+      cb();
+
+    } else if (step.type === 'drift-add'){
+      const r = step.row;
+      const div = document.createElement('div');
+      div.className = 'gd-drift-row ' + r.status;
+      div.innerHTML =
+        '<div>'
+        +   '<div class="gd-drift-name">' + escapeHtml(r.name) + '</div>'
+        +   '<div class="gd-drift-cite">' + escapeHtml(r.cite) + ' · ' + escapeHtml(r.msg) + '</div>'
+        + '</div>'
+        + '<div class="gd-drift-status ' + r.status + '">'
+        + ({ pass:'✓ pass', warn:'⚠ review', fail:'✕ fail' }[r.status])
+        + '</div>';
+      document.getElementById('driftBody').appendChild(div);
+      requestAnimationFrame(() => div.classList.add('show'));
+      scrollArt();
+      cb();
+
+    } else if (step.type === 'change-card'){
+      const c = step.card;
+      const div = document.createElement('div');
+      div.className = 'gd-change-card';
+      div.innerHTML =
+        '<h4>' + escapeHtml(c.title) + '</h4>'
+      + '<ul>' + c.items.map(i => '<li>' + escapeHtml(i) + '</li>').join('') + '</ul>';
+      document.getElementById('driftBody').appendChild(div);
+      requestAnimationFrame(() => div.classList.add('show'));
+      scrollArt();
+      cb();
+
+    } else if (step.type === 'cmd'){
+      const line = document.createElement('div');
+      line.className = 'gd-tline';
+      line.innerHTML = '<span class="prompt">$ </span>';
+      const cmd = document.createElement('span');
+      cmd.className = 'cmd';
+      line.appendChild(cmd);
+      termBody.appendChild(line);
+      addCursor(line);
+      scrollTerm();
+      const tk = token;
+      typeText(cmd, step.text, CMD_CHAR_MS, () => {
+        if (tk !== token) return;
+        removeCursor();
+        setTimeout(cb, PAUSE_AFTER_CMD);
+      }, tk);
+
+    } else if (step.type === 'ai'){
+      setTimeout(() => instantLine('ai', step.text) || cb && setTimeout(cb, PAUSE_AFTER_STEP),
+        WAIT_BEFORE_RESPONSE);
+
+    } else if (step.type === 'user'){
+      setTimeout(() => {
+        const line = document.createElement('div');
+        line.className = 'gd-tline';
+        line.innerHTML = '<span class="prompt">&gt; </span>';
+        const ans = document.createElement('span');
+        ans.className = 'user-ans';
+        line.appendChild(ans);
+        termBody.appendChild(line);
+        addCursor(line);
+        scrollTerm();
+        const tk = token;
+        typeText(ans, step.text, 12, () => {
+          if (tk !== token) return;
+          removeCursor();
+          setTimeout(cb, PAUSE_AFTER_STEP);
+        }, tk);
+      }, USER_DELAY);
+
+    } else if (step.type === 'ok' || step.type === 'warn'){
+      const cls = step.type === 'ok' ? 'success' : 'warn';
+      setTimeout(() => {
+        instantLine(cls, step.text);
+        setTimeout(cb, PAUSE_AFTER_STEP);
+      }, WAIT_BEFORE_RESPONSE);
+
+    } else if (step.type === 'blank'){
+      appendLine('&nbsp;');
+      setTimeout(cb, 100);
+
+    } else if (step.type === 'divider'){
+      const d = document.createElement('div');
+      d.className = 'gd-stage-rule';
+      d.textContent = '── ' + step.text + ' ──';
+      termBody.appendChild(d);
+      scrollTerm();
+      setTimeout(cb, PAUSE_AFTER_DIVIDER);
+
+    } else {
+      cb();
+    }
+  }
+
+  function runNext(){
+    if (!running) return;
+    if (idx >= stageScript.length){
+      running = false;
+      removeCursor();
+      const end = appendLine('<span class="prompt">$ </span>');
+      addCursor(end);
+      // Mark current stage tab as done
+      tabEls.forEach(t => {
+        if (+t.getAttribute('data-tab') === currentStage) t.classList.add('done');
+      });
+      markPhaseDone(currentStage);
+      return;
+    }
+    const step = stageScript[idx++];
+    handle(step, () => {
+      if (running) runNext();
+    });
+  }
+
+  function runStage(n){
+    if (!STAGES[n]) return;
+    token++;
+    running = false;
+    idx = 0;
+    currentStage = n;
+    stageScript = STAGES[n];
+    termBody.innerHTML = '';
+    removeCursor();
+    // Reset active tab; keep .done markers
+    tabEls.forEach(t => {
+      t.classList.remove('active');
+      if (+t.getAttribute('data-tab') === n) t.classList.add('active');
+    });
+    // Mirror to top phase pills (active only on current; done preserved)
+    phaseEls.forEach(p => {
+      p.classList.remove('active');
+      if (+p.getAttribute('data-phase') === n) p.classList.add('active');
+    });
+    setArtifactKind('rows', '—');
+    running = true;
+    runNext();
+  }
+
+  function start(){
+    // Reset all done/active markers. Wait for user to click a stage tab.
+    tabEls.forEach(t => { t.classList.remove('done'); t.classList.remove('active'); });
+    phaseEls.forEach(p => { p.classList.remove('done'); p.classList.remove('active'); });
+    termBody.innerHTML =
+      '<div class="gd-tline" style="color:#666;font-style:italic;padding:8px 0">'
+      + '  click a tab above to run that stage  '
+      + '</div>';
+    setArtifactKind('rows', '—');
+  }
+
+  function finishCurrentStageInstantly(){
+    if (!running) return;
+    token++;             // cancel any pending typing/setTimeouts from runNext
+    running = false;
+    while (idx < stageScript.length){
+      handleInstant(stageScript[idx++]);
+    }
+    removeCursor();
+    const end = appendLine('<span class="prompt">$ </span>');
+    addCursor(end);
+    tabEls.forEach(t => {
+      if (+t.getAttribute('data-tab') === currentStage) t.classList.add('done');
+    });
+    markPhaseDone(currentStage);
+  }
+
+  function activateStage(n){
+    // Click on the currently-running stage → fast-forward to completion.
+    if (running && n === currentStage){
+      finishCurrentStageInstantly();
+    } else {
+      runStage(n);
+    }
+  }
+
+  tabEls.forEach(t => {
+    t.addEventListener('click', () => activateStage(+t.getAttribute('data-tab')));
+  });
+  phaseEls.forEach(p => {
+    p.addEventListener('click', () => activateStage(+p.getAttribute('data-phase')));
+  });
+  termBody.style.cursor = 'pointer';
+  termBody.addEventListener('click', () => {
+    if (running) finishCurrentStageInstantly();
+  });
+
+  function handleInstant(step){
+    // synchronous version of handle, no animations / delays
+    if (step.type === 'phase'){ setPhase(step.phase); setArtifactKind('rows', step.label || '0 Regulations · 0 Controls'); return; }
+    if (step.type === 'phase-done'){ markPhaseDone(step.phase); return; }
+    if (step.type === 'art-set'){
+      const k = step.kind;
+      const labels = {
+        matrix:  'Eval Matrix v1',
+        code:    'Generated workflow',
+        enforce: 'Generated bindings',
+        drift:   'Posture vs Eval Matrix'
+      }[k] || 'Artifact';
+      setArtifactKind(k, labels); return;
+    }
+    if (step.type === 'art-add'){
+      const r = step.row;
+      const div = document.createElement('div');
+      div.className = 'gd-row show';
+      div.innerHTML =
+        '<div class="gd-row-top">'
+        + '<span class="gd-row-title">' + escapeHtml(r.title) + '</span>'
+        + '<span class="gd-row-cite">' + escapeHtml(r.cite) + '</span>'
+        + '</div>'
+        + '<div class="gd-row-desc">' + escapeHtml(r.desc) + '</div>';
+      artBody.appendChild(div);
+      refreshRegulationLabel();
+      return;
+    }
+    if (step.type === 'matrix-add'){
+      const [kind, ctl, src, enf] = step.row;
+      const tr = document.createElement('tr');
+      tr.className = 'show';
+      tr.innerHTML =
+        '<td><span class="gd-mx-kind ' + kind + '">' + kind.toUpperCase() + '</span></td>'
+      + '<td>' + escapeHtml(ctl) + '</td>'
+      + '<td><span class="gd-mx-src">' + escapeHtml(src) + '</span></td>'
+      + '<td>' + escapeHtml(enf) + '</td>';
+      const mb = document.getElementById('mxBody');
+      if (mb) mb.appendChild(tr);
+      return;
+    }
+    if (step.type === 'code-hit'){
+      if (artBody.dataset.kind === 'enforce') {
+        expandEnforceRow(step.line, false);
+      } else {
+        artBody.querySelectorAll('.gd-line[data-tag="' + step.line + '"]').forEach(el => {
+          el.classList.add('hit');
+          if (!el.querySelector('.gd-callout')){
+            const c = document.createElement('span');
+            c.className = 'gd-callout';
+            c.textContent = '◀ ' + step.note;
+            el.appendChild(c);
+          }
+        });
+      }
+      return;
+    }
+    if (step.type === 'drift-add'){
+      const r = step.row;
+      const div = document.createElement('div');
+      div.className = 'gd-drift-row show ' + r.status;
+      div.innerHTML =
+        '<div>'
+        +   '<div class="gd-drift-name">' + escapeHtml(r.name) + '</div>'
+        +   '<div class="gd-drift-cite">' + escapeHtml(r.cite) + ' · ' + escapeHtml(r.msg) + '</div>'
+        + '</div>'
+        + '<div class="gd-drift-status ' + r.status + '">'
+        + ({ pass:'✓ pass', warn:'⚠ review', fail:'✕ fail' }[r.status])
+        + '</div>';
+      const db = document.getElementById('driftBody');
+      if (db) db.appendChild(div);
+      return;
+    }
+    if (step.type === 'change-card'){
+      const c = step.card;
+      const div = document.createElement('div');
+      div.className = 'gd-change-card show';
+      div.innerHTML =
+        '<h4>' + escapeHtml(c.title) + '</h4>'
+      + '<ul>' + c.items.map(i => '<li>' + escapeHtml(i) + '</li>').join('') + '</ul>';
+      const db = document.getElementById('driftBody');
+      if (db) db.appendChild(div);
+      return;
+    }
+    if (step.type === 'cmd'){
+      appendLine('<span class="prompt">$ </span><span class="cmd">' + escapeHtml(step.text) + '</span>');
+      return;
+    }
+    if (step.type === 'ai'){ instantLine('ai', step.text); return; }
+    if (step.type === 'user'){
+      appendLine('<span class="prompt">&gt; </span><span class="user-ans">' + escapeHtml(step.text) + '</span>');
+      return;
+    }
+    if (step.type === 'ok'){ instantLine('success', step.text); return; }
+    if (step.type === 'warn'){ instantLine('warn', step.text); return; }
+    if (step.type === 'blank'){ appendLine('&nbsp;'); return; }
+    if (step.type === 'divider'){
+      const d = document.createElement('div');
+      d.className = 'gd-stage-rule';
+      d.textContent = '── ' + step.text + ' ──';
+      termBody.appendChild(d);
+      return;
+    }
+  }
+
+  // keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R'){ e.preventDefault(); runStage(currentStage); }
+    else if (e.key === '1'){ e.preventDefault(); runStage(1); }
+    else if (e.key === '2'){ e.preventDefault(); runStage(2); }
+    else if (e.key === '3'){ e.preventDefault(); runStage(3); }
+    else if (e.key === '4'){ e.preventDefault(); runStage(4); }
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
