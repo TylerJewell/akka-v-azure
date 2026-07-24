@@ -13,3 +13,6 @@ battlecard-service-tiers-internal.html
 
 # Internal / confidential — never published. Anything under here stays out of the public repo.
 /_internal/
+
+# Per-machine corpus location (see _build/corpus_counts.py)
+_build/corpus-path.local

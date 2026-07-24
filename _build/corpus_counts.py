@@ -18,9 +18,37 @@ import yaml
 # regulation itself is researched; its per-article controls are not yet authored.
 PLACEHOLDER_MARK = 'source corpus detail pending'
 
-DEFAULT_CORPUS = os.path.normpath(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    '..', '..', 'explainability', 'framework', 'regulations'))
+# The corpus is a separate repo cloned in a machine-specific spot. Resolution is
+# flexible so the same build works on every machine without editing this file:
+#   1. AKKA_CORPUS_PATH env var (explicit override, e.g. CI)
+#   2. _build/corpus-path.local (a per-machine, gitignored one-line path)
+#   3. auto-search the common clone spots below
+# The corpus repo is named 'explain' on some machines and 'explainability' on
+# others; either the repo root or its framework/regulations dir is accepted.
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.normpath(os.path.join(THIS_DIR, '..'))
+LOCAL_CONFIG = os.path.join(THIS_DIR, 'corpus-path.local')
+CORPUS_NAMES = ('explain', 'explainability')
+CORPUS_SUBDIR = os.path.join('framework', 'regulations')
+
+
+def _as_regulations_dir(path):
+    """Accept either a corpus repo root or its framework/regulations dir."""
+    path = os.path.expanduser(path.strip())
+    nested = os.path.join(path, CORPUS_SUBDIR)
+    return nested if os.path.isdir(nested) else path
+
+
+def _candidates():
+    """Common per-machine clone spots, most specific first."""
+    bases = [os.path.normpath(os.path.join(REPO_ROOT, '..')), os.path.expanduser('~')]
+    out = []
+    for base in bases:
+        for name in CORPUS_NAMES:
+            p = os.path.join(base, name, CORPUS_SUBDIR)
+            if p not in out:
+                out.append(p)
+    return out
 
 
 def read_only(path, root):
@@ -37,13 +65,35 @@ def read_only(path, root):
 
 
 def corpus_path():
-    path = os.environ.get('AKKA_CORPUS_PATH') or DEFAULT_CORPUS
-    if not os.path.isdir(path):
-        raise SystemExit(
-            f'Corpus not found: {path}\n'
-            'Deck generation reads regulation/control counts live from the corpus.\n'
-            'Clone the explainability repo alongside this one, or set AKKA_CORPUS_PATH.')
-    return path
+    # 1. explicit override
+    env = os.environ.get('AKKA_CORPUS_PATH')
+    if env:
+        p = _as_regulations_dir(env)
+        if os.path.isdir(p):
+            return p
+        raise SystemExit(f'AKKA_CORPUS_PATH is set but is not a corpus dir: {p}')
+    # 2. per-machine local config (gitignored one-line path)
+    if os.path.isfile(LOCAL_CONFIG):
+        with open(LOCAL_CONFIG, encoding='utf-8') as f:
+            p = _as_regulations_dir(f.read())
+        if os.path.isdir(p):
+            return p
+        raise SystemExit(f'{LOCAL_CONFIG} points to a missing corpus dir: {p}')
+    # 3. auto-search common clone spots
+    tried = _candidates()
+    for p in tried:
+        if os.path.isdir(p):
+            return p
+    # 4. give up with actionable guidance
+    rel_config = os.path.relpath(LOCAL_CONFIG, REPO_ROOT)
+    raise SystemExit(
+        'Corpus not found. Deck generation reads regulation/control counts live '
+        'from the corpus, which is a separate repo (explain / explainability).\n'
+        'Tried:\n  ' + '\n  '.join(tried) + '\n'
+        'Fix by any of:\n'
+        '  - set AKKA_CORPUS_PATH to the corpus repo (or its framework/regulations dir)\n'
+        f'  - write that path into {rel_config} (per-machine, gitignored)\n'
+        '  - clone the corpus as a sibling of this repo or in your home dir')
 
 
 def pinned():
