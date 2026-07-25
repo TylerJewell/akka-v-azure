@@ -75,7 +75,7 @@ committing/pushing — never commit a deck mid-restructure:
 
 1. **Sequential numbering.** Within each deck's registry order the slide
    folders are gapless: overview `00…N`, specify `sp-00…sp-N`,
-   token-shredder `ts-00…ts-N`. No skipped numbers, no leftover `NNb` inserts.
+   optimize `ts-00…ts-N`. No skipped numbers, no leftover `NNb` inserts.
 2. **Id consistency.** Each `slides/<folder>/meta.json` `id` equals its folder
    basename, and the registry entry's `id` + `folder` match it.
 3. **No orphan folders.** Every folder in `slides/` is referenced by a
@@ -86,7 +86,7 @@ committing/pushing — never commit a deck mid-restructure:
    ```bash
    python3 builder/build.py                                                              # overview
    python3 builder/build.py --registry specify-registry.json        --nav nav-specify.js  --out generated/specify/index.html
-   python3 builder/build.py --registry token-shredder-registry.json --nav nav-shredder.js --out generated/token-shredder/index.html
+   python3 builder/build.py --registry optimize-registry.json --nav nav-optimize.js --out generated/optimize/index.html
    ```
 5. **Update `builder/image-registry.json`** `used_in` values if any slide ids
    changed (documentation only — not read by the build — but keep it correct).
@@ -100,7 +100,7 @@ committing/pushing — never commit a deck mid-restructure:
 
 The cake graphic on the *integrated platform* slide lives in **four** places:
 the canonical `slides/family-platform/` (used by the built decks specify /
-token-shredder / overview-long), plus hand-authored inline copies in
+optimize / overview-long), plus hand-authored inline copies in
 `akka-overview/index.html` and `akka-verify/index.html`.
 
 The **HTML body** (markup + panels, between the `<!-- CAKE:BODY:START/END -->`

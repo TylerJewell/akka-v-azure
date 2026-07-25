@@ -2,7 +2,7 @@
 
 Canonical source: sales-presentation/slides/family-platform/slide.html, between
 the <!-- CAKE:BODY:START --> / <!-- CAKE:BODY:END --> markers (the .cake-wrap +
-.rt-panel block). The built decks (specify, token-shredder, overview-long)
+.rt-panel block). The built decks (specify, optimize, overview-long)
 already share that slide via the builder. This script injects the SAME cake body
 into the two hand-authored standalone decks so their copies can't drift.
 
@@ -29,7 +29,7 @@ import corpus_counts
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 CANONICAL = os.path.join(ROOT, 'sales-presentation', 'slides', 'family-platform', 'slide.html')
-TARGETS = ['akka-overview/index.html', 'akka-verify/index.html']
+TARGETS = ['akka-overview/index.html', 'akka-verify/index.html', 'akka-sdk/index.html']
 
 GEN_NOTE = ('<!-- CAKE:BODY (generated from sales-presentation/slides/family-platform '
             'by _build/sync_cake.py — do not edit here; edit the canonical slide) -->')

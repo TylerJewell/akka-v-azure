@@ -1,0 +1,143 @@
+<div id="arc-wrapper">
+  <div class="arc-inner">
+    <div class="arc-eyebrow" data-arc="0">Architecture</div>
+    <div class="arc-headline" data-arc="0">Route, serve, train, and <span class="accent">govern.</span></div>
+    <div class="arc-sub" data-arc="0">Akka Optimize runs on a single-tenant install of the Akka Agentic AI Platform. It has a private data link to your environment. Requests are routed and served to the platform, which trains and serves them on the same compute.</div>
+    <div class="arc-body" data-arc="1">
+      <div class="dia">
+        <svg viewBox="0 0 1440 646" aria-label="Managed plane architecture">
+          <!-- CLIENT ENVIRONMENT plane -->
+          <rect x="16" y="44" width="300" height="580" rx="12" fill="rgba(255,255,255,0.012)" stroke="#3F3F3F" stroke-width="1.4" stroke-dasharray="10 8"/>
+          <text x="32" y="72" font-family="var(--mono)" font-size="11" fill="#888" letter-spacing="1.5">CLIENT ENVIRONMENT</text>
+          <text x="32" y="98" font-family="var(--mono)" font-size="9.5" fill="#666" letter-spacing="1">HARNESSES</text>
+          <rect x="32" y="106" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="127" font-size="13" fill="#fff">Cursor</text>
+          <rect x="32" y="146" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="167" font-size="13" fill="#fff">Claude Code</text>
+          <rect x="32" y="186" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="207" font-size="13" fill="#fff">Codex</text>
+          <rect x="32" y="226" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="247" font-size="13" fill="#fff">GitHub Copilot</text>
+          <text x="32" y="298" font-family="var(--mono)" font-size="9.5" fill="#666" letter-spacing="1">CONNECTORS</text>
+          <rect x="32" y="306" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="328" font-size="12.5" fill="#fff">BYO-agent plugin</text><text x="46" y="344" font-family="var(--mono)" font-size="9.5" fill="#777">endpoint config · trace capture</text><text x="288" y="328" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">PLUGIN</text>
+          <rect x="32" y="356" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="378" font-size="12.5" fill="#fff">Log forwarder</text><text x="46" y="394" font-family="var(--mono)" font-size="9.5" fill="#777">production logs → AI Gateway</text><text x="288" y="378" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">LOGS</text>
+          <rect x="32" y="406" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="428" font-size="12.5" fill="#fff">Repo &amp; CI connection</text><text x="46" y="444" font-family="var(--mono)" font-size="9.5" fill="#777">codebases · sandbox RL deploys</text><text x="288" y="428" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">REPO</text>
+
+          <!-- AKKA MANAGED PLANE -->
+          <rect x="340" y="44" width="1084" height="336" rx="14" fill="rgba(245,197,24,0.04)" stroke="rgba(245,197,24,0.28)" stroke-width="1.4"/>
+          <text x="360" y="72" font-family="var(--mono)" font-size="11" fill="#F5C518" letter-spacing="1.2">AKKA MANAGED PLANE  ·  SINGLE TENANT · SOVEREIGN</text>
+          <!-- governance + scorecards -->
+          <rect x="356" y="86" width="511" height="42" rx="8" fill="#141414" stroke="#2A2A2A"/>
+          <text x="372" y="108" font-size="13" fill="#fff">Governance</text>
+          <text x="372" y="123" font-family="var(--mono)" font-size="9.5" fill="#777">consent · policy · RBAC · audit · checks</text>
+          <text x="855" y="108" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">POLICY</text>
+          <rect x="897" y="86" width="511" height="42" rx="8" fill="#141414" stroke="#2A2A2A"/>
+          <text x="913" y="108" font-size="13" fill="#fff">Scorecards &amp; dashboards</text>
+          <text x="913" y="123" font-family="var(--mono)" font-size="9.5" fill="#777">quality · velocity · cost · autonomy</text>
+          <text x="1396" y="108" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SCORECARD</text>
+
+          <!-- LEFT COLUMN: AI Gateway (egress proxy) -->
+          <rect x="356" y="142" width="284" height="152" rx="8" fill="#141414" stroke="#F5C518"/>
+          <text x="372" y="168" font-size="15" fill="#fff">AI Gateway</text>
+          <text x="628" y="168" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">PROXY</text>
+          <text x="372" y="204" font-family="var(--mono)" font-size="10" fill="#888">OpenAI-compatible ingress</text>
+          <text x="372" y="232" font-family="var(--mono)" font-size="10" fill="#888">tier select · adapter hot-swap · cache</text>
+          <text x="372" y="260" font-family="var(--mono)" font-size="10" fill="#888">canary · shadow · rollback</text>
+          <!-- frontier: fallback only. external API, not on customer compute -->
+          <rect x="356" y="306" width="180" height="60" rx="8" fill="#141414" stroke="#666" stroke-dasharray="4 3"/>
+          <text x="372" y="328" font-size="12.5" fill="#ccc">Frontier fallback</text>
+          <text x="520" y="328" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">TEACHER</text>
+          <text x="372" y="344" font-family="var(--mono)" font-size="9" fill="#777">GPT-5.5 · Opus 4.8</text>
+          <text x="372" y="358" font-family="var(--mono)" font-size="9" fill="#777">external API</text>
+
+          <!-- RIGHT COLUMN: continuous training -->
+          <rect x="670" y="142" width="738" height="228" rx="8" fill="rgba(245,197,24,0.03)" stroke="#2A2A2A"/>
+          <text x="686" y="166" font-size="14" fill="#fff">Continuous training</text>
+          <rect x="694" y="186" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="704" y="205" font-size="10" fill="#fff">Trace store</text><text x="704" y="220" font-family="var(--mono)" font-size="8" fill="#777">agent traces</text>
+          <rect x="812" y="210" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="822" y="229" font-size="10" fill="#fff">Scrub &amp; curate</text><text x="822" y="244" font-family="var(--mono)" font-size="8" fill="#777">PII · secrets</text>
+          <rect x="930" y="234" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="940" y="253" font-size="10" fill="#fff">Judges &amp; evals</text><text x="940" y="268" font-family="var(--mono)" font-size="8" fill="#777">reward models</text>
+          <rect x="1048" y="258" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1058" y="277" font-size="10" fill="#fff">RL envs</text><text x="1058" y="292" font-family="var(--mono)" font-size="8" fill="#777">suites · sandbox</text>
+          <rect x="1166" y="282" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1176" y="301" font-size="10" fill="#fff">Synthetic data</text><text x="1176" y="316" font-family="var(--mono)" font-size="8" fill="#777">teacher · RLVR</text>
+          <rect x="1284" y="306" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1294" y="325" font-size="10" fill="#fff">SFT · DPO · RL</text><text x="1294" y="340" font-family="var(--mono)" font-size="8" fill="#777">LoRA out · held for eval</text>
+          <!-- staircase: right, then down into the top of the next step -->
+          <path d="M794 194 H862 V206" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="862,210 858,202 866,202" fill="#8A8A8A"/>
+          <path d="M912 218 H980 V230" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="980,234 976,226 984,226" fill="#8A8A8A"/>
+          <path d="M1030 242 H1098 V254" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1098,258 1094,250 1102,250" fill="#8A8A8A"/>
+          <path d="M1148 266 H1216 V278" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1216,282 1212,274 1220,274" fill="#8A8A8A"/>
+          <path d="M1266 290 H1334 V302" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1334,306 1330,298 1338,298" fill="#8A8A8A"/>
+
+          <!-- INFRASTRUCTURE band — Inference runs here, on the same compute that trains -->
+          <rect x="340" y="400" width="1084" height="238" rx="12" fill="rgba(255,255,255,0.02)" stroke="#2A2A2A"/>
+          <text x="360" y="428" font-family="var(--mono)" font-size="11" fill="#888" letter-spacing="1.2">INFRASTRUCTURE · COMPUTE</text>
+          <!-- inference (full width, above the two providers) -->
+          <rect x="356" y="440" width="1052" height="100" rx="8" fill="#141414" stroke="#F5C518"/>
+          <text x="372" y="466" font-size="15" fill="#fff">Inference</text>
+          <text x="452" y="466" font-family="var(--mono)" font-size="10" fill="#888">endpoints · elastic auto-scale · base + adapters</text>
+          <text x="1392" y="466" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SERVING</text>
+          <rect x="372" y="478" width="326" height="36" rx="6" fill="#1a1700" stroke="#2A2A2A"/><text x="386" y="494" font-size="12" fill="#fff">GLM-5</text><text x="386" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · high</text>
+          <rect x="714" y="478" width="326" height="36" rx="6" fill="#1a1700" stroke="#2A2A2A"/><text x="728" y="494" font-size="12" fill="#fff">DeepSeek V4 Pro</text><text x="728" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · high</text>
+          <rect x="1056" y="478" width="326" height="36" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="1070" y="494" font-size="12" fill="#fff">Kimi K2</text><text x="1070" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · economy</text>
+          <text x="372" y="532" font-family="var(--mono)" font-size="9.5" fill="#777">adapters specialize by domain — code review · deploy · security · SRE</text>
+          <text x="1392" y="532" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SPECIALISTS</text>
+          <!-- providers -->
+          <rect x="356" y="556" width="512" height="70" rx="8" fill="#141414" stroke="#F5C518"/><text x="376" y="582" font-size="14" fill="#fff">Your GPUs</text><text x="376" y="600" font-family="var(--mono)" font-size="10.5" fill="#888">vLLM serving + verl training · in your VPC</text><text x="376" y="616" font-family="var(--mono)" font-size="10.5" fill="#888">sovereign · air-gapped · you own the weights</text><text x="852" y="582" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">You Serve</text>
+          <rect x="896" y="556" width="512" height="70" rx="8" fill="#141414" stroke="#2A2A2A"/><text x="916" y="582" font-size="14" fill="#fff">Fireworks</text><text x="916" y="600" font-family="var(--mono)" font-size="10.5" fill="#888">Fireworks serving + Fireworks tuning · their cloud</text><text x="916" y="616" font-family="var(--mono)" font-size="10.5" fill="#888">managed · open-weight · you own the adapters</text><text x="1392" y="582" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">They Serve</text>
+          <!-- inference runs on the providers -->
+          <line x1="612" y1="540" x2="612" y2="552" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="612,556 608,548 616,548" fill="#8A8A8A"/>
+          <line x1="1152" y1="540" x2="1152" y2="552" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1152,556 1148,548 1156,548" fill="#8A8A8A"/>
+
+          <!-- FLOW: connectors → AI Gateway (yellow, orthogonal bus) -->
+          <path d="M300 328 H326 M300 378 H326 M300 428 H326 M326 428 V196 H354" fill="none" stroke="#F5C518" stroke-width="1.6"/>
+          <polygon points="356,196 347,191 347,201" fill="#F5C518"/>
+          <!-- governance → egress (grey, policy checks) -->
+          <line x1="498" y1="142" x2="498" y2="130" stroke="#8A8A8A" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <!-- gateway → frontier (yellow, escalation off the SLM tiers) -->
+          <line x1="446" y1="294" x2="446" y2="302" stroke="#F5C518" stroke-width="1.6"/><polygon points="446,306 442,298 450,298" fill="#F5C518"/>
+          <!-- gateway → inference (yellow serving, the request path) -->
+          <line x1="590" y1="294" x2="590" y2="436" stroke="#F5C518" stroke-width="2"/><polygon points="590,440 586,432 594,432" fill="#F5C518"/>
+          <text x="578" y="395" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#777">serve · route · canary · shadow</text>
+          <!-- training → inference (yellow: training consumes inference too) -->
+          <line x1="1000" y1="370" x2="1000" y2="436" stroke="#F5C518" stroke-width="2"/><polygon points="1000,440 996,432 1004,432" fill="#F5C518"/>
+          <text x="1012" y="395" font-family="var(--mono)" font-size="9" fill="#777">serves rollouts</text>
+          <!-- SFT → inference (grey dashed: adapter promotion) -->
+          <line x1="1334" y1="352" x2="1334" y2="436" stroke="#8A8A8A" stroke-width="1.5" stroke-dasharray="8 7"/><polygon points="1334,440 1330,432 1338,432" fill="#8A8A8A"/>
+          <text x="1322" y="395" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#777">adapter</text>
+          <!-- inference → trace store (grey dashed, up the corridor) -->
+          <path d="M655 440 V209 H690" fill="none" stroke="#8A8A8A" stroke-width="1.5" stroke-dasharray="8 7"/><polygon points="694,209 686,205 686,213" fill="#8A8A8A"/>
+          <text x="666" y="421" font-family="var(--mono)" font-size="9" fill="#777">traces</text>
+        </svg>
+        <p class="svgcap" style="color:#F5C518;margin-top:14px">solid yellow = serving / request flow</p>
+        <p class="svgcap" style="color:#8A8A8A;margin-top:4px">grey dashed = training / data flow</p>
+        <!-- Mobile-only stacked variant of the architecture SVG above. KEEP IN SYNC with the <svg> — same three planes, same labels. -->
+        <div class="arc-m" aria-label="Managed plane architecture">
+          <div class="plane client">
+            <div class="plane-lab">CLIENT ENVIRONMENT</div>
+            <div class="grp-lab">HARNESSES</div>
+            <div class="card"><div class="t">Cursor</div></div>
+            <div class="card"><div class="t">Claude Code</div></div>
+            <div class="card"><div class="t">Codex</div></div>
+            <div class="card"><div class="t">GitHub Copilot</div></div>
+            <div class="grp-lab">CONNECTORS</div>
+            <div class="card"><div class="t">BYO-agent plugin</div><div class="d">endpoint config · trace capture</div></div>
+            <div class="card"><div class="t">Log forwarder</div><div class="d">production logs → AI Gateway</div></div>
+            <div class="card"><div class="t">Repo &amp; CI connection</div><div class="d">codebases · sandbox RL deploys</div></div>
+          </div>
+          <div class="down">↓</div>
+          <div class="plane managed">
+            <div class="plane-lab">AKKA MANAGED PLANE · SINGLE TENANT · SOVEREIGN</div>
+            <div class="card"><div class="t">Governance</div><div class="d">consent · policy · RBAC · audit · checks</div></div>
+            <div class="card"><div class="t">Scorecards &amp; dashboards</div><div class="d">quality · velocity · cost · autonomy</div></div>
+            <div class="card hl"><div class="t">AI Gateway</div><div class="d">OpenAI-compatible ingress · tier select · adapter hot-swap · cache · canary · shadow · rollback</div></div>
+            <div class="card dash"><div class="t">Frontier fallback</div><div class="d">GPT-5.5 · Opus 4.8 · external API</div></div>
+            <div class="grp-lab">CONTINUOUS TRAINING</div>
+            <div class="card"><div class="t">Trace store → Scrub &amp; curate → Judges &amp; evals → RL envs → Synthetic data → SFT · DPO · RL</div><div class="d">agent traces · PII/secrets scrub · reward models · suites/sandbox · teacher/RLVR · LoRA out</div></div>
+          </div>
+          <div class="down">↓</div>
+          <div class="plane infra">
+            <div class="plane-lab">INFRASTRUCTURE · COMPUTE</div>
+            <div class="card hl"><div class="t">Inference</div><div class="d">endpoints · elastic auto-scale · base + adapters</div></div>
+            <div class="card"><div class="t">GLM-5 · DeepSeek V4 Pro · Kimi K2</div><div class="d">adapted — code review · deploy · security · SRE</div></div>
+            <div class="card hl"><div class="t">Your GPUs</div><div class="d">vLLM serving + verl training · in your VPC · sovereign · air-gapped · you own the weights</div></div>
+            <div class="card"><div class="t">Fireworks</div><div class="d">Fireworks serving + tuning · their cloud · managed · you own the adapters</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

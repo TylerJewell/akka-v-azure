@@ -49,7 +49,7 @@ Akka Specify goes further. Its spec-driven development takes a specification and
 
 Inference, training, grading, and scoring run on the same runtime as the agents. This closes the loop that lowers AI cost. The runtime grades production traffic, trains a smaller specialized model against those grades, serves it, and repeats. Because every step runs inside one system, there is nothing to export between an evaluation tool, a training service, and an inference endpoint, and there is no second and third bill for moving the data between them.
 
-Akka Token Shredder is this loop, delivered as an offering. Distillation to smaller specialized models raises accuracy while cutting token cost, so the system costs less to run the longer it runs. Shared compute, sub-10ms native memory, scale-to-zero, and runtime guardrails that stop bad requests before they consume tokens all reduce cost further.
+Akka Optimize is this loop, delivered as an offering. Distillation to smaller specialized models raises accuracy while cutting token cost, so the system costs less to run the longer it runs. Shared compute, sub-10ms native memory, scale-to-zero, and runtime guardrails that stop bad requests before they consume tokens all reduce cost further.
 
 ### Continuous enforcement
 
@@ -61,7 +61,7 @@ Akka Verify is this capability, delivered as an offering. It runs evaluations ag
 
 Akka is one runtime with a set of offerings layered around it. The stack has three bands.
 
-**Models and compute — Akka Token Shredder.** Small language models, inference, training, grading, and scoring, all running on the runtime alongside the agents.
+**Models and compute — Akka Optimize.** Small language models, inference, training, grading, and scoring, all running on the runtime alongside the agents.
 
 **Build and run — Akka Agentic AI Platform.** Agents, orchestration, streaming, memory, and endpoints. This is the runtime itself, where systems are built and operated.
 
@@ -78,7 +78,7 @@ The platform includes:
 - Spec-driven development, so anyone who can write requirements can build agentic systems. You describe what you need in plain language, and Akka generates the full specification and a production-ready system. Engineers, product managers, and non-technical builders all contribute, and the platform integrates with your enterprise IAM and golden-path workflows. Your investment is in specifications rather than vendor-proprietary primitives, so agents stay portable across deployments and Akka versions.
 - A professional SDK for building production-grade agentic systems: multi-agent orchestration with A2A and ACP, MCP tool integration, autonomous and sequential agents with tools and handoffs, real-time stream processing for AI feedback loops, durable memory with sub-10ms read and write, and HTTP and gRPC APIs. This is everything needed to go from an agent prototype to a production service in one SDK.
 - The Akka runtime, which handles the hard distributed-systems problems so your agents do not have to: clustering, resilience, zero-trust networking, data sharding, and traffic steering. You deploy on Akka's cloud, within your hyperscaler VPC, or on your own Kubernetes infrastructure.
-- On-runtime model economics through Akka Token Shredder: inference, training, grading, and scoring for your agents' own models, with reinforcement learning and distillation to smaller specialized models that lower token cost while raising accuracy.
+- On-runtime model economics through Akka Optimize: inference, training, grading, and scoring for your agents' own models, with reinforcement learning and distillation to smaller specialized models that lower token cost while raising accuracy.
 - A governance platform for the full AI system lifecycle through Akka Verify: classify AI systems against 191 AI regulations and 969 controls to derive their obligation set; run multi-persona sign-off workflows through a declarative recipe engine that routes change events to the right reviewers with dossiers, carry-forward rules, and quorum logic; and seal the result as a Governance Posture Package, a tamper-evident audit artifact ready for regulatory handoff. This covers everything from first classification to signed deployment bundle, inside the platform.
 - Integrated tooling for every stakeholder. Developers get tracing, debugging, eval checkpoints, and agent analysis. Operations gets a control tower for observability with OTEL export. Risk and compliance get explainability, non-sampled interaction logging with authority snapshots, guardrail verdicts, causal analysis, legal hold, retention, evidence export, and on-demand conformance reports that reconstruct an Eval Matrix from the deployed code and compare it against the signed one. FinOps gets token tracking and cost optimization. InfoSec gets policy enforcement and guardrails. All of it is built into the platform.
 - Akka Automated Operations (AAO) for enterprises that need Akka inside their own environment, as a private, regionalized installation within your VPC. AAO delivers active-active HA and DR across geographies or clouds, elastic scaling to 10 million agentic TPS with scale-to-zero, no-downtime rolling updates, live CVE patching, multi-tenant deployments, and a shared compute model that cuts infrastructure costs up to 90%.
@@ -108,7 +108,7 @@ These are guarantees and capabilities that no other agentic AI vendor delivers.
 
 - A desktop agent or workforce copilot. Person-attached tools like Claude Code, Copilot, or Glean inherit a user's identity and stop when the session closes, and they are the right tool when a specific human is driving. Akka is for the other case: processes that run unattended, under their own governed service identity, with durability that outlasts any individual's attention.
 - The open-source Akka actor library and toolkit for the JVM. That library, formerly Lightbend, is Akka's lineage. It is not the platform described here.
-- A public model-serving marketplace or a foundation-model pretraining platform. Akka provides inference, training, grading, and scoring for your own agents' models, through Akka Token Shredder, in order to close the loop that lowers cost. This work is reinforcement learning, fine-tuning, and distillation to smaller specialized models against production and synthetic data. It is not a general model-hosting service and not foundation-model pretraining.
+- A public model-serving marketplace or a foundation-model pretraining platform. Akka provides inference, training, grading, and scoring for your own agents' models, through Akka Optimize, in order to close the loop that lowers cost. This work is reinforcement learning, fine-tuning, and distillation to smaller specialized models against production and synthetic data. It is not a general model-hosting service and not foundation-model pretraining.
 - A vector database or a standalone semantic knowledge layer. The runtime is not sold as one. When a system needs semantic knowledge, Akka Specify delivers and integrates that layer as part of the system it builds.
 - Your context graph, meaning the modeling of your business across all domains that feeds the agentic AI layer.
 
@@ -129,13 +129,13 @@ One governed system comes out, with agents, safeguards, evidence, the semantic l
 
 Akka Specify is an all-inclusive managed engagement. The platform, the infrastructure, the AI tokens, any model training, the delivery of the system, and 24/7 SRE operations that keep it available, safe, and improving all come under a single agreement. The common alternative for teams that would rather not build is a months-long forward-deployed engineering engagement that hands back a bespoke system you then own and operate. Spec-driven delivery reaches the same production outcome through generation on the platform, in weeks rather than quarters, and without a standing integration team.
 
-## Akka Token Shredder — the cheapest AI to run
+## Akka Optimize — the cheapest AI to run
 
-Akka Token Shredder is the model-economics layer of the platform. Inference, training, grading, and scoring run on the same runtime as the agents, so the loop that lowers AI cost runs inside one system.
+Akka Optimize is the model-economics layer of the platform. Inference, training, grading, and scoring run on the same runtime as the agents, so the loop that lowers AI cost runs inside one system.
 
 The cost of agentic AI is dominated by tokens. The way to bring it down over time is a loop: grade production traffic, train a smaller specialized model against those grades, serve it, and grade again. Most teams never close this loop, because grading lives in an evaluation tool, training lives in a separate service, and serving lives in an inference endpoint, with an export, an import, and a bill at every step. On Akka the loop closes by construction, because the trace the agent emitted is the same record used to grade, to train, and to serve.
 
-Token Shredder lowers cost through several mechanisms:
+Optimize lowers cost through several mechanisms:
 
 - Distillation to smaller specialized models, which raises accuracy while cutting token cost. Schemas from Akka agents feed reinforcement-learning training of specialized models, for faster execution and up to 70% fewer tokens than foundry models.
 - Shared compute for orchestration, agents, memory, streaming, APIs, and model economics, for 70 to 90% lower infrastructure cost than per-service stacks.
@@ -188,7 +188,7 @@ AI governance is the discipline of showing that an agentic AI system does what i
 
 **Akka generates the system that enforces your matrix.** The signed Eval Matrix is the input, and a working agentic system with every safeguard bound at the moment of generation is the output. Every row compiles to one or more runtime, build, and review artifacts, and Akka wires each artifact back to the row that required it, so the audit trail runs unbroken from regulation to running code. Every safeguard is bound at generation, rather than patched in after a regulator asked. The signed and sealed result is the Governance Posture Package, a tamper-evident audit artifact ready for regulatory handoff.
 
-**The interaction log makes improvement cheap.** Akka saves every interaction the system runs into petabyte-scale, tamper-evident storage, indexed, queryable, and cryptographically chained, so the records you hand to an auditor are the same records the runtime emitted. The same captured record feeds replay testing, conformance reconstruction, drift detection, audit evidence, test dataset generation, fine-tuning corpus curation, and incident investigation. It is also the record Akka Token Shredder uses to train smaller models, so governance and cost draw from one capture.
+**The interaction log makes improvement cheap.** Akka saves every interaction the system runs into petabyte-scale, tamper-evident storage, indexed, queryable, and cryptographically chained, so the records you hand to an auditor are the same records the runtime emitted. The same captured record feeds replay testing, conformance reconstruction, drift detection, audit evidence, test dataset generation, fine-tuning corpus curation, and incident investigation. It is also the record Akka Optimize uses to train smaller models, so governance and cost draw from one capture.
 
 **Governance is a feedback and improvement loop.** Posture improvement is a steady cadence of small, scoped cycles. Akka Verify detects what to act on through four triggers: a declared change, which is one of nineteen named change types in the AI events taxonomy; a regulation update from the monthly corpus watch; a scheduled review; or runtime-detected drift. It then scopes the review to what actually changed. A prompt tweak is a half-day cycle. A foundation-model swap is multi-week, but pre-determined and pre-budgeted. The loop is the price of operating an AI system in a regulated environment, and it is much cheaper when the platform pre-determines the scope of each cycle rather than negotiating it with auditors each time.
 
@@ -399,7 +399,7 @@ The result is a 70 to 90% infrastructure cost reduction, driven by shared comput
 - **Live CVE patching** — Security patching without downtime or dedicated patch cycles.
 - **Automated operations (AAO)** — Reduces the SRE and ops headcount needed to run production AI systems.
 
-**Token and AI spend optimization (Akka Token Shredder)**
+**Token and AI spend optimization (Akka Optimize)**
 - **Distillation to smaller models** — Schemas from Akka agents feed RL training of specialized models, for faster execution, higher accuracy, and up to 70% fewer tokens than foundry models.
 - **Memory compaction** — Built-in context optimization that reduces tokens consumed.
 - **FinOps tooling** — Built-in token tracking and cost reporting across teams and projects.

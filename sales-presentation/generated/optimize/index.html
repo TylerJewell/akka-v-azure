@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka Optimize — AI that lowers its own bill</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   SHARED — variables, resets, fonts, keyframes
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --yellow: #F5C518;
+  --black:  #000;
+  --dark:   #07070C;
+  --white:  #fff;
+  --gray:   #555;
+  --pad-8:  8vw;
+  --pad-6:  6vw;
+  --pad-10: 10vw;
+  --pad-3:  3vw;
+}
+@media (min-width: 1537px) {
+  :root {
+    --pad-8:  123px;
+    --pad-6:  92px;
+    --pad-10: 154px;
+    --pad-3:  46px;
+  }
+}
+html { scroll-behavior: auto; background: var(--black); }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: clip;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+
+@keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+@keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+@keyframes bounceDown {
+  0%,100% { transform:rotate(45deg) translate(0,0); }
+  50%     { transform:rotate(45deg) translate(4px,4px); }
+}
+@keyframes bgSlide {
+  from { background-position:0 0; }
+  to   { background-position:36px 36px; }
+}
+
+/* ── opt-00-title ── */
+#opt-title {
+  height: 100vh; height: 100dvh; min-height: 720px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#opt-title::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#opt-title::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+#opt-title > * { position: relative; z-index: 2; }
+
+.tst-logo {
+  margin-bottom: 36px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .3s;
+}
+.tst-logo svg { height: 52px; width: auto; }
+
+.tst-headline {
+  font-size: clamp(48px, 6.8vw, 104px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1200px; margin-bottom: 24px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .6s;
+}
+.tst-headline .accent { color: var(--yellow); }
+
+.tst-sub {
+  font-size: clamp(19px, 2vw, 30px);
+  color: #d4d4d4; font-weight: 700;
+  letter-spacing: 8px; line-height: 1.5;
+  margin-bottom: 52px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .5s ease forwards .9s;
+}
+
+/* Loop glyph */
+.tst-loop {
+  display: flex; flex-direction: column; align-items: center;
+  width: min(720px, 76vw);
+  margin-bottom: 48px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .6s ease forwards 1.1s;
+}
+.tst-loop-stages {
+  display: flex; align-items: center; gap: 18px;
+  width: 100%; justify-content: space-between;
+}
+.tst-loop-stages span {
+  font-size: clamp(17px, 1.75vw, 25px);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2.8px; color: var(--white);
+}
+.tst-loop-arrow { width: 36px; height: 18px; flex-shrink: 0; }
+.tst-loop-return {
+  width: calc(100% - 72px);
+  height: 38px;
+  margin-top: 10px;
+  border-left: 1.5px solid var(--yellow);
+  border-right: 1.5px solid var(--yellow);
+  border-bottom: 1.5px solid var(--yellow);
+  position: relative;
+  opacity: 0; animation: tst-fade .5s ease-out 1.7s forwards;
+}
+.tst-loop-tip {
+  position: absolute;
+  top: -9px; left: -6.75px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 9px solid var(--yellow);
+}
+@keyframes tst-fade { to { opacity: 1; } }
+.tst-loop-label {
+  margin-top: 9px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--gray); font-weight: 600;
+}
+
+.tst-tag {
+  font-size: clamp(17px, 1.65vw, 25px);
+  color: #b8b8b8; line-height: 1.45; max-width: 960px;
+  margin-bottom: 44px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .5s ease forwards 1.3s;
+}
+.tst-tag-num { color: var(--yellow); font-weight: 700; }
+
+.tst-divider {
+  width: 64px; height: 3px; background: var(--yellow);
+  opacity:0;
+  animation: fadeUp .5s ease forwards 1.4s;
+}
+
+.tst-scroll-hint {
+  margin-top: 48px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  opacity:0; animation:fadeUp .5s ease forwards 2.1s;
+}
+.tst-scroll-hint span { font-size:9px; text-transform:uppercase; letter-spacing:3px; color:var(--gray); }
+@media (max-height: 820px) { .tst-scroll-hint { display: none; } }
+
+@media (max-width: 820px) {
+  #opt-title {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .tst-headline { font-size: clamp(38px, 10vw, 56px); }
+  .tst-sub { letter-spacing: 3px; }
+  .tst-loop { width: 100%; }
+  .tst-loop-stages { gap: 8px; }
+  .tst-loop-stages span { font-size: 15px; letter-spacing: 1.2px; }
+  .tst-loop-arrow { width: 24px; }
+  .tst-loop-return { width: calc(100% - 48px); }
+}
+.tst-scroll-arrow {
+  width:18px; height:18px;
+  border-right:1.5px solid var(--yellow); border-bottom:1.5px solid var(--yellow);
+  transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
+}
+
+
+/* ── opt-01-problem ── */
+#ts1-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts1-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts1-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts1-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts1] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts1].visible { opacity: 1; transform: none; }
+
+.ts1-head { margin-bottom: 44px; }
+.ts1-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts1-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts1-headline {
+  font-size: clamp(34px, 4.2vw, 58px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts1-headline .accent { color: var(--yellow); }
+.ts1-sub {
+  font-size: clamp(15px, 1.35vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.ts1-num { color: var(--yellow); font-weight: 700; white-space: nowrap; }
+.ts1-em { color: var(--white); font-weight: 600; }
+
+.ts1-body {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+/* Curve chart */
+.ts1-chart-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; margin-bottom: 14px;
+}
+.ts1-src {
+  display: block; margin-top: 3px;
+  font-size: 10px; letter-spacing: 1.2px; color: #555; font-weight: 500;
+}
+.ts1-curve { width: 100%; height: auto; display: block; overflow: visible; }
+.ts1-tick {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; fill: #555;
+}
+.ts1-series {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.6px;
+}
+.ts1-series-tok { fill: var(--yellow); }
+.ts1-series-infra { fill: #999; }
+.ts1-line { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts1-chart-curve.visible .ts1-line-infra { animation: ts1-draw .8s ease-out .15s forwards; }
+.ts1-chart-curve.visible .ts1-line-tokens { animation: ts1-draw .9s ease-out .35s forwards; }
+@keyframes ts1-draw { to { stroke-dashoffset: 0; } }
+.ts1-series { opacity: 0; }
+.ts1-chart-curve.visible .ts1-series { animation: ts1-fade .25s ease-out 1.15s forwards; }
+@keyframes ts1-fade { to { opacity: 1; } }
+.ts1-axis-label {
+  margin-top: 6px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: #555; font-weight: 600; text-align: center;
+}
+
+/* Bar charts */
+.ts1-insight {
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: #d4d4d4; line-height: 1.45;
+  margin-bottom: 22px;
+}
+.ts1-bargroup { margin-bottom: 22px; }
+.ts1-bar-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 52px;
+  gap: 12px; align-items: center;
+  margin-bottom: 8px;
+}
+.ts1-bar-label {
+  font-size: 13px; color: #d4d4d4; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ts1-bar-note {
+  font-size: 10px; color: var(--yellow);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+  margin-left: 4px;
+}
+.ts1-bar-track { position: relative; height: 16px; }
+.ts1-bar {
+  height: 100%; width: 0;
+  background: #2E2E2E; border: 1px solid #3A3A3A; border-left: none;
+  border-radius: 0 4px 4px 0;
+  transition: width .8s cubic-bezier(0.16,1,0.3,1) .2s;
+}
+.ts1-bar--subject { background: var(--yellow); border-color: var(--yellow); }
+.ts1-bar--dim { background: #1E1E1E; border-color: #2A2A2A; }
+.ts1-charts-bars.visible .ts1-bar { width: var(--w); }
+.ts1-bar-val {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px; color: #999; font-weight: 500;
+}
+.ts1-bar-val--subject { color: var(--yellow); font-weight: 700; }
+
+.ts1-note {
+  margin-top: 4px; padding-top: 14px;
+  border-top: 1px solid #1F1F1F;
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.45;
+}
+
+@media (max-width: 1100px) {
+  .ts1-body { grid-template-columns: 1fr; gap: 32px; }
+}
+
+@media (max-width: 820px) {
+  #ts1-wrapper { height: auto; }
+  #ts1-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .ts1-body { grid-template-columns: 1fr; gap: 32px; }
+  .ts1-eyebrow { letter-spacing: 2px; }
+  .ts1-chart-title { letter-spacing: 1px; }
+  .ts1-axis-label { letter-spacing: 1.2px; }
+  .ts1-bar-note { letter-spacing: 0.5px; }
+  .ts1-tick { font-size: 22px; }
+  .ts1-series { font-size: 20px; letter-spacing: 0.4px; }
+  .ts1-bar-row { grid-template-columns: 110px 1fr 44px; gap: 8px; }
+}
+
+
+/* ── opt-02-economics ── */
+/* ── opt-02-economics — ported from adaptive/optimize-deepdive #s-econ.
+   Body rendering preserved verbatim; header converted to house format.
+   Source CSS vars scoped to this wrapper so they resolve inside the deck. */
+#eco-wrapper {
+  position: relative; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 6vw; overflow: hidden;
+  --grey1:#d6d6d6; --grey2:#b8b8b8; --grey3:#888; --grey4:#666; --grey5:#555;
+  --line:#2A2A2A; --mono:'SF Mono',Menlo,Consolas,monospace; --c-eval:#28C840;
+}
+#eco-wrapper::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(245,197,24,.04) 1px,transparent 1px);
+  background-size:48px 48px; pointer-events:none; z-index:0;
+}
+.eco-inner { position:relative; z-index:1; width:100%; max-width:1320px; margin:0 auto; }
+
+.eco-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:14px; }
+.eco-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
+.eco-headline { font-size:clamp(32px,4vw,54px); font-weight:700; line-height:1.06; letter-spacing:-0.03em; color:var(--white); margin-bottom:16px; }
+.eco-headline .accent { color:var(--yellow); }
+.eco-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:34px; }
+
+[data-eco] { opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1); }
+[data-eco].visible { opacity:1; transform:none; }
+
+#eco-wrapper .econ { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-top:22px; }
+#eco-wrapper .epanel { border:1px solid var(--line); border-radius:10px; background:#0d0d10; padding:15px 18px; }
+#eco-wrapper .epanel .ph { font-family:var(--mono); font-size:14px; letter-spacing:1px; text-transform:uppercase; color:var(--yellow); margin-bottom:10px; }
+#eco-wrapper .epanel svg { width:100%; height:auto; display:block; }
+#eco-wrapper .e-baseline { grid-column:1/7; }
+#eco-wrapper .e-price { grid-column:1/3; }
+#eco-wrapper .e-unit { grid-column:3/5; }
+#eco-wrapper .e-cost { grid-column:5/7; }
+#eco-wrapper .e-break { grid-column:1/7; }
+#eco-wrapper .e-src { grid-column:1/7; font-family:var(--mono); font-size:11px; color:var(--grey4); line-height:1.55; padding:0 4px; }
+#eco-wrapper .e-basegrid { display:flex; flex-direction:column; gap:10px; }
+#eco-wrapper .e-formula { font-family:var(--mono); font-size:16px; color:var(--grey2); }
+#eco-wrapper .e-formula .acc { color:var(--yellow); }
+#eco-wrapper .e-tiles { display:flex; gap:14px; flex-wrap:wrap; }
+#eco-wrapper .e-tile { flex:1; min-width:190px; border:1px solid var(--line); border-radius:8px; padding:12px 16px; background:#0f0f12; }
+#eco-wrapper .e-tile b { font-family:var(--mono); font-size:34px; color:#fff; font-weight:400; display:block; line-height:1; }
+#eco-wrapper .e-tile span { font-size:12.5px; color:var(--grey2); display:block; margin-top:6px; }
+#eco-wrapper .e-tile.acc { border-color:var(--yellow); }
+#eco-wrapper .e-drivers { font-family:var(--mono); font-size:12.5px; color:var(--grey3); }
+#eco-wrapper .e-track { letter-spacing:1px; }
+
+/* mobile-only stand-in for the break-even SVG — see slide.html, keep copy in sync */
+#eco-wrapper .eco-m { display:none; flex-direction:column; gap:12px; }
+#eco-wrapper .eco-m .m-row { display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:12.5px; color:var(--grey2); }
+#eco-wrapper .eco-m .m-row b { font-family:var(--mono); font-size:12.5px; color:#fff; font-weight:400; }
+#eco-wrapper .eco-m .m-row b.acc { color:var(--yellow); }
+#eco-wrapper .eco-m .m-cross { font-family:var(--mono); font-size:14px; color:#fff; border-left:2px solid var(--yellow); padding-left:10px; }
+#eco-wrapper .eco-m .m-unit { border-top:1px solid var(--line); padding-top:12px; }
+#eco-wrapper .eco-m .m-unit .m-lab { font-family:var(--mono); font-size:11px; color:var(--grey3); margin-bottom:6px; }
+#eco-wrapper .eco-m .m-unit .m-fig { font-family:var(--mono); font-size:24px; color:#fff; }
+#eco-wrapper .eco-m .m-unit .m-fig .to { color:var(--grey3); margin:0 8px; }
+#eco-wrapper .eco-m .m-unit .m-fig .now { color:var(--yellow); }
+#eco-wrapper .eco-m .m-delta { font-family:var(--mono); font-size:13px; color:#72D35B; margin-top:8px; }
+#eco-wrapper .eco-m .m-note { font-family:var(--mono); font-size:11px; color:var(--grey3); margin-top:6px; line-height:1.5; }
+
+@media(max-width:820px){
+  #eco-wrapper { padding:56px 5vw; }
+  #eco-wrapper .eco-eyebrow { letter-spacing:2px; }
+  #eco-wrapper .epanel .ph { letter-spacing:.5px; }
+  #eco-wrapper .econ { grid-template-columns:1fr; }
+  #eco-wrapper .e-baseline,
+  #eco-wrapper .e-price,
+  #eco-wrapper .e-unit,
+  #eco-wrapper .e-cost,
+  #eco-wrapper .e-break,
+  #eco-wrapper .e-src { grid-column:1; }
+  #eco-wrapper .e-tile { min-width:150px; }
+  #eco-wrapper .e-track { letter-spacing:0; }
+  #eco-wrapper .e-break svg { display:none !important; }
+  #eco-wrapper .eco-m { display:flex; }
+}
+
+
+/* ── opt-03-product ── */
+#ts2-wrapper {
+  height: 260vh;
+  position: relative;
+}
+#ts2-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts2-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts2-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts2] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts2].visible { opacity: 1; transform: none; }
+
+.ts2-head { margin-bottom: 56px; }
+.ts2-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts2-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts2-headline {
+  font-size: clamp(32px, 4vw, 56px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts2-headline .accent { color: var(--yellow); }
+.ts2-sub {
+  font-size: clamp(15px, 1.35vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+
+/* Stage row */
+.ts2-stages {
+  display: flex; align-items: stretch; gap: 10px;
+}
+.ts2-arrow { width: 30px; height: 14px; flex-shrink: 0; align-self: center; overflow: visible; }
+.ts2-stage {
+  flex: 1 1 0;
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(245,197,24,0.5);
+  background: rgba(245,197,24,0.05);
+  border-radius: 4px;
+}
+.ts2-flow.visible .ts2-stage { animation: ts2-rise .5s ease-out forwards; }
+.ts2-stage { opacity: 0; transform: translateY(14px); }
+.ts2-flow.visible .ts2-stage:nth-of-type(1) { animation-delay: .10s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(2) { animation-delay: .24s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(3) { animation-delay: .38s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(4) { animation-delay: .52s; }
+.ts2-flow.visible .ts2-stage:nth-of-type(5) { animation-delay: .66s; }
+@keyframes ts2-rise { to { opacity: 1; transform: none; } }
+
+.ts2-stage-name {
+  font-size: clamp(16px, 1.5vw, 21px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--white); line-height: 1; margin-bottom: 8px;
+}
+.ts2-stage-desc {
+  font-size: clamp(11px, 0.95vw, 13.5px); color: #aaa; line-height: 1.35;
+}
+
+.ts2-outcome {
+  flex: 1.1 1 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, #0E0E0E 0%, #0A0A0A 100%);
+  border: 1px solid var(--yellow);
+  border-radius: 4px;
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity .5s ease .85s, transform .5s cubic-bezier(0.16,1,0.3,1) .85s;
+}
+.ts2-flow.visible .ts2-outcome { opacity: 1; transform: none; }
+.ts2-outcome-tag {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: #aaa; font-weight: 600; margin-bottom: 6px;
+}
+.ts2-outcome-val {
+  font-size: clamp(18px, 1.8vw, 26px); font-weight: 700;
+  color: var(--yellow); line-height: 1.1; letter-spacing: -0.01em;
+}
+.ts2-outcome-val span { color: var(--white); font-size: clamp(13px, 1.1vw, 16px); font-weight: 600; }
+
+/* Return loop */
+.ts2-loop { margin-top: 14px; position: relative; }
+.ts2-loop-svg { width: 100%; height: 42px; display: block; overflow: visible; }
+.ts2-loop-path { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts2-flow.visible .ts2-loop-path { animation: ts2-trace .9s ease-out 1.1s forwards; }
+.ts2-loop-head { opacity: 0; }
+.ts2-flow.visible .ts2-loop-head { animation: ts2-fade .15s ease-out 1.95s forwards; }
+@keyframes ts2-trace { to { stroke-dashoffset: 0; } }
+@keyframes ts2-fade { to { opacity: 1; } }
+.ts2-loop-label {
+  position: absolute; left: 50%; top: 26px;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px;
+  background: var(--black); padding: 2px 18px;
+  white-space: nowrap;
+}
+.ts2-loop-tag {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700;
+}
+.ts2-loop-text { font-size: clamp(12px, 1vw, 15px); color: #d4d4d4; font-weight: 500; }
+
+/* Capability chips */
+
+@media (max-width: 820px) {
+  #ts2-wrapper { height: auto; }
+  #ts2-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .ts2-eyebrow { letter-spacing: 2px; }
+  .ts2-stages { flex-direction: column; }
+  .ts2-arrow {
+    width: 18px; height: 18px;
+    align-self: center; margin: 0 auto;
+    transform: rotate(90deg);
+  }
+  .ts2-outcome { flex: 1 1 auto; width: 100%; }
+  .ts2-loop-svg { display: none; }
+  .ts2-loop-label {
+    position: static; transform: none;
+    flex-wrap: wrap; justify-content: center; text-align: center;
+    white-space: normal; padding: 2px 0;
+  }
+  .ts2-loop-tag { letter-spacing: 1.2px; }
+}
+
+
+/* ── opt-04-target ── */
+#ts3-wrapper {
+  height: 260vh;
+  position: relative;
+}
+#ts3-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts3-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts3-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts3] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts3].visible { opacity: 1; transform: none; }
+
+.ts3-head { margin-bottom: 40px; }
+.ts3-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts3-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts3-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts3-headline .accent { color: var(--yellow); }
+.ts3-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.ts3-em { color: var(--white); font-weight: 600; }
+
+/* Ranked table */
+.ts3-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ts3-table th {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; text-align: left;
+  padding: 0 14px 10px 0;
+  border-bottom: 1px solid #2A2A2A;
+}
+.ts3-table td {
+  font-size: clamp(13px, 1.05vw, 16px);
+  color: #d4d4d4;
+  padding: 11px 14px 11px 0;
+  border-bottom: 1px solid #1A1A1A;
+}
+.ts3-agent {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(12px, 1vw, 15px) !important;
+  color: var(--white) !important; font-weight: 500;
+}
+.ts3-mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+.ts3-check { color: #d4d4d4; }
+.ts3-fit {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700;
+}
+.ts3-proj {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700; white-space: nowrap;
+}
+.ts3-dim td { color: #666; }
+.ts3-dim .ts3-agent { color: #666 !important; }
+.ts3-keep { font-style: italic; color: #666 !important; }
+.ts3-foot-label {
+  font-size: 11px !important; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888 !important; font-weight: 600; text-align: right;
+  border-bottom: none !important;
+}
+.ts3-foot-val {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow) !important; font-weight: 700;
+  font-size: clamp(15px, 1.25vw, 19px) !important;
+  border-bottom: none !important; white-space: nowrap;
+}
+/* Grade fan-out */
+.ts3-grade {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.ts3-grade-title {
+  font-size: clamp(16px, 1.4vw, 20px); font-weight: 700;
+  color: var(--white); letter-spacing: -0.01em; margin-bottom: 10px;
+}
+.ts3-grade-body {
+  font-size: clamp(13.5px, 1.15vw, 16.5px);
+  color: #b8b8b8; line-height: 1.5;
+}
+.ts3-fan {
+  display: flex; align-items: stretch; gap: 0;
+  min-height: 170px;
+}
+.ts3-fan-src {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 14px 18px;
+  border: 1px solid rgba(245,197,24,0.5);
+  border-left: 3px solid var(--yellow);
+  background: rgba(245,197,24,0.05);
+  border-radius: 3px;
+  align-self: center;
+}
+.ts3-fan-src-tag {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: #aaa; font-weight: 600; margin-bottom: 6px;
+}
+.ts3-fan-src-name {
+  font-size: clamp(16px, 1.4vw, 20px); font-weight: 700;
+  color: var(--white); line-height: 1;
+}
+.ts3-fan-svg { width: 70px; height: 170px; flex-shrink: 0; overflow: visible; align-self: center; }
+.ts3-fan-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.ts3-grade.visible .ts3-fan-arrow { animation: ts3-draw .5s ease-out forwards; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(1) { animation-delay: .35s; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(2) { animation-delay: .45s; }
+.ts3-grade.visible .ts3-fan-arrow:nth-of-type(3) { animation-delay: .55s; }
+.ts3-fan-head { opacity: 0; }
+.ts3-grade.visible .ts3-fan-head { animation: ts3-fade .15s ease-out .95s forwards; }
+@keyframes ts3-draw { to { stroke-dashoffset: 0; } }
+@keyframes ts3-fade { to { opacity: 1; } }
+.ts3-fan-outs {
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 10px; flex: 1;
+}
+.ts3-fan-out {
+  padding: 8px 14px;
+  border: 1px solid #1F1F1F;
+  border-left: 2px solid var(--yellow);
+  background: rgba(255,255,255,0.02);
+  border-radius: 3px;
+}
+.ts3-fan-out-tag {
+  font-size: clamp(11px, 1vw, 13px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: var(--yellow); margin-bottom: 2px;
+}
+.ts3-fan-out-desc { font-size: 11px; color: #999; }
+
+/* Mobile table scroller — inert on desktop */
+.ts3-table-wrap { width: 100%; }
+
+@media (max-width: 1100px) {
+  .ts3-grade { grid-template-columns: 1fr; gap: 24px; }
+}
+
+@media (max-width: 820px) {
+  #ts3-wrapper { height: auto; }
+  #ts3-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .ts3-grade { grid-template-columns: 1fr; gap: 24px; }
+
+  /* Seven columns cannot fit 390px even at minimum type — scroll the table only */
+  .ts3-table-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; scrollbar-color: rgba(245,197,24,.6) #1A1A1A;
+  }
+  .ts3-table-wrap::-webkit-scrollbar { height: 6px; }
+  .ts3-table-wrap::-webkit-scrollbar-track { background: #1A1A1A; }
+  .ts3-table-wrap::-webkit-scrollbar-thumb { background: rgba(245,197,24,.6); border-radius: 3px; }
+  .ts3-table { min-width: 620px; }
+  .ts3-table th {
+    font-size: 9px; letter-spacing: 1px;
+    padding: 0 10px 8px 0;
+  }
+  .ts3-table td { font-size: 12px; padding: 9px 10px 9px 0; }
+  .ts3-agent { font-size: 11px !important; }
+  .ts3-foot-label { font-size: 9px !important; letter-spacing: 1px; }
+  .ts3-foot-val { font-size: 14px !important; }
+
+  .ts3-fan { flex-direction: column; min-height: 0; gap: 10px; }
+  .ts3-fan-svg { display: none; }
+  .ts3-fan-src { align-self: stretch; }
+
+  .ts3-eyebrow { letter-spacing: 2px; }
+  .ts3-fan-src-tag { letter-spacing: 1.4px; }
+  .ts3-fan-out-tag { letter-spacing: 1px; }
+}
+
+
+/* ── opt-05-prove ── */
+#ts4-wrapper {
+  height: 240vh;
+  position: relative;
+}
+#ts4-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#ts4-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#ts4-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; margin-left: auto; margin-right: auto; }
+
+[data-ts4] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-ts4].visible { opacity: 1; transform: none; }
+
+.ts4-head { margin-bottom: 36px; }
+.ts4-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.ts4-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.ts4-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.ts4-headline .accent { color: var(--yellow); }
+.ts4-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1200px;
+}
+.ts4-em { color: var(--white); font-weight: 600; }
+
+/* Staging gate diagram — node/edge idiom */
+.ts4-diagram { max-width: 1200px; }
+.ts4-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ts4-nd  { fill: #141414; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-ndy { fill: #1a1700; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.ts4-nl {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; fill: #ccc; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+.ts4-nl-y { fill: #F5C518; }
+.ts4-nls {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px; fill: #777;
+}
+.ts4-nls-y { fill: #F5C518; }
+.ts4-nls-w { fill: #d4d4d4; }
+.ts4-dimtext { fill: #666; }
+.ts4-el { stroke: #F5C518; stroke-width: 1; }
+.ts4-el-dash { stroke: #F5C518; stroke-width: 1; stroke-dasharray: 4,3; }
+
+.ts4-benchmark {
+  margin-top: 26px;
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: #C8C8C8; line-height: 1.45;
+}
+
+.ts4-points {
+  margin-top: 18px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+}
+.ts4-point {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.5;
+  padding-left: 16px; position: relative;
+}
+.ts4-point::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+/* Mobile stacked variant of the staging-gate diagram — hidden on desktop.
+   Copy must stay in sync with the <svg> in slide.html. */
+.ts4-m { display: none; }
+.ts4-m-node {
+  padding: 12px 14px;
+  border: 1px solid #F5C518; border-radius: 5px;
+  background: #141414;
+}
+.ts4-m-node.ts4-m-y { background: #1a1700; }
+.ts4-m-nl {
+  font-size: 13px; font-weight: 600; color: #ccc;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+.ts4-m-node.ts4-m-y .ts4-m-nl { color: var(--yellow); }
+.ts4-m-nls {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px; color: #777; margin-top: 4px;
+}
+.ts4-m-nls-y { color: var(--yellow); }
+.ts4-m-nls-w { color: #d4d4d4; }
+.ts4-m-arrow {
+  align-self: center;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--yellow);
+}
+.ts4-m-note { font-size: 11px; color: #666; text-align: center; }
+
+@media (max-width: 1100px) {
+  .ts4-points { grid-template-columns: 1fr; gap: 14px; }
+}
+
+@media (max-width: 820px) {
+  #ts4-wrapper { height: auto; }
+  #ts4-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .ts4-points { grid-template-columns: 1fr; gap: 14px; }
+  .ts4-eyebrow { letter-spacing: 2px; }
+
+  .ts4-diagram svg { display: none !important; }
+  .ts4-m { display: flex; flex-direction: column; gap: 10px; }
+}
+
+
+/* ── opt-06-architecture ── */
+/* ── opt-06-architecture — ported from adaptive/optimize-deepdive #s-arch.
+   SVG diagram preserved verbatim; header converted to house format. */
+#arc-wrapper {
+  position: relative; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 6vw; overflow: hidden;
+  --grey4:#666; --line:#2A2A2A; --mono:'SF Mono',Menlo,Consolas,monospace;
+}
+#arc-wrapper::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(245,197,24,.04) 1px,transparent 1px);
+  background-size:48px 48px; pointer-events:none; z-index:0;
+}
+.arc-inner { position:relative; z-index:1; width:100%; max-width:1360px; margin:0 auto; }
+
+.arc-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:14px; }
+.arc-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
+.arc-headline { font-size:clamp(32px,4vw,54px); font-weight:700; line-height:1.06; letter-spacing:-0.03em; color:var(--white); margin-bottom:16px; }
+.arc-headline .accent { color:var(--yellow); }
+.arc-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:34px; }
+
+[data-arc] { opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1); }
+[data-arc].visible { opacity:1; transform:none; }
+
+#arc-wrapper .dia { margin-top:0; border:1px solid var(--line); border-radius:12px; background:#0a0a0d; padding:26px; }
+#arc-wrapper .dia svg { width:100%; height:auto; display:block; }
+#arc-wrapper .svgcap { font-family:var(--mono); font-size:11px; color:var(--grey4); letter-spacing:.5px; margin-top:14px; }
+
+/* mobile-only stacked variant of the architecture SVG */
+#arc-wrapper .arc-m { display:none; }
+#arc-wrapper .arc-m .plane { border:1px dashed #3F3F3F; border-radius:10px; padding:14px; }
+#arc-wrapper .arc-m .plane.managed { border:1px solid rgba(245,197,24,0.28); background:rgba(245,197,24,0.04); }
+#arc-wrapper .arc-m .plane.infra { border:1px solid var(--line); }
+#arc-wrapper .arc-m .plane-lab { font-family:var(--mono); font-size:10px; letter-spacing:1px; color:#888; margin-bottom:10px; }
+#arc-wrapper .arc-m .plane.managed .plane-lab { color:var(--yellow); }
+#arc-wrapper .arc-m .grp-lab { font-family:var(--mono); font-size:9px; letter-spacing:1px; color:#666; margin:10px 0 6px; }
+#arc-wrapper .arc-m .card { background:#141414; border:1px solid var(--line); border-radius:6px; padding:8px 10px; margin-bottom:6px; }
+#arc-wrapper .arc-m .card.hl { border-color:var(--yellow); }
+#arc-wrapper .arc-m .card.dash { border:1px dashed #666; }
+#arc-wrapper .arc-m .card .t { font-size:13px; color:#fff; line-height:1.3; }
+#arc-wrapper .arc-m .card .d { font-family:var(--mono); font-size:9.5px; color:#777; margin-top:3px; line-height:1.4; }
+#arc-wrapper .arc-m .down { text-align:center; color:var(--yellow); font-size:16px; margin:6px 0; }
+
+@media (max-width:820px) {
+  #arc-wrapper { padding:56px 5vw; }
+  #arc-wrapper .arc-eyebrow { letter-spacing:2px; }
+  #arc-wrapper .dia svg,
+  #arc-wrapper .dia .svgcap { display:none !important; }
+  #arc-wrapper .arc-m { display:block; }
+}
+
+
+/* ── opt-07-costgov ── */
+/* ── opt-08-costgov — ported from adaptive/optimize-deepdive #s-d1.
+   Dashboards preserved verbatim; header converted to house format.
+   Source CSS vars scoped to this wrapper so they resolve inside the deck. */
+#cog-wrapper {
+  position: relative; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 6vw; overflow: hidden;
+  --grey1:#d6d6d6; --grey2:#b8b8b8; --grey3:#888; --grey4:#666; --grey5:#555;
+  --line:#2A2A2A; --mono:'SF Mono',Menlo,Consolas,monospace; --c-eval:#28C840;
+}
+#cog-wrapper::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(245,197,24,.04) 1px,transparent 1px);
+  background-size:48px 48px; pointer-events:none; z-index:0;
+}
+.cog-inner { position:relative; z-index:1; width:100%; max-width:1240px; margin:0 auto; }
+
+.cog-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:14px; }
+.cog-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
+.cog-headline { font-size:clamp(32px,4vw,54px); font-weight:700; line-height:1.06; letter-spacing:-0.03em; color:var(--white); margin-bottom:16px; }
+.cog-headline .accent { color:var(--yellow); }
+.cog-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:34px; }
+
+[data-cog] { opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1); }
+[data-cog].visible { opacity:1; transform:none; }
+
+/* mini dashboards */
+#cog-wrapper .dashgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:22px; }
+#cog-wrapper .dash { display:flex; flex-direction:column; gap:10px; }
+#cog-wrapper .dashhd { border-bottom:1px solid var(--line); padding-bottom:9px; margin-bottom:2px; }
+#cog-wrapper .dashhd h4 { font-family:var(--mono); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--yellow); font-weight:600; }
+#cog-wrapper .dashhd p { font-size:11.5px; color:var(--grey3); margin-top:5px; line-height:1.35; }
+#cog-wrapper .tile { border:1px solid var(--line); border-radius:9px; padding:13px 14px; background:rgba(255,255,255,.022); }
+#cog-wrapper .tl { font-size:11px; color:var(--grey3); letter-spacing:.2px; }
+#cog-wrapper .tv { font-size:25px; color:#fff; font-weight:600; line-height:1.15; margin-top:3px; letter-spacing:-.01em; }
+#cog-wrapper .tv small { font-size:12px; color:var(--grey3); font-weight:400; margin-left:5px; }
+#cog-wrapper .ts { font-family:var(--mono); font-size:9.5px; color:var(--grey3); margin-top:6px; line-height:1.45; }
+#cog-wrapper .ts.good { color:#28C840; }
+#cog-wrapper .ts.bad { color:#ff6b60; }
+#cog-wrapper .tilerow { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+#cog-wrapper .meter { height:8px; border-radius:4px; background:#2A2A2A; margin-top:9px; overflow:hidden; }
+#cog-wrapper .meter i { display:block; height:100%; border-radius:4px; background:var(--yellow); }
+#cog-wrapper .meter i.warn { background:#ff6b60; }
+#cog-wrapper .brow { display:grid; grid-template-columns:96px 1fr 52px; align-items:center; gap:9px; margin-top:8px; font-size:11px; color:var(--grey2); }
+#cog-wrapper .brow .bt { height:9px; border-radius:0 3px 3px 0; background:var(--yellow); }
+#cog-wrapper .brow .bt.mut { background:#4a4a4a; }
+#cog-wrapper .brow .bv { font-family:var(--mono); font-size:10px; color:var(--grey2); text-align:right; font-variant-numeric:tabular-nums; }
+#cog-wrapper .dtab { width:100%; border-collapse:collapse; margin-top:8px; font-variant-numeric:tabular-nums; }
+#cog-wrapper .dtab th { font-family:var(--mono); font-size:8.5px; letter-spacing:.8px; text-transform:uppercase; color:var(--grey3); text-align:left; padding:0 0 6px; font-weight:500; }
+#cog-wrapper .dtab td { font-size:10.5px; color:var(--grey1); padding:5px 0; border-top:1px solid rgba(255,255,255,.05); }
+#cog-wrapper .dtab td.m { font-family:var(--mono); font-size:10px; }
+#cog-wrapper .q { font-family:var(--mono); font-size:10px; color:var(--grey3); }
+#cog-wrapper .q b { color:#fff; font-weight:600; }
+#cog-wrapper .st { display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:9px; letter-spacing:.5px; }
+#cog-wrapper .st::before { content:''; width:6px; height:6px; border-radius:50%; background:#28C840; flex-shrink:0; }
+#cog-wrapper .st.warn { color:#ff6b60; }
+#cog-wrapper .st.warn::before { background:#ff6b60; }
+#cog-wrapper .st.ok { color:var(--grey3); }
+#cog-wrapper .srow { display:flex; justify-content:space-between; align-items:baseline; font-size:11px; color:var(--grey2); padding:5px 0; border-top:1px solid rgba(255,255,255,.05); }
+#cog-wrapper .srow:first-of-type { border-top:0; }
+#cog-wrapper .srow b { font-family:var(--mono); font-size:11px; color:#fff; font-weight:600; font-variant-numeric:tabular-nums; }
+#cog-wrapper .srow b.good { color:#28C840; }
+#cog-wrapper .srow b.bad { color:#ff6b60; }
+#cog-wrapper .stack { display:flex; height:10px; border-radius:3px; overflow:hidden; margin-top:9px; gap:2px; }
+#cog-wrapper .stack span { display:block; }
+#cog-wrapper .key { display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; font-family:var(--mono); font-size:9px; color:var(--grey3); }
+#cog-wrapper .key i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+
+/* decision boxes */
+#cog-wrapper .decbox { border:1px solid rgba(245,197,24,.45); border-radius:9px; background:rgba(245,197,24,.035); overflow:hidden; }
+#cog-wrapper .dechd { display:flex; justify-content:space-between; align-items:baseline; padding:11px 14px 9px; border-bottom:1px solid rgba(245,197,24,.22); }
+#cog-wrapper .dechd h5 { font-family:var(--mono); font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--yellow); font-weight:600; }
+#cog-wrapper .dechd em { font-family:var(--mono); font-size:9px; color:var(--grey3); font-style:normal; }
+#cog-wrapper .decrow { padding:11px 14px 12px; border-top:1px solid rgba(255,255,255,.06); }
+#cog-wrapper .decrow:first-of-type { border-top:0; }
+#cog-wrapper .decrow .what { font-size:12.5px; color:var(--grey1); line-height:1.4; }
+#cog-wrapper .decrow .what b { color:#fff; font-weight:600; }
+#cog-wrapper .decrow .meta { font-family:var(--mono); font-size:9px; color:var(--grey3); margin-top:5px; }
+#cog-wrapper .decrow .meta .old { color:#ff6b60; }
+#cog-wrapper .acts { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+#cog-wrapper .btn { font-family:var(--mono); font-size:9.5px; letter-spacing:.3px; padding:5px 10px; border-radius:5px; border:1px solid var(--line); color:var(--grey2); background:rgba(255,255,255,.035); white-space:nowrap; }
+#cog-wrapper .btn.go { border-color:rgba(245,197,24,.6); color:var(--yellow); background:rgba(245,197,24,.10); }
+#cog-wrapper .btn.warn { border-color:rgba(255,107,96,.5); color:#ff6b60; background:rgba(255,107,96,.07); }
+
+@media(max-width:1000px){ #cog-wrapper .dashgrid { grid-template-columns:1fr; } }
+@media(max-width:820px){
+  #cog-wrapper { padding:56px 5vw; }
+  #cog-wrapper .tilerow { grid-template-columns:1fr; }
+  #cog-wrapper .brow { grid-template-columns:74px 1fr 44px; gap:7px; }
+  #cog-wrapper .dtabwrap { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:rgba(245,197,24,.6) #1A1A1A; }
+  #cog-wrapper .dtabwrap::-webkit-scrollbar { height:6px; }
+  #cog-wrapper .dtabwrap::-webkit-scrollbar-track { background:#1A1A1A; border-radius:3px; }
+  #cog-wrapper .dtabwrap::-webkit-scrollbar-thumb { background:rgba(245,197,24,.6); border-radius:3px; }
+  #cog-wrapper .dtab { min-width:320px; }
+}
+
+
+/* ── family-platform ── */
+/* Mirrors #s-routes in akka-overview/index.html. The deck's shared.css has no
+   --muted/--line/--dim/--mono, so those values are inlined here. */
+#family {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px var(--pad-6); position: relative;
+  background: var(--black); overflow: hidden;
+}
+#family::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+.fam-inner { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin: 0 auto; }
+
+.fam-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+.fam-reveal.visible { opacity: 1; transform: none; }
+
+.fam-head { font-size: clamp(30px,4.4vw,58px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; color: var(--white); margin-bottom: 14px; max-width: 22ch; }
+.fam-head .accent { color: var(--yellow); }
+.fam-sub { font-size: clamp(15px,1.35vw,19px); color: #A6A6A6; max-width: 64ch; line-height: 1.55; margin-bottom: 40px; }
+
+.fam-grid { display: grid; grid-template-columns: 1.5fr 0.9fr; gap: 56px; align-items: start; margin-top: 46px; }
+.fam-grid > * { min-width: 0; }
+
+.cake-wrap { position: relative; border: 1.5px solid rgba(245,197,24,0.85); border-radius: 16px; padding: 40px 34px 34px; background: rgba(245,197,24,0.02); box-shadow: 0 0 90px -28px rgba(245,197,24,0.55); }
+.cake-tab { position: absolute; top: 0; left: 50%; transform: translate(-50%,-50%); background: linear-gradient(90deg, transparent 0, var(--black) 14%, var(--black) 86%, transparent 100%); padding: 2px 30px; font-size: clamp(20px,2vw,30px); letter-spacing: -0.02em; color: var(--yellow); font-weight: 700; white-space: nowrap; }
+.cake { display: flex; flex-direction: column; }
+.layer { display: grid; grid-template-columns: 98px 1fr; gap: 0 22px; align-items: stretch; }
+.role { align-self: center; text-align: right; font-family: 'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; font-weight: 600; color: #888; line-height: 1.7; }
+.role b { color: #A6A6A6; font-weight: 600; display: block; }
+.cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.cards.two { grid-template-columns: 1fr 1fr; }
+.cards.two.govwide { grid-template-columns: 0.8fr 1.2fr; }
+.ocard { border: 1px solid #2A2A2A; border-radius: 11px; padding: 26px 24px; text-align: center; background: rgba(255,255,255,0.025); transition: border-color .2s, transform .2s; }
+.ocard:hover { border-color: rgba(245,197,24,0.5); transform: translateY(-2px); }
+.oname { font-size: clamp(16px,1.6vw,21px); font-weight: 600; letter-spacing: -0.01em; color: var(--white); }
+.osub { margin-top: 12px; color: #A6A6A6; font-size: clamp(11.5px,0.92vw,13px); letter-spacing: .2px; line-height: 1.5; white-space: nowrap; }
+.osub .d { color: var(--yellow); font-weight: 600; padding: 0 4px; }
+#family .osub-wrap { white-space: normal; line-height: 1.7; }
+
+.conn { display: grid; grid-template-columns: 98px 1fr; gap: 0 22px; height: 26px; }
+.conn .rail { display: grid; }
+.conn.two .rail { grid-template-columns: 1fr 1fr; }
+.conn.one .rail { grid-template-columns: 1fr; }
+.conn .rail span { justify-self: center; width: 2px; height: 100%; background: linear-gradient(var(--yellow) 0 45%, transparent 45% 100%); background-size: 100% 8px; opacity: .55; animation: famflow .9s linear infinite; }
+@keyframes famflow { from { background-position: 0 0; } to { background-position: 0 8px; } }
+
+.rt-pick { cursor: pointer; }
+.rt-pick:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.rt-pick[aria-pressed="true"] { background: linear-gradient(160deg, rgba(245,197,24,0.13), rgba(245,197,24,0.035)); border-color: rgba(245,197,24,0.55); box-shadow: 0 0 60px -22px rgba(245,197,24,0.6); }
+.rt-pick[aria-pressed="true"] .oname { color: var(--yellow); }
+
+#family .rt-comp { white-space: nowrap; color: #A6A6A6; cursor: pointer; text-decoration: none; border-bottom: 1px dotted rgba(245,197,24,0.5); transition: color .2s, border-color .2s; }
+#family .rt-comp:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
+#family .rt-comp:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+#family .rt-comp[aria-pressed="true"] { color: var(--yellow); border-bottom-color: var(--yellow); font-weight: 600; }
+
+.rt-panel { align-self: start; padding-top: 6px; }
+.rt-panel h3 { font-size: clamp(20px,2vw,29px); font-weight: 700; letter-spacing: -0.02em; color: var(--yellow); margin-bottom: 18px; }
+.rt-panel p { font-size: clamp(15px,1.32vw,19px); line-height: 1.66; color: #A6A6A6; }
+.rt-panel p + p { margin-top: 18px; }
+.rt-panel .accent { color: var(--yellow); font-weight: 600; }
+.rt-panel code { font-family: 'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size: 0.9em; }
+.rt-panel-body[hidden] { display: none; }
+
+/* Short viewports (laptops): compress vertical rhythm so the cake fits one screen */
+@media (max-height: 880px) {
+  #family { padding-top: 34px; padding-bottom: 34px; }
+  .fam-head { font-size: clamp(26px,3.4vw,42px); margin-bottom: 10px; }
+  .fam-sub { margin-bottom: 18px; }
+  .fam-grid { margin-top: 20px; }
+  .cake-wrap { padding: 26px 30px 22px; }
+  .ocard { padding: 16px 22px; }
+  .conn { height: 16px; }
+  .rt-panel h3 { margin-bottom: 12px; }
+}
+@media (max-height: 720px) {
+  #family { padding-top: 24px; padding-bottom: 24px; }
+  .fam-sub { margin-bottom: 12px; }
+  .fam-grid { margin-top: 14px; }
+  .cake-wrap { padding: 22px 26px 18px; }
+  .ocard { padding: 12px 20px; }
+  .conn { height: 12px; }
+}
+
+@media (max-width: 900px) { .fam-grid { grid-template-columns: 1fr; gap: 34px; } }
+
+@media (max-width: 820px) {
+  .cake-wrap { padding: 34px 18px 26px; }
+  .cake-tab { white-space: normal; text-align: center; line-height: 1.2; font-size: 18px; padding: 2px 16px; max-width: calc(100% - 24px); }
+  .layer { grid-template-columns: 1fr; gap: 8px; }
+  .role { text-align: left; align-self: start; }
+  .cards.two, .cards.two.govwide { grid-template-columns: 1fr; }
+  .ocard { padding: 18px 16px; }
+  .osub, #family .osub-wrap { white-space: normal; overflow-wrap: anywhere; }
+  .conn { grid-template-columns: 1fr; height: 20px; }
+  .conn > div:first-child { display: none; }
+  .conn .rail, .conn.two .rail { grid-template-columns: 1fr; }
+}
+
+
+/* ── opt-08-close ── */
+#opt-closing {
+  height: 100vh; height: 100dvh; min-height: 760px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#opt-closing::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#opt-closing::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+
+.tsc-reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+  position: relative; z-index: 2;
+}
+.tsc-reveal.visible { opacity: 1; transform: none; }
+.tsc-reveal.visible:nth-child(1) { transition-delay: 0s; }
+.tsc-reveal.visible:nth-child(2) { transition-delay: .1s; }
+.tsc-reveal.visible:nth-child(3) { transition-delay: .18s; }
+.tsc-reveal.visible:nth-child(4) { transition-delay: .26s; }
+.tsc-reveal.visible:nth-child(5) { transition-delay: .34s; }
+.tsc-reveal.visible:nth-child(6) { transition-delay: .5s; }
+
+.tsc-logo { margin-bottom: 34px; }
+.tsc-logo svg { height: 42px; width: auto; }
+
+.tsc-headline {
+  font-size: clamp(40px, 5.5vw, 80px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1000px; margin-bottom: 20px;
+}
+.tsc-headline .accent { color: var(--yellow); }
+
+.tsc-sub {
+  font-size: clamp(12px, 1.2vw, 16px);
+  color: var(--gray); font-weight: 600;
+  letter-spacing: 4px; line-height: 1.5;
+  margin-bottom: 34px;
+}
+
+.tsc-divider {
+  width: 56px; height: 3px; background: var(--yellow); margin-bottom: 36px;
+}
+
+.tsc-cta-block {
+  max-width: 980px; width: 100%;
+  margin-bottom: 40px;
+}
+.tsc-cta-label {
+  font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700; margin-bottom: 8px;
+}
+.tsc-cta-line {
+  font-size: clamp(14px, 1.25vw, 18px);
+  color: #b8b8b8; margin-bottom: 26px;
+}
+
+.tsc-phases {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 26px;
+}
+.tsc-phase { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.tsc-phase-node {
+  padding: 8px 22px;
+  border: 1px solid var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-radius: 999px;
+  font-size: clamp(13px, 1.15vw, 16px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--white);
+}
+.tsc-phase-days {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; color: var(--yellow); font-weight: 600;
+}
+.tsc-phase-desc {
+  font-size: clamp(11px, 0.95vw, 13px);
+  color: #999; line-height: 1.45; max-width: 260px;
+}
+.tsc-phase-line {
+  flex: 0 0 34px; height: 1px;
+  background: rgba(245,197,24,0.45);
+  margin-top: 18px;
+}
+
+.tsc-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  background: var(--yellow); color: var(--black);
+  font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; border-radius: 6px;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.tsc-cta:hover { background: #e0b416; }
+
+@media (max-width: 820px) {
+  #opt-closing {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .tsc-sub { letter-spacing: 2.5px; }
+  .tsc-phases { flex-direction: column; align-items: center; gap: 18px; }
+  .tsc-phase-line { display: none; }
+  .tsc-cta-block { max-width: 100%; }
+}
+
+<!-- DEMO_CSS_MARKER -->
+</style>
+</head>
+<body>
+<section id="opt-title">
+  <div class="tst-logo">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tst)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tst"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tst-headline">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tst-sub">AKKA OPTIMIZE</div>
+
+  <div class="tst-loop">
+    <div class="tst-loop-stages">
+      <span>Adapt</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Evaluate</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Serve</span>
+    </div>
+    <div class="tst-loop-return" aria-hidden="true"><i class="tst-loop-tip"></i></div>
+    <div class="tst-loop-label">production feedback</div>
+  </div>
+
+  <div class="tst-tag">Cut token costs up to <span class="tst-tag-num">80%</span> with SLMs.</div>
+  <div class="tst-divider"></div>
+
+  <div class="tst-scroll-hint">
+    <span>scroll to explore</span>
+    <div class="tst-scroll-arrow"></div>
+  </div>
+</section>
+
+
+<div id="ts1-wrapper">
+  <div id="ts1-sticky">
+    <div class="ts1-head">
+      <div class="ts1-eyebrow" data-ts1="0">The problem</div>
+      <div class="ts1-headline" data-ts1="0">Token spend is the <span class="accent">largest and fastest-growing</span> line item.</div>
+      <div class="ts1-sub" data-ts1="0"><span class="ts1-num">$6M&ndash;$12M</span> of a mid-sized enterprise&rsquo;s 3-year agentic TCO &mdash; bigger than infrastructure.<br>Agents multiply calls: plans, retries, tool loops, reasoning tokens, stuffed context windows.</div>
+    </div>
+
+    <div class="ts1-body">
+      <div class="ts1-chart-curve" data-ts1="1">
+        <div class="ts1-chart-title">AI spend as agent fleets grow</div>
+        <svg class="ts1-curve" viewBox="0 0 640 300" aria-label="Token spend rises steeply with agents in production while Akka infrastructure cost stays flat">
+          <line x1="40" y1="270" x2="620" y2="270" stroke="#2A2A2A" stroke-width="1"/>
+          <line x1="40" y1="270" x2="40" y2="30" stroke="#2A2A2A" stroke-width="1"/>
+          <text x="140" y="290" class="ts1-tick" text-anchor="middle">5</text>
+          <text x="280" y="290" class="ts1-tick" text-anchor="middle">15</text>
+          <text x="430" y="290" class="ts1-tick" text-anchor="middle">40</text>
+          <text x="590" y="290" class="ts1-tick" text-anchor="middle">100</text>
+          <path class="ts1-line ts1-line-infra" pathLength="100" d="M40,258 C220,242 420,226 592,212" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/>
+          <path class="ts1-line ts1-line-tokens" pathLength="100" d="M40,254 C230,240 420,168 592,44" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="592" y="32" class="ts1-series ts1-series-tok" text-anchor="end">TOKEN SPEND</text>
+          <text x="592" y="200" class="ts1-series ts1-series-infra" text-anchor="end">TOKENS ON AKKA</text>
+        </svg>
+        <div class="ts1-axis-label">Agents in production &rarr;</div>
+      </div>
+
+      <div class="ts1-charts-bars" data-ts1="2">
+        <div class="ts1-insight">Most of that traffic is narrow, repetitive, and verifiable, such as extraction, classification, summarization, SQL, routing, moderation. A small model specialized on <span class="ts1-em">one task</span> beats a frontier API on that task.</div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Content moderation &mdash; production score <span class="ts1-src">Google DeepMind Gemmaverse case study &middot; 23M-subscriber telco</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Gemma 3 4B <span class="ts1-bar-note">tuned</span></div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:80%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">0.80</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Claude Sonnet 3.7</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:77%"></div></div>
+            <div class="ts1-bar-val">0.77</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:76%"></div></div>
+            <div class="ts1-bar-val">0.76</div>
+          </div>
+        </div>
+
+        <div class="ts1-bargroup">
+          <div class="ts1-chart-title">Enterprise RAG &mdash; head-to-head preference <span class="ts1-src">published enterprise result</span></div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">RL-tuned 8B</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--subject" style="--w:51%"></div></div>
+            <div class="ts1-bar-val ts1-bar-val--subject">51%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">GPT-4o</div>
+            <div class="ts1-bar-track"><div class="ts1-bar" style="--w:29%"></div></div>
+            <div class="ts1-bar-val">29%</div>
+          </div>
+          <div class="ts1-bar-row">
+            <div class="ts1-bar-label">Tie</div>
+            <div class="ts1-bar-track"><div class="ts1-bar ts1-bar--dim" style="--w:20%"></div></div>
+            <div class="ts1-bar-val">20%</div>
+          </div>
+        </div>
+
+        <div class="ts1-note">A 4B open-weight model &mdash; up to <span class="ts1-num">12&times;</span> lower inference cost. The model does less work, enabling more inference per GPU.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="eco-wrapper">
+  <div class="eco-inner">
+    <div class="eco-eyebrow" data-eco="0">The economics</div>
+    <div class="eco-headline" data-eco="0">The savings <span class="accent">potential.</span></div>
+    <div class="eco-sub" data-eco="0">A 2,000-developer org spends about $60M a year on frontier agent tokens. Specialized SLMs cut that to ~$11M &mdash; 81% saved &mdash; and drop cost per verified task nearly 80% while quality rises, with break-even in roughly eight days.</div>
+    <div class="eco-body" data-eco="1">
+      <div class="econ">
+        <div class="epanel e-baseline">
+          <div class="ph">Baseline</div>
+          <div class="e-basegrid">
+            <div class="e-formula">annual spend = <span class="acc">developers</span> × <span class="acc">$ / dev·month</span> × 12</div>
+            <div class="e-tiles">
+              <div class="e-tile acc"><b>$60.0M</b><span>per year · the annual bill</span></div>
+              <div class="e-tile"><b>$2,500</b><span>per developer · month (assumed)</span></div>
+              <div class="e-tile"><b>2,000</b><span>developers</span></div>
+            </div>
+            <div class="e-drivers">cost drivers: GPT-5.5 · Codex (⅔)  +  Opus 4.8 · Claude Code (⅓)</div>
+          </div>
+        </div>
+        <div class="epanel e-price">
+          <div class="ph">Price risk</div>
+          <svg viewBox="0 0 380 212" aria-label="Price risk">
+            <text x="0" y="12" font-family="var(--mono)" font-size="10" fill="#888" letter-spacing="1">ONE DEVELOPER · 3 MONTHS · 57.9B TOKENS</text>
+            <text x="0" y="34" font-size="10.5" fill="#b8b8b8">metered at frontier API</text>
+            <rect x="0" y="42" width="205" height="26" rx="3" fill="#4E4E4E"/>
+            <rect x="205" y="42" width="145" height="26" rx="3" fill="#3a3a3a"/>
+            <text x="9" y="59" font-size="10" fill="#fff">GPT-5.6 Sol $170K</text>
+            <text x="212" y="59" font-size="10" fill="#d6d6d6">Fable 5 $150K</text>
+            <text x="0" y="88" font-family="var(--mono)" font-size="14" fill="#fff">≈ $320K</text>
+            <text x="82" y="88" font-size="10.5" fill="#888">· peak days ~$10K</text>
+            <text x="0" y="110" font-size="10.5" fill="#b8b8b8">billed on subsidized seats</text>
+            <rect x="0" y="116" width="4" height="18" rx="1" fill="#F5C518"/>
+            <text x="10" y="130" font-family="var(--mono)" font-size="13" fill="#F5C518">$1,300</text>
+            <rect x="0" y="148" width="380" height="58" rx="6" fill="#0f0f12" stroke="#F5C518"/>
+            <text x="16" y="187" font-family="var(--mono)" font-size="30" fill="#F5C518">~99.6%</text>
+            <text x="152" y="172" font-size="11" fill="#b8b8b8">how far frontier API prices</text>
+            <text x="152" y="188" font-size="11" fill="#b8b8b8">must fall to match subscriptions</text>
+          </svg>
+        </div>
+        <div class="epanel e-unit">
+          <div class="ph">Unit cost</div>
+          <svg viewBox="0 0 380 210" aria-label="Unit cost">
+            <text x="0" y="13" font-family="var(--mono)" font-size="11.5" fill="#b8b8b8">cost/task = <tspan fill="#F5C518">price/tok</tspan> × <tspan fill="#F5C518">tok/task</tspan></text>
+            <line x1="30" y1="30" x2="30" y2="170" stroke="#2A2A2A"/>
+            <line x1="30" y1="170" x2="366" y2="170" stroke="#2A2A2A"/>
+            <text x="24" y="34" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#666">1.0</text>
+            <text x="24" y="172" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#666">0</text>
+            <rect x="60" y="30" width="78" height="140" rx="2" fill="#4E4E4E"/>
+            <text x="99" y="24" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">1.00</text>
+            <text x="99" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">leased</text>
+            <rect x="168" y="128" width="78" height="42" rx="2" fill="#F5C518" fill-opacity="0.4"/>
+            <text x="207" y="122" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">0.30</text>
+            <text x="207" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">self-provide</text>
+            <rect x="276" y="146" width="78" height="24" rx="2" fill="#F5C518"/>
+            <text x="315" y="140" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#F5C518">0.17</text>
+            <text x="315" y="186" text-anchor="middle" font-size="10" fill="#b8b8b8">adapted</text>
+            <text x="30" y="204" font-family="var(--mono)" font-size="9.5" fill="#888">× 0.30 price/tok  ·  × 0.55 tok/task</text>
+          </svg>
+        </div>
+        <div class="epanel e-cost">
+          <div class="ph">Savings from SLMs</div>
+          <svg viewBox="0 0 380 210" aria-label="Savings from SLMs">
+            <line x1="30" y1="170" x2="352" y2="170" stroke="#2A2A2A"/>
+            <rect x="40" y="30" width="64" height="140" rx="2" fill="#4E4E4E"/>
+            <text x="72" y="24" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">$60.0M</text>
+            <text x="72" y="186" text-anchor="middle" font-size="9.5" fill="#b8b8b8">leased today</text>
+            <rect x="190" y="146" width="64" height="24" rx="2" fill="#4E4E4E"/>
+            <rect x="190" y="143" width="64" height="4" rx="2" fill="#8A8A8A"/>
+            <text x="222" y="138" text-anchor="middle" font-family="var(--mono)" font-size="11" fill="#fff">$11.2M</text>
+            <text x="165" y="163" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#b8b8b8">serve $10.2M</text>
+            <text x="165" y="147" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#8A8A8A">train $1.0M</text>
+            <line x1="162" y1="160" x2="188" y2="158" stroke="#4E4E4E" stroke-width="0.8"/>
+            <line x1="162" y1="145" x2="188" y2="145" stroke="#8A8A8A" stroke-width="0.8"/>
+            <text x="222" y="186" text-anchor="middle" font-size="9.5" fill="#b8b8b8">self-provide</text>
+            <line x1="104" y1="30" x2="262" y2="30" stroke="#72D35B" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <line x1="254" y1="144" x2="262" y2="144" stroke="#72D35B" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <line x1="262" y1="30" x2="262" y2="144" stroke="#72D35B" stroke-width="1.4" stroke-dasharray="4 3"/>
+            <polygon points="262,30 258,40 266,40" fill="#72D35B"/>
+            <polygon points="262,144 258,134 266,134" fill="#72D35B"/>
+            <text x="272" y="82" font-family="var(--mono)" font-size="17" fill="#72D35B">$48.8M</text>
+            <text x="272" y="100" font-size="10.5" fill="#b8b8b8">saved · 81%</text>
+            <text x="30" y="204" font-family="var(--mono)" font-size="9.5" fill="#888">your GPUs: capex · managed inference: metered opex</text>
+          </svg>
+        </div>
+        <div class="epanel e-break">
+          <div class="ph">Break-even</div>
+          <svg viewBox="0 0 1180 180" aria-label="Break-even">
+            <line x1="60" y1="20" x2="60" y2="146" stroke="#2A2A2A"/>
+            <line x1="60" y1="146" x2="600" y2="146" stroke="#2A2A2A"/>
+            <text x="592" y="164" text-anchor="end" font-family="var(--mono)" font-size="10" fill="#666">time (days) →</text>
+            <line x1="60" y1="146" x2="540" y2="36" stroke="#4E4E4E" stroke-width="2.5"/>
+            <text x="548" y="38" font-size="12" fill="#b8b8b8">leased</text>
+            <line x1="60" y1="114" x2="540" y2="94" stroke="#F5C518" stroke-width="2.5"/>
+            <text x="548" y="96" font-size="12" fill="#F5C518">self-provided</text>
+            <circle cx="60" cy="114" r="3.5" fill="#F5C518"/>
+            <text x="70" y="108" font-family="var(--mono)" font-size="10" fill="#888">fixed $1.0M</text>
+            <line x1="230" y1="20" x2="230" y2="146" stroke="#666" stroke-dasharray="4,3"/>
+            <circle cx="230" cy="107" r="4" fill="#fff"/>
+            <text x="240" y="62" font-size="12.5" fill="#fff">crossover ≈ 8 days</text>
+            <text x="700" y="56" font-family="var(--mono)" font-size="13" fill="#b8b8b8">cost / verified task</text>
+            <text x="700" y="100" font-family="var(--mono)" font-size="34" fill="#fff">$0.0152</text>
+            <text x="928" y="100" font-family="var(--mono)" font-size="28" fill="#888">→</text>
+            <text x="984" y="100" font-family="var(--mono)" font-size="34" fill="#F5C518">$0.0031</text>
+            <text x="700" y="134" font-family="var(--mono)" font-size="15" fill="#72D35B">−80% · +2 pts quality</text>
+            <text x="700" y="162" font-family="var(--mono)" font-size="12" fill="#888">3,900 → 760 tokens / task · fewer tokens is why the cost falls</text>
+          </svg>
+          <!-- Mobile-only stacked variant of the break-even SVG above. KEEP IN SYNC with the <svg> — same figures. -->
+          <div class="eco-m" aria-label="Break-even">
+            <div class="m-row"><span>leased, fixed $1.0M</span><b>crossover ≈ 8 days</b></div>
+            <div class="m-cross">self-provided crosses leased at ≈ 8 days</div>
+            <div class="m-unit">
+              <div class="m-lab">cost / verified task</div>
+              <div class="m-fig">$0.0152<span class="to">→</span><span class="now">$0.0031</span></div>
+              <div class="m-delta">−80% · +2 pts quality</div>
+              <div class="m-note">3,900 → 760 tokens / task · fewer tokens is why the cost falls</div>
+            </div>
+          </div>
+        </div>
+        <div class="e-src">Sources: OpenAI &amp; Anthropic API pricing — GPT-5.5 $5/$30, Opus 4.8 $5/$25, GPT-5.6 Sol $5/$30, Claude Fable 5 $10/$50 per 1M tokens (Jun–Jul 2026) · Fireworks serverless &amp; fine-tuning pricing · OpenRouter, "Open Weight Models that Matter," Jun 2026. Baseline: 2,000 developers × $2,500/dev·month (assumed effective rate) = $60.0M/yr. Price risk: one developer, 3 months = 57.9B tokens, billed ≈$1,300 on subsidized seats vs ≈$320K metered at today's frontier (≈190–250×).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts2-wrapper">
+  <div id="ts2-sticky">
+    <div class="ts2-head">
+      <div class="ts2-eyebrow" data-ts2="0">The product</div>
+      <div class="ts2-headline" data-ts2="0"><span class="accent">Target, grade, train, prove, promote</span> &mdash; continuously.</div>
+      <div class="ts2-sub" data-ts2="0">Akka Optimize continuously analyzes live AI traffic and AI logs to identify SLM candidates that can be trained within the same environment.</div>
+    </div>
+
+    <div class="ts2-flow" data-ts2="1">
+      <div class="ts2-stages">
+        <div class="ts2-stage">
+          <div class="ts2-stage-name">Target</div>
+          <div class="ts2-stage-desc">find the agents doing SLM-shaped work</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-name">Grade</div>
+          <div class="ts2-stage-desc">continuous evaluations on live traffic</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-name">Train</div>
+          <div class="ts2-stage-desc">RL on your traffic, your evals as grader</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-name">Prove</div>
+          <div class="ts2-stage-desc">shadow-test in staging: quality holds, tokens &darr;</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-stage">
+          <div class="ts2-stage-name">Promote</div>
+          <div class="ts2-stage-desc">canary &rarr; fleet, automatic rollback</div>
+        </div>
+        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
+        <div class="ts2-outcome">
+          <div class="ts2-outcome-tag">Same tasks</div>
+          <div class="ts2-outcome-val">up to 80%<span> fewer tokens</span></div>
+        </div>
+      </div>
+
+      <div class="ts2-loop">
+        <svg class="ts2-loop-svg" viewBox="0 0 1500 56" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke">
+            <path class="ts2-loop-path" pathLength="100" d="M1400,0 V40 H80 V12" />
+          </g>
+          <polygon class="ts2-loop-head" points="80,0 72,16 88,16" fill="#F5C518"/>
+        </svg>
+        <div class="ts2-loop-label">
+          <span class="ts2-loop-tag">Production feedback</span>
+          <span class="ts2-loop-text">Promoted models keep getting graded &mdash; the optimization loop keeps running.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="ts3-wrapper">
+  <div id="ts3-sticky">
+    <div class="ts3-head">
+      <div class="ts3-eyebrow" data-ts3="0">How it works</div>
+      <div class="ts3-headline" data-ts3="0">Identify new <span class="accent">SLM candidates</span>.</div>
+      <div class="ts3-sub" data-ts3="0">The targeting engine continuously scores every agent on task narrowness, traffic volume, outcome verifiability, token spend, and quality headroom creating a ranked plan with projected savings.</div>
+    </div>
+
+    <div class="ts3-table-wrap">
+    <table class="ts3-table" data-ts3="1">
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Volume / mo</th>
+          <th>Task shape</th>
+          <th>Verifiable</th>
+          <th>Spend / mo</th>
+          <th>SLM fit</th>
+          <th>Projected savings</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ts3-agent">claims-extractor</td>
+          <td class="ts3-mono">4.1M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; schema</td>
+          <td class="ts3-mono">$58K</td>
+          <td class="ts3-fit">0.94</td>
+          <td class="ts3-proj">&minus;$46K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">support-summarizer</td>
+          <td class="ts3-mono">2.7M</td>
+          <td>narrow / repeat</td>
+          <td class="ts3-check">&#10003; judge</td>
+          <td class="ts3-mono">$34K</td>
+          <td class="ts3-fit">0.91</td>
+          <td class="ts3-proj">&minus;$25K/mo</td>
+        </tr>
+        <tr>
+          <td class="ts3-agent">sql-assistant</td>
+          <td class="ts3-mono">0.9M</td>
+          <td>narrow</td>
+          <td class="ts3-check">&#10003; executes</td>
+          <td class="ts3-mono">$22K</td>
+          <td class="ts3-fit">0.88</td>
+          <td class="ts3-proj">&minus;$18K/mo</td>
+        </tr>
+        <tr class="ts3-dim">
+          <td class="ts3-agent">research-planner</td>
+          <td class="ts3-mono">0.1M</td>
+          <td>open-ended</td>
+          <td>&#10007;</td>
+          <td class="ts3-mono">$12K</td>
+          <td class="ts3-mono">0.31</td>
+          <td class="ts3-keep">keep frontier</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="ts3-foot-label">Projected fleet savings</td>
+          <td class="ts3-foot-val">&minus;$89K/mo</td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+    <div class="ts3-grade" data-ts3="2">
+      <div class="ts3-grade-copy">
+        <div class="ts3-grade-title">Evaluations run in the same runtime as your agents</div>
+        <div class="ts3-grade-body">Evaluations grade each targeted agent&rsquo;s traffic as it runs. When an outcome can be checked directly &mdash; the SQL executes, the JSON validates &mdash; a deterministic evaluation scores it. When it can&rsquo;t, an LLM judge scores it, and humans review where policy requires. Every score is recorded with the tokens the interaction consumed. The same evaluations grade production traffic, training runs, and staging tests.</div>
+      </div>
+      <div class="ts3-fan">
+        <div class="ts3-fan-src">
+          <div class="ts3-fan-src-tag">Live traffic</div>
+          <div class="ts3-fan-src-name">Evaluation</div>
+        </div>
+        <svg class="ts3-fan-svg" viewBox="0 0 80 200" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V30 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H72" />
+            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V170 H72" />
+          </g>
+          <polygon class="ts3-fan-head" points="80,30 72,24 72,36" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,100 72,94 72,106" fill="#F5C518"/>
+          <polygon class="ts3-fan-head" points="80,170 72,164 72,176" fill="#F5C518"/>
+        </svg>
+        <div class="ts3-fan-outs">
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Governance observation</div>
+            <div class="ts3-fan-out-desc">the audit trail</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Training reward</div>
+            <div class="ts3-fan-out-desc">the RL signal</div>
+          </div>
+          <div class="ts3-fan-out">
+            <div class="ts3-fan-out-tag">Promotion gate</div>
+            <div class="ts3-fan-out-desc">the staging verdict</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="ts4-wrapper">
+  <div id="ts4-sticky">
+    <div class="ts4-head">
+      <div class="ts4-eyebrow" data-ts4="0">How it works</div>
+      <div class="ts4-headline" data-ts4="0">Production traffic trains your model, then staging <span class="accent">proves it holds</span>.</div>
+      <div class="ts4-sub" data-ts4="0">An open-weights base (4&ndash;12B) is tuned with reinforcement learning against your interaction data &mdash; your evaluations are the grader. Training runs on GPUs in your cloud account &mdash; in-VPC, sovereign, air-gapped where required &mdash; or with Fireworks.ai, a third-party inference provider. The result is a specialized SLM &mdash; a ~50MB adapter. You own the weights.</div>
+    </div>
+
+    <div class="ts4-diagram" data-ts4="1">
+      <svg viewBox="0 0 1100 300" aria-label="Candidate SLM shadows live traffic in staging; the gate promotes only when quality holds and tokens drop">
+        <rect x="20" y="130" width="130" height="40" class="ts4-nd"/>
+        <text x="85" y="154" text-anchor="middle" class="ts4-nl">live traffic</text>
+
+        <line x1="150" y1="143" x2="300" y2="90" class="ts4-el"/>
+        <line x1="150" y1="157" x2="300" y2="232" class="ts4-el-dash"/>
+
+        <rect x="300" y="58" width="210" height="64" class="ts4-nd"/>
+        <text x="405" y="79" text-anchor="middle" class="ts4-nl">Incumbent</text>
+        <text x="405" y="95" text-anchor="middle" class="ts4-nls">frontier API</text>
+        <text x="405" y="112" text-anchor="middle" class="ts4-nls">quality 0.87 &middot; 100% tokens</text>
+
+        <rect x="300" y="200" width="210" height="64" class="ts4-ndy"/>
+        <text x="405" y="221" text-anchor="middle" class="ts4-nl ts4-nl-y">Candidate</text>
+        <text x="405" y="237" text-anchor="middle" class="ts4-nls">your SLM</text>
+        <text x="405" y="254" text-anchor="middle" class="ts4-nls ts4-nls-y">quality 0.89 &middot; 21% tokens</text>
+
+        <line x1="510" y1="90" x2="740" y2="140" class="ts4-el"/>
+        <line x1="510" y1="232" x2="740" y2="180" class="ts4-el"/>
+
+        <rect x="740" y="116" width="180" height="88" class="ts4-ndy"/>
+        <text x="830" y="141" text-anchor="middle" class="ts4-nl ts4-nl-y">GATE</text>
+        <text x="830" y="161" text-anchor="middle" class="ts4-nls ts4-nls-w">quality &ge; baseline &nbsp;&#10003;</text>
+        <text x="830" y="177" text-anchor="middle" class="ts4-nls ts4-nls-w">token drop &ge; target &nbsp;&#10003;</text>
+
+        <line x1="920" y1="160" x2="958" y2="160" class="ts4-el"/>
+        <polygon points="966,160 958,155 958,165" fill="#F5C518"/>
+        <rect x="966" y="130" width="120" height="60" class="ts4-nd"/>
+        <text x="1026" y="155" text-anchor="middle" class="ts4-nl">Promote</text>
+        <text x="1026" y="171" text-anchor="middle" class="ts4-nls">canary &rarr; fleet</text>
+
+        <line x1="830" y1="204" x2="830" y2="240" class="ts4-el-dash"/>
+        <text x="830" y="258" text-anchor="middle" class="ts4-nls ts4-dimtext">Do not promote if no improvement</text>
+      </svg>
+      <!-- Mobile stacked variant of the SVG above. The two carry the same copy —
+           keep them in sync when either is edited. -->
+      <div class="ts4-m">
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">live traffic</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">Incumbent</div>
+          <div class="ts4-m-nls">frontier API</div>
+          <div class="ts4-m-nls">quality 0.87 &middot; 100% tokens</div>
+        </div>
+        <div class="ts4-m-node ts4-m-y">
+          <div class="ts4-m-nl">Candidate</div>
+          <div class="ts4-m-nls">your SLM</div>
+          <div class="ts4-m-nls ts4-m-nls-y">quality 0.89 &middot; 21% tokens</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node ts4-m-y">
+          <div class="ts4-m-nl">GATE</div>
+          <div class="ts4-m-nls ts4-m-nls-w">quality &ge; baseline &nbsp;&#10003;</div>
+          <div class="ts4-m-nls ts4-m-nls-w">token drop &ge; target &nbsp;&#10003;</div>
+        </div>
+        <div class="ts4-m-arrow"></div>
+        <div class="ts4-m-node">
+          <div class="ts4-m-nl">Promote</div>
+          <div class="ts4-m-nls">canary &rarr; fleet</div>
+        </div>
+        <div class="ts4-m-note">Do not promote if no improvement</div>
+      </div>
+    </div>
+
+    <div class="ts4-benchmark" data-ts4="2">Every promotion ships with an auto-generated before/after benchmark &mdash; computed by your evaluations, on your traffic, stored on the audit record.</div>
+
+    <div class="ts4-points" data-ts4="2">
+      <div class="ts4-point">After promotion, the optimization loop keeps grading. Drift in traffic or upstream models registers in eval scores first; retraining triggers automatically; a new candidate re-enters staging. A drop in quality triggers <span class="ts4-em">instant rollback</span> to the incumbent.</div>
+      <div class="ts4-point">The optimization loop runs inside your <span class="ts4-em">Improvement Policy</span>: what it optimizes toward, how far it may tune, what it may never touch. Each decision is recorded in an interaction log.</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="arc-wrapper">
+  <div class="arc-inner">
+    <div class="arc-eyebrow" data-arc="0">Architecture</div>
+    <div class="arc-headline" data-arc="0">Route, serve, train, and <span class="accent">govern.</span></div>
+    <div class="arc-sub" data-arc="0">Akka Optimize runs on a single-tenant install of the Akka Agentic AI Platform. It has a private data link to your environment. Requests are routed and served to the platform, which trains and serves them on the same compute.</div>
+    <div class="arc-body" data-arc="1">
+      <div class="dia">
+        <svg viewBox="0 0 1440 646" aria-label="Managed plane architecture">
+          <!-- CLIENT ENVIRONMENT plane -->
+          <rect x="16" y="44" width="300" height="580" rx="12" fill="rgba(255,255,255,0.012)" stroke="#3F3F3F" stroke-width="1.4" stroke-dasharray="10 8"/>
+          <text x="32" y="72" font-family="var(--mono)" font-size="11" fill="#888" letter-spacing="1.5">CLIENT ENVIRONMENT</text>
+          <text x="32" y="98" font-family="var(--mono)" font-size="9.5" fill="#666" letter-spacing="1">HARNESSES</text>
+          <rect x="32" y="106" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="127" font-size="13" fill="#fff">Cursor</text>
+          <rect x="32" y="146" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="167" font-size="13" fill="#fff">Claude Code</text>
+          <rect x="32" y="186" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="207" font-size="13" fill="#fff">Codex</text>
+          <rect x="32" y="226" width="268" height="34" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="247" font-size="13" fill="#fff">GitHub Copilot</text>
+          <text x="32" y="298" font-family="var(--mono)" font-size="9.5" fill="#666" letter-spacing="1">CONNECTORS</text>
+          <rect x="32" y="306" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="328" font-size="12.5" fill="#fff">BYO-agent plugin</text><text x="46" y="344" font-family="var(--mono)" font-size="9.5" fill="#777">endpoint config · trace capture</text><text x="288" y="328" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">PLUGIN</text>
+          <rect x="32" y="356" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="378" font-size="12.5" fill="#fff">Log forwarder</text><text x="46" y="394" font-family="var(--mono)" font-size="9.5" fill="#777">production logs → AI Gateway</text><text x="288" y="378" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">LOGS</text>
+          <rect x="32" y="406" width="268" height="44" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="46" y="428" font-size="12.5" fill="#fff">Repo &amp; CI connection</text><text x="46" y="444" font-family="var(--mono)" font-size="9.5" fill="#777">codebases · sandbox RL deploys</text><text x="288" y="428" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">REPO</text>
+
+          <!-- AKKA MANAGED PLANE -->
+          <rect x="340" y="44" width="1084" height="336" rx="14" fill="rgba(245,197,24,0.04)" stroke="rgba(245,197,24,0.28)" stroke-width="1.4"/>
+          <text x="360" y="72" font-family="var(--mono)" font-size="11" fill="#F5C518" letter-spacing="1.2">AKKA MANAGED PLANE  ·  SINGLE TENANT · SOVEREIGN</text>
+          <!-- governance + scorecards -->
+          <rect x="356" y="86" width="511" height="42" rx="8" fill="#141414" stroke="#2A2A2A"/>
+          <text x="372" y="108" font-size="13" fill="#fff">Governance</text>
+          <text x="372" y="123" font-family="var(--mono)" font-size="9.5" fill="#777">consent · policy · RBAC · audit · checks</text>
+          <text x="855" y="108" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">POLICY</text>
+          <rect x="897" y="86" width="511" height="42" rx="8" fill="#141414" stroke="#2A2A2A"/>
+          <text x="913" y="108" font-size="13" fill="#fff">Scorecards &amp; dashboards</text>
+          <text x="913" y="123" font-family="var(--mono)" font-size="9.5" fill="#777">quality · velocity · cost · autonomy</text>
+          <text x="1396" y="108" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SCORECARD</text>
+
+          <!-- LEFT COLUMN: AI Gateway (egress proxy) -->
+          <rect x="356" y="142" width="284" height="152" rx="8" fill="#141414" stroke="#F5C518"/>
+          <text x="372" y="168" font-size="15" fill="#fff">AI Gateway</text>
+          <text x="628" y="168" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">PROXY</text>
+          <text x="372" y="204" font-family="var(--mono)" font-size="10" fill="#888">OpenAI-compatible ingress</text>
+          <text x="372" y="232" font-family="var(--mono)" font-size="10" fill="#888">tier select · adapter hot-swap · cache</text>
+          <text x="372" y="260" font-family="var(--mono)" font-size="10" fill="#888">canary · shadow · rollback</text>
+          <!-- frontier: fallback only. external API, not on customer compute -->
+          <rect x="356" y="306" width="180" height="60" rx="8" fill="#141414" stroke="#666" stroke-dasharray="4 3"/>
+          <text x="372" y="328" font-size="12.5" fill="#ccc">Frontier fallback</text>
+          <text x="520" y="328" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">TEACHER</text>
+          <text x="372" y="344" font-family="var(--mono)" font-size="9" fill="#777">GPT-5.5 · Opus 4.8</text>
+          <text x="372" y="358" font-family="var(--mono)" font-size="9" fill="#777">external API</text>
+
+          <!-- RIGHT COLUMN: continuous training -->
+          <rect x="670" y="142" width="738" height="228" rx="8" fill="rgba(245,197,24,0.03)" stroke="#2A2A2A"/>
+          <text x="686" y="166" font-size="14" fill="#fff">Continuous training</text>
+          <rect x="694" y="186" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="704" y="205" font-size="10" fill="#fff">Trace store</text><text x="704" y="220" font-family="var(--mono)" font-size="8" fill="#777">agent traces</text>
+          <rect x="812" y="210" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="822" y="229" font-size="10" fill="#fff">Scrub &amp; curate</text><text x="822" y="244" font-family="var(--mono)" font-size="8" fill="#777">PII · secrets</text>
+          <rect x="930" y="234" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="940" y="253" font-size="10" fill="#fff">Judges &amp; evals</text><text x="940" y="268" font-family="var(--mono)" font-size="8" fill="#777">reward models</text>
+          <rect x="1048" y="258" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1058" y="277" font-size="10" fill="#fff">RL envs</text><text x="1058" y="292" font-family="var(--mono)" font-size="8" fill="#777">suites · sandbox</text>
+          <rect x="1166" y="282" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1176" y="301" font-size="10" fill="#fff">Synthetic data</text><text x="1176" y="316" font-family="var(--mono)" font-size="8" fill="#777">teacher · RLVR</text>
+          <rect x="1284" y="306" width="100" height="46" rx="6" fill="#141414" stroke="#F5C518" stroke-width="0.8"/><text x="1294" y="325" font-size="10" fill="#fff">SFT · DPO · RL</text><text x="1294" y="340" font-family="var(--mono)" font-size="8" fill="#777">LoRA out · held for eval</text>
+          <!-- staircase: right, then down into the top of the next step -->
+          <path d="M794 194 H862 V206" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="862,210 858,202 866,202" fill="#8A8A8A"/>
+          <path d="M912 218 H980 V230" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="980,234 976,226 984,226" fill="#8A8A8A"/>
+          <path d="M1030 242 H1098 V254" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1098,258 1094,250 1102,250" fill="#8A8A8A"/>
+          <path d="M1148 266 H1216 V278" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1216,282 1212,274 1220,274" fill="#8A8A8A"/>
+          <path d="M1266 290 H1334 V302" fill="none" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1334,306 1330,298 1338,298" fill="#8A8A8A"/>
+
+          <!-- INFRASTRUCTURE band — Inference runs here, on the same compute that trains -->
+          <rect x="340" y="400" width="1084" height="238" rx="12" fill="rgba(255,255,255,0.02)" stroke="#2A2A2A"/>
+          <text x="360" y="428" font-family="var(--mono)" font-size="11" fill="#888" letter-spacing="1.2">INFRASTRUCTURE · COMPUTE</text>
+          <!-- inference (full width, above the two providers) -->
+          <rect x="356" y="440" width="1052" height="100" rx="8" fill="#141414" stroke="#F5C518"/>
+          <text x="372" y="466" font-size="15" fill="#fff">Inference</text>
+          <text x="452" y="466" font-family="var(--mono)" font-size="10" fill="#888">endpoints · elastic auto-scale · base + adapters</text>
+          <text x="1392" y="466" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SERVING</text>
+          <rect x="372" y="478" width="326" height="36" rx="6" fill="#1a1700" stroke="#2A2A2A"/><text x="386" y="494" font-size="12" fill="#fff">GLM-5</text><text x="386" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · high</text>
+          <rect x="714" y="478" width="326" height="36" rx="6" fill="#1a1700" stroke="#2A2A2A"/><text x="728" y="494" font-size="12" fill="#fff">DeepSeek V4 Pro</text><text x="728" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · high</text>
+          <rect x="1056" y="478" width="326" height="36" rx="6" fill="#141414" stroke="#2A2A2A"/><text x="1070" y="494" font-size="12" fill="#fff">Kimi K2</text><text x="1070" y="507" font-family="var(--mono)" font-size="9" fill="#777">adapted · economy</text>
+          <text x="372" y="532" font-family="var(--mono)" font-size="9.5" fill="#777">adapters specialize by domain — code review · deploy · security · SRE</text>
+          <text x="1392" y="532" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">SPECIALISTS</text>
+          <!-- providers -->
+          <rect x="356" y="556" width="512" height="70" rx="8" fill="#141414" stroke="#F5C518"/><text x="376" y="582" font-size="14" fill="#fff">Your GPUs</text><text x="376" y="600" font-family="var(--mono)" font-size="10.5" fill="#888">vLLM serving + verl training · in your VPC</text><text x="376" y="616" font-family="var(--mono)" font-size="10.5" fill="#888">sovereign · air-gapped · you own the weights</text><text x="852" y="582" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">You Serve</text>
+          <rect x="896" y="556" width="512" height="70" rx="8" fill="#141414" stroke="#2A2A2A"/><text x="916" y="582" font-size="14" fill="#fff">Fireworks</text><text x="916" y="600" font-family="var(--mono)" font-size="10.5" fill="#888">Fireworks serving + Fireworks tuning · their cloud</text><text x="916" y="616" font-family="var(--mono)" font-size="10.5" fill="#888">managed · open-weight · you own the adapters</text><text x="1392" y="582" text-anchor="end" font-family="var(--mono)" font-size="8.5" fill="#F5C518" letter-spacing="1">They Serve</text>
+          <!-- inference runs on the providers -->
+          <line x1="612" y1="540" x2="612" y2="552" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="612,556 608,548 616,548" fill="#8A8A8A"/>
+          <line x1="1152" y1="540" x2="1152" y2="552" stroke="#8A8A8A" stroke-width="1.4" stroke-dasharray="6 5"/><polygon points="1152,556 1148,548 1156,548" fill="#8A8A8A"/>
+
+          <!-- FLOW: connectors → AI Gateway (yellow, orthogonal bus) -->
+          <path d="M300 328 H326 M300 378 H326 M300 428 H326 M326 428 V196 H354" fill="none" stroke="#F5C518" stroke-width="1.6"/>
+          <polygon points="356,196 347,191 347,201" fill="#F5C518"/>
+          <!-- governance → egress (grey, policy checks) -->
+          <line x1="498" y1="142" x2="498" y2="130" stroke="#8A8A8A" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <!-- gateway → frontier (yellow, escalation off the SLM tiers) -->
+          <line x1="446" y1="294" x2="446" y2="302" stroke="#F5C518" stroke-width="1.6"/><polygon points="446,306 442,298 450,298" fill="#F5C518"/>
+          <!-- gateway → inference (yellow serving, the request path) -->
+          <line x1="590" y1="294" x2="590" y2="436" stroke="#F5C518" stroke-width="2"/><polygon points="590,440 586,432 594,432" fill="#F5C518"/>
+          <text x="578" y="395" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#777">serve · route · canary · shadow</text>
+          <!-- training → inference (yellow: training consumes inference too) -->
+          <line x1="1000" y1="370" x2="1000" y2="436" stroke="#F5C518" stroke-width="2"/><polygon points="1000,440 996,432 1004,432" fill="#F5C518"/>
+          <text x="1012" y="395" font-family="var(--mono)" font-size="9" fill="#777">serves rollouts</text>
+          <!-- SFT → inference (grey dashed: adapter promotion) -->
+          <line x1="1334" y1="352" x2="1334" y2="436" stroke="#8A8A8A" stroke-width="1.5" stroke-dasharray="8 7"/><polygon points="1334,440 1330,432 1338,432" fill="#8A8A8A"/>
+          <text x="1322" y="395" text-anchor="end" font-family="var(--mono)" font-size="9" fill="#777">adapter</text>
+          <!-- inference → trace store (grey dashed, up the corridor) -->
+          <path d="M655 440 V209 H690" fill="none" stroke="#8A8A8A" stroke-width="1.5" stroke-dasharray="8 7"/><polygon points="694,209 686,205 686,213" fill="#8A8A8A"/>
+          <text x="666" y="421" font-family="var(--mono)" font-size="9" fill="#777">traces</text>
+        </svg>
+        <p class="svgcap" style="color:#F5C518;margin-top:14px">solid yellow = serving / request flow</p>
+        <p class="svgcap" style="color:#8A8A8A;margin-top:4px">grey dashed = training / data flow</p>
+        <!-- Mobile-only stacked variant of the architecture SVG above. KEEP IN SYNC with the <svg> — same three planes, same labels. -->
+        <div class="arc-m" aria-label="Managed plane architecture">
+          <div class="plane client">
+            <div class="plane-lab">CLIENT ENVIRONMENT</div>
+            <div class="grp-lab">HARNESSES</div>
+            <div class="card"><div class="t">Cursor</div></div>
+            <div class="card"><div class="t">Claude Code</div></div>
+            <div class="card"><div class="t">Codex</div></div>
+            <div class="card"><div class="t">GitHub Copilot</div></div>
+            <div class="grp-lab">CONNECTORS</div>
+            <div class="card"><div class="t">BYO-agent plugin</div><div class="d">endpoint config · trace capture</div></div>
+            <div class="card"><div class="t">Log forwarder</div><div class="d">production logs → AI Gateway</div></div>
+            <div class="card"><div class="t">Repo &amp; CI connection</div><div class="d">codebases · sandbox RL deploys</div></div>
+          </div>
+          <div class="down">↓</div>
+          <div class="plane managed">
+            <div class="plane-lab">AKKA MANAGED PLANE · SINGLE TENANT · SOVEREIGN</div>
+            <div class="card"><div class="t">Governance</div><div class="d">consent · policy · RBAC · audit · checks</div></div>
+            <div class="card"><div class="t">Scorecards &amp; dashboards</div><div class="d">quality · velocity · cost · autonomy</div></div>
+            <div class="card hl"><div class="t">AI Gateway</div><div class="d">OpenAI-compatible ingress · tier select · adapter hot-swap · cache · canary · shadow · rollback</div></div>
+            <div class="card dash"><div class="t">Frontier fallback</div><div class="d">GPT-5.5 · Opus 4.8 · external API</div></div>
+            <div class="grp-lab">CONTINUOUS TRAINING</div>
+            <div class="card"><div class="t">Trace store → Scrub &amp; curate → Judges &amp; evals → RL envs → Synthetic data → SFT · DPO · RL</div><div class="d">agent traces · PII/secrets scrub · reward models · suites/sandbox · teacher/RLVR · LoRA out</div></div>
+          </div>
+          <div class="down">↓</div>
+          <div class="plane infra">
+            <div class="plane-lab">INFRASTRUCTURE · COMPUTE</div>
+            <div class="card hl"><div class="t">Inference</div><div class="d">endpoints · elastic auto-scale · base + adapters</div></div>
+            <div class="card"><div class="t">GLM-5 · DeepSeek V4 Pro · Kimi K2</div><div class="d">adapted — code review · deploy · security · SRE</div></div>
+            <div class="card hl"><div class="t">Your GPUs</div><div class="d">vLLM serving + verl training · in your VPC · sovereign · air-gapped · you own the weights</div></div>
+            <div class="card"><div class="t">Fireworks</div><div class="d">Fireworks serving + tuning · their cloud · managed · you own the adapters</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="cog-wrapper">
+  <div class="cog-inner">
+    <div class="cog-eyebrow" data-cog="0">Cost governance</div>
+    <div class="cog-headline" data-cog="0">Visibility, control and <span class="accent">accountability.</span></div>
+    <div class="cog-sub" data-cog="0">Continuously attribute every dollar to an owner, track savings against quality, and identify opportunities to improve.</div>
+    <div class="cog-body" data-cog="1">
+      <div class="dashgrid">
+
+        <div class="dash">
+          <div class="dashhd"><h4>Budget owner</h4><p>Am I within budget — and is the saving real?</p></div>
+          <div class="tile">
+            <div class="tl">Spend this period</div>
+            <div class="tv">$48.2K<small>of $60K cap</small></div>
+            <div class="meter"><i style="width:80%"></i></div>
+            <div class="ts good">projected $57.1K at period end · within cap</div>
+          </div>
+          <div class="tilerow">
+            <div class="tile">
+              <div class="tl">Realized saving</div>
+              <div class="tv" style="font-size:22px">$181K</div>
+              <div class="ts">vs pinned frontier<br>counterfactual · 79% below</div>
+            </div>
+            <div class="tile">
+              <div class="tl">Cost per task</div>
+              <div class="tv" style="font-size:22px">$0.0031</div>
+              <div class="ts good">▼ 68% vs 90d · per task</div>
+            </div>
+          </div>
+          <div class="tile">
+            <div class="tl">Where the spend sits</div>
+            <div class="brow"><span>claims-extract</span><span class="bt" style="width:100%"></span><span class="bv">$19.1K</span></div>
+            <div class="brow"><span>code-review</span><span class="bt" style="width:60%"></span><span class="bv">$11.4K</span></div>
+            <div class="brow"><span>deploy-agent</span><span class="bt" style="width:38%"></span><span class="bv">$7.2K</span></div>
+            <div class="brow"><span>all others</span><span class="bt mut" style="width:55%"></span><span class="bv">$10.5K</span></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Rollback exposure</div>
+            <div class="tv" style="font-size:22px">71%<small>of traffic on SLMs</small></div>
+            <div class="ts">if every adapter reverted to frontier tomorrow,<br>run rate goes <b style="color:#fff">$12K/mo → $47K/mo</b></div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what">Spending is on track to reach <b>$63.1K</b> against a $60K cap</div>
+              <div class="meta"><span class="old">open 6 days</span> · at the cap the throttle engages and ~12% of requests degrade</div>
+              <div class="acts"><span class="btn go">Approve the overspend</span><span class="btn">Let it throttle</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what"><b>code-review</b> went over its cost-per-task ceiling 14 times this week</div>
+              <div class="meta">open 2 days · $0.0041 against a $0.0035 ceiling</div>
+              <div class="acts"><span class="btn go">Raise its ceiling</span><span class="btn">Move it to a cheaper tier</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash">
+          <div class="dashhd"><h4>AI owner</h4><p>What is worth training next — and is what I promoted still holding?</p></div>
+          <div class="tile">
+            <div class="tl">Candidate pipeline · 90d</div>
+            <div class="brow"><span>observed</span><span class="bt" style="width:100%"></span><span class="bv">47</span></div>
+            <div class="brow"><span>admitted</span><span class="bt" style="width:26%"></span><span class="bv">12</span></div>
+            <div class="brow"><span>in training</span><span class="bt" style="width:9%"></span><span class="bv">3</span></div>
+            <div class="brow"><span>in ladder</span><span class="bt" style="width:6%"></span><span class="bv">2</span></div>
+            <div class="brow"><span>promoted</span><span class="bt" style="width:20%"></span><span class="bv">9</span></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Why 35 were not admitted</div>
+            <div class="brow"><span>ungradeable</span><span class="bt mut" style="width:100%"></span><span class="bv">19</span></div>
+            <div class="brow"><span>volume</span><span class="bt mut" style="width:58%"></span><span class="bv">11</span></div>
+            <div class="brow"><span>consent</span><span class="bt mut" style="width:26%"></span><span class="bv">5</span></div>
+            <div class="ts">19 agents become eligible once a deterministic<br>grader exists for their task shape</div>
+          </div>
+          <div class="tile">
+            <div class="tl">Promoted models — how quality has moved</div>
+            <div class="dtabwrap">
+            <table class="dtab">
+              <thead><tr><th>Agent</th><th>frontier → proved → now</th><th>$/task</th><th>State</th></tr></thead>
+              <tbody>
+                <tr><td>claims-extract <span style="color:#777">v5</span></td><td class="q">0.93 → 0.96 → <b>0.96</b></td><td class="m">$0.0028</td><td><span class="st">holding</span></td></tr>
+                <tr><td>code-review <span style="color:#777">v3</span></td><td class="q">0.91 → 0.94 → <b style="color:#ff6b60">0.89</b></td><td class="m">$0.0041</td><td><span class="st warn">drifting</span></td></tr>
+                <tr><td>deploy-agent <span style="color:#777">v2</span></td><td class="q">0.88 → 0.92 → <b>0.92</b></td><td class="m">$0.0035</td><td><span class="st">holding</span></td></tr>
+              </tbody>
+            </table>
+            </div>
+            <div class="ts">code-review still beats the model it replaced, but answers<br>worse than when it was approved — so S3 re-opens T1</div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what"><b>claims-extract v6</b> passed all four steps, and this agent is one where a mistake would be costly</div>
+              <div class="meta"><span class="old">open 9 days</span> · holding $1,240 / mo · sitting at 5% of traffic</div>
+              <div class="acts"><span class="btn go">Promote to the fleet</span><span class="btn">Hold at canary</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what"><b>code-review</b> is answering worse than it did when you approved it, though still better than the model it replaced</div>
+              <div class="meta">open 3 days · scored 0.94 when approved, 0.89 now · holding $890 / mo</div>
+              <div class="acts"><span class="btn go">Train it again</span><span class="btn warn">Return it to frontier</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash">
+          <div class="dashhd"><h4>System behavior</h4><p>Is the optimization loop running — and is it failing safe when it fails?</p></div>
+          <div class="tile">
+            <div class="tl">Loop throughput · 30d</div>
+            <div class="srow"><span>Training runs started → completed</span><b>12 → 9</b></div>
+            <div class="srow"><span>Promotions to fleet</span><b>6</b></div>
+            <div class="srow"><span>Rollbacks</span><b class="bad">1</b></div>
+            <div class="srow"><span>Candidates retired at a check</span><b>4</b></div>
+          </div>
+          <div class="tile">
+            <div class="tl">Evaluation ladder — pass rate per rung</div>
+            <div class="brow"><span>offline eval</span><span class="bt" style="width:74%"></span><span class="bv">14/19</span></div>
+            <div class="brow"><span>shadow</span><span class="bt" style="width:64%"></span><span class="bv">9/14</span></div>
+            <div class="brow"><span>canary</span><span class="bt" style="width:78%"></span><span class="bv">7/9</span></div>
+            <div class="ts">each rung that rejects a candidate stops a<br>regression before it reaches the fleet</div>
+          </div>
+          <div class="tile">
+            <div class="tl">Serving health</div>
+            <div class="srow"><span>Latency p50 / p95</span><b>340ms / 1.2s</b></div>
+            <div class="srow"><span>Frontier fallback rate</span><b class="bad">2.1% ▲</b></div>
+            <div class="srow"><span>Error rate</span><b class="good">0.02%</b></div>
+            <div class="srow"><span>Policy vetoes · scrub failures</span><b>14 · 0</b></div>
+          </div>
+          <div class="tile">
+            <div class="tl">GPU allocation</div>
+            <div class="stack">
+              <span style="width:38%;background:#F5C518"></span>
+              <span style="width:54%;background:#7a6410"></span>
+              <span style="width:8%;background:#2A2A2A"></span>
+            </div>
+            <div class="key"><span><i style="background:#F5C518"></i>train 38%</span><span><i style="background:#7a6410"></i>serve 54%</span><span><i style="background:#2A2A2A"></i>idle 8%</span></div>
+            <div class="ts">the same GPUs do both — T2 reserves its share within<br>the serving tier's latency budget</div>
+          </div>
+          <div class="decbox">
+            <div class="dechd"><h5>Waiting on you</h5><em>2 open</em></div>
+            <div class="decrow">
+              <div class="what"><b>sre-triage</b> has no rule for when an answer is too weak to send, so it never escalates</div>
+              <div class="meta"><span class="old">open 7 days</span> · it fails open rather than falling back to the frontier</div>
+              <div class="acts"><span class="btn go">Set the rule</span><span class="btn">Leave it off</span></div>
+            </div>
+            <div class="decrow">
+              <div class="what">Whether the <b>claims-v2</b> data class may be trained on, not only logged</div>
+              <div class="meta">open 2 days · 19 agents cannot be scored until it is answered · $3,100 / mo</div>
+              <div class="acts"><span class="btn go">Clear it for training</span><span class="btn warn">Keep it audit-only</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--
+  Shared integrated-platform slide. Mirrors #s-routes in akka-overview/index.html
+  so the same graphic appears in the overview and in every product deck.
+  Keep the two in sync. The registry's "product" key drives which box starts
+  selected; everything else is identical across decks.
+-->
+<section id="family" data-active="specify">
+  <div class="fam-inner">
+    <h2 class="fam-head fam-reveal">An <span class="accent">integrated platform.</span></h2>
+    <div class="fam-sub fam-reveal">Akka&rsquo;s offerings all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
+
+    <div class="fam-grid fam-reveal">
+<!-- CAKE:BODY:START — canonical integrated-platform cake. Standalone decks (akka-overview, akka-verify) are synced from here by _build/sync_cake.py; edit the cake here only. -->
+      <div class="cake-wrap">
+        <div class="cake-tab">Akka Agentic AI Platform</div>
+        <div class="cake">
+
+          <div class="layer">
+            <div class="role">Deliver<b>&amp; Govern</b></div>
+            <div class="cards two govwide">
+              <div class="ocard rt-pick" data-rt="specify" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Specify</div>
+                <div class="osub">specs<span class="d">·</span>generation<span class="d">·</span>modernization</div>
+              </div>
+              <div class="ocard rt-pick" data-rt="verify" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Verify</div>
+                <div class="osub">evaluations<span class="d">·</span>guardrails<span class="d">·</span>policies<span class="d">·</span>evidence</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conn two"><div></div><div class="rail"><span></span><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Build<b>&amp; Run</b></div>
+            <div class="cards">
+              <div class="ocard rt-pick" data-rt="sdk" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka SDK</div>
+                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">autonomous agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">event sourced entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">key value entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">timed actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">consumers</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conn one"><div></div><div class="rail"><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Models<b>&amp; Compute</b></div>
+            <div class="cards">
+              <div class="ocard rt-pick" data-rt="shredder" tabindex="0" role="button" aria-pressed="false">
+                <div class="oname">Akka Optimize</div>
+                <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="rt-panel">
+        <div class="rt-panel-body" data-rt-body="specify" hidden>
+          <h3>Akka Specify</h3>
+          <p>Six specifications become <span class="accent">one governed system</span>. You describe what the system must do, and the platform generates the agents, workflows, APIs, memory, integrations, guardrails, evaluations, and tests that deliver it.</p>
+          <p>Because the specs are versioned and reviewed like code, agentic delivery moves <span class="accent">inside the enterprise SDLC</span> instead of around it. The same path modernizes systems you already run.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="verify" hidden>
+          <h3>Akka Verify</h3>
+          <p>A working agent is not a production agent. Verify evaluates behaviour, enforces policy, and records what happened &mdash; <span class="accent">inline, and never sampled</span>.</p>
+          <p>Every run leaves a durable evidence record you can hand to an auditor, mapped against a corpus of <span class="accent">190 AI regulations</span>. It governs agents built on Akka and agents built elsewhere.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="sdk" hidden>
+          <h3>Akka SDK</h3>
+          <p>Akka&rsquo;s components are composable to create entire agentic systems: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
+          <p>State is durable by default and replayable from its event journal, so an agent that fails mid-task <span class="accent">resumes rather than restarts</span>.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="agents" hidden>
+          <h3>Agents</h3>
+          <p>An agent interacts with an AI model to perform a specific task. It keeps contextual history in <span class="accent">session memory</span>, which can be shared with other agents working toward the same goal.</p>
+          <p>It can expose function tools and call them when the model asks for them.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="autonomous" hidden>
+          <h3>Autonomous Agents</h3>
+          <p>A model-driven component that runs as a <span class="accent">durable process</span>. It works on typed tasks, each with its own instructions and result schema, and the runtime drives the model through a decision loop until the task is done. Agent and task state persist as it goes, so work <span class="accent">survives crashes and restarts</span>.</p>
+          <p>Coordination is part of the component model: an agent can delegate to specialists, hand off to peers, or lead a team sharing a task list. The runtime exposes these as tools, so multi-agent systems are assembled from focused agents <span class="accent">without writing orchestration code</span>.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="workflows" hidden>
+          <h3>Workflows</h3>
+          <p>Workflows run <span class="accent">long-running, multi-step business processes</span> while you write only the domain logic. They provide durability and consistency, and can call other components and services.</p>
+          <p>A business transaction lives in one place, and the workflow either keeps it moving or <span class="accent">rolls it back</span> when a step fails.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="ese" hidden>
+          <h3>Event Sourced Entities</h3>
+          <p>Instead of storing the current state, these persist <span class="accent">every event that led to it</span>, written to a journal with ACID semantics.</p>
+          <p>State is rebuilt by replaying those events, which scales horizontally and isolates failures &mdash; and gives you a complete history of how the state came to be.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="kve" hidden>
+          <h3>Key Value Entities</h3>
+          <p>These persist state as a <span class="accent">single current value</span>, keyed by id.</p>
+          <p>Akka guarantees exactly one instance of each entity across the whole cluster, so commands are handled <span class="accent">one at a time</span> with no concurrency to reason about. Active state is held in memory and recovered from durable storage after a restart or rebalance.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="views" hidden>
+          <h3>Views</h3>
+          <p>Views let you read <span class="accent">across many entities</span>, or find an entity by something other than its id.</p>
+          <p>Each view is built for a specific access pattern and updates as the underlying entity state changes.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="http" hidden>
+          <h3>HTTP Endpoints</h3>
+          <p>An endpoint is how a service is exposed to the outside world. HTTP endpoints accept and return <span class="accent">JSON</span> by default.</p>
+          <p>Lower-level APIs are available when you need full control over what data is accepted and returned.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="grpc" hidden>
+          <h3>gRPC Endpoints</h3>
+          <p>gRPC endpoints expose a service through <span class="accent">protobuf contracts</span> defined in <code>.proto</code> files, so the service contract is explicit rather than implied.</p>
+          <p>Binary serialization and protobuf&rsquo;s forward and backward compatibility make service-to-service calls fast and <span class="accent">safe to evolve</span> without breaking existing clients.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="mcp" hidden>
+          <h3>MCP Endpoints</h3>
+          <p>MCP endpoints expose a service to <span class="accent">MCP clients</span> &mdash; LLM desktop applications, and agents running on other services.</p>
+          <p>What you expose becomes tools the model can call on its own behalf.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="timers" hidden>
+          <h3>Timed Actions</h3>
+          <p>Timers schedule a call to run later &mdash; useful for checking whether something completed after the fact.</p>
+          <p>They are stored by the runtime and guaranteed to run <span class="accent">at least once</span>: if the call fails, the timer reschedules itself until it succeeds.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="consumers" hidden>
+          <h3>Consumers</h3>
+          <p>Consumers read a <span class="accent">stream of events</span> &mdash; from an entity&rsquo;s journal, from key value state changes, or from a message broker topic.</p>
+          <p>They also produce events outward, which is how an Akka service interacts with systems beyond it.</p>
+        </div>
+        <div class="rt-panel-body" data-rt-body="shredder" hidden>
+          <h3>Akka Optimize</h3>
+          <p>Frontier model spend rises with every call. Optimize uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
+          <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
+        </div>
+      </div>
+<!-- CAKE:BODY:END -->
+
+    </div>
+  </div>
+</section>
+
+
+<section id="opt-closing">
+  <div class="tsc-logo tsc-reveal">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tsc)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tsc"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tsc-headline tsc-reveal">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tsc-sub tsc-reveal">AKKA OPTIMIZE</div>
+  <div class="tsc-divider tsc-reveal"></div>
+
+  <div class="tsc-cta-block tsc-reveal">
+    <div class="tsc-cta-label">The 90-day Optimization Assessment</div>
+
+    <div class="tsc-phases">
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Install</div>
+        <div class="tsc-phase-days">days 1&ndash;30</div>
+        <div class="tsc-phase-desc">deploy in your VPC &middot; pass InfoSec &middot; connect trace sources</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Observe</div>
+        <div class="tsc-phase-days">days 31&ndash;60</div>
+        <div class="tsc-phase-desc">targeting scores live traffic &middot; ranked plan + quality baselines</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Witness</div>
+        <div class="tsc-phase-days">days 61&ndash;90</div>
+        <div class="tsc-phase-desc">first SLM trained, staged, shadow-tested &middot; before/after benchmark on your traffic</div>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="https://akka.io" class="tsc-cta tsc-reveal">Start the assessment &rarr;</a>
+</section>
+
+<!-- DEMO_HTML_MARKER -->
+<script>
+/* ── opt-01-problem ── */
+/* ── opt-01-problem reveals ────────────────────────── */
+const ts1Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts1]').forEach(el => ts1Obs.observe(el));
+
+
+/* ── opt-02-economics ── */
+/* ── opt-02-economics reveals ─────────────────────── */
+const ecoObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('[data-eco]').forEach(el => ecoObs.observe(el));
+
+
+/* ── opt-03-product ── */
+/* ── opt-02-product reveals ────────────────────────── */
+const ts2Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts2], .ts2-flow').forEach(el => ts2Obs.observe(el));
+
+
+/* ── opt-04-target ── */
+/* ── opt-03-target reveals ─────────────────────────── */
+const ts3Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts3]').forEach(el => ts3Obs.observe(el));
+
+
+/* ── opt-05-prove ── */
+/* ── opt-04-prove reveals ──────────────────────────── */
+const ts4Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-ts4]').forEach(el => ts4Obs.observe(el));
+
+
+/* ── opt-06-architecture ── */
+/* ── opt-06-architecture reveals ──────────────────── */
+const arcObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('[data-arc]').forEach(el => arcObs.observe(el));
+
+
+/* ── opt-07-costgov ── */
+/* ── opt-08-costgov reveals ───────────────────────── */
+const cogObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('[data-cog]').forEach(el => cogObs.observe(el));
+
+
+/* ── family-platform ── */
+/* ── family-platform: reveals + product/component selection ──────────────
+   Mirrors the #s-routes behaviour in akka-overview/index.html. The box that
+   starts selected comes from the section's data-active, set per deck by the
+   registry's "product" key. */
+(function () {
+  var famObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fam-reveal').forEach(function (el) { famObs.observe(el); });
+
+  var root = document.getElementById('family');
+  if (!root) return;
+  var picks  = root.querySelectorAll('.rt-pick');
+  var comps  = root.querySelectorAll('.rt-comp');
+  var bodies = root.querySelectorAll('.rt-panel-body');
+  if (!picks.length) return;
+
+  /* bodyKey = which summary shows; boxKey = which product box stays lit. */
+  function show(bodyKey, boxKey) {
+    picks.forEach(function (p) { p.setAttribute('aria-pressed', String(p.dataset.rt === boxKey)); });
+    comps.forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.comp === bodyKey)); });
+    bodies.forEach(function (b) { b.hidden = (b.dataset.rtBody !== bodyKey); });
+  }
+
+  picks.forEach(function (p) {
+    p.addEventListener('click', function () { show(p.dataset.rt, p.dataset.rt); });
+    p.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(p.dataset.rt, p.dataset.rt); }
+    });
+  });
+
+  comps.forEach(function (c) {
+    c.addEventListener('click', function (e) {
+      e.stopPropagation();
+      show(c.dataset.comp, 'sdk');
+    });
+    c.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault(); e.stopPropagation();
+        show(c.dataset.comp, 'sdk');
+      }
+    });
+  });
+
+  // This deck's own product starts selected; fall back to Specify.
+  var active = root.dataset.active || 'specify';
+  if (!root.querySelector('.rt-pick[data-rt="' + active + '"]')) active = 'specify';
+  show(active, active);
+})();
+
+
+/* ── opt-08-close ── */
+/* ── opt-10-close reveals ──────────────────────────── */
+const tscObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.tsc-reveal').forEach(el => tscObs.observe(el));
+
+
+(function(){
+  var views = [
+    'opt-title','ts1-wrapper','eco-wrapper','ts2-wrapper','ts3-wrapper',
+    'ts4-wrapper','arc-wrapper','cog-wrapper','family','opt-closing'
+  ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+
+  function docTop(el){
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+  function currentIndex() {
+    var y = (window.scrollY || window.pageYOffset) + 4;
+    var best = 0;
+    for (var i = 0; i < views.length; i++) {
+      if (docTop(views[i]) <= y) best = i;
+    }
+    return best;
+  }
+  function goTo(i) {
+    if (i < 0 || i >= views.length) return;
+    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
+  }
+  function navNext() { goTo(currentIndex() + 1); }
+  function navPrev() { goTo(currentIndex() - 1); }
+  function handleNavKey(key) {
+    if (key === 'ArrowRight' || key === 'PageDown') navNext();
+    else if (key === 'ArrowLeft' || key === 'PageUp') navPrev();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' ||
+        e.key === 'ArrowLeft'  || e.key === 'PageUp') {
+      e.preventDefault();
+      handleNavKey(e.key);
+    }
+  });
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'akka-deck-nav' && e.data.key) {
+      handleNavKey(e.data.key);
+    }
+  });
+})();
+
+
+/* ── KIOSK MODE (?kiosk in URL) ── */
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+
+  var kioskParam = new URLSearchParams(location.search).get('kiosk');
+  var SLIDE_MS = (kioskParam && !isNaN(kioskParam) ? parseInt(kioskParam) : 30) * 1000;
+  var TAB_MS   = Math.round(SLIDE_MS / 6);
+
+  const SECTION_IDS = [
+    'hero-wrapper','st-wrapper','s2-wrapper','s4-wrapper',
+    's5-wrapper','s6-wrapper','s7-problem','cust-wrapper',
+    'pkg-wrapper','s9-wrapper'
+  ];
+
+  function scrollMid(el) {
+    return el.offsetTop + Math.max(0, (el.offsetHeight - window.innerHeight) * 0.4);
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+
+      /* Build ordered stop list */
+      var stops = [];
+      SECTION_IDS.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) stops.push({ type: 'slide', el: el });
+      });
+      var demoEl    = document.getElementById('demo-section');
+      var closingEl = document.getElementById('closing');
+      if (demoEl)    stops.push({ type: 'demo',  el: demoEl });
+      if (closingEl) stops.push({ type: 'slide', el: closingEl });
+      stops.sort(function(a,b){ return a.el.offsetTop - b.el.offsetTop; });
+
+      /* Progress bar */
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:3px;z-index:99999;background:#111;pointer-events:none';
+      var fill = document.createElement('div');
+      fill.style.cssText = 'height:100%;width:0%;background:#F5C518';
+      bar.appendChild(fill);
+      document.body.appendChild(bar);
+
+      var badge = document.createElement('div');
+      badge.textContent = '⏵ KIOSK';
+      badge.style.cssText = 'position:fixed;bottom:8px;right:14px;z-index:99999;font-family:monospace;font-size:10px;color:#444;letter-spacing:2px;pointer-events:none';
+      document.body.appendChild(badge);
+
+      var idx = 0, timer = null;
+
+      function startFill(ms) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + ms + 'ms linear';
+          fill.style.width = '100%';
+        });
+      }
+
+      function advance() {
+        idx = (idx + 1) % stops.length;
+        if (idx === 0) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          timer = setTimeout(function(){ show(0); }, 2000);
+        } else {
+          show(idx);
+        }
+      }
+
+      function show(i) {
+        idx = i;
+        var stop = stops[i];
+        var y = stop.type === 'demo' ? stop.el.offsetTop : scrollMid(stop.el);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        if (stop.type === 'demo') {
+          var tabs = document.querySelectorAll('#demo-section .tab-btn');
+          if (!tabs.length) { startFill(SLIDE_MS); timer = setTimeout(advance, SLIDE_MS); return; }
+          var t = 0;
+          tabs[0].click();
+          startFill(TAB_MS * tabs.length);
+          function nextTab() {
+            t++;
+            if (t < tabs.length) { tabs[t].click(); timer = setTimeout(nextTab, TAB_MS); }
+            else { timer = setTimeout(advance, TAB_MS); }
+          }
+          timer = setTimeout(nextTab, TAB_MS);
+        } else {
+          startFill(SLIDE_MS);
+          timer = setTimeout(advance, SLIDE_MS);
+        }
+      }
+
+      /* Pause/resume on click */
+      var paused = false;
+      document.addEventListener('click', function() {
+        if (!paused) {
+          clearTimeout(timer);
+          fill.style.transition = 'none';
+          badge.textContent = '⏸ KIOSK';
+          paused = true;
+        } else {
+          badge.textContent = '⏵ KIOSK';
+          paused = false;
+          advance();
+        }
+      });
+
+      show(0);
+
+    }, 800);
+  });
+})();
+
+/* DEMO_JS_MARKER */
+</script>
+</body>
+</html>

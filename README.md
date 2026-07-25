@@ -175,7 +175,7 @@ Every sales deliverable is published in **two** forms from one source:
   header/footer), relative `images/` rewritten to absolute `hubfs/` URLs, external
   CSS inlined, and the `<html>/<head>/<body>` wrapper stripped.
 
-Covered: the three sales decks (`overview`, `specify`, `token-shredder`), the
+Covered: the three sales decks (`overview`, `specify`, `optimize`), the
 customer case studies, and the competitor comparisons.
 
 ```bash

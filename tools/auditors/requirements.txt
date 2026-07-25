@@ -1,0 +1,7 @@
+# Python dependencies for the repo auditors (tools/auditors/*).
+# Install with:  pip install -r tools/auditors/requirements.txt
+#
+# websocket-client: drives Edge over the DevTools Protocol so the mobile
+# auditor can force a true phone-width CSS viewport (headless --window-size
+# is clamped to a ~496px OS-window minimum on Windows and can't go narrower).
+websocket-client==1.9.0

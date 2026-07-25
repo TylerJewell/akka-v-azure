@@ -1,6 +1,6 @@
 # Making the scroll decks mobile-responsive
 
-How the Token Shredder deck was converted for mobile (2026-07-10). The same recipes apply to the other decks in this repo (overview, specify, dev, gartner) — their slides share the identical sticky-scroll machinery and will show the same failure modes on phones.
+How the Optimize deck was converted for mobile (2026-07-10). The same recipes apply to the other decks in this repo (overview, specify, dev, gartner) — their slides share the identical sticky-scroll machinery and will show the same failure modes on phones.
 
 **Reference implementation:** `slides/tss-01-problem` … `slides/tss-04-results`, plus `slides/ts-00-title` and `slides/ts-10-close`. Every technique below is live in those files.
 

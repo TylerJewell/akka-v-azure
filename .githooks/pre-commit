@@ -16,7 +16,7 @@ git add \
   sales-presentation/generated/overview/hubspot.html \
   sales-presentation/generated/specify/index.html \
   sales-presentation/generated/specify/hubspot.html \
-  sales-presentation/generated/token-shredder/index.html \
-  sales-presentation/generated/token-shredder/hubspot.html \
+  sales-presentation/generated/optimize/index.html \
+  sales-presentation/generated/optimize/hubspot.html \
   case-studies/hubspot \
   comparisons/hubspot

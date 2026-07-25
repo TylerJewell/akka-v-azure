@@ -36,7 +36,7 @@ body {
   font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--black);
   color: var(--white);
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 1536px;
   margin: 0 auto;
 }
@@ -2364,7 +2364,7 @@ body {
             <div class="cards">
               <div class="ocard rt-pick" data-rt="sdk" tabindex="0" role="button" aria-pressed="false">
                 <div class="oname">Akka SDK</div>
-                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">Agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">Autonomous Agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">Workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">Event Sourced Entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">Key Value Entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">Views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">Timed Actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">Consumers</a></div>
+                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">autonomous agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">event sourced entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">key value entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">timed actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">consumers</a></div>
               </div>
             </div>
           </div>
@@ -2375,7 +2375,7 @@ body {
             <div class="role">Models<b>&amp; Compute</b></div>
             <div class="cards">
               <div class="ocard rt-pick" data-rt="shredder" tabindex="0" role="button" aria-pressed="false">
-                <div class="oname">Akka Token Shredder</div>
+                <div class="oname">Akka Optimize</div>
                 <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
               </div>
             </div>
@@ -2397,7 +2397,7 @@ body {
         </div>
         <div class="rt-panel-body" data-rt-body="sdk" hidden>
           <h3>Akka SDK</h3>
-          <p>Eleven components cover what an agentic system actually needs: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
+          <p>Akka&rsquo;s components are composable to create entire agentic systems: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
           <p>State is durable by default and replayable from its event journal, so an agent that fails mid-task <span class="accent">resumes rather than restarts</span>.</p>
         </div>
         <div class="rt-panel-body" data-rt-body="agents" hidden>
@@ -2456,8 +2456,8 @@ body {
           <p>They also produce events outward, which is how an Akka service interacts with systems beyond it.</p>
         </div>
         <div class="rt-panel-body" data-rt-body="shredder" hidden>
-          <h3>Akka Token Shredder</h3>
-          <p>Frontier model spend rises with every call. Token Shredder uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
+          <h3>Akka Optimize</h3>
+          <p>Frontier model spend rises with every call. Optimize uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
           <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
         </div>
       </div>

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka Stack Diagram — draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#FFCE4A; --black:#000; --dark:#07070C; --white:#F1F1F1;
+  --green:#72D35B; --line:#3d3d42; --muted:#B7B7B7; --dim:#9a9a9a; --blue:#00DBDD;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  --sans:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--black); color:var(--white); font-family:var(--sans);
+     -webkit-font-smoothing:antialiased; padding:56px 40px 80px;}
+h1{font-size:clamp(20px,2.2vw,30px); font-weight:700; letter-spacing:-0.02em; margin:0 0 6px;}
+.sub{color:var(--dim); font-family:var(--mono); font-size:11px; letter-spacing:2px;
+     text-transform:uppercase; margin-bottom:40px;}
+
+/* ---- composition: external | arrow-gap | main stack ---- */
+.scene{position:relative; display:grid;
+       grid-template-columns:minmax(150px,192px) 88px minmax(500px,1fr) 88px minmax(150px,192px);
+       align-items:center; max-width:1300px; margin:0 auto;}
+.ext-right{display:flex; flex-direction:column; gap:22px;}
+
+/* ---- reusable box look (echoes .ocard) ---- */
+.box{border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,0.045);
+     text-align:center; padding:16px 14px; transition:border-color .2s, transform .2s;}
+.box:hover{border-color:rgba(255,206,74,0.5); transform:translateY(-2px);}
+.bname{font-size:clamp(13px,1.15vw,16px); font-weight:600; letter-spacing:-0.01em; color:var(--white); line-height:1.25;}
+.bsub{margin-top:5px; color:var(--muted); font-size:11px; letter-spacing:.2px; line-height:1.4;}
+.bsub .d{color:var(--yellow); font-weight:600; padding:0 4px;}
+
+/* ---- platform container (yellow frame + title tab), like .cake-wrap ---- */
+.platform{position:relative; border:1px solid rgba(255,206,74,0.28); border-radius:16px;
+          padding:34px 22px 22px; background:rgba(255,206,74,0.012);
+          display:flex; flex-direction:column; gap:12px;}
+.platform-tab{position:absolute; top:0; left:50%; transform:translate(-50%,-50%);
+   background:linear-gradient(90deg,transparent 0,var(--black) 14%,var(--black) 86%,transparent 100%);
+   padding:2px 26px; font-family:var(--sans); font-size:clamp(16px,1.6vw,22px);
+   letter-spacing:-0.02em; color:var(--yellow); font-weight:700; white-space:nowrap;}
+
+/* tier rows */
+.row{display:flex; gap:12px;}
+.row > .box{flex:1;}
+
+/* full-width agents/services/governance box */
+.agentsbar{border:1px solid rgba(255,206,74,0.5); border-radius:11px; text-align:center;
+   padding:20px 14px; background:linear-gradient(160deg, rgba(255,206,74,0.13), rgba(255,206,74,0.035));
+   transition:border-color .2s, transform .2s;}
+.agentsbar:hover{transform:translateY(-2px);}
+.agentsbar .bname{font-size:clamp(14px,1.3vw,18px);}
+
+/* full-width Akka Clusters box: the clustering runtime + its capabilities */
+.clusters{border:1px solid rgba(255,206,74,0.4); border-radius:11px; text-align:center;
+   padding:16px 16px 14px; background:linear-gradient(160deg, rgba(255,206,74,0.09), rgba(255,255,255,0.02));
+   transition:border-color .2s, transform .2s;}
+.clusters:hover{transform:translateY(-2px);}
+.clusters .bname{font-size:clamp(14px,1.3vw,17px);}
+.caps{display:flex; flex-direction:column; align-items:center; gap:3px; margin-top:9px;}
+.caps-row{display:flex; flex-wrap:wrap; justify-content:center;}
+.caps-row span{color:var(--muted); font-size:12px; letter-spacing:.2px; white-space:nowrap;}
+.caps-row span:not(:last-child)::after{content:"·"; color:var(--yellow); font-weight:600; padding:0 9px;}
+
+/* generic labeled wrapper (like the kubernetes box) around a row of boxes */
+.wrap{border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.012);
+      padding:10px 12px 12px;}
+.wrap-tag{font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase;
+          color:var(--dim); font-weight:600; margin:0 2px 9px;}
+.wrap-tag .dot{color:var(--yellow); padding:0 2px;}
+
+/* kubernetes container, holding Akka operational components */
+.k8s{border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,0.02);
+     padding:10px 12px 12px;}
+.k8s-tag{font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase;
+         color:var(--dim); font-weight:600; margin:0 2px 9px;}
+.k8s-tag .dot{color:var(--yellow); padding:0 2px;}
+.k8s-inner{display:flex; gap:10px;}
+.mini{flex:1; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,0.055);
+      text-align:center; padding:9px 8px; font-size:11.5px; color:var(--white); font-weight:500;
+      line-height:1.25; transition:border-color .2s, transform .2s;}
+.mini:hover{border-color:rgba(255,206,74,0.5); transform:translateY(-2px);}
+
+/* three persistence repositories, drawn as DB cylinders */
+.repos{display:flex; gap:12px; align-items:flex-end; padding-top:8px;}
+.repos .cyl{flex:1;}
+.cyl{position:relative; text-align:center; padding:26px 12px 16px;
+     background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+     border:1px solid var(--line); border-top:none;
+     border-radius:0 0 46% 46% / 0 0 20px 20px;
+     transition:border-color .2s, transform .2s;}
+.cyl::before{content:""; position:absolute; top:-11px; left:-1px; right:-1px; height:22px;
+     background:rgba(255,255,255,0.07); border:1px solid var(--line); border-radius:50%;}
+.cyl:hover{border-color:rgba(255,206,74,0.5); transform:translateY(-2px);}
+.cyl:hover::before{border-color:rgba(255,206,74,0.5);}
+.cyl .bname{position:relative; z-index:1;}
+
+/* commodity slab — visually "below/outside" the platform */
+.commodity{margin-top:14px; border:1px dashed var(--line); border-radius:11px;
+           background:rgba(255,255,255,0.015); text-align:center; padding:15px;}
+.commodity .bname{color:var(--muted);}
+.commodity .bsub{color:var(--dim);}
+
+/* ---- external harnesses column (compact; JS aligns it to its connection) ---- */
+.external{display:flex; flex-direction:column; gap:8px;}
+.external .etitle{font-family:var(--mono); font-size:10px; letter-spacing:1.5px;
+   text-transform:uppercase; color:var(--dim); text-align:center; margin-bottom:2px; line-height:1.5;}
+.chip{border:1px solid var(--line); border-radius:8px; background:rgba(0,219,221,0.04);
+      padding:8px 10px; text-align:center; font-size:12.5px; color:var(--white); font-weight:500;}
+.chip.frame{background:rgba(255,255,255,0.02);}
+
+/* ---- arrow overlay ---- */
+#wires{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:6; overflow:visible;}
+#wires text{fill:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:1px;}
+
+/* ---- projector mode: high-contrast override for dark rooms / old projectors ----
+   Same design language; just lifts the tokens the projector would eat. Toggle with "P". */
+body.present{ --line:#5c5c5c; --dim:#c4c4c4; --muted:#dcdcdc; }
+body.present .box, body.present .cyl, body.present .mini, body.present .chip{
+  background:rgba(255,255,255,0.08); }
+body.present .box, body.present .mini, body.present .chip,
+body.present .wrap, body.present .k8s, body.present .external, body.present .cyl{
+  border-width:1.5px; }
+body.present .agentsbar{ border-color:rgba(255,206,74,0.75); }
+body.present .platform{ border-color:rgba(255,206,74,0.6); }
+body.present #wires line{ stroke-width:3; opacity:1; }
+body.present #wires text{ font-size:12px; fill:#ececec; }
+body.present .oname, body.present .bname{ color:#fff; }
+
+.modehint{position:fixed; right:14px; bottom:12px; font-family:var(--mono); font-size:10px;
+  letter-spacing:1px; color:var(--dim); opacity:.6;}
+</style>
+</head>
+<body>
+  <div class="scene">
+    <svg id="wires" aria-hidden="true"></svg>
+
+    <!-- LEFT: external, non-Akka agents & harnesses -->
+    <div class="external ext-left">
+      <div class="etitle">3rd-party agents<br>&amp; harnesses</div>
+      <div class="chip">Claude Code</div>
+      <div class="chip">GitHub Copilot</div>
+      <div class="chip">Codex</div>
+      <div class="chip frame">LangGraph</div>
+      <div class="chip frame">LlamaIndex</div>
+      <div class="chip frame">CrewAI</div>
+    </div>
+
+    <!-- MIDDLE column is just arrow space (arrows drawn by #wires) -->
+    <div></div>
+
+    <!-- RIGHT: the platform stack -->
+    <div>
+      <div class="platform">
+        <div class="platform-tab">Akka Agentic AI Platform</div>
+
+        <!-- access & control plane: how humans and machines reach the platform -->
+        <div class="wrap">
+          <div class="wrap-tag">Akka Access Surfaces</div>
+          <div class="row">
+            <div class="box"><div class="bname">Console</div></div>
+            <div class="box"><div class="bname">MCP</div></div>
+            <div class="box"><div class="bname">CLI</div></div>
+            <div class="box"><div class="bname">APIs</div></div>
+          </div>
+        </div>
+
+        <!-- agents / endpoints / services / governance, single full-width box -->
+        <div class="agentsbar" id="agents">
+          <div class="bname">Your AI agents and services</div>
+          <div class="caps"><div class="caps-row"><span>evaluations</span><span>policies</span><span>orchestration</span><span>guardrails</span><span>tools</span></div></div>
+        </div>
+
+        <!-- Akka Clusters: full-width, runtime capabilities inside, atop the runtime services -->
+        <div class="clusters">
+          <div class="bname">Akka Clustering</div>
+          <div class="caps">
+            <div class="caps-row"><span>Actor-based concurrency</span><span>Streaming &amp; backpressure</span><span>Durable execution</span></div>
+            <div class="caps-row"><span>In-memory sharded data</span><span>Split-brain resolution</span><span>Brokerless messaging</span><span>Event sourcing</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="box" id="gw"><div class="bname">AI Gateway</div></div>
+          <div class="box"><div class="bname">Model Routing</div><div class="bsub">cost <span class="d">·</span> perf <span class="d">·</span> task</div></div>
+          <div class="box" id="inf"><div class="bname">Inference</div><div class="bsub">Your SLMs</div></div>
+        </div>
+
+        <!-- kubernetes, with Akka operational components running inside it -->
+        <div class="k8s">
+          <div class="k8s-tag">Kubernetes <span class="dot">·</span> Akka Resilience &amp; Scalability Operators</div>
+          <div class="k8s-inner">
+            <div class="mini">Elasticity</div>
+            <div class="mini">Rolling Updater</div>
+            <div class="mini">HA/DR</div>
+            <div class="mini">Patching</div>
+            <div class="mini">Observability</div>
+          </div>
+        </div>
+
+        <!-- three repositories, drawn as persistence cylinders -->
+        <div class="repos">
+          <div class="cyl" id="trace"><div class="bname">Tracing Logs</div></div>
+          <div class="cyl"><div class="bname">Agent Memory</div></div>
+          <div class="cyl"><div class="bname">Policy Records</div></div>
+        </div>
+      </div>
+
+      <!-- commodity infrastructure sits beneath the platform -->
+      <div class="commodity">
+        <div class="bname">Commodity infrastructure</div>
+        <div class="bsub">Compute <span class="d">·</span> Memory <span class="d">·</span> Storage</div>
+      </div>
+    </div>
+
+    <!-- RIGHT gap + consumers calling into the platform -->
+    <div></div>
+    <div class="ext-right">
+      <div class="external" id="consumers">
+        <div class="etitle">Your end users<br>&amp; 3rd-party agents</div>
+        <div class="chip">HTTP</div>
+        <div class="chip">gRPC</div>
+        <div class="chip">MCP</div>
+        <div class="chip">A2A</div>
+      </div>
+      <div class="external" id="deps">
+        <div class="etitle">Your systems</div>
+        <div class="chip frame">Frontier models</div>
+        <div class="chip frame">Semantic memory</div>
+        <div class="chip frame">Systems of record</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modehint">Press P for projector mode</div>
+
+<script>
+(function(){
+  var HEAD = 'M0,0 L8,3.4 L0,6.8 Z';
+  var DEFS = '<defs><marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="3.4" orient="auto">'
+           + '<path d="'+HEAD+'" fill="#FFCE4A"/></marker></defs>';
+  // each wire: from a source box's near edge, straight into a target box's near edge
+  var WIRES = [
+    {from:'.ext-left',   to:'#gw',      label:'model calls'},
+    {from:'.ext-left',   to:'#trace',   label:'traces'},
+    {from:'#consumers',  to:'#agents',  label:'requests'},
+    {from:'.platform',   to:'#deps',    label:'integrations'}
+  ];
+
+  function draw(){
+    var scene = document.querySelector('.scene');
+    var svg = document.getElementById('wires');
+    var sr = scene.getBoundingClientRect();
+    // keep each outer box compact, but slide it vertically so it lines up with
+    // what it connects to → straight arrows land on it without filler spacing
+    function cyOf(sel){ var r = document.querySelector(sel).getBoundingClientRect(); return (r.top + r.bottom) / 2; }
+    function centerOn(sel, cy){
+      var b = document.querySelector(sel); if(!b) return;
+      b.style.alignSelf = 'start'; b.style.height = ''; b.style.marginTop = '0px';
+      var h = b.getBoundingClientRect().height;
+      b.style.marginTop = (cy - sr.top - h/2) + 'px';
+    }
+    // slide a container so one of its children (not the whole box) centers on cy
+    function alignChildOn(containerSel, childSel, cy){
+      var c = document.querySelector(containerSel); if(!c) return;
+      c.style.alignSelf = 'start'; c.style.marginTop = '0px';
+      var chr = document.querySelector(childSel).getBoundingClientRect();
+      c.style.marginTop = (cy - (chr.top + chr.height/2)) + 'px';
+    }
+    alignChildOn('.ext-right', '#consumers', cyOf('#agents')); // consumers ride up to the Agents row
+    centerOn('.ext-left', (cyOf('#gw') + cyOf('#trace')) / 2 - 20); // spans the Gateway↔Logs it feeds, nudged up 20px
+    var parts = DEFS;
+    WIRES.forEach(function(w){
+      var src = document.querySelector(w.from), el = document.querySelector(w.to);
+      if(!src || !el) return;
+      var s = src.getBoundingClientRect(), r = el.getBoundingClientRect();
+      var y = (r.top - sr.top) + r.height/2;         // vertical center of target
+      var startX, endX, pointsRight = s.left < r.left;
+      if(pointsRight){                                // source is left of target → arrow points right
+        startX = (s.right - sr.left) + 2;
+        endX   = (r.left  - sr.left) - 1;             // arrowhead tip stops at the box edge (no bleed)
+      } else {                                        // source is right of target → arrow points left
+        startX = (s.left  - sr.left) - 2;
+        endX   = (r.right - sr.left) + 1;             // arrowhead tip stops at the box edge (no bleed)
+      }
+      parts += '<line x1="'+startX+'" y1="'+y+'" x2="'+endX+'" y2="'+y+'" '
+             + 'stroke="#FFCE4A" stroke-width="2.1" stroke-dasharray="5 4" '
+             + 'marker-end="url(#ah)" opacity="0.9"/>';
+      // label sits at the arrow's start (left-justified for right-pointing arrows)
+      parts += '<text x="'+startX+'" y="'+(y-7)+'" text-anchor="'+(pointsRight?'start':'end')+'">'+w.label+'</text>';
+    });
+    svg.setAttribute('viewBox', '0 0 '+sr.width+' '+sr.height);
+    svg.innerHTML = parts;
+  }
+
+  window.addEventListener('load', draw);
+  window.addEventListener('resize', draw);
+  // fonts settling can shift box positions — redraw shortly after load
+  setTimeout(draw, 300);
+
+  // projector mode (press P) — high-contrast override for dark rooms
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'p' || e.key === 'P'){ document.body.classList.toggle('present'); draw(); }
+  });
+})();
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@ Build every sales deliverable in BOTH forms:
   * HubSpot fragment   — a paste-ready import for Darin (see
                          sales-presentation/builder/hubspot.py)
 
-Covers the three sales presentations (overview, specify, token-shredder), the
+Covers the three sales presentations (overview, specify, optimize), the
 customer case studies, and the competitor comparisons. Run automatically by
 .githooks/pre-commit on every commit, or by hand:
 
@@ -38,8 +38,8 @@ DECKS = [
     [],  # overview — defaults
     ['--registry', 'specify-registry.json', '--nav', 'nav-specify.js',
      '--out', 'generated/specify/index.html'],
-    ['--registry', 'token-shredder-registry.json', '--nav', 'nav-shredder.js',
-     '--out', 'generated/token-shredder/index.html'],
+    ['--registry', 'optimize-registry.json', '--nav', 'nav-optimize.js',
+     '--out', 'generated/optimize/index.html'],
 ]
 for extra in DECKS:
     subprocess.run([sys.executable, 'builder/build.py', '--no-zip', *extra],

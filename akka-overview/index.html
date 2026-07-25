@@ -83,6 +83,13 @@
   .shead{font-size:clamp(30px,4.4vw,58px); margin-bottom:14px; max-width:22ch;}
   #s-morph .shead{white-space:nowrap; text-align:center; max-width:none;}
   .ssub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
+  /* small-phone: shrink section titles so they wrap/fit instead of clipping */
+  @media (max-width:560px){
+    .shead{ font-size:clamp(22px,6.6vw,30px); max-width:none; }
+    #s-morph .shead{ white-space:normal; font-size:clamp(21px,6vw,27px); }
+    #s-scale .shead, #s-routes .shead{ font-size:clamp(21px,6vw,27px); }
+    .ssub{ font-size:14px; }
+  }
 
   /* ---- portfolio / offerings cake ---- */
   .pf-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:50px; align-items:start; margin-top:46px;}
@@ -208,11 +215,11 @@
   #s-platform{overflow:visible;}
   #s-platform .p-img{margin-top:52px;}
   #s-platform .p-img img{width:100%; max-width:1120px; height:auto; display:block; margin:0 auto;}
-  #s-platform .p-quote{max-width:900px; margin:36px auto 0; text-align:center; position:relative;}
-  #s-platform .p-quote::before{content:'\201C'; display:block; font-family:Georgia,'Times New Roman',serif; font-size:60px; line-height:0.7; color:var(--yellow); margin-bottom:6px;}
-  #s-platform .p-quote p{font-size:clamp(18px,1.9vw,26px); line-height:1.4; font-weight:600; letter-spacing:-0.01em; color:var(--white);}
-  #s-platform .p-quote .accent{color:var(--yellow);}
-  #s-platform .p-quote cite{display:block; margin-top:16px; font-style:normal; font-size:clamp(11.5px,1vw,13.5px); text-transform:uppercase; letter-spacing:1.6px; color:var(--muted); font-weight:600;}
+  #s-proof .p-quote{max-width:900px; margin:86px auto 0; text-align:center; position:relative;}
+  #s-proof .p-quote::before{content:'\201C'; display:block; font-family:Georgia,'Times New Roman',serif; font-size:60px; line-height:0.7; color:var(--yellow); margin-bottom:6px;}
+  #s-proof .p-quote p{font-size:clamp(18px,1.9vw,26px); line-height:1.4; font-weight:600; letter-spacing:-0.01em; color:var(--white);}
+  #s-proof .p-quote .accent{color:var(--yellow);}
+  #s-proof .p-quote cite{display:block; margin-top:16px; font-style:normal; font-size:clamp(11.5px,1vw,13.5px); text-transform:uppercase; letter-spacing:1.6px; color:var(--muted); font-weight:600;}
 
   /* ── resilience demo (ported from 11-resilience) ── */
   #s6{background:var(--black); height:100vh; height:100dvh; display:flex; flex-direction:column; justify-content:flex-start; padding:36px 6vw 24px; overflow:hidden;}
@@ -249,15 +256,18 @@
   }
 
   /* ── packages (ported from 14-packages) ── */
-  #s-packages{overflow:visible; justify-content:flex-start; padding-top:130px;}
+  #s-packages{overflow:visible; justify-content:flex-start; padding-top:96px;}
   .pkg-inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
-  #s-packages .pkg-split{max-width:1200px; margin:164px auto 0;}
+  #s-packages .pkg-split{max-width:1200px; margin:54px auto 0;}
   #s-packages .pkg-tier .pkg-akka-badge{align-self:flex-start; margin:2px 0 12px;}
   .pkg-eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:10px; position:relative; z-index:1;}
   .pkg-eyebrow::before{content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle;}
   .pkg-headline{font-size:clamp(30px,4vw,56px); font-weight:700; line-height:1.08; letter-spacing:-0.03em; color:var(--white); max-width:800px; margin-bottom:12px; position:relative; z-index:1;}
   .pkg-headline .accent{color:var(--yellow);}
-  .pkg-sub{font-size:clamp(14px,1.2vw,18px); color:#888; max-width:700px; line-height:1.5; margin-bottom:32px; position:relative; z-index:1;}
+  .pkg-sub{font-size:clamp(14px,1.2vw,18px); color:#888; max-width:700px; line-height:1.5; margin-bottom:14px; position:relative; z-index:1;}
+  .pkg-envs{display:flex; flex-wrap:wrap; align-items:center; gap:26px; margin:0 0 30px; position:relative; z-index:1;}
+  .pkg-envs .rsc-env{color:#fff; font-weight:600; font-size:15px; display:inline-flex; align-items:center; gap:8px; white-space:nowrap;}
+  .pkg-envs .rsc-env svg{width:17px; height:17px;}
   .pkg-infra{display:flex; gap:32px; align-items:center; justify-content:center; padding:18px 32px; background:#0A0A0A; border:1px solid #1C1C1C; border-radius:10px; margin-bottom:14px; position:relative; z-index:1;}
   .pkg-infra-item{display:flex; align-items:center; gap:10px; font-size:13px; color:#999; font-weight:500;}
   .pkg-infra-icon{width:20px; height:20px; color:var(--yellow); flex-shrink:0;}
@@ -281,6 +291,17 @@
   .pkg-sre-banner-text{font-size:12.5px; text-transform:uppercase; letter-spacing:3px; color:#72D35B; font-weight:700;}
   .pkg-sre-dot{width:6px; height:6px; border-radius:50%; background:#72D35B; animation:pulse 2s ease infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  /* expanded SRE panel — itemizes the managed-operations value-adds */
+  .pkg-sre{border:1px solid rgba(114,211,91,0.55); border-radius:12px; overflow:hidden; flex-shrink:0;
+    background:linear-gradient(180deg, rgba(114,211,91,0.06), rgba(114,211,91,0.015));}
+  .pkg-sre .pkg-sre-banner{border-top:none; border-bottom:1px solid rgba(114,211,91,0.4); border-radius:0;}
+  .pkg-sre-sub{text-align:center; color:#9db39d; font-size:12.5px; line-height:1.5; margin:11px auto 0; max-width:760px; padding:0 20px;}
+  .pkg-sre-sub b{color:#72D35B; font-weight:700;}
+  .pkg-sre-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px 26px; padding:13px 24px 16px;}
+  .pkg-sre-item{position:relative; padding-left:19px;}
+  .pkg-sre-item::before{content:"✓"; position:absolute; left:0; top:1px; color:#72D35B; font-weight:700; font-size:11.5px;}
+  .pkg-sre-item b{display:block; color:#fff; font-weight:600; font-size:13px; letter-spacing:-0.01em; line-height:1.2;}
+  .pkg-sre-item span{display:block; color:#7f8a7f; font-size:11px; line-height:1.35; margin-top:1px;}
   .pkg-starter{background:#0A0A0A; border:1px dashed #333; border-radius:10px; padding:12px 20px; position:relative; overflow:hidden; display:flex; flex-direction:column; gap:6px; flex-shrink:0;}
   .pkg-starter-top{display:flex; align-items:center; justify-content:space-between; gap:16px;}
   .pkg-starter-meta{display:flex; align-items:center; gap:6px; flex-shrink:0;}
@@ -349,7 +370,7 @@
 
   @media (max-height:880px){
     #s-scale{padding-top:32px; padding-bottom:32px;}
-    #s-scale .shead{font-size:clamp(26px,3vw,40px); margin-bottom:10px;}
+    #s-scale .shead{font-size:clamp(19px,3.4vw,40px); margin-bottom:10px;}
     #s-scale .ssub{margin-bottom:20px;}
     #s-scale .sc-list{margin:50px 0 22px;}
     #s-scale .sc-item{padding:12px 0;}
@@ -357,6 +378,7 @@
     #s-scale .p-quote::before{font-size:42px;}
   }
   @media (max-width:820px){
+    #s-scale .shead .l1, #s-scale .shead .l2{white-space:normal;}   /* let each sentence wrap instead of overflowing the phone width */
     #s-scale .sc-list{grid-template-columns:1fr;}
     #s-scale .sc-item:nth-child(2){border-top:1px dashed #262626; padding-top:17px;}
     #s-scale .sc-quotes{grid-template-columns:1fr; gap:32px;}
@@ -449,19 +471,251 @@
       <div class="stat"><div class="v"><span class="cnt" data-count="52">0</span></div><div class="l">Banks running in production</div></div>
       <div class="stat"><div class="v"><span class="frac"><sup>1</sup><span class="sl">&frasl;</span><sub>3</sub></span></div><div class="l">of the Fortune 500</div></div>
     </div>
+    <blockquote class="p-quote reveal">
+      <p>We ported our Python agents to Akka and got a <span class="accent">50% latency improvement</span> and <span class="accent">300% concurrency improvement</span>.</p>
+      <cite>Jodie Wallis &middot; CAIO, Manulife</cite>
+    </blockquote>
   </div>
 </section>
 
 <section id="s-platform">
   <div class="inner">
-    <div class="eyebrow reveal">Inside the platform</div>
+    <div class="eyebrow reveal">An integrated platform</div>
     <h2 class="shead reveal">A platform that guarantees <span class="accent">resilience and scalability.</span></h2>
-    <p class="ssub reveal">Agentic systems are built and tested in local sandboxes. If it compiles, it&rsquo;s production-ready. Your AI stateful memory is active-active replicated to other regions to provide 99.9999% AI uptime.</p>
-    <div class="p-img reveal"><img src="images/platform-rsc.png" alt="Akka platform: Runtime, Stack, Cloud"></div>
-    <blockquote class="p-quote reveal">
-      <p>We ported our Python agents to Akka and got a <span class="accent">50% latency improvement</span> and <span class="accent">300% concurrency improvement</span>.</p>
-      <cite>Jodie Wallis &middot; CAIO, Manulife</cite>
-    </blockquote>
+    <p class="ssub reveal">A single system that runs on commodity infrastructure designed to deliver faster AI change velocity while lowering production operation costs.</p>
+    <div class="rsc-envs reveal">
+      <div class="rsc-envs-head">Installs in</div>
+      <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><path d="M6 17h11a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 8 9.5 4 4 0 0 0 6 17Z"/></svg>Akka&rsquo;s Cloud</span>
+      <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><rect x="5" y="7" width="14" height="10" rx="1.5"/><path d="M9 7V4M15 7V4M9 20v-3M15 20v-3M2 11h3M2 14h3M19 11h3M19 14h3"/></svg>Your VPC</span>
+      <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><path d="M12 3l7.5 3.5v7L12 21l-7.5-3.5v-7L12 3Z"/><path d="M12 8v4l3 2"/></svg>Your Kubernetes</span>
+    </div>
+    <style>
+    /* === RSC (Runtime · Stack · Cloud) redraw + inlined approved stack diagram === */
+    /* env icons stacked under the subtitle with an "Installs in" header */
+    #s-platform .ssub{margin-bottom:14px;}
+    .rsc-envs{display:flex; flex-direction:column; align-items:flex-start; gap:8px; margin:0 0 6px;}
+    .rsc-envs-head{font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase;
+             color:var(--dim); font-weight:600; margin-bottom:2px;}
+    .rsc-env{display:inline-flex; align-items:center; gap:8px; color:var(--white); font-weight:600;
+             font-size:15px; white-space:nowrap;}
+    .rsc-env svg{width:17px; height:17px;}
+    .rsc{ --line:#3d3d42; --muted:#B7B7B7; --dim:#9a9a9a; margin:-51px 0 0; }
+    .rsc-diagram{display:flex; justify-content:center;}
+    .rsc-diagram #rsc-deps{margin-top:33px;}   /* nudge the external-deps box down ~30px */
+    /* reserve the final scaled footprint (scene 1230x623 * 0.9) so nothing reflows on load;
+       JS keeps these in sync if the content ever changes. */
+    .rsc-scaler{position:relative; width:1107px; height:561px;}
+
+    /* --- inlined approved graphic, scoped under .rsc-diagram, scaled via transform --- */
+    .rsc-diagram .scene{position:relative; display:grid; width:1230px;
+      transform:scale(0.9); transform-origin:top left;
+      grid-template-columns:minmax(150px,192px) 98px minmax(500px,1fr) 98px minmax(150px,192px);
+      align-items:center; opacity:0; transition:opacity .18s ease;}
+    .rsc-diagram .ext-right{display:flex; flex-direction:column; gap:22px;}
+    .rsc-diagram .box{border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,0.045);
+      text-align:center; padding:11px 14px;}
+    .rsc-diagram .bname{font-size:16px; font-weight:600; letter-spacing:-0.01em; color:var(--white); line-height:1.25;}
+    .rsc-diagram .bsub{margin-top:5px; color:var(--muted); font-size:11px; letter-spacing:.2px; line-height:1.4;}
+    .rsc-diagram .bsub .d{color:var(--yellow); font-weight:600; padding:0 4px;}
+    .rsc-diagram .platform{position:relative; border:1px solid rgba(255,206,74,0.28); border-radius:16px;
+      padding:30px 27px 22px; background:rgba(255,206,74,0.012); display:flex; flex-direction:column; gap:8px;}
+    .rsc-diagram .platform-tab{position:absolute; top:0; left:50%; transform:translate(-50%,-50%);
+      background:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);
+      padding:2px 26px; font-size:22px; letter-spacing:-0.02em; color:var(--yellow); font-weight:700; white-space:nowrap;}
+    .rsc-diagram .row{display:flex; gap:12px;}
+    .rsc-diagram .row > .box{flex:1;}
+    .rsc-diagram .agentsbar{border:1px solid rgba(255,206,74,0.5); border-radius:11px; text-align:center;
+      padding:13px 14px; background:linear-gradient(160deg, rgba(255,206,74,0.13), rgba(255,206,74,0.035));}
+    .rsc-diagram .agentsbar .bname{font-size:18px;}
+    .rsc-diagram .clusters{border:1px solid rgba(255,206,74,0.4); border-radius:11px; text-align:center;
+      padding:11px 16px 11px; background:linear-gradient(160deg, rgba(255,206,74,0.09), rgba(255,255,255,0.02));}
+    .rsc-diagram .clusters .bname{font-size:17px;}
+    .rsc-diagram .caps{display:flex; flex-direction:column; align-items:center; gap:3px; margin-top:5px;}
+    .rsc-diagram .caps-row{display:flex; flex-wrap:wrap; justify-content:center;}
+    .rsc-diagram .caps-row span{color:var(--muted); font-size:12px; letter-spacing:.2px; white-space:nowrap;}
+    .rsc-diagram .caps-row span:not(:last-child)::after{content:"·"; color:var(--yellow); font-weight:600; padding:0 9px;}
+    .rsc-diagram .wrap{border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.012); padding:10px 12px 12px;}
+    .rsc-diagram .wrap-tag{font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--dim); font-weight:600; margin:0 2px 9px;}
+    .rsc-diagram .wrap-tag .dot, .rsc-diagram .k8s-tag .dot{color:var(--yellow); padding:0 2px;}
+    .rsc-diagram .k8s{border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,0.02); padding:10px 12px 12px;}
+    .rsc-diagram .k8s-tag{font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--dim); font-weight:600; margin:0 2px 9px;}
+    .rsc-diagram .k8s-inner{display:flex; gap:10px;}
+    .rsc-diagram .mini{flex:1; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,0.055);
+      text-align:center; padding:9px 8px; font-size:11.5px; color:var(--white); font-weight:500; line-height:1.25;}
+    .rsc-diagram .repos{display:flex; gap:12px; align-items:flex-end; padding-top:8px;}
+    .rsc-diagram .repos .cyl{flex:1;}
+    .rsc-diagram .cyl{position:relative; text-align:center; padding:18px 12px 12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border:1px solid var(--line); border-top:none; border-radius:0 0 46% 46% / 0 0 20px 20px;}
+    .rsc-diagram .cyl::before{content:""; position:absolute; top:-11px; left:-1px; right:-1px; height:22px;
+      background:rgba(255,255,255,0.07); border:1px solid var(--line); border-radius:50%;}
+    .rsc-diagram .cyl .bname{position:relative; z-index:1;}
+    .rsc-diagram .commodity{margin-top:14px; border:1px dashed var(--line); border-radius:11px;
+      background:rgba(255,255,255,0.015); text-align:center; padding:15px;}
+    .rsc-diagram .commodity .bname{color:var(--muted);}
+    .rsc-diagram .commodity .bsub{color:var(--dim);}
+    .rsc-diagram .external{display:flex; flex-direction:column; gap:8px;}
+    .rsc-diagram .external .etitle{font-family:var(--mono); font-size:10px; letter-spacing:1.5px;
+      text-transform:uppercase; color:var(--dim); text-align:center; margin-bottom:2px; line-height:1.5;}
+    .rsc-diagram .chip{border:1px solid var(--line); border-radius:8px; background:rgba(0,219,221,0.04);
+      padding:8px 10px; text-align:center; font-size:12.5px; color:var(--white); font-weight:500;}
+    .rsc-diagram .chip.frame{background:rgba(255,255,255,0.02);}
+    .rsc-diagram #rsc-wires{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:6; overflow:visible;}
+    .rsc-diagram #rsc-wires text{fill:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:1px;}
+    </style>
+
+    <div class="rsc reveal">
+      <!-- full-width platform diagram -->
+      <div class="rsc-diagram">
+          <div class="rsc-scaler">
+          <div class="scene">
+            <svg id="rsc-wires" aria-hidden="true"></svg>
+            <div class="external ext-left">
+              <div class="etitle">3rd-party agents<br>&amp; harnesses</div>
+              <div class="chip">Claude Code</div>
+              <div class="chip">GitHub Copilot</div>
+              <div class="chip">Codex</div>
+              <div class="chip frame">LangGraph</div>
+              <div class="chip frame">LlamaIndex</div>
+              <div class="chip frame">CrewAI</div>
+            </div>
+            <div></div>
+            <div>
+              <div class="platform">
+                <div class="platform-tab">Akka Agentic AI Platform</div>
+                <div class="wrap">
+                  <div class="wrap-tag">Akka Access Surfaces</div>
+                  <div class="row">
+                    <div class="box"><div class="bname">Console</div></div>
+                    <div class="box"><div class="bname">MCP</div></div>
+                    <div class="box"><div class="bname">CLI</div></div>
+                    <div class="box"><div class="bname">APIs</div></div>
+                  </div>
+                </div>
+                <div class="agentsbar" id="rsc-agents">
+                  <div class="bname">Your AI agents and services</div>
+                  <div class="caps"><div class="caps-row"><span>evaluations</span><span>policies</span><span>orchestration</span><span>guardrails</span><span>tools</span></div></div>
+                </div>
+                <div class="clusters">
+                  <div class="bname">Akka Clustering</div>
+                  <div class="caps">
+                    <div class="caps-row"><span>Actor-based concurrency</span><span>Streaming &amp; backpressure</span><span>Durable execution</span></div>
+                    <div class="caps-row"><span>In-memory sharded data</span><span>Split-brain resolution</span><span>Brokerless messaging</span><span>Event sourcing</span></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="box" id="rsc-gw"><div class="bname">AI Gateway</div></div>
+                  <div class="box"><div class="bname">Model Routing</div><div class="bsub">cost <span class="d">·</span> perf <span class="d">·</span> task</div></div>
+                  <div class="box" id="rsc-inf"><div class="bname">Inference</div><div class="bsub">Your SLMs</div></div>
+                </div>
+                <div class="k8s">
+                  <div class="k8s-tag">Kubernetes <span class="dot">·</span> Akka Resilience &amp; Scalability Operators</div>
+                  <div class="k8s-inner">
+                    <div class="mini">Elasticity</div>
+                    <div class="mini">Rolling Updater</div>
+                    <div class="mini">HA/DR</div>
+                    <div class="mini">Patching</div>
+                    <div class="mini">Observability</div>
+                  </div>
+                </div>
+                <div class="repos">
+                  <div class="cyl" id="rsc-trace"><div class="bname">Tracing Logs</div></div>
+                  <div class="cyl"><div class="bname">Agent Memory</div></div>
+                  <div class="cyl"><div class="bname">Policy Records</div></div>
+                </div>
+              </div>
+              <div class="commodity">
+                <div class="bname">Commodity infrastructure</div>
+                <div class="bsub">Compute <span class="d">·</span> Memory <span class="d">·</span> Storage</div>
+              </div>
+            </div>
+            <div></div>
+            <div class="ext-right">
+              <div class="external" id="rsc-consumers">
+                <div class="etitle">Your end users<br>&amp; 3rd-party agents</div>
+                <div class="chip">HTTP</div>
+                <div class="chip">gRPC</div>
+                <div class="chip">MCP</div>
+                <div class="chip">A2A</div>
+              </div>
+              <div class="external" id="rsc-deps">
+                <div class="etitle">Your systems</div>
+                <div class="chip frame">Frontier models</div>
+                <div class="chip frame">Semantic memory</div>
+                <div class="chip frame">Systems of record</div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+      var SCALE = 0.9;   // keep in sync with .rsc-diagram .scene transform:scale()
+      var DEFS = '<defs><marker id="rsc-ah" markerWidth="9" markerHeight="9" refX="7.5" refY="3.4" orient="auto">'
+               + '<path d="M0,0 L8,3.4 L0,6.8 Z" fill="#FFCE4A"/></marker></defs>';
+      var WIRES = [
+        {from:'.ext-left',      to:'#rsc-gw',      label:'model calls'},
+        {from:'.ext-left',      to:'#rsc-trace',   label:'traces'},
+        {from:'#rsc-consumers', to:'#rsc-agents',  label:'requests'},
+        {from:'.platform',      to:'#rsc-deps',    label:'integrations'}
+      ];
+      function draw(){
+        var scene = document.querySelector('.rsc-diagram .scene');
+        var svg = document.getElementById('rsc-wires');
+        var scaler = document.querySelector('.rsc-scaler');
+        if(!scene || !svg) return;
+        // position in the scene's own (unscaled) coordinate space via the offset chain —
+        // immune to CSS transform:scale() AND the mobile zoom fit, so arrows stay correct
+        // both in-page and inside the zoom lightbox clone.
+        function rel(el){
+          var x=0, y=0, n=el;
+          while(n && n !== scene){ x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+          return {left:x, top:y, right:x+el.offsetWidth, bottom:y+el.offsetHeight,
+                  width:el.offsetWidth, height:el.offsetHeight};
+        }
+        function cyOf(sel){ var r = rel(scene.querySelector(sel)); return (r.top + r.bottom)/2; }
+        function centerOn(sel, cy){
+          var b = scene.querySelector(sel); if(!b) return;
+          b.style.alignSelf='start'; b.style.height=''; b.style.marginTop='0px';
+          var r = rel(b);
+          b.style.marginTop = (cy - r.top - r.height/2) + 'px';
+        }
+        // slide a container so one of its children (not the whole box) centers on cy
+        function alignChildOn(containerSel, childSel, cy){
+          var c = scene.querySelector(containerSel); if(!c) return;
+          c.style.alignSelf='start'; c.style.marginTop='0px';
+          var chr = rel(scene.querySelector(childSel));
+          c.style.marginTop = (cy - (chr.top + chr.height/2)) + 'px';
+        }
+        alignChildOn('.ext-right', '#rsc-consumers', cyOf('#rsc-agents'));
+        centerOn('.ext-left', (cyOf('#rsc-gw') + cyOf('#rsc-trace'))/2 - 12);
+        var parts = DEFS;
+        WIRES.forEach(function(w){
+          var src = scene.querySelector(w.from), el = scene.querySelector(w.to);
+          if(!src || !el) return;
+          var s = rel(src), r = rel(el);
+          var y = r.top + r.height/2, startX, endX, pointsRight = s.left < r.left;
+          if(pointsRight){ startX=s.right+2; endX=r.left-1; }
+          else { startX=s.left-2; endX=r.right+1; }
+          parts += '<line x1="'+startX+'" y1="'+y+'" x2="'+endX+'" y2="'+y+'" stroke="#FFCE4A" '
+                 + 'stroke-width="2.1" stroke-dasharray="5 4" marker-end="url(#rsc-ah)" opacity="0.9"/>';
+          parts += '<text x="'+startX+'" y="'+(y-7)+'" text-anchor="'+(pointsRight?'start':'end')+'">'+w.label+'</text>';
+        });
+        svg.setAttribute('viewBox','0 0 '+scene.offsetWidth+' '+scene.offsetHeight);
+        svg.innerHTML = parts;
+        // keep the reserved footprint in sync, then reveal (positioned, no visible jump)
+        if(scaler){ scaler.style.width=(scene.offsetWidth*SCALE)+'px'; scaler.style.height=(scene.offsetHeight*SCALE)+'px'; }
+        scene.style.opacity = '1';
+      }
+      window.addEventListener('load', draw);
+      window.addEventListener('resize', draw);
+      setTimeout(draw, 400);
+    })();
+    </script>
   </div>
 </section>
 
@@ -502,8 +756,8 @@
 <section id="s-scale">
   <div class="inner">
     <div class="eyebrow reveal">Akka guarantees scalability</div>
-    <h2 class="shead reveal"><span class="l1">Build systems in days without FDEs.</span><span class="l2 accent">Run for up to 90% less.</span></h2>
-    <p class="ssub reveal">Deliver systems in days with spec-driven delivery and then operate AI for up to 90% less than Python-based systems.</p>
+    <h2 class="shead reveal"><span class="l1">Build systems in days without FDEs.</span><span class="l2 accent">Reduce AI infrastructure spend by 90%.</span></h2>
+    <p class="ssub reveal">Deliver systems in days with spec-driven delivery and then operate your AI systems with up to 90% less infrastructure spend than Python-based systems.</p>
 
     <div class="sc-list reveal">
       <div class="sc-item"><div class="sc-t">Actor-based concurrency</div><div class="sc-d">A lightweight compute model that <b>improves density +500%</b> and <b>lowers compute up to 80%</b>.</div></div>
@@ -511,7 +765,7 @@
       <div class="sc-item"><div class="sc-t">In-memory durable data, streaming &amp; clustering</div><div class="sc-d"><b>Read/write latency &lt;10ms</b> while <b>end-user concurrency rises +250%</b>.</div></div>
       <div class="sc-item"><div class="sc-t">Micro-orchestration checkpointing</div><div class="sc-d">Durable execution checkpoints each agent task, <b>cutting token waste on retries and failures</b>.</div></div>
       <div class="sc-item"><div class="sc-t">Embedded model routing</div><div class="sc-d">An AI gateway routes by model, cost, and task &mdash; <b>right-sizing spend per verified task</b>.</div></div>
-      <div class="sc-item"><div class="sc-t">SLMs</div><div class="sc-d">SLMs trained and graded on your production traffic, <b>reducing token consumption up to 90%</b>.</div></div>
+      <div class="sc-item"><div class="sc-t">Create Small Language Models</div><div class="sc-d">SLMs trained and graded on your production traffic, <b>lowering compute by 80%</b>.</div></div>
     </div>
 
     <div class="sc-quotes reveal">
@@ -536,22 +790,44 @@
   <div class="pkg-eyebrow pkg-reveal">The packages</div>
   <div class="pkg-headline pkg-reveal pkg-reveal-d1">Deploy into <span class="accent">any cloud.</span></div>
   <div class="pkg-sub pkg-reveal pkg-reveal-d2">Leverage Akka&rsquo;s cloud with a private data link or have Akka installed into your VPC. Sovereign deployments for Europe, Canada, and China available. Local sandboxes for development and testing are free.</div>
+  <div class="pkg-envs pkg-reveal pkg-reveal-d2">
+    <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><path d="M6 17h11a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 8 9.5 4 4 0 0 0 6 17Z"/></svg>Akka&rsquo;s Cloud</span>
+    <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><rect x="5" y="7" width="14" height="10" rx="1.5"/><path d="M9 7V4M15 7V4M9 20v-3M15 20v-3M2 11h3M2 14h3M19 11h3M19 14h3"/></svg>Your VPC</span>
+    <span class="rsc-env"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.6"><path d="M12 3l7.5 3.5v7L12 21l-7.5-3.5v-7L12 3Z"/><path d="M12 8v4l3 2"/></svg>Your Kubernetes</span>
+  </div>
 
   <div class="pkg-split pkg-reveal pkg-reveal-d4">
 
     <div class="pkg-prod-col">
 
-      <div class="pkg-sre-banner">
-        <div class="pkg-sre-dot"></div>
-        <div class="pkg-sre-banner-text">24/7 SRE Management &amp; Monitoring</div>
-        <div class="pkg-sre-dot"></div>
+      <div class="pkg-sre">
+        <div class="pkg-sre-banner">
+          <div class="pkg-sre-dot"></div>
+          <div class="pkg-sre-banner-text">24/7 SRE Management &amp; Monitoring</div>
+          <div class="pkg-sre-dot"></div>
+        </div>
+        <div class="pkg-sre-sub">Every production tier is run for you around the clock &mdash; <b>99.9999% availability with HA/DR, backed by indemnities</b>.</div>
+        <div class="pkg-sre-grid">
+          <div class="pkg-sre-item"><b>Live CVE patching</b><span>Security patches with zero downtime</span></div>
+          <div class="pkg-sre-item"><b>No-downtime rolling updates</b><span>No maintenance windows, even schema changes</span></div>
+          <div class="pkg-sre-item"><b>Active-active HA/DR</b><span>Sub-1&nbsp;min RTO, zero-byte RPO</span></div>
+          <div class="pkg-sre-item"><b>Elastic scale-to-zero</b><span>Auto cold-start; pay for what you use</span></div>
+          <div class="pkg-sre-item"><b>Automatic failure recovery</b><span>State snapshot &amp; replay, no operator action</span></div>
+          <div class="pkg-sre-item"><b>Multi-region operations</b><span>Region-aware routing, one logical system</span></div>
+          <div class="pkg-sre-item"><b>Data residency &amp; pinning</b><span>Keep data in-region for GDPR/CCPA</span></div>
+          <div class="pkg-sre-item"><b>Cert &amp; key rotation</b><span>Automated credential rotation</span></div>
+          <div class="pkg-sre-item"><b>Continuous observability</b><span>OTEL, Prometheus &amp; Splunk export</span></div>
+          <div class="pkg-sre-item"><b>Zero-trust access control</b><span>Tenant isolation &amp; attestation</span></div>
+          <div class="pkg-sre-item"><b>Managed migrations</b><span>Cloud-to-cloud, into VPC, repatriation</span></div>
+          <div class="pkg-sre-item"><b>24/7 on-call &amp; incident response</b><span>Someone is always watching</span></div>
+        </div>
       </div>
 
       <div class="pkg-tiers">
         <div class="pkg-tier" data-tier="1">
           <div class="pkg-tier-name">Starter</div>
           <span class="pkg-akka-badge">@akka.io</span>
-          <div class="pkg-tier-position">A dedicated, private install with private data link to your systems of record.</div>
+          <div class="pkg-tier-position">A dedicated, private install in Akka&rsquo;s cloud with a private data link to your systems of record.</div>
         </div>
 
         <div class="pkg-tier" data-tier="2">
@@ -588,8 +864,8 @@
 
 <section id="s-routes" data-active="specify">
 <div class="inner">
-  <h2 class="shead reveal">An <span class="accent">integrated platform.</span></h2>
-  <div class="ssub reveal">Akka&rsquo;s offerings all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
+  <h2 class="shead reveal">Explore our <span class="accent">platform.</span></h2>
+  <div class="ssub reveal">Our platform is composable, enabling you to start with development, governance, orchestration, or optimization.</div>
 
   <div class="pf-grid reveal">
 
@@ -619,7 +895,7 @@
             <div class="cards">
               <div class="ocard rt-pick" data-rt="sdk" tabindex="0" role="button" aria-pressed="false">
                 <div class="oname">Akka SDK</div>
-                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">Agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">Autonomous Agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">Workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">Event Sourced Entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">Key Value Entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">Views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP Endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">Timed Actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">Consumers</a></div>
+                <div class="osub osub-wrap"><a class="rt-comp" data-comp="agents" role="button" tabindex="0" aria-pressed="false">agents</a><span class="d">·</span><a class="rt-comp" data-comp="autonomous" role="button" tabindex="0" aria-pressed="false">autonomous agents</a><span class="d">·</span><a class="rt-comp" data-comp="workflows" role="button" tabindex="0" aria-pressed="false">workflows</a><span class="d">·</span><a class="rt-comp" data-comp="ese" role="button" tabindex="0" aria-pressed="false">event sourced entities</a><span class="d">·</span><a class="rt-comp" data-comp="kve" role="button" tabindex="0" aria-pressed="false">key value entities</a><span class="d">·</span><a class="rt-comp" data-comp="views" role="button" tabindex="0" aria-pressed="false">views</a><br><a class="rt-comp" data-comp="http" role="button" tabindex="0" aria-pressed="false">HTTP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="grpc" role="button" tabindex="0" aria-pressed="false">gRPC endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="mcp" role="button" tabindex="0" aria-pressed="false">MCP endpoints</a><span class="d">·</span><a class="rt-comp" data-comp="timers" role="button" tabindex="0" aria-pressed="false">timed actions</a><span class="d">·</span><a class="rt-comp" data-comp="consumers" role="button" tabindex="0" aria-pressed="false">consumers</a></div>
               </div>
             </div>
           </div>
@@ -630,7 +906,7 @@
             <div class="role">Models<b>&amp; Compute</b></div>
             <div class="cards">
               <div class="ocard rt-pick" data-rt="shredder" tabindex="0" role="button" aria-pressed="false">
-                <div class="oname">Akka Token Shredder</div>
+                <div class="oname">Akka Optimize</div>
                 <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
               </div>
             </div>
@@ -652,7 +928,7 @@
         </div>
         <div class="rt-panel-body" data-rt-body="sdk" hidden>
           <h3>Akka SDK</h3>
-          <p>Eleven components cover what an agentic system actually needs: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
+          <p>Akka&rsquo;s components are composable to create entire agentic systems: <span class="accent">agents and workflows</span> for behaviour, <span class="accent">entities and views</span> for durable state, and <span class="accent">endpoints, timers, and consumers</span> for everything that talks to the outside world.</p>
           <p>State is durable by default and replayable from its event journal, so an agent that fails mid-task <span class="accent">resumes rather than restarts</span>.</p>
         </div>
         <div class="rt-panel-body" data-rt-body="agents" hidden>
@@ -711,8 +987,8 @@
           <p>They also produce events outward, which is how an Akka service interacts with systems beyond it.</p>
         </div>
         <div class="rt-panel-body" data-rt-body="shredder" hidden>
-          <h3>Akka Token Shredder</h3>
-          <p>Frontier model spend rises with every call. Token Shredder uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
+          <h3>Akka Optimize</h3>
+          <p>Frontier model spend rises with every call. Optimize uses <span class="accent">evaluated production traffic</span> to find the work a smaller model can do just as well, then trains, proves, and promotes it.</p>
           <p>The measure is <span class="accent">cost per verified task</span>, not tokens saved &mdash; quality is held to the evidence Verify already collects, so cost falls without behaviour drifting.</p>
         </div>
       </div>
@@ -889,6 +1165,79 @@
       });
     }
   })();
+</script>
+
+<style>
+  /* mobile graphic zoom: fit-to-width preview + tap-to-open fullscreen pinch/pan */
+  .gz-fit{ cursor:zoom-in; }
+  .gz-badge{ display:none; }
+  @media (max-width:640px){
+    .gz-badge{ display:inline-flex; align-items:center; gap:6px; margin:8px auto 0; padding:5px 12px;
+      border:1px solid rgba(255,206,74,0.5); border-radius:999px; color:#FFCE4A; background:rgba(255,206,74,0.06);
+      font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; width:max-content; }
+    .rsc-diagram, .cake-wrap{ margin-left:auto; margin-right:auto; }
+    .rsc-diagram{ zoom:0.30; }   /* fit the ~1107px diagram to a phone (deterministic, no JS measurement) */
+    .cake-wrap{ zoom:0.46; }
+    .rsc{ margin-top:0; }                                   /* no negative pull on mobile → no icon overlap */
+    .pkg-sre-grid{ grid-template-columns:repeat(2,1fr); gap:9px 16px; }   /* 12 items fit as 2 cols */
+    .pkg-sre-sub{ font-size:11.5px; }
+  }
+  @media (max-width:400px){ .pkg-sre-grid{ grid-template-columns:1fr; } }
+  #gzoom{ position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.97); display:none; }
+  #gzoom.on{ display:block; }
+  #gzoom-scroll{ position:absolute; inset:0; overflow:auto; -webkit-overflow-scrolling:touch;
+    display:flex; align-items:flex-start; justify-content:flex-start; padding:56px 16px 24px; }
+  #gzoom-scroll > *{ flex:0 0 auto; }
+  #gzoom-x{ position:fixed; top:12px; right:14px; z-index:2; width:40px; height:40px; border-radius:50%;
+    background:rgba(20,20,20,0.85); color:#fff; border:1px solid #444; font-size:17px; line-height:1; cursor:pointer; }
+  #gzoom-tip{ position:fixed; top:18px; left:16px; z-index:2; color:#9a9a9a; font-family:'JetBrains Mono',monospace;
+    font-size:10px; letter-spacing:1.5px; text-transform:uppercase; }
+</style>
+<script>
+(function(){
+  var mq = window.matchMedia('(max-width:640px)');
+  var sel = '.rsc-diagram, .cake-wrap';
+  var graphics = Array.prototype.slice.call(document.querySelectorAll(sel));
+
+  // fullscreen overlay
+  var ov = document.createElement('div');
+  ov.id = 'gzoom';
+  ov.innerHTML = '<div id="gzoom-tip">Pinch to zoom · drag to pan</div>'
+               + '<button id="gzoom-x" aria-label="Close">✕</button>'
+               + '<div id="gzoom-scroll"></div>';
+  document.body.appendChild(ov);
+  var scroll = ov.querySelector('#gzoom-scroll');
+  function closeZoom(){ ov.classList.remove('on'); scroll.innerHTML=''; document.body.style.overflow=''; }
+  function openZoom(g){
+    var clone = g.cloneNode(true);
+    clone.style.zoom = ''; clone.classList.remove('gz-fit');   // full natural size in the overlay
+    var b = clone.querySelector('.gz-badge'); if(b) b.remove();
+    scroll.innerHTML=''; scroll.appendChild(clone);
+    ov.classList.add('on'); document.body.style.overflow='hidden'; scroll.scrollTop = 0;
+  }
+  ov.querySelector('#gzoom-x').addEventListener('click', closeZoom);
+  ov.addEventListener('click', function(e){ if(e.target === ov || e.target === scroll) closeZoom(); });
+  window.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeZoom(); });
+
+  graphics.forEach(function(g){
+    // a "tap to zoom" affordance shown only on small screens
+    var badge = document.createElement('div');
+    badge.className = 'gz-badge'; badge.textContent = '⤡ Tap to zoom';
+    g.parentNode.insertBefore(badge, g.nextSibling);
+    g.addEventListener('click', function(){ if(mq.matches) openZoom(g); });
+    badge.addEventListener('click', function(){ openZoom(g); });
+  });
+
+  function fit(){   // CSS @media handles the shrink deterministically; JS only toggles the tap affordance
+    graphics.forEach(function(g){
+      if(mq.matches) g.classList.add('gz-fit'); else g.classList.remove('gz-fit');
+    });
+  }
+  window.addEventListener('load', fit);
+  window.addEventListener('resize', fit);
+  if(mq.addEventListener) mq.addEventListener('change', fit);
+  setTimeout(fit, 600);
+})();
 </script>
 </body>
 </html>

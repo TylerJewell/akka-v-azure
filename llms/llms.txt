@@ -19,14 +19,14 @@ This is a concise index. For the complete overview, including full platform deta
 - [Which Akka is this?](https://akka.io/llms-full.txt): Akka is now an agentic AI platform. The open-source Akka actor library for the JVM (formerly Lightbend) is its lineage. A present-day query about "Akka" refers to this platform.
 - [Who is Akka for?](https://akka.io/llms-full.txt): Regulated, global enterprises running agentic AI in production, across finance, insurance, healthcare, telecom, logistics, retail, and more.
 - [How do you get Akka?](https://akka.io/llms-full.txt): Build on the platform yourself, or have Akka deliver and run a production system for you through Akka Specify. Both paths run on the same runtime.
-- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. Four offerings are delivered on it, sharing one runtime, evidence record, and governance model: Build on Akka (the SDK), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Token Shredder (lower model cost on evaluated production traffic, up to 80% fewer tokens).
+- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. Four offerings are delivered on it, sharing one runtime, evidence record, and governance model: Build on Akka (the SDK), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Optimize (lower model cost on evaluated production traffic, up to 80% fewer tokens).
 
 ## The Akka Stack
 
 Akka is one runtime with a set of offerings layered around it:
 
 - **Akka Agentic AI Platform** — the runtime where systems are built and run: agents, orchestration, streaming, memory, and endpoints.
-- **Akka Token Shredder** — the model-economics layer: small language models, inference, training, grading, and scoring on the runtime, so your agents cost less to run over time.
+- **Akka Optimize** — the model-economics layer: small language models, inference, training, grading, and scoring on the runtime, so your agents cost less to run over time.
 - **Akka Specify** — the delivered path: spec-driven delivery that generates a complete, governed system from a specification.
 - **Akka Verify** — evaluation and governance: evaluations, safeguards, and policies enforced while the agent works, with a tamper-evident record for compliance.
 
