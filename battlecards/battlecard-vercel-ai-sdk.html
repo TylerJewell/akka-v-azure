@@ -128,6 +128,7 @@
   <h2>The Vercel AI SDK Is a Developer SDK with Hosting; Akka Is an Enterprise Platform</h2>
   <p>The Vercel AI SDK is the TypeScript toolkit for building AI-powered applications and agents &mdash; and it is excellent at that. It abstracts away the differences between model providers behind one clean API, and AI SDK 6 adds first-class agents, loop control, human-in-the-loop tool approval, full MCP support, and DevTools. Paired with Vercel's serverless hosting (AI Cloud and Fluid Compute), a team can build and ship an AI feature with remarkable speed.</p>
   <p style="margin-top:4px;">That speed is real, and it is the right tool for building. The line is <strong>production ownership</strong>. The SDK is a library that runs inside functions you deploy; the durable runtime, the cross-region failover, the availability guarantee on the running agent, and the governance enforcement are not part of it. With the Vercel AI SDK you assemble and operate those concerns. With Akka they are the platform.</p>
+  <p style="margin-top:4px;">Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place &mdash; agents, tools, durable memory, streaming, APIs, and governance &mdash; and the platform generates it, tests it, and runs it as one certified service.</p>
   <table class="cmp-table">
     <tr><th style="width:34%;">Capability</th><th>Vercel AI SDK</th><th>Akka</th></tr>
     <tr><td>Build AI features / agents in code</td><td class="good">Yes &mdash; best-in-class DX</td><td class="good">Yes</td></tr>
@@ -170,6 +171,17 @@
     <p>The Vercel AI SDK is <strong>TypeScript / JavaScript only</strong> &mdash; React, Next.js, Vue, Svelte, Node.js. That is the right surface for the web tier and for building AI features quickly. It also means an enterprise standardizing on it commits its agentic systems to the JS/TS runtime.</p>
     <p style="margin-top:4px;">Akka runs on the JVM (Java / Scala) and deploys anywhere &mdash; Akka cloud, hyperscaler VPC (AWS/Azure/GCP), the customer's own Kubernetes, on-prem, or sovereign cloud with country-isolated data and local SREs. Specs are portable across those targets, so the deployment model is a procurement choice, not a constraint.</p>
   </div>
+</div>
+
+<div class="section">
+  <h2>Continuous AI Intelligence</h2>
+  <p>Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:</p>
+  <ul>
+    <li><strong>Model leverage</strong> &mdash; route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.</li>
+    <li><strong>Data sovereignty</strong> &mdash; the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.</li>
+    <li><strong>Cost governance</strong> &mdash; full visibility and control of AI spend, with savings that compound as the loop keeps running.</li>
+  </ul>
+  <p>The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.</p>
 </div>
 
 <div class="section">

@@ -1,14 +1,19 @@
 <div id="cog-wrapper">
-  <div class="cog-inner">
-    <div class="cog-eyebrow" data-cog="0">Cost governance</div>
-    <div class="cog-headline" data-cog="0">Visibility, control and <span class="accent">accountability.</span></div>
-    <div class="cog-sub" data-cog="0">Continuously attribute every dollar to an owner, track savings against quality, and identify opportunities to improve.</div>
-    <div class="cog-body" data-cog="1">
-      <div class="dashgrid">
-
-        <div class="dash">
-          <div class="dashhd"><h4>Budget owner</h4><p>Am I within budget — and is the saving real?</p></div>
-          <div class="tile">
+  <div id="cog-sticky">
+    <div class="cog-head">
+      <div class="cog-eyebrow" data-cog="0">The console</div>
+      <div class="cog-headline" data-cog="0">One view of quality, cost, and what to do <span class="accent">next.</span></div>
+      <div class="cog-sub" data-cog="0">Budget owners, AI owners, and operations each get the view they need: what the AI costs, how quality is moving, which models to train next, and the decisions waiting on a person.</div>
+    </div>
+    <div class="cog-colheads" data-cog="1">
+      <div class="dashhd"><h4>Budget owner</h4><p>Am I within budget — and is the saving real?</p></div>
+      <div class="dashhd"><h4>AI owner</h4><p>What is worth training next — and is what I promoted still holding?</p></div>
+      <div class="dashhd"><h4>System owner</h4><p>Is the optimization loop running — and is it failing safe when it fails?</p></div>
+    </div>
+    <div class="cog-stage">
+      <div class="cog-track">
+        <div class="tcol"><div class="dashhd"><h4>Budget owner</h4><p>Am I within budget — and is the saving real?</p></div>
+<div class="tile">
             <div class="tl">Spend this period</div>
             <div class="tv">$48.2K<small>of $60K cap</small></div>
             <div class="meter"><i style="width:80%"></i></div>
@@ -50,12 +55,9 @@
               <div class="meta">open 2 days · $0.0041 against a $0.0035 ceiling</div>
               <div class="acts"><span class="btn go">Raise its ceiling</span><span class="btn">Move it to a cheaper tier</span></div>
             </div>
-          </div>
-        </div>
-
-        <div class="dash">
-          <div class="dashhd"><h4>AI owner</h4><p>What is worth training next — and is what I promoted still holding?</p></div>
-          <div class="tile">
+          </div></div>
+        <div class="tcol"><div class="dashhd"><h4>AI owner</h4><p>What is worth training next — and is what I promoted still holding?</p></div>
+<div class="tile">
             <div class="tl">Candidate pipeline · 90d</div>
             <div class="brow"><span>observed</span><span class="bt" style="width:100%"></span><span class="bv">47</span></div>
             <div class="brow"><span>admitted</span><span class="bt" style="width:26%"></span><span class="bv">12</span></div>
@@ -96,12 +98,9 @@
               <div class="meta">open 3 days · scored 0.94 when approved, 0.89 now · holding $890 / mo</div>
               <div class="acts"><span class="btn go">Train it again</span><span class="btn warn">Return it to frontier</span></div>
             </div>
-          </div>
-        </div>
-
-        <div class="dash">
-          <div class="dashhd"><h4>System behavior</h4><p>Is the optimization loop running — and is it failing safe when it fails?</p></div>
-          <div class="tile">
+          </div></div>
+        <div class="tcol"><div class="dashhd"><h4>System owner</h4><p>Is the optimization loop running — and is it failing safe when it fails?</p></div>
+<div class="tile">
             <div class="tl">Loop throughput · 30d</div>
             <div class="srow"><span>Training runs started → completed</span><b>12 → 9</b></div>
             <div class="srow"><span>Promotions to fleet</span><b>6</b></div>
@@ -144,9 +143,7 @@
               <div class="meta">open 2 days · 19 agents cannot be scored until it is answered · $3,100 / mo</div>
               <div class="acts"><span class="btn go">Clear it for training</span><span class="btn warn">Keep it audit-only</span></div>
             </div>
-          </div>
-        </div>
-
+          </div></div>
       </div>
     </div>
   </div>

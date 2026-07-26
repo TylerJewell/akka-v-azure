@@ -37,6 +37,8 @@ CrewAI is a Python framework for building multi-agent systems — Crews of role-
 
 CrewAI Enterprise / AMP (the Agent Management Platform) adds a control plane on top — a visual editor, an AI copilot, deployment to managed cloud or a private VPC, RBAC, SSO, tracing, and task guardrails. AMP makes the framework easier to operate. It does not change what the framework is: an agent-authoring layer, not a guaranteed runtime.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 | Capability | CrewAI | Akka |
 |------------|--------|------|
 | Multi-agent authoring (crews, roles, flows) | Yes | Yes |
@@ -72,6 +74,18 @@ Akka's reliability is structural: actor-based concurrency and clustering, durabl
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems — a function of the infrastructure required for the same agentic transaction volume, not list price. The drivers are actor concurrency, shared compute, and micro-checkpointing: Akka processes ~10 trillion tokens per core per year versus ~2 trillion for comparable solutions, using ~80% less compute than Python-based frameworks. Manulife reported up to 300% more concurrency and 30–50% faster processing after porting Python-based systems to Akka.
 
 CrewAI is a Python framework billed by execution — the Enterprise tier includes up to 30,000 executions per month, with additional executions at $0.50 each — and that meter covers agent runs only. The durable runtime, HA/DR, streaming, observability, and governance are separate infrastructure the customer provisions and pays for. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast, rather than per-execution metering that moves with load.
+
+---
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "title": "Akka Optimize — AI that lowers its own bill",
+  "title": "Akka Optimize — Continuous AI Intelligence",
   "product": "specify",
   "slides": [
     {
@@ -11,24 +11,24 @@
       "folder": "slides/opt-01-problem"
     },
     {
-      "id": "opt-02-economics",
-      "folder": "slides/opt-02-economics"
-    },
-    {
       "id": "opt-03-product",
       "folder": "slides/opt-03-product"
     },
     {
-      "id": "opt-04-target",
-      "folder": "slides/opt-04-target"
+      "id": "opt-06-architecture",
+      "folder": "slides/opt-06-architecture"
     },
     {
       "id": "opt-05-prove",
       "folder": "slides/opt-05-prove"
     },
     {
-      "id": "opt-06-architecture",
-      "folder": "slides/opt-06-architecture"
+      "id": "opt-02-economics",
+      "folder": "slides/opt-02-economics"
+    },
+    {
+      "id": "opt-04-target",
+      "folder": "slides/opt-04-target"
     },
     {
       "id": "opt-07-costgov",

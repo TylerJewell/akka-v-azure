@@ -1,5 +1,5 @@
 #ts2-wrapper {
-  height: 260vh;
+  height: 180vh;
   position: relative;
 }
 #ts2-sticky {
@@ -105,21 +105,53 @@
 @keyframes ts2-trace { to { stroke-dashoffset: 0; } }
 @keyframes ts2-fade { to { opacity: 1; } }
 .ts2-loop-label {
-  position: absolute; left: 50%; top: 26px;
-  transform: translateX(-50%);
+  position: absolute; left: 50%; top: 30px;
+  transform: translate(-50%, -50%);
   display: flex; align-items: center; gap: 14px;
   background: var(--black); padding: 2px 18px;
   white-space: nowrap;
+  opacity: 0;
 }
+.ts2-flow.visible .ts2-loop-label { animation: ts2-fade .4s ease-out 2s forwards; }
 .ts2-loop-tag {
   font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--yellow); font-weight: 700;
 }
 .ts2-loop-text { font-size: clamp(12px, 1vw, 15px); color: #d4d4d4; font-weight: 500; }
 
-/* Capability chips */
+/* Three dimensions — rendered table */
+.ts2-table-wrap { margin-top: 70px; }
+.ts2-table { width: 100%; max-width: 880px; margin: 0 auto; border-collapse: collapse; }
+.ts2-table th {
+  text-align: left;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+  color: #8a8a8a; font-weight: 700;
+  padding: 0 0 12px; border-bottom: 1px solid var(--yellow);
+}
+.ts2-table th:first-child { width: 27%; }
+.ts2-table td {
+  padding: 17px 24px 17px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  vertical-align: top;
+}
+.ts2-table tbody tr:last-child td { border-bottom: 0; }
+.ts2-td-name {
+  color: #c8c8c8; font-weight: 600;
+  font-size: clamp(15px, 1.3vw, 19px); letter-spacing: -0.01em;
+}
+.ts2-td-desc {
+  color: #b8b8b8; line-height: 1.45;
+  font-size: clamp(13px, 1.05vw, 16px);
+}
 
 @media (max-width: 820px) {
+  .ts2-table-wrap { margin-top: 28px; }
+  .ts2-table, .ts2-table thead, .ts2-table tbody, .ts2-table th, .ts2-table td, .ts2-table tr { display: block; }
+  .ts2-table thead { display: none; }
+  .ts2-table td { border-bottom: 0; padding: 2px 0; }
+  .ts2-table tbody tr { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .ts2-table tbody tr:last-child { border-bottom: 0; }
+  .ts2-td-name { margin-bottom: 4px; }
   #ts2-wrapper { height: auto; }
   #ts2-sticky {
     position: static; height: auto;
@@ -137,7 +169,7 @@
   .ts2-loop-label {
     position: static; transform: none;
     flex-wrap: wrap; justify-content: center; text-align: center;
-    white-space: normal; padding: 2px 0;
+    white-space: normal; padding: 2px 0; opacity: 1;
   }
   .ts2-loop-tag { letter-spacing: 1.2px; }
 }

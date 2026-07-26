@@ -129,6 +129,7 @@
 <div class="section">
   <h2>Orchestration Is One Layer; Akka Is the Full Stack</h2>
   <p>Orkes Conductor solves durable orchestration of long-running workflows and agents, and it solves it well &mdash; that is its heritage from Netflix Conductor. But an agentic AI system needs far more than orchestration, and Orkes leaves the rest to you. In Conductor, an AI agent is implemented as a workflow that calls an LLM to decide its next step; the agents, durable memory, streaming tier, and AI-governance stack are integrated and operated around the orchestration core, and you own every failure across those seams.</p>
+  <p style="margin-top:4px;">Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place &mdash; agents, tools, durable memory, streaming, APIs, and governance &mdash; and the platform generates it, tests it, and runs it as one certified service.</p>
   <table class="cmp-table">
     <tr><th style="width:34%;">Capability</th><th>Orkes (Conductor)</th><th>Akka</th></tr>
     <tr><td>Workflow / agent orchestration</td><td class="good">Yes — durable, proven</td><td class="good">Yes</td></tr>
@@ -170,6 +171,17 @@
     <p>Conductor keeps execution state in <strong>external datastores</strong> &mdash; Redis by default, Elasticsearch for indexing, with Postgres/MySQL/Cassandra as pluggable backends &mdash; which the customer provisions, scales, and operates. There is no native durable agent-memory layer; long-term agent memory means wiring an external vector database.</p>
     <p style="margin-top:4px;">Akka provides durable sharded in-memory state as a platform primitive: <strong>4ms reads / sub-10ms writes</strong>, petabyte-scale, replayable from its event journal, with no external store to run. Agent memory is built in, not bolted on.</p>
   </div>
+</div>
+
+<div class="section">
+  <h2>Continuous AI Intelligence</h2>
+  <p>Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:</p>
+  <ul>
+    <li><strong>Model leverage</strong> &mdash; route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.</li>
+    <li><strong>Data sovereignty</strong> &mdash; the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.</li>
+    <li><strong>Cost governance</strong> &mdash; full visibility and control of AI spend, with savings that compound as the loop keeps running.</li>
+  </ul>
+  <p>The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.</p>
 </div>
 
 <div class="section">

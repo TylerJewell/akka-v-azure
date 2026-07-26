@@ -1,9 +1,9 @@
 <div id="ts4-wrapper">
   <div id="ts4-sticky">
     <div class="ts4-head">
-      <div class="ts4-eyebrow" data-ts4="0">How it works</div>
-      <div class="ts4-headline" data-ts4="0">Production traffic trains your model, then staging <span class="accent">proves it holds</span>.</div>
-      <div class="ts4-sub" data-ts4="0">An open-weights base (4&ndash;12B) is tuned with reinforcement learning against your interaction data &mdash; your evaluations are the grader. Training runs on GPUs in your cloud account &mdash; in-VPC, sovereign, air-gapped where required &mdash; or with Fireworks.ai, a third-party inference provider. The result is a specialized SLM &mdash; a ~50MB adapter. You own the weights.</div>
+      <div class="ts4-eyebrow" data-ts4="0">Data sovereignty</div>
+      <div class="ts4-headline" data-ts4="0">Build intelligence from <span class="accent">your own data</span>.</div>
+      <div class="ts4-sub" data-ts4="0">Akka tunes an open-weight base (4&ndash;12B) with reinforcement learning against your interaction data, using your evaluations as the grader. Training runs on GPUs in your own cloud account, in-VPC, sovereign, and air-gapped where required, or with Fireworks.ai. The result is a specialized model you own, a ~50MB adapter that keeps improving as your traffic grows.</div>
     </div>
 
     <div class="ts4-diagram" data-ts4="1">
@@ -73,11 +73,11 @@
       </div>
     </div>
 
-    <div class="ts4-benchmark" data-ts4="2">Every promotion ships with an auto-generated before/after benchmark &mdash; computed by your evaluations, on your traffic, stored on the audit record.</div>
+    <div class="ts4-benchmark" data-ts4="2">Every promotion comes with a before-and-after benchmark, measured by your own evaluations on your own traffic and saved to the audit record.</div>
 
     <div class="ts4-points" data-ts4="2">
-      <div class="ts4-point">After promotion, the optimization loop keeps grading. Drift in traffic or upstream models registers in eval scores first; retraining triggers automatically; a new candidate re-enters staging. A drop in quality triggers <span class="ts4-em">instant rollback</span> to the incumbent.</div>
-      <div class="ts4-point">The optimization loop runs inside your <span class="ts4-em">Improvement Policy</span>: what it optimizes toward, how far it may tune, what it may never touch. Each decision is recorded in an interaction log.</div>
+      <div class="ts4-point">The loop keeps grading after a model goes live. When your traffic shifts or an upstream model changes, the scores catch it first, retraining starts on its own, and a fresh candidate goes back through staging. Quality stays <span class="ts4-em">protected</span>: if a candidate ever slips, Akka returns to the proven model right away.</div>
+      <div class="ts4-point">The whole loop runs inside your <span class="ts4-em">Improvement Policy</span>: the goals it works toward, how far it may tune, and the parts you keep off-limits. Every decision it makes is written to the interaction log.</div>
     </div>
   </div>
 </div>

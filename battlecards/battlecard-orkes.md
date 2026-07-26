@@ -35,6 +35,8 @@ Canonical URL: https://akka.io/compare/akka-vs-orkes
 
 Orkes Conductor solves durable orchestration of long-running workflows and agents, and it solves it well — that is its heritage from Netflix Conductor. But an agentic AI system needs far more than orchestration, and Orkes leaves the rest to you. In Conductor, an AI agent is implemented as a workflow that calls an LLM to decide its next step; the agents, the durable memory, the streaming tier, and the AI-governance stack are integrated and operated around the orchestration core, and you own every failure across those seams.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 | Capability | Orkes (Conductor) | Akka |
 |---|---|---|
 | Workflow / agent orchestration | Yes — durable, proven | Yes |
@@ -62,6 +64,16 @@ Orkes Cloud publishes an availability SLA of up to 99.99% on multi-region cluste
 AI systems built with Akka are up to 90% cheaper to operate than Python-based systems — a function of the infrastructure required for the same agentic transaction volume, not list price. With Orkes you run the orchestration engine plus the separate datastores, brokers, memory layer, and governance tooling around it, and you provision and operate each.
 
 Akka runs all of it on one shared-compute runtime. The efficiency comes from actor concurrency (~10 trillion tokens/core/year vs ~2 trillion for comparable solutions; ~80% less compute than Python-based frameworks; Manulife reported up to 300% more concurrency and 30–50% faster processing after porting Python-based systems to Akka), shared compute, and micro-checkpointing. The spend is predictable — a fixed annual fee, not consumption that moves with load.
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ## Governance and the EU AI Act
 

@@ -39,6 +39,8 @@ The Vercel AI SDK is the TypeScript toolkit for building AI-powered applications
 
 That speed is real, and it is the right tool for building. The line is *production ownership*. The SDK is a library that runs inside functions you deploy; the durable runtime, the cross-region failover, the availability guarantee on the running agent, and the governance enforcement are not part of it. With the Vercel AI SDK you assemble and operate those concerns. With Akka they are the platform.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 | Capability | Vercel AI SDK | Akka |
 |---|---|---|
 | Build AI features / agents in code | Yes — best-in-class DX | Yes |
@@ -75,6 +77,18 @@ State follows the same line. Vercel's compute is serverless — Fluid Compute fu
 AI systems built with Akka are **up to 90% cheaper to operate than Python-based systems** — a function of the infrastructure required to run the same agentic transaction volume, not list price. The drivers are actor concurrency (~10 trillion tokens per core per year versus ~2 trillion for comparable solutions; ~80% less compute than Python-based frameworks), shared compute across orchestration, agents, memory, streaming, APIs, observability, and governance on one runtime, and micro-checkpointing that minimizes retries. Manulife reported up to 300% more concurrency and 30–50% faster processing after porting Python-based systems to Akka.
 
 Vercel's serverless model bills consumption: Active CPU while code executes, plus provisioned memory for running instances. Spend moves with load, and the meter covers the hosting compute — the agent runtime, memory, streaming, and governance you assemble around it carry their own cost. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast.
+
+---
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ---
 

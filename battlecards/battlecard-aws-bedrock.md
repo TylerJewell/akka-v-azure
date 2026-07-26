@@ -79,6 +79,18 @@ Akka runs orchestration, agents, memory, streaming, APIs, observability, and gov
 
 ---
 
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
+
+---
+
 ## Governance and the EU AI Act
 
 AgentCore offers governance as assembled services, not embedded enforcement of regulation. Bedrock Guardrails operate at the model-inference layer (unsafe content, PII); AgentCore Policy operates at the tool-access layer (agent-to-tool boundaries). Both reached general availability in policy in June 2026, and Evaluations reached GA in March 2026. They are real and useful, but they enforce vendor-defined safety filters and tool rules — not the obligations of a named regulation. There is no built-in classification against the EU AI Act, no immutable hash-chained evidence ledger as a platform guarantee, no pre-deployment governance gate, and no sealed audit artifact.

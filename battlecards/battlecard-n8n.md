@@ -47,6 +47,8 @@ n8n is a visual workflow-automation platform that connects 400+ apps and APIs, w
 
 n8n's AI Agent node is a wrapper over the LangChain JavaScript framework. It is ideal for triggering an LLM step inside an automation; it is not an agent runtime engineered for unattended, process-attached execution at scale.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 ## Reliability, Scale, and Durable Execution
 
 n8n Enterprise Cloud publishes a **99.5% uptime** commitment (excluding planned maintenance during 10am–5pm German time) — roughly 1.8 days of allowed downtime per year. Akka's contractual SLA is **99.9999%** — about 31 seconds per year — across the entire platform, backed by indemnities.
@@ -69,6 +71,16 @@ Akka was built for this. Its actor-based runtime runs 4KB actors at 200M actors/
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems. This is a function of the infrastructure required to run the same agentic transaction volume — not list price. The drivers are actor concurrency, shared compute, and micro-checkpointing: ~10 trillion tokens/core/year vs ~2 trillion for comparable solutions, and ~80% less compute than Python-based frameworks. Manulife reported up to **300% more concurrency** and **30–50% faster processing** after porting Python-based systems to Akka.
 
 n8n Cloud bills **per execution** (€24/mo Starter / 2,500 executions, up to €800/mo Business / 40,000 executions; Enterprise custom), and that meter covers automation only. The memory store, the streaming tier, the agent infrastructure, and the database all sit outside it — provisioned and operated by you when self-hosted. Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on one shared-compute runtime for a fixed annual fee finance can forecast, not a meter that moves with load.
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ## Governance and the EU AI Act
 

@@ -3,7 +3,7 @@
 #arc-wrapper {
   position: relative; min-height: 100vh; min-height: 100dvh;
   display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 6vw; overflow: hidden;
+  padding: 60px 6vw; overflow: hidden;
   --grey4:#666; --line:#2A2A2A; --mono:'SF Mono',Menlo,Consolas,monospace;
 }
 #arc-wrapper::before {
@@ -17,12 +17,12 @@
 .arc-eyebrow::before { content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle; }
 .arc-headline { font-size:clamp(32px,4vw,54px); font-weight:700; line-height:1.06; letter-spacing:-0.03em; color:var(--white); margin-bottom:16px; }
 .arc-headline .accent { color:var(--yellow); }
-.arc-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:34px; }
+.arc-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:22px; }
 
 [data-arc] { opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1); }
 [data-arc].visible { opacity:1; transform:none; }
 
-#arc-wrapper .dia { margin-top:0; border:1px solid var(--line); border-radius:12px; background:#0a0a0d; padding:26px; }
+#arc-wrapper .dia { margin-top:0; }
 #arc-wrapper .dia svg { width:100%; height:auto; display:block; }
 #arc-wrapper .svgcap { font-family:var(--mono); font-size:11px; color:var(--grey4); letter-spacing:.5px; margin-top:14px; }
 

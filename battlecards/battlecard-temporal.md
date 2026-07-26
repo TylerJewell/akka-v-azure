@@ -46,6 +46,8 @@ Temporal solves durable execution of long-running workflows, and it solves it we
 
 With Temporal you are the integrator: you select, wire, and operate the memory layer, the streaming tier, the API layer, the agent framework, and the governance stack around the orchestration core — and you own every failure across those seams. Akka delivers them pre-integrated on one runtime.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 ---
 
 ## Availability and Disaster Recovery
@@ -83,6 +85,18 @@ Akka's SDK provides durability and fault tolerance without imposing a determinis
 AI systems built with Akka are up to 90% cheaper to operate than the equivalent assembled stack. Temporal bills **per action** — every workflow step, signal, query, and timer is a metered event at $50 per million (stepping to $25 at high volume) — and that meter covers only orchestration. The memory, streaming, API, observability, and governance layers are separately provisioned and billed.
 
 Akka runs orchestration, agents, memory, streaming, APIs, and governance on one shared-compute runtime. Three runtime properties drive the efficiency: actor-based concurrency (~10 trillion tokens per core per year vs ~2 trillion comparable; ~80% less compute than Python-based frameworks; Manulife reported up to 300% more concurrency and 30–50% faster processing after porting from Python), shared compute, and micro-checkpointing that minimizes retries. The spend is also predictable — a fixed annual fee, not per-action metering that moves with load.
+
+---
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ---
 

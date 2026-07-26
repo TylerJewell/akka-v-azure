@@ -36,6 +36,8 @@
 
 LlamaIndex is a data framework for retrieval-augmented generation: data connectors, document parsing (LlamaParse), indexing, and query/retrieval interfaces that give a model the right context. It does this well, and it has added agentic constructs — Workflows (event-driven orchestration), function-calling and ReAct agents, and AgentWorkflow. Those are libraries you import, deploy, and operate. The substrate a production agentic system runs on — a durable runtime, high availability, disaster recovery, and embedded governance — is not part of LlamaIndex; you build, integrate, and operate it yourself, and own every failure across the seams.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 | Capability | LlamaIndex | Akka |
 |---|---|---|
 | Data ingestion, parsing, indexing, retrieval (RAG) | Yes — its core strength | Not native (see complement note) |
@@ -69,6 +71,16 @@ Akka provides durability and fault tolerance as part of the runtime: state is ev
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems — a function of the infrastructure required for the same agentic transaction volume, not list price. The drivers are actor concurrency (~10 trillion tokens/core/year vs ~2 trillion for comparable solutions; ~80% less compute than Python-based frameworks), shared compute, and micro-checkpointing. Manulife reported up to 300% more concurrency and 30–50% faster processing after porting Python-based systems to Akka.
 
 LlamaCloud bills by consumption: $1 per 1,000 credits, roughly 3 credits per page for cost-effective parsing, with 10,000 free credits per month. That meter covers parsing, extraction, and indexing — the retrieval layer. The runtime to run agents in production (compute, memory, streaming, APIs, observability, governance, HA/DR) is provisioned and paid for separately, on top. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast — not consumption metering that moves with load.
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ## Governance and the EU AI Act
 

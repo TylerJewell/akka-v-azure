@@ -129,6 +129,7 @@
   <h2>CrewAI Is a Framework; Akka Is a Platform</h2>
   <p>CrewAI is a Python framework for building multi-agent systems &mdash; Crews of role-based autonomous agents and event-driven Flows &mdash; built from scratch, <a href="https://github.com/crewAIInc/crewAI">independent of LangChain</a>. It is fast and ergonomic to a working multi-agent demo, and that is its genuine strength. Production is a different problem: with CrewAI, the durable runtime, high availability, streaming, and governance around the agents are sourced, integrated, and operated by the customer.</p>
   <p style="margin-top:4px;">CrewAI Enterprise / AMP (the <a href="https://docs.crewai.com/en/enterprise/introduction">Agent Management Platform</a>) adds a control plane on top &mdash; a visual editor, an AI copilot, deployment to managed cloud or a private VPC, RBAC, SSO, tracing, and task guardrails. AMP makes the framework easier to operate. It does not change what the framework is: an agent-authoring layer, not a guaranteed runtime.</p>
+  <p style="margin-top:4px;">Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place &mdash; agents, tools, durable memory, streaming, APIs, and governance &mdash; and the platform generates it, tests it, and runs it as one certified service.</p>
   <table class="cmp-table">
     <tr><th style="width:34%;">Capability</th><th>CrewAI</th><th>Akka</th></tr>
     <tr><td>Multi-agent authoring (crews, roles, flows)</td><td class="good">Yes</td><td class="good">Yes</td></tr>
@@ -170,6 +171,17 @@
     <h2>The Execution Meter</h2>
     <p>CrewAI is a Python framework billed by execution &mdash; the Enterprise tier includes up to 30,000 executions per month, with additional executions at $0.50 each &mdash; and that meter covers agent runs only. The durable runtime, HA/DR, streaming, observability, and governance are separate infrastructure the customer provisions and pays for. Akka runs all of it on one shared-compute runtime for a fixed annual fee finance can forecast, rather than per-execution metering that moves with load.</p>
   </div>
+</div>
+
+<div class="section">
+  <h2>Continuous AI Intelligence</h2>
+  <p>Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:</p>
+  <ul>
+    <li><strong>Model leverage</strong> &mdash; route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.</li>
+    <li><strong>Data sovereignty</strong> &mdash; the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.</li>
+    <li><strong>Cost governance</strong> &mdash; full visibility and control of AI spend, with savings that compound as the loop keeps running.</li>
+  </ul>
+  <p>The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.</p>
 </div>
 
 <div class="section">

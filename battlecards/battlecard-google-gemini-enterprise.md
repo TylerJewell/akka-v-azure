@@ -75,6 +75,16 @@ AI systems built with Akka are up to **90% cheaper to operate** than Python-base
 
 Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on one shared-compute runtime. The efficiency comes from actor concurrency (~10 trillion tokens/core/year vs ~2 trillion; ~80% less compute than Python-based frameworks; Manulife reported up to 300% more concurrency and 30–50% faster processing after porting from Python), shared compute, and micro-checkpointing. The spend is a predictable fixed annual fee, not a set of meters that move with usage.
 
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
+
 ## Governance and the EU AI Act
 
 The Gemini Enterprise Agent Platform provides strong infrastructure governance: Google Cloud IAM, VPC Service Controls, Customer-Managed Encryption Keys, Data Loss Prevention, Access Transparency, audit logging, and data residency (DRZ). These secure the perimeter and the data. They do not enforce AI policy inline: there is no real-time guardrail/policy/judge layer woven into the runtime, no decision explainability, no human pause/override of a running agent as a platform primitive, no immutable interaction ledger, no pre-deployment classification against a regulatory corpus, and no sealed audit artifact.

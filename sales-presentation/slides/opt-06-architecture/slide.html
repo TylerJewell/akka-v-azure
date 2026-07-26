@@ -1,8 +1,8 @@
 <div id="arc-wrapper">
   <div class="arc-inner">
-    <div class="arc-eyebrow" data-arc="0">Architecture</div>
-    <div class="arc-headline" data-arc="0">Route, serve, train, and <span class="accent">govern.</span></div>
-    <div class="arc-sub" data-arc="0">Akka Optimize runs on a single-tenant install of the Akka Agentic AI Platform. It has a private data link to your environment. Requests are routed and served to the platform, which trains and serves them on the same compute.</div>
+    <div class="arc-eyebrow" data-arc="0">Model leverage</div>
+    <div class="arc-headline" data-arc="0">Route to the best model, from <span class="accent">any vendor.</span></div>
+    <div class="arc-sub" data-arc="0">One gateway routes every request to the best model for the task, chosen from any vendor under your own policies, with frontier models available when the work calls for them.</div>
     <div class="arc-body" data-arc="1">
       <div class="dia">
         <svg viewBox="0 0 1440 646" aria-label="Managed plane architecture">
@@ -101,9 +101,12 @@
           <!-- inference → trace store (grey dashed, up the corridor) -->
           <path d="M655 440 V209 H690" fill="none" stroke="#8A8A8A" stroke-width="1.5" stroke-dasharray="8 7"/><polygon points="694,209 686,205 686,213" fill="#8A8A8A"/>
           <text x="666" y="421" font-family="var(--mono)" font-size="9" fill="#777">traces</text>
+          <!-- legend: top-right, above the managed plane -->
+          <line x1="1196" y1="22" x2="1216" y2="22" stroke="#F5C518" stroke-width="2.5"/>
+          <text x="1224" y="22" dominant-baseline="middle" font-family="var(--mono)" font-size="10" fill="#F5C518">serving &middot; request flow</text>
+          <line x1="1196" y1="38" x2="1216" y2="38" stroke="#8A8A8A" stroke-width="1.6" stroke-dasharray="4 3"/>
+          <text x="1224" y="38" dominant-baseline="middle" font-family="var(--mono)" font-size="10" fill="#8A8A8A">training &middot; data flow</text>
         </svg>
-        <p class="svgcap" style="color:#F5C518;margin-top:14px">solid yellow = serving / request flow</p>
-        <p class="svgcap" style="color:#8A8A8A;margin-top:4px">grey dashed = training / data flow</p>
         <!-- Mobile-only stacked variant of the architecture SVG above. KEEP IN SYNC with the <svg> — same three planes, same labels. -->
         <div class="arc-m" aria-label="Managed plane architecture">
           <div class="plane client">

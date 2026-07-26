@@ -92,7 +92,7 @@
   }
 
   /* ---- portfolio / offerings cake ---- */
-  .pf-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:50px; align-items:start; margin-top:46px;}
+  .pf-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:50px; align-items:center; margin-top:46px;}
 
   .cake-wrap{position:relative; border:1px solid rgba(255,206,74,0.28); border-radius:16px; padding:40px 34px 34px; background:rgba(255,206,74,0.012);}
   /* The tab masks the box's top border so the label reads cleanly. Feather the
@@ -1105,12 +1105,12 @@
   // reveal the differentiation statement one phrase at a time: fade in, hold ~1s, next
   const PHRASE_INTERVAL = 1500, TYPE_START = 1900;
   const segEls = [...morph.querySelectorAll('.pf-msg .seg')];
-  let segTimer = null, typeStartTimer = null;
+  let segTimer = null, typeStartTimer = null, animDone = false;
   function typeReset(){ clearTimeout(segTimer); segTimer = null; segEls.forEach(s => s.classList.remove('on')); }
   function typeOn(){
     let i = 0;
     const step = () => {
-      if (i >= segEls.length) return;
+      if (i >= segEls.length) { animDone = true; return; }
       segEls[i++].classList.add('on');
       segTimer = setTimeout(step, PHRASE_INTERVAL);
     };
@@ -1120,6 +1120,7 @@
   function setMorph(on){
     if (morphed === on) return;
     morphed = on;
+    if (on) animDone = false;
     morph.classList.toggle('answered', on);
     boxRect.style.transition = 'stroke-dashoffset 1.15s ease';   // animate only on space
     boxRect.style.strokeDashoffset = on ? 0 : boxLen;   // trace the box on / off
@@ -1133,13 +1134,23 @@
     if (on) typeStartTimer = setTimeout(typeOn, TYPE_START);
   }
   function centered(el){ const r = el.getBoundingClientRect(); return r.top < innerHeight*0.5 && r.bottom > innerHeight*0.5; }
-  morph.addEventListener('click', () => { if (!morphed) setMorph(true); });
+  function completeMorph(){
+    clearTimeout(segTimer); clearTimeout(typeStartTimer);
+    boxRect.style.transition = 'none';
+    boxRect.style.strokeDashoffset = 0;
+    morph.classList.remove('txhide');
+    applyText(true);
+    segEls.forEach(s => s.classList.add('on'));
+    animDone = true;
+  }
+  morph.addEventListener('click', () => { if (!morphed) setMorph(true); else if (!animDone) completeMorph(); });
   window.addEventListener('keydown', (e) => {
     const fwd = ['PageDown','ArrowDown','ArrowRight',' '].includes(e.key);
     const back = ['PageUp','ArrowUp','ArrowLeft'].includes(e.key);
     if (!fwd && !back) return;
     if (centered(morph)){
       if (fwd && !morphed){ e.preventDefault(); setMorph(true); return; }
+      if (fwd && morphed && !animDone){ e.preventDefault(); completeMorph(); return; }
       if (back && morphed){ e.preventDefault(); setMorph(false); return; }
     }
     e.preventDefault(); go(fwd ? 1 : -1);

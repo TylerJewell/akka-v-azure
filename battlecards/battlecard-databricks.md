@@ -68,6 +68,18 @@ Databricks bills on **DBU consumption** — pay-per-token for Foundation Model A
 
 ---
 
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
+
+---
+
 ## Governance: Data Governance vs. Runtime EU AI Act Enforcement
 
 Databricks' governance is **data governance**. Unity Catalog enforces access control, captures column-level lineage, logs activity for audit, and now governs agents, tools, and models as catalog assets with on-behalf-of access controls. Databricks also publishes responsible-AI guidance — the AI Governance Framework (5 pillars, 43 considerations) and the AI Security Framework — and states it is committed to EU AI Act compliance. These are governance *of the data and access*, plus frameworks and best practices. They are not inline enforcement on the running agent.

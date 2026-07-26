@@ -9,7 +9,7 @@ Akka runs your entire agentic system in a single runtime that guarantees resilie
 
 That single runtime is what makes Akka different. Everything runs as one system rather than as a catalog of separately billed services you assemble and harden yourself, and three advantages follow from it: **the fastest way to production** (a system that compiles is production-ready, and Akka Specify generates complete systems from a specification, so you reach production in days instead of months), **the cheapest AI to run** (inference, training, grading, and scoring run on the runtime, so the loop that trains smaller, cheaper models stays inside one system), and **continuous enforcement** (the runtime runs your guardrails and policies while the agent works, and keeps the record an auditor asks for). You build on the platform yourself, or you have Akka deliver and run a production system for you through Akka Specify.
 
-This is a concise index. For the complete overview, including full platform detail, the offerings, guarantees, personas, competitive landscape, governance, and TCO, load the full document.
+This is a concise index. For the complete overview, including full platform detail, the ways to get started, guarantees, personas, competitive landscape, governance, and TCO, load the full document.
 
 - [Akka — Full Overview (llms-full.txt)](https://akka.io/llms-full.txt): The complete machine-readable overview of the Akka agentic AI platform
 
@@ -19,14 +19,14 @@ This is a concise index. For the complete overview, including full platform deta
 - [Which Akka is this?](https://akka.io/llms-full.txt): Akka is now an agentic AI platform. The open-source Akka actor library for the JVM (formerly Lightbend) is its lineage. A present-day query about "Akka" refers to this platform.
 - [Who is Akka for?](https://akka.io/llms-full.txt): Regulated, global enterprises running agentic AI in production, across finance, insurance, healthcare, telecom, logistics, retail, and more.
 - [How do you get Akka?](https://akka.io/llms-full.txt): Build on the platform yourself, or have Akka deliver and run a production system for you through Akka Specify. Both paths run on the same runtime.
-- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. Four offerings are delivered on it, sharing one runtime, evidence record, and governance model: Build on Akka (the SDK), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Optimize (lower model cost on evaluated production traffic, up to 80% fewer tokens).
+- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. There are four simple ways to get started with the platform, all sharing one runtime, evidence record, and governance model: the Akka SDK (build agentic systems directly on the platform), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Optimize (continuous AI intelligence that routes each task to the best model, trains specialized models on your own data, and governs what every AI call costs, up to 80% fewer tokens).
 
 ## The Akka Stack
 
-Akka is one runtime with a set of offerings layered around it:
+Akka is one runtime with a set of simple ways to get started layered around it:
 
 - **Akka Agentic AI Platform** — the runtime where systems are built and run: agents, orchestration, streaming, memory, and endpoints.
-- **Akka Optimize** — the model-economics layer: small language models, inference, training, grading, and scoring on the runtime, so your agents cost less to run over time.
+- **Akka Optimize** — continuous AI intelligence: Akka watches the work your agents do, routes each task to the best model, trains specialized models on your own data, and serves them, so your AI keeps improving and costs less to run over time.
 - **Akka Specify** — the delivered path: spec-driven delivery that generates a complete, governed system from a specification.
 - **Akka Verify** — evaluation and governance: evaluations, safeguards, and policies enforced while the agent works, with a tamper-evident record for compliance.
 

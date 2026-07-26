@@ -1,9 +1,9 @@
 <div id="ts3-wrapper">
   <div id="ts3-sticky">
     <div class="ts3-head">
-      <div class="ts3-eyebrow" data-ts3="0">How it works</div>
-      <div class="ts3-headline" data-ts3="0">Identify new <span class="accent">SLM candidates</span>.</div>
-      <div class="ts3-sub" data-ts3="0">The targeting engine continuously scores every agent on task narrowness, traffic volume, outcome verifiability, token spend, and quality headroom creating a ranked plan with projected savings.</div>
+      <div class="ts3-eyebrow" data-ts3="0">Targeting</div>
+      <div class="ts3-headline" data-ts3="0">Find the work worth <span class="accent">specializing</span>.</div>
+      <div class="ts3-sub" data-ts3="0">The targeting engine continuously scores every agent on task narrowness, traffic volume, outcome verifiability, and token spend, producing a ranked plan of where a specialized model pays off.</div>
     </div>
 
     <div class="ts3-table-wrap">
@@ -67,38 +67,20 @@
     </div>
     <div class="ts3-grade" data-ts3="2">
       <div class="ts3-grade-copy">
-        <div class="ts3-grade-title">Evaluations run in the same runtime as your agents</div>
-        <div class="ts3-grade-body">Evaluations grade each targeted agent&rsquo;s traffic as it runs. When an outcome can be checked directly &mdash; the SQL executes, the JSON validates &mdash; a deterministic evaluation scores it. When it can&rsquo;t, an LLM judge scores it, and humans review where policy requires. Every score is recorded with the tokens the interaction consumed. The same evaluations grade production traffic, training runs, and staging tests.</div>
+        <div class="ts3-grade-title">Evaluations run continuously inside Akka&rsquo;s platform</div>
+        <div class="ts3-grade-body">Akka grades the traffic from your agents continuously, whether they run on Akka or from a harness like Copilot or Claude Code. Grading is deterministic for structured prompts, like SQL queries or JSON validation, or an LLM judge for scoring unstructured prompts.</div>
       </div>
-      <div class="ts3-fan">
-        <div class="ts3-fan-src">
-          <div class="ts3-fan-src-tag">Live traffic</div>
-          <div class="ts3-fan-src-name">Evaluation</div>
-        </div>
-        <svg class="ts3-fan-svg" viewBox="0 0 80 200" preserveAspectRatio="none" aria-hidden="true">
-          <g stroke="#F5C518" stroke-width="1.5" fill="none" stroke-linecap="square" vector-effect="non-scaling-stroke">
-            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V30 H72" />
-            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H72" />
-            <path class="ts3-fan-arrow" pathLength="100" d="M0,100 H30 V170 H72" />
-          </g>
-          <polygon class="ts3-fan-head" points="80,30 72,24 72,36" fill="#F5C518"/>
-          <polygon class="ts3-fan-head" points="80,100 72,94 72,106" fill="#F5C518"/>
-          <polygon class="ts3-fan-head" points="80,170 72,164 72,176" fill="#F5C518"/>
-        </svg>
-        <div class="ts3-fan-outs">
-          <div class="ts3-fan-out">
-            <div class="ts3-fan-out-tag">Governance observation</div>
-            <div class="ts3-fan-out-desc">the audit trail</div>
-          </div>
-          <div class="ts3-fan-out">
-            <div class="ts3-fan-out-tag">Training reward</div>
-            <div class="ts3-fan-out-desc">the RL signal</div>
-          </div>
-          <div class="ts3-fan-out">
-            <div class="ts3-fan-out-tag">Promotion gate</div>
-            <div class="ts3-fan-out-desc">the staging verdict</div>
-          </div>
-        </div>
+      <div class="ts3-uses">
+        <table class="ts3-uses-table">
+          <thead>
+            <tr><th colspan="2">Where scores are used</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="ts3-use-name">governance</td><td class="ts3-use-desc">the audit trail</td></tr>
+            <tr><td class="ts3-use-name">training</td><td class="ts3-use-desc">the reward signal</td></tr>
+            <tr><td class="ts3-use-name">promotion</td><td class="ts3-use-desc">the promotion decision</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

@@ -42,6 +42,27 @@ here so this file stays the single rule reference):
     - one wrapper class per page type; strip colons from the template YAML label (§9)
     - never upload standalone files to HubFS — inline into existing partials (§9)
 
+PORT TRANSFORM CHECKLIST — CSS the scoped styles partial MUST append (lessons from
+porting the SDK / Optimize / Overview decks, 2026-07-25). The akka.io theme wins on
+each of these unless the port overrides it under the wrapper class (WRAPPER =
+.sdk-content, .overview-content, …):
+    1. Width cap   — .content-wrapper, .row-fluid(-wrapper), .widget-span,
+                     body > .container-fluid { max-width:none !important; padding/margin:0 }
+                     (else content is capped to a narrow column on wide monitors).
+    2. Headings    — WRAPPER h1..h6 { color:#F1F1F1 !important; font-family:Instrument Sans !important }
+                     (theme greys headings to #4E4E4E; a zero-specificity :where() rule loses).
+    3. Tables      — WRAPPER table td/th { background:transparent !important;
+                     border-top/left/right:0 !important } (theme draws a full cell grid; keep
+                     the deck's own bottom-border row separators).
+    4. Blockquotes — WRAPPER blockquote { border:0 !important; background:transparent !important;
+                     padding:0 !important } (theme boxes quotes into callouts).
+    5. Cake grid   — stack the integrated-platform cake (.fam-grid / .pf-grid) at
+                     max-width:1250px, NOT 900 (it overflows its column between ~900-1250px).
+    6. Assets      — rewrite path-relative src/href (iframes, images, demos) to ABSOLUTE
+                     akka.io URLs; host demos on /hubfs (akka.io/hubfs/…). Never leave them
+                     relative (404 under the page slug) or on github.io (external dependency).
+                     [checked automatically below]
+
 Exit 0 = no failures; non-zero = failure(s) found.
 """
 
@@ -71,6 +92,13 @@ FONT_INHERIT = re.compile(r'font-size\s*:\s*inherit\s*!important')
 ACTORS = re.compile(r'\bactor model\b|\bactors?\b', re.I)
 ARTICLE_BRAND = re.compile(r'\b[Tt]he Akka(?=[.,;:)!?"\']|\s*$)', re.M)
 FULL_PRODUCT = re.compile(r'\bAkka Agentic AI Platform\b')
+
+# --- path-relative asset refs (iframes/images/demos): they 404 on HubSpot because they
+# resolve under the page slug, not the deck root. The port must rewrite them to absolute
+# akka.io URLs (host demos on /hubfs). Excludes absolute/root/anchor/data/mailto/HubL. ---
+REL_ASSET = re.compile(
+    r'(?:src|href)\s*=\s*"(?!https?:|//|/|#|data:|mailto:|tel:|\{\{)'
+    r'([^"]+\.(?:html?|png|jpe?g|svg|gif|webp|js|css|pdf|mp4|webm|json)[^"]*)"', re.I)
 
 # --- hard fails the port will NOT fix ---
 OVERFLOW_HIDDEN = re.compile(r'overflow-x\s*:\s*hidden')
@@ -132,6 +160,17 @@ def audit_file(path):
         n = len(rx.findall(text))
         if n:
             content_reminders.append(f'{rel}: {msg}  ({n}×)')
+
+    # Path-relative asset refs — scan raw (attributes are stripped from `text`).
+    seen_assets = set()
+    for m in REL_ASSET.finditer(raw):
+        val = m.group(1)
+        if val in seen_assets:
+            continue
+        seen_assets.add(val)
+        content_reminders.append(
+            f'{rel}:{line_of(raw, m.start())}: relative asset "{val}" — 404s on HubSpot; '
+            f'rewrite to an absolute akka.io URL, host demos on /hubfs (port lesson)')
 
     for m in AKKA_CAPS.finditer(text):
         before = text[max(0, m.start()-30):m.start()]

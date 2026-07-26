@@ -1,41 +1,31 @@
 <div id="ts2-wrapper">
   <div id="ts2-sticky">
     <div class="ts2-head">
-      <div class="ts2-eyebrow" data-ts2="0">The product</div>
-      <div class="ts2-headline" data-ts2="0"><span class="accent">Target, grade, train, prove, promote</span> &mdash; continuously.</div>
-      <div class="ts2-sub" data-ts2="0">Akka Optimize continuously analyzes live AI traffic and AI logs to identify SLM candidates that can be trained within the same environment.</div>
+      <div class="ts2-eyebrow" data-ts2="0">The engine</div>
+      <div class="ts2-headline" data-ts2="0">One loop that keeps making your AI <span class="accent">better.</span></div>
+      <div class="ts2-sub" data-ts2="0">Akka watches the work that your agents do, routes each task to the model that fits it best, trains specialized models on your own data, and serves them. The loop runs continuously, and your AI gets better every time it turns.</div>
     </div>
 
     <div class="ts2-flow" data-ts2="1">
       <div class="ts2-stages">
         <div class="ts2-stage">
-          <div class="ts2-stage-name">Target</div>
-          <div class="ts2-stage-desc">find the agents doing SLM-shaped work</div>
+          <div class="ts2-stage-name">Observe</div>
+          <div class="ts2-stage-desc">measure the work your agents do on live traffic</div>
         </div>
         <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
         <div class="ts2-stage">
-          <div class="ts2-stage-name">Grade</div>
-          <div class="ts2-stage-desc">continuous evaluations on live traffic</div>
+          <div class="ts2-stage-name">Route</div>
+          <div class="ts2-stage-desc">send each task to the model that fits it best</div>
         </div>
         <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
         <div class="ts2-stage">
           <div class="ts2-stage-name">Train</div>
-          <div class="ts2-stage-desc">RL on your traffic, your evals as grader</div>
+          <div class="ts2-stage-desc">specialize models on your own data</div>
         </div>
         <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
         <div class="ts2-stage">
-          <div class="ts2-stage-name">Prove</div>
-          <div class="ts2-stage-desc">shadow-test in staging: quality holds, tokens &darr;</div>
-        </div>
-        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
-        <div class="ts2-stage">
-          <div class="ts2-stage-name">Promote</div>
-          <div class="ts2-stage-desc">canary &rarr; fleet, automatic rollback</div>
-        </div>
-        <svg class="ts2-arrow" viewBox="0 0 30 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="22" y2="7" stroke="#F5C518" stroke-width="1.5" vector-effect="non-scaling-stroke"/><polygon points="30,7 22,2 22,12" fill="#F5C518"/></svg>
-        <div class="ts2-outcome">
-          <div class="ts2-outcome-tag">Same tasks</div>
-          <div class="ts2-outcome-val">up to 80%<span> fewer tokens</span></div>
+          <div class="ts2-stage-name">Serve</div>
+          <div class="ts2-stage-desc">run them in your environment, with frontier fallback</div>
         </div>
       </div>
 
@@ -47,10 +37,32 @@
           <polygon class="ts2-loop-head" points="80,0 72,16 88,16" fill="#F5C518"/>
         </svg>
         <div class="ts2-loop-label">
-          <span class="ts2-loop-tag">Production feedback</span>
-          <span class="ts2-loop-text">Promoted models keep getting graded &mdash; the optimization loop keeps running.</span>
+          <span class="ts2-loop-tag">Continuous improvement</span>
+          <span class="ts2-loop-text">every turn observes more, routes better, and specializes further.</span>
         </div>
       </div>
+    </div>
+
+    <div class="ts2-table-wrap" data-ts2="2">
+      <table class="ts2-table">
+        <thead>
+          <tr><th>Advantage</th><th>What it gives you</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ts2-td-name">Model leverage</td>
+            <td class="ts2-td-desc">The best model for every task, from any vendor, under your own policies.</td>
+          </tr>
+          <tr>
+            <td class="ts2-td-name">Data sovereignty</td>
+            <td class="ts2-td-desc">Specialized models trained on your own data, owned and kept in your environment.</td>
+          </tr>
+          <tr>
+            <td class="ts2-td-name">Cost governance</td>
+            <td class="ts2-td-desc">Full visibility and control of AI cost, with savings that compound.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
   </div>

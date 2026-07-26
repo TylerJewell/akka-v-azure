@@ -93,7 +93,7 @@
 }
 /* Grade fan-out */
 .ts3-grade {
-  margin-top: 36px;
+  margin-top: 56px;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: 48px;
@@ -155,6 +155,20 @@
   color: var(--yellow); margin-bottom: 2px;
 }
 .ts3-fan-out-desc { font-size: 11px; color: #999; }
+
+/* "Where each score goes" — small, elegant table (replaces the fan-out graphic) */
+.ts3-uses { max-width: 260px; }
+.ts3-uses-table { width: 100%; border-collapse: collapse; }
+.ts3-uses-table th {
+  text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 2px;
+  color: #7a7a7a; font-weight: 700; padding: 0 0 9px; border-bottom: 1px solid rgba(245,197,24,0.45);
+}
+.ts3-uses-table td {
+  padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: baseline;
+}
+.ts3-uses-table tbody tr:last-child td { border-bottom: 0; }
+.ts3-use-name { color: #d0d0d0; font-weight: 600; font-size: clamp(12.5px, 1vw, 14.5px); width: 42%; }
+.ts3-use-desc { color: #8a8a8a; font-size: clamp(11.5px, 0.9vw, 13.5px); }
 
 /* Mobile table scroller — inert on desktop */
 .ts3-table-wrap { width: 100%; }

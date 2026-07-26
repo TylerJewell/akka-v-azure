@@ -42,6 +42,8 @@ PydanticAI is a typed Python agent framework from the team behind Pydantic. Its 
 
 A framework defines how you write code. A platform runs it and guarantees it. PydanticAI delivers the first; the durable runtime, high availability, disaster recovery, state durability, streaming, the API tier, embedded governance, and the operational SLA are not in the framework — you source, integrate, and operate them, and you own every failure across the seams.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 | Capability | PydanticAI | Akka |
 |---|---|---|
 | Typed agent construction (tools, structured output, MCP, graph) | Yes — clean, type-safe | Yes |
@@ -78,6 +80,18 @@ Akka delivers durability and availability as runtime properties: state is event-
 AI systems built with Akka are up to **90% cheaper to operate** than Python-based systems. This is a function of the infrastructure required to run the same agentic transaction volume — not list price. A PydanticAI deployment carries the Python infrastructure footprint, plus the separate datastore and operations of whichever durable-execution engine provides recovery, plus the memory, streaming, API, observability, and governance tiers provisioned and run alongside it.
 
 Akka runs all of it on one shared-compute runtime. The efficiency comes from actor concurrency (~10 trillion tokens per core per year vs ~2 trillion for comparable solutions; ~80% less compute than Python-based frameworks), shared compute, and micro-checkpointing. Manulife reported up to **300% more concurrency** and **30–50% faster processing** after porting Python-based systems to Akka. Spend is a fixed annual fee — predictable, not consumption-metered.
+
+---
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ---
 

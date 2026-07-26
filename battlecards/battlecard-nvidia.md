@@ -81,6 +81,18 @@ NVIDIA AI Enterprise lists at **$4,500 per GPU per year** (also available per-GP
 
 ---
 
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
+
+---
+
 ## Governance and the EU AI Act
 
 NeMo Guardrails provides programmable content and topic rails — keeping a model on-topic, filtering unsafe outputs. That is useful, and it is content moderation, not governance enforcement. The NVIDIA stack publishes no inline runtime policy enforcement, no decision explainability, no human pause/override of a running process witnessed as it happens, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.

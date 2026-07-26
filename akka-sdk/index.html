@@ -38,6 +38,12 @@
   .scrollhint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:2px; color:var(--faint); text-transform:uppercase; z-index:2;}
   .scrollhint span{display:block; width:9px; height:9px; border-right:2px solid #555; border-bottom:2px solid #555; transform:rotate(45deg); margin:10px auto 0; animation:bd 1.6s ease infinite;}
   @keyframes bd{0%,100%{transform:rotate(45deg) translate(0,0);}50%{transform:rotate(45deg) translate(3px,3px);}}
+  /* hero entrance — behaviour only; final state matches the static layout */
+  #s0 .eyebrow{animation:heroFade .7s cubic-bezier(.16,1,.3,1) both;}
+  #s0 h1{animation:heroRise .8s cubic-bezier(.16,1,.3,1) .10s both;}
+  #s0 .proven{animation:heroRise .7s cubic-bezier(.16,1,.3,1) .24s both;}
+  @keyframes heroRise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  @keyframes heroFade{from{opacity:0;} to{opacity:1;}}
 
   /* design intent — one SDK replaces the assembled stack */
   .si-map{display:grid; grid-template-columns:1fr auto 1.05fr; gap:34px; align-items:stretch; margin:38px 0 26px;}
@@ -251,7 +257,7 @@
   .rt-panel .accent{color:var(--yellow); font-weight:600;}
   .rt-panel code{font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:0.9em;}
   .rt-panel-body[hidden]{display:none;}
-  @media (max-width:900px){ .fam-grid{grid-template-columns:1fr; gap:34px;} }
+  @media (max-width:1250px){ .fam-grid{grid-template-columns:1fr; gap:34px;} }
   @media (max-width:820px){
     .cake-wrap{padding:34px 18px 26px;}
     .cake-tab{white-space:normal; text-align:center; line-height:1.2; font-size:18px; padding:2px 16px; max-width:calc(100% - 24px);}
@@ -730,7 +736,7 @@ public class CounterEventsConsumer extends Consumer {
   <div class="inner">
     <div class="eyebrow reveal" style="display:inline-block;">The Akka Agentic AI Platform</div>
     <h2 class="reveal">An <span class="accent">integrated platform.</span></h2>
-    <div class="fam-sub reveal">Akka&rsquo;s offerings all run within the same runtime and cloud stack in order to produce a single evidence record and a consistent governance model.</div>
+    <div class="fam-sub reveal">Everything it takes to build, run, govern, and improve agentic AI, all on one runtime.</div>
 
     <div class="fam-grid reveal">
       <!-- CAKE:BODY (generated from sales-presentation/slides/family-platform by _build/sync_cake.py — do not edit here; edit the canonical slide) -->
@@ -934,6 +940,76 @@ public class CounterEventsConsumer extends Consumer {
     return out;
   }
   document.querySelectorAll('.pcode:not(.term) code').forEach(function(el){el.innerHTML=hl(el.textContent);});
+})();
+</script>
+<script>
+/* ── SDK deck motion — behaviour only; content and positions unchanged.
+   Counts the architecture stats up, and cascades the assemble→SDK and
+   compile→live flows as each section reveals. Each section reveals once. ── */
+(function(){
+  var EASE = 'cubic-bezier(.16,1,.3,1)';
+  function fadeStagger(root, sel, base, gap){
+    var i = 0;
+    root.querySelectorAll(sel).forEach(function(el){
+      var d = (base + i * gap).toFixed(2);
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(8px)';
+      el.style.transition = 'opacity .5s ' + EASE + ' ' + d + 's, transform .5s ' + EASE + ' ' + d + 's';
+      el.getBoundingClientRect();
+      requestAnimationFrame(function(){ el.style.opacity = '1'; el.style.transform = 'none'; });
+      i++;
+    });
+  }
+  function countUp(root, sel){
+    root.querySelectorAll(sel).forEach(function(el){
+      var full = el.textContent;
+      var m = full.match(/\d[\d,]*\.?\d*/g);
+      if (!m || m.length !== 1) return;                 /* single number only, so labels stay intact */
+      var raw = m[0], clean = raw.replace(/,/g, ''), target = parseFloat(clean);
+      if (isNaN(target) || target === 0) return;        /* leave 0b / PB / RTO untouched */
+      var dec = (clean.split('.')[1] || '').length;
+      var idx = full.indexOf(raw), pre = full.slice(0, idx), post = full.slice(idx + raw.length);
+      var t0 = null, dur = 950;
+      function step(t){
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = pre + (target * e).toFixed(dec) + post;
+        if (p < 1) requestAnimationFrame(step); else el.textContent = full;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var CFG = [
+    { id:'s1', watch:'.si-map', thr:0.25, stagger:[
+        { sel:'.si-tiles .si-tile', base:0.04, gap:0.05 },
+        { sel:'.si-one .si-cap',    base:0.44, gap:0.05 }
+      ] },
+    { id:'s13', watch:'.s13-grid', thr:0.3, count:'.s13-stat-num' },
+    { id:'s4', watch:'.gflow', thr:0.35, stagger:[
+        { sel:'.gflow > *', base:0.05, gap:0.14 }
+      ] }
+  ];
+  function init(){
+    CFG.forEach(function(cfg){
+      var root = document.getElementById(cfg.id);
+      if (!root) return;
+      var watch = (cfg.watch && root.querySelector(cfg.watch)) || root;
+      var fired = false;
+      var mio = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if (e.isIntersecting && !fired){
+            fired = true;
+            (cfg.stagger || []).forEach(function(s){ fadeStagger(root, s.sel, s.base, s.gap); });
+            if (cfg.count) countUp(root, cfg.count);
+            mio.disconnect();
+          }
+        });
+      }, { threshold: cfg.thr || 0.2 });
+      mio.observe(watch);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>

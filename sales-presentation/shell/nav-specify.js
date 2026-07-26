@@ -39,3 +39,50 @@ const views = [
     }
   });
 })();
+
+/* ── Specify deck motion — behaviour only; content and positions unchanged.
+   Draws the solid architecture connector lines as the weeks slide reveals.
+   The deck is otherwise word-based, and the spec-flow draws and pattern-rule
+   bars already self-animate via their own CSS reveals, so they are left alone. ── */
+(function(){
+  function drawLines(root, sel){
+    var i = 0;
+    root.querySelectorAll(sel).forEach(function(ln){
+      var len;
+      try { len = ln.getTotalLength(); } catch (e) { return; }
+      if (!len) return;
+      ln.style.transition = 'none';
+      ln.style.strokeDasharray = len;
+      ln.style.strokeDashoffset = len;
+      ln.getBoundingClientRect();
+      ln.style.transition = 'stroke-dashoffset .6s ease ' + (i * 0.08).toFixed(2) + 's';
+      ln.style.strokeDashoffset = '0';
+      i++;
+    });
+  }
+
+  var CFG = [
+    { id: 's5-wrapper', watch: '#s5Arch', thr: 0.2, draw: '#s5Arch line.el' }
+  ];
+
+  function init(){
+    CFG.forEach(function(cfg){
+      var root = document.getElementById(cfg.id);
+      if (!root) return;
+      var fired = false;
+      var watch = (cfg.watch && root.querySelector(cfg.watch)) || root;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting && !fired){
+            fired = true;
+            if (cfg.draw) drawLines(root, cfg.draw);
+            io.disconnect();
+          }
+        });
+      }, { threshold: cfg.thr || 0.2 });
+      io.observe(watch);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();

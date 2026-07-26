@@ -128,6 +128,7 @@
 <div class="section">
   <h2>Temporal Is One Layer; Akka Is the Full Stack</h2>
   <p>Temporal solves durable execution of long-running workflows, and it solves it well. But an agentic AI system needs far more than orchestration, and Temporal leaves the rest to you — you select, wire, and operate the memory layer, the streaming tier, the API layer, the agent framework, and the governance stack around the orchestration core, and own every failure across those seams.</p>
+  <p style="margin-top:4px;">Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place &mdash; agents, tools, durable memory, streaming, APIs, and governance &mdash; and the platform generates it, tests it, and runs it as one certified service.</p>
   <table class="cmp-table">
     <tr><th style="width:34%;">Capability</th><th>Temporal</th><th>Akka</th></tr>
     <tr><td>Workflow orchestration</td><td class="good">Yes</td><td class="good">Yes</td></tr>
@@ -174,6 +175,17 @@
     <p>AI systems built with Akka are up to <strong>90% cheaper to operate</strong> than the equivalent assembled stack. Temporal bills <strong>per action</strong> — every step, signal, query, and timer is metered at $50 per million (stepping to $25 at high volume) — and that meter covers only orchestration; memory, streaming, APIs, observability, and governance are billed separately.</p>
     <p style="margin-top:4px;">Akka runs all of it on one shared-compute runtime. The efficiency comes from actor concurrency (~10T tokens/core/year vs ~2T; ~80% less compute than Python frameworks; Manulife: up to 300% more concurrency, 30&ndash;50% faster processing after porting from Python), shared compute, and micro-checkpointing that minimizes retries. The spend is predictable — a fixed annual fee, not per-action metering that moves with load.</p>
   </div>
+</div>
+
+<div class="section">
+  <h2>Continuous AI Intelligence</h2>
+  <p>Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:</p>
+  <ul>
+    <li><strong>Model leverage</strong> &mdash; route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.</li>
+    <li><strong>Data sovereignty</strong> &mdash; the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.</li>
+    <li><strong>Cost governance</strong> &mdash; full visibility and control of AI spend, with savings that compound as the loop keeps running.</li>
+  </ul>
+  <p>The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.</p>
 </div>
 
 <div class="section">

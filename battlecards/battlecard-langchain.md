@@ -36,6 +36,8 @@ Agentic systems run in one of two operating models. **Person-attached** agents r
 
 Akka and LangChain's LangGraph both target process-attached workloads. They meet the requirement differently.
 
+Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place — agents, tools, durable memory, streaming, APIs, and governance — and the platform generates it, tests it, and runs it as one certified service.
+
 ### What LangGraph provides
 
 LangGraph persists graph state through **checkpointers** that write to an external store — in-memory, SQLite, or Postgres. A graph can resume after an interruption, pause for human review, and carry memory across runs. LangGraph Platform (offered as LangSmith Deployment) adds a task queue, managed persistence, and durable background runs.
@@ -158,6 +160,18 @@ AI systems built with Akka are up to 90% cheaper to operate than Python-based sy
 - **Micro-checkpointing** of durable actions resumes work from the last completed step instead of re-running it, minimizing retries — which cuts both wasted compute and the repeated LLM calls that drive token cost.
 
 The spend is also predictable: a fixed annual fee finance can forecast, rather than consumption metering (per trace, per run, per compute unit) that moves with load.
+
+---
+
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
 
 ---
 

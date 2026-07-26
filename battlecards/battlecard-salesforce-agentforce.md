@@ -60,6 +60,16 @@ Agentforce is priced by consumption. Under Flex Credits, a standard agent action
 
 Akka runs orchestration, agents, memory, streaming, APIs, observability, and governance on one shared-compute runtime for a fixed annual fee — predictable, not consumption-metered.
 
+## Continuous AI Intelligence
+
+Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:
+
+- **Model leverage** — route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.
+- **Data sovereignty** — the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.
+- **Cost governance** — full visibility and control of AI spend, with savings that compound as the loop keeps running.
+
+The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.
+
 ## Governance: Salesforce-Scoped vs. the EU AI Act Broadly
 
 Agentforce governs through the Einstein Trust Layer: toxicity and bias detection, prompt/response masking, a zero-retention LLM gateway, and an audit trail logged to Data Cloud ([salesforce.com/eu](https://www.salesforce.com/eu/artificial-intelligence/trusted-ai/), [getgenerative.ai](https://www.getgenerative.ai/salesforce-einstein-trust-layer-cheat-sheet/)). It is real, and it is scoped to the Salesforce ecosystem and the data flowing through it. It is not a broad EU AI Act conformance program: it does not perform pre-deployment high-risk classification, gate a deployment before it ships, capture multi-persona regulatory sign-offs, or produce a sealed, portable audit artifact for systems outside Salesforce.

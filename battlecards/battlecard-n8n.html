@@ -140,6 +140,7 @@
     <tr><td>Pre-production governance</td><td class="bad">None</td><td class="good">Classification, sign-offs, sealed posture</td></tr>
   </table>
   <p>n8n's AI Agent node is a wrapper over the LangChain JavaScript framework. It is ideal for triggering an LLM step inside an automation; it is not an agent runtime engineered for unattended, process-attached execution at scale.</p>
+  <p style="margin-top:4px;">Everything an agentic system needs runs in one Akka runtime, so a system that compiles is ready to run in production. The Akka SDK models the entire agentic system in one place &mdash; agents, tools, durable memory, streaming, APIs, and governance &mdash; and the platform generates it, tests it, and runs it as one certified service.</p>
 </div>
 
 <div class="section">
@@ -159,6 +160,17 @@
 
 <!-- ════════ PAGE 2 ════════ -->
 <div class="page-break"></div>
+
+<div class="section">
+  <h2>Continuous AI Intelligence</h2>
+  <p>Akka Optimize keeps improving the AI after it ships. It runs an evaluation loop on your own production traffic, grading live interactions and training smaller specialized models on your proprietary data, so the system keeps getting better as it runs. The loop delivers three results that compound over time:</p>
+  <ul>
+    <li><strong>Model leverage</strong> &mdash; route each request to the best model from any vendor under your policies, and reserve frontier models for the requests that need them.</li>
+    <li><strong>Data sovereignty</strong> &mdash; the specialized models are trained on your proprietary data, owned by you, and run inside your own environment.</li>
+    <li><strong>Cost governance</strong> &mdash; full visibility and control of AI spend, with savings that compound as the loop keeps running.</li>
+  </ul>
+  <p>The evaluations run continuously inside Akka and grade traffic from agents wherever they run, in Akka or in third-party harnesses.</p>
+</div>
 
 <div class="two-col">
   <div class="section">
