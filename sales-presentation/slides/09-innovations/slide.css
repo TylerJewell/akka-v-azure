@@ -21,6 +21,7 @@
   pointer-events: none;
   z-index: 0;
 }
+#s13 > .s13-eyebrow, #s13 > .s13-headline, #s13 > .s13-subhead, #s13 > .s13-grid { width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
 
 .s13-reveal {
   opacity: 0;

@@ -242,6 +242,7 @@ body {
   display: flex; flex-direction: column;
   overflow: hidden;
 }
+#st-sticky > .st-header, #st-sticky > .st-grid { width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
 #st-sticky::before {
   content:''; position:absolute; inset:0;
   background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
@@ -1601,6 +1602,10 @@ body {
   max-height: 900px;
   gap: 14px;
   justify-content: center;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .pp-head {
   max-width: none;
@@ -2031,6 +2036,7 @@ body {
   pointer-events: none;
   z-index: 0;
 }
+#s13 > .s13-eyebrow, #s13 > .s13-headline, #s13 > .s13-subhead, #s13 > .s13-grid { width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
 
 .s13-reveal {
   opacity: 0;
@@ -2255,6 +2261,7 @@ body {
   background-image: radial-gradient(circle, rgba(245,197,24,0.03) 1px, transparent 1px);
   background-size: 48px 48px; pointer-events:none; z-index:0;
 }
+#s5 > .s5-top, #s5 > .s5-main { width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
 
 .s5-reveal {
   opacity: 0; transform: translateY(24px);
@@ -2506,6 +2513,9 @@ body {
 }
 .s6-reveal.visible { opacity: 1; transform: none; }
 
+#s6 > .s6-top, #s6 > .s6-frame-wrap {
+  width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto;
+}
 .s6-top {
   display: flex; justify-content: space-between; align-items: flex-end;
   margin-bottom: 20px; gap: 40px; flex-shrink: 0;
@@ -2857,7 +2867,8 @@ body {
 .cust-slide {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; justify-content: center;
-  padding: 0 var(--pad-10);
+  padding-left: max(var(--pad-10), calc((100% - 1400px) / 2));
+  padding-right: max(var(--pad-10), calc((100% - 1400px) / 2));
   opacity: 0;
   transition: opacity .8s ease;
   pointer-events: none;
@@ -3026,6 +3037,10 @@ body {
 }
 .pkg-inner {
   position: relative; z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #pkg::before {

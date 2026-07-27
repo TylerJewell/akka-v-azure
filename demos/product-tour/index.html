@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Akka — Product tour</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=optional" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --yellow:#FFCE4A; --cyan:#00DBDD; --black:#000; --panel:#0A0A0E; --white:#F1F1F1;
+    --green:#72D35B; --orange:#E58C3D; --red:#FF5D5D;
+    --line:#1F1F24; --line2:#2A2A32; --muted:#A6A6A6; --dim:#7A7A82; --faint:#4A4A52;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --sans:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  html{background:var(--black);}
+  body{font-family:var(--sans); background:var(--black); color:var(--white); overflow-x:clip;}
+
+  /* ---------- Section shell ---------- */
+  section{position:relative; padding:80px 6vw 96px;}
+  section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none;}
+  .inner{position:relative; width:100%; max-width:1440px; margin:0 auto;}
+  .eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:14px;}
+  .eyebrow::before{content:''; display:inline-block; width:28px; height:2px; background:var(--yellow); margin-right:10px; vertical-align:middle;}
+  h2.shead{font-size:clamp(28px,3.6vw,44px); letter-spacing:-0.025em; line-height:1.08; font-weight:700; margin-bottom:34px;}
+
+  /* ---------- Two-column tabs (akka-sdk pattern) ---------- */
+  .main{display:grid; grid-template-columns:minmax(220px,260px) 1fr; gap:26px;}
+  .main > *{min-width:0;}
+  .tabs{display:flex; flex-direction:column; gap:6px;}
+  .tab{appearance:none; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:12px; text-align:left; color:var(--dim); background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:8px; padding:10px 16px; transition:.2s; flex:1 1 0;}
+  .tab:hover{color:var(--cyan); border-color:var(--cyan);}
+  .tab .lbl{font-size:clamp(13px,1.05vw,15.5px); font-weight:700; line-height:1.2;}
+  .tab.active{color:var(--black); background:var(--yellow); border-color:var(--yellow);}
+  .pwrap{border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,0.02); padding:28px 32px 32px; min-width:0;}
+  .panel{display:none;}
+  .panel.active{display:block; animation:in .28s ease;}
+  @keyframes in{from{opacity:0; transform:translateY(6px);}to{opacity:1; transform:none;}}
+  .pc{font-size:clamp(22px,2.2vw,30px); font-weight:700; line-height:1.12; letter-spacing:-0.02em; margin-bottom:10px;}
+  .pb{font-size:clamp(13.5px,1.05vw,15.5px); line-height:1.55; color:var(--muted); max-width:72ch; margin-bottom:22px;}
+  .pb p + p{margin-top:8px;}
+  @media (max-width:820px){
+    .main{grid-template-columns:1fr;}
+    .tabs{flex-direction:row; flex-wrap:wrap;}
+    .tab{flex:1 1 auto;}
+    .pwrap{padding:22px 20px 24px;}
+  }
+
+  /* ---------- Thumbnail grid ---------- */
+  .thumbs{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;}
+  .thumb{appearance:none; cursor:pointer; position:relative; padding:0; background:var(--black); border:1px solid rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; aspect-ratio:16/10; transition:border-color .18s, transform .18s, box-shadow .18s;}
+  .thumb:hover{border-color:var(--yellow); transform:translateY(-2px); box-shadow:0 0 0 1px rgba(255,206,74,0.25), 0 14px 30px -14px rgba(0,0,0,0.9);}
+  .thumb:focus-visible{outline:2px solid var(--yellow); outline-offset:2px;}
+  .thumb-scale{position:absolute; top:0; left:0; width:1200px; height:750px; transform-origin:0 0; pointer-events:none;}
+  .thumb-cap{position:absolute; left:0; right:0; bottom:0; padding:6px 9px; background:linear-gradient(0deg, rgba(0,0,0,0.85), rgba(0,0,0,0)); font:600 10px/1.2 var(--sans); letter-spacing:0.4px; color:var(--white); display:flex; justify-content:space-between; align-items:end; gap:8px;}
+  .thumb-cap .k{font-family:var(--mono); font-weight:500; font-size:9px; letter-spacing:0.5px; color:var(--dim); text-transform:uppercase;}
+  @media (max-width:700px){.thumbs{grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px;}}
+
+  /* Todo placeholder */
+  .todo{padding:44px 20px; text-align:center; border:1px dashed rgba(255,255,255,0.10); border-radius:10px; color:var(--dim); font-size:13px;}
+  .todo strong{display:block; color:var(--muted); font-size:13px; margin-bottom:6px;}
+
+  /* ---------- Lightbox ---------- */
+  .lb{position:fixed; inset:0; background:rgba(0,0,0,0.94); z-index:100; display:none; align-items:center; justify-content:center; padding:32px 24px;}
+  .lb.open{display:flex;}
+  .lb-inner{width:100%; max-width:1240px;}
+  .lb-close{position:absolute; top:18px; right:22px; width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.6); color:var(--white); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;}
+  .lb-close:hover{border-color:var(--yellow); color:var(--yellow);}
+  .lb-frame{border:1px solid rgba(255,255,255,0.10); border-radius:12px; overflow:hidden; background:var(--black);}
+  .lb-cap{display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-top:14px; padding:0 4px;}
+  .lb-cap-t{font-size:14px; font-weight:600; color:var(--white); letter-spacing:0.3px;}
+  .lb-cap-d{font-size:13px; color:var(--muted); font-family:var(--mono);}
+
+  /* ============================================================
+     AKKA CONSOLE SHELL — modeled after the real UI
+     Canvas is fixed 1200×750; contents scale from here.
+     ============================================================ */
+  .shot-src{width:1200px; height:750px; display:flex; flex-direction:column; background:var(--black); color:#DCDCDC; font-family:var(--sans);}
+  .sources{position:absolute; visibility:hidden; pointer-events:none;}
+
+  /* Header */
+  .ak-hdr{flex:0 0 62px; display:grid; grid-template-columns:260px 1fr auto; align-items:center; border-bottom:1px solid var(--line); padding:0 22px 0 26px;}
+  .ak-brand{font-family:var(--sans); font-weight:800; font-size:24px; letter-spacing:0.02em; color:var(--white);}
+  .ak-search{max-width:380px; width:100%; margin:0 auto; background:transparent; border:1px solid var(--line2); border-radius:8px; padding:8px 14px; font:400 13px/1 var(--sans); color:var(--dim);}
+  .ak-hdr-r{display:flex; align-items:center; gap:14px;}
+  .ak-services-pill{display:flex; align-items:center; gap:9px; padding:8px 13px; border:1px solid var(--line2); border-radius:8px; font-size:13px; color:var(--white);}
+  .ak-services-pill svg{flex:none;}
+  .ak-kebab{width:32px; height:32px; border:1px solid var(--line2); border-radius:6px; display:flex; align-items:center; justify-content:center;}
+  .ak-kebab i{width:3px; height:3px; background:var(--muted); border-radius:50%; box-shadow:0 -6px 0 var(--muted), 0 6px 0 var(--muted);}
+  /* AAO top-nav strip */
+  .ak-topnav{flex:0 0 42px; display:flex; align-items:center; gap:26px; padding:0 26px; border-bottom:1px solid var(--line); background:rgba(255,255,255,0.008);}
+  .ak-topnav a{font-size:12.5px; color:var(--muted); text-decoration:none; padding:12px 0; border-bottom:2px solid transparent; letter-spacing:0.2px;}
+  .ak-topnav a.on{color:var(--white); border-bottom-color:var(--yellow); font-weight:600;}
+
+  /* Body: sidebar + main */
+  .ak-body{flex:1; display:grid; grid-template-columns:260px 1fr; overflow:hidden;}
+
+  /* Sidebar */
+  .ak-side{border-right:1px solid var(--line); padding:22px 18px 22px 22px; display:flex; flex-direction:column; gap:6px;}
+  .ak-side-hdr{display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line);}
+  .ak-side-hdr .t{font-size:14px; color:var(--white);}
+  .ak-row{display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:6px; font-size:13.5px; color:var(--muted); border:1px solid transparent;}
+  .ak-row.on{background:rgba(255,255,255,0.03); color:var(--white); font-weight:600; border-color:var(--line2);}
+  .ak-row .caret{margin-left:auto; color:var(--dim); font-size:11px;}
+  .ak-row .dot{width:12px; height:12px; border-radius:50%; border:2px solid var(--green); background:transparent; box-shadow:inset 0 0 0 2px var(--black), 0 0 0 0.5px var(--green);}
+  .ak-row .dot.half{background:linear-gradient(90deg, transparent 50%, var(--green) 50%);}
+  .ak-child{padding:6px 11px 6px 34px; display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--muted); border-radius:6px;}
+  .ak-child:hover{color:var(--white);}
+  .ak-child.on{color:var(--white); background:rgba(255,255,255,0.03);}
+
+  /* Main area */
+  .ak-main{padding:26px 36px 26px 36px; overflow:hidden;}
+  .ak-crumb{font-family:var(--mono); font-size:12.5px; color:var(--muted); margin-bottom:22px; display:flex; align-items:center; flex-wrap:wrap; gap:8px;}
+  .ak-crumb .sep{color:var(--faint);}
+  .ak-crumb .cur{color:var(--white);}
+  .ak-crumb .info{width:14px; height:14px; border:1px solid var(--faint); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:9px; color:var(--faint); font-family:var(--sans); font-weight:600; margin-left:2px;}
+
+  .ak-title{display:flex; align-items:center; gap:16px; margin-bottom:22px;}
+  .ak-title .ico{flex:none; width:34px; height:34px;}
+  .ak-title .name{font-size:26px; font-weight:700; color:var(--yellow); letter-spacing:-0.01em; line-height:1;}
+  .ak-title .kind{font-size:11px; letter-spacing:2.2px; color:var(--dim); text-transform:uppercase; margin-top:5px;}
+
+  .ak-title-lg .name{font-size:32px;}
+  .ak-title-plain .name{color:var(--white);}
+  .ak-title-plain .ico{color:var(--yellow);}
+
+  /* AAO deploy button */
+  .ak-deploy{position:absolute; top:26px; right:30px; background:var(--cyan); color:var(--black); font-size:12px; font-weight:700; letter-spacing:1.5px; padding:11px 18px; border:0; display:flex; align-items:center; gap:8px;}
+  .ak-deploy .plus{font-size:16px; font-weight:400; line-height:1;}
+
+  /* ---------- Service card (Services home) ---------- */
+  .sv-wrap{max-width:520px;}
+  .sv-card{border:1px solid var(--line2); border-radius:8px; padding:20px 24px 22px; background:rgba(255,255,255,0.01);}
+  .sv-hdr{display:flex; align-items:center; gap:14px;}
+  .sv-hdr .ico{width:32px; height:32px; flex:none;}
+  .sv-hdr .name{font-size:22px; font-weight:700; color:var(--white);}
+  .sv-status{margin-top:34px; display:flex; align-items:center; gap:10px;}
+  .sv-status .dot{width:14px; height:14px; border-radius:50%; border:2px solid var(--green); background:transparent;}
+  .sv-status .lbl{color:var(--green); font-family:var(--mono); font-size:14px; font-weight:600; letter-spacing:0.5px;}
+  .sv-url{margin-top:10px; font-family:var(--mono); font-size:14px; color:var(--muted);}
+  .sv-url .u{color:var(--white);}
+  .sv-url .copy{color:var(--yellow); font-size:12px; margin-left:6px;}
+  .sv-comp{margin-top:22px;}
+  .sv-comp-h{display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .sv-comp-row{display:flex; align-items:center; gap:12px; padding:11px 14px; margin-top:8px; border:1px solid var(--line); border-radius:6px; background:rgba(255,255,255,0.015); font-size:13.5px; color:var(--white);}
+  .sv-comp-row svg{flex:none;}
+
+  /* ---------- Event journal table ---------- */
+  .ev-tbl{width:100%; border-collapse:collapse;}
+  .ev-tbl thead th{text-align:left; font-size:12px; font-weight:400; color:var(--muted); padding:0 14px 14px; border-bottom:1px solid var(--line); vertical-align:bottom;}
+  .ev-tbl thead th.seq{width:64px;}
+  .ev-tbl thead th.ts{width:150px;}
+  .ev-tbl thead th.ev{width:38%;}
+  .ev-tbl thead th.ev::before{content:'\25B8'; color:var(--dim); font-size:9px; margin-right:6px; vertical-align:1px;}
+  .ev-tbl tbody td{padding:14px; border-bottom:1px solid var(--line); vertical-align:top; font-family:var(--mono); font-size:12px; line-height:1.55; color:var(--muted); white-space:pre;}
+  .ev-tbl .n{color:var(--white);}
+  .ev-tbl .ename{color:var(--white); font-weight:500;}
+  .ev-tbl .k{color:var(--muted);}
+  .ev-tbl .s{color:var(--orange);}
+  .ev-tbl .num{color:var(--green);}
+  .ev-tbl .p{color:var(--faint);}   /* punctuation */
+  .ev-tbl .exp{color:var(--muted); font-size:10px; margin-right:4px;}
+
+  /* ---------- Trace flow view ---------- */
+  .tv{position:relative;}
+  .tv-back{display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border:1px solid var(--line2); border-radius:6px; font-size:12.5px; color:var(--muted); margin-bottom:22px;}
+  .tv-canvas{position:relative; height:340px; width:100%;}
+  .tv-node{position:absolute; display:flex; align-items:center; gap:10px; padding:11px 14px; border-radius:8px; font-size:13px; font-weight:500;}
+  .tv-node .chip{width:22px; height:22px; border-radius:5px; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--sans); color:var(--white); flex:none;}
+  .tv-node.step{background:rgba(255,206,74,0.10); border:1px solid rgba(255,206,74,0.35); color:var(--white);}
+  .tv-node.step .chip{background:var(--yellow); color:var(--black);}
+  .tv-node.agent{background:#5A8B4A; border:1px solid #6EA85C; color:var(--white);}
+  .tv-node.agent .chip{background:transparent; width:auto; height:auto;}
+  .tv-node.mem{background:#B8712A; border:1px solid #D18437; color:var(--white);}
+  .tv-node.cmd{background:transparent; border:1px solid var(--line2); color:var(--white);}
+  .tv-node.cmd .chip{background:#3A3A44; font-size:11px;}
+  .tv-node .name{white-space:nowrap;}
+  .tv-node .dur{display:block; font-size:11px; font-weight:400; color:rgba(255,255,255,0.75); margin-top:5px;}
+  .tv-line{position:absolute; border-top:1px dashed rgba(255,255,255,0.20); pointer-events:none;}
+
+  .tv-timeline{border-top:1px solid var(--line); padding:14px 4px 4px; margin-top:12px;}
+  .tv-tl-h{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
+  .tv-tl-h .t{font-size:13px; color:var(--white); font-weight:500;}
+  .tv-tl-h .chev{color:var(--dim);}
+  .tv-tl-scale{display:grid; grid-template-columns:repeat(5,1fr); font-family:var(--mono); font-size:11px; color:var(--dim); position:relative;}
+  .tv-tl-scale span{border-left:1px solid rgba(255,255,255,0.05); padding-left:4px;}
+  .tv-tl-scale span:first-child{border-left:0;}
+  .tv-tl-bars{position:relative; height:50px; margin-top:8px;}
+  .tv-tl-bar{position:absolute; height:14px; border-radius:3px; font:600 10px/14px var(--sans); color:var(--black); padding:0 6px; white-space:nowrap; overflow:hidden;}
+  .tv-tl-bar.step{background:var(--yellow);}
+  .tv-tl-bar.agent{background:#6EA85C; color:var(--white);}
+  .tv-tl-bar.mem{background:#D18437; color:var(--white);}
+  .tv-tl-bar.cmd{background:#3A3A44; color:var(--muted);}
+
+  /* ---------- Members table (AAO) ---------- */
+  .m-tbl{width:100%; border-collapse:collapse;}
+  .m-tbl thead th{text-align:left; font-size:12px; font-weight:400; color:var(--muted); padding:0 16px 14px; border-bottom:1px solid var(--line);}
+  .m-tbl tbody td{padding:16px; border-bottom:1px solid var(--line); font-size:13.5px; color:var(--white);}
+  .m-tbl .em{color:var(--white); font-family:var(--mono); font-size:13px;}
+  .m-tbl .st{color:var(--green); font-family:var(--mono); font-size:12.5px;}
+  .m-tbl .st.pend{color:var(--dim);}
+  .m-tbl .rl{font-family:var(--mono); font-size:12.5px; color:var(--muted);}
+
+</style>
+</head>
+<body>
+
+<section id="tour">
+  <div class="inner">
+    <div class="eyebrow">Product tour</div>
+
+    <div class="main">
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tab" data-panel="p-overview" role="tab"><span class="lbl">Platform overview</span></button>
+        <button class="tab" data-panel="p-sdk"      role="tab"><span class="lbl">SDK &amp; IDE</span></button>
+        <button class="tab active" data-panel="p-console" role="tab"><span class="lbl">Console</span></button>
+        <button class="tab" data-panel="p-cli"      role="tab"><span class="lbl">CLI</span></button>
+        <button class="tab" data-panel="p-verify"   role="tab"><span class="lbl">Verify</span></button>
+        <button class="tab" data-panel="p-specify"  role="tab"><span class="lbl">Specify</span></button>
+        <button class="tab" data-panel="p-optimize" role="tab"><span class="lbl">Optimize</span></button>
+        <button class="tab" data-panel="p-runtime"  role="tab"><span class="lbl">Runtime &amp; resilience</span></button>
+        <button class="tab" data-panel="p-ops"      role="tab"><span class="lbl">Operations</span></button>
+        <button class="tab" data-panel="p-integ"    role="tab"><span class="lbl">Integrations</span></button>
+      </div>
+
+      <div class="pwrap">
+
+        <!-- Console -->
+        <div class="panel active" id="p-console">
+          <div class="pc">Console</div>
+          <div class="pb"><p>The local development console and the AAO control tower expose services, components, traces, entity state, and workflow execution from the runtime's own telemetry.</p></div>
+          <div class="thumbs">
+            <button class="thumb" data-src="s-services-home" data-title="Services home"       data-desc="Local console. Service card with ready status, URL, and component list."><span class="thumb-cap">Services home<span class="k">local</span></span></button>
+            <button class="thumb" data-src="s-entity-events" data-title="Event journal"       data-desc="Local console. Seq No, timestamp, event payload, and resulting state."><span class="thumb-cap">Event journal<span class="k">local</span></span></button>
+            <button class="thumb" data-src="s-trace-flow"    data-title="Trace"               data-desc="Local console. Nested flow graph and timeline for a single request."><span class="thumb-cap">Trace<span class="k">local</span></span></button>
+            <button class="thumb" data-src="s-aao-services"  data-title="Project services"    data-desc="AAO control tower. Service tile with deploy action and ready status."><span class="thumb-cap">Project services<span class="k">aao</span></span></button>
+            <button class="thumb" data-src="s-aao-members"   data-title="Members"             data-desc="AAO control tower. Email, status, name, and role per project member."><span class="thumb-cap">Members<span class="k">aao</span></span></button>
+          </div>
+        </div>
+
+        <!-- Stubbed -->
+        <div class="panel" id="p-overview"><div class="pc">Platform overview</div><div class="pb"><p>Three layers, four offerings, one runtime.</p></div><div class="todo"><strong>Not yet populated</strong>Cake diagram, layer detail.</div></div>
+        <div class="panel" id="p-sdk"><div class="pc">SDK &amp; IDE</div><div class="pb"><p>Component code — agents, workflows, entities, views — in an IDE with Maven build output.</p></div><div class="todo"><strong>Not yet populated</strong>IntelliJ captures, Maven output, project scaffold.</div></div>
+        <div class="panel" id="p-cli"><div class="pc">CLI</div><div class="pb"><p>Deploy, inspect, and manage from a terminal.</p></div><div class="todo"><strong>Not yet populated</strong>Styled terminal blocks.</div></div>
+        <div class="panel" id="p-verify"><div class="pc">Verify</div><div class="pb"><p>Evaluations, guardrails, policy records, and evidence.</p></div><div class="todo"><strong>Not yet populated</strong>Eval runs, guardrail hits, policy record, evidence export.</div></div>
+        <div class="panel" id="p-specify"><div class="pc">Specify</div><div class="pb"><p>Specification authoring and generation from Claude Code, Codex, and Copilot via MCP.</p></div><div class="todo"><strong>Not yet populated</strong>Spec authoring, MCP-driven generation.</div></div>
+        <div class="panel" id="p-optimize"><div class="pc">Optimize</div><div class="pb"><p>Model routing, SLM training, and cost per verified task.</p></div><div class="todo"><strong>Not yet populated</strong>Reuses opt-07 tiles, opt-02 economics panels.</div></div>
+        <div class="panel" id="p-runtime"><div class="pc">Runtime &amp; resilience</div><div class="pb"><p>Clustering, durable execution, HA/DR, split-brain resolution.</p></div><div class="todo"><strong>Not yet populated</strong>Captures from the embedded resilience app.</div></div>
+        <div class="panel" id="p-ops"><div class="pc">Operations</div><div class="pb"><p>Regions, rolling updates, CVE patching, identity, RBAC, secrets, network.</p></div><div class="todo"><strong>Not yet populated</strong>AAO control-tower captures (real, via akka.io account).</div></div>
+        <div class="panel" id="p-integ"><div class="pc">Integrations</div><div class="pb"><p>HTTP, gRPC, MCP, A2A, and brokerless messaging.</p></div><div class="todo"><strong>Not yet populated</strong>Endpoint registry, MCP tool binding, A2A handshake.</div></div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Hidden shot sources — each imitates the real Akka console shell
+     ============================================================ -->
+<div class="sources" aria-hidden="true">
+
+<!-- SVG symbol library -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Isometric cube used for the "Services" chrome pill and the yellow service icon -->
+    <symbol id="i-cube" viewBox="0 0 24 24">
+      <path d="M12 2.6 L21 7.4 L21 16.6 L12 21.4 L3 16.6 L3 7.4 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M12 2.6 L12 12 M12 12 L21 7.4 M12 12 L3 7.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-cube-fill" viewBox="0 0 24 24">
+      <path d="M12 2.6 L21 7.4 L21 16.6 L12 21.4 L3 16.6 L3 7.4 Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity="0.15"/>
+      <path d="M12 2.6 L21 7.4 L21 16.6 L12 21.4 L3 16.6 L3 7.4 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M12 2.6 L12 12 M12 12 L21 7.4 M12 12 L3 7.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <!-- 3x3 dots grid, for "All services" -->
+    <symbol id="i-grid" viewBox="0 0 16 16">
+      <g fill="currentColor">
+        <circle cx="3" cy="3" r="1.2"/><circle cx="8" cy="3" r="1.2"/><circle cx="13" cy="3" r="1.2"/>
+        <circle cx="3" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="13" cy="8" r="1.2"/>
+        <circle cx="3" cy="13" r="1.2"/><circle cx="8" cy="13" r="1.2"/><circle cx="13" cy="13" r="1.2"/>
+      </g>
+    </symbol>
+    <!-- Collapse arrow (⇤) -->
+    <symbol id="i-collapse" viewBox="0 0 16 16">
+      <path d="M10 4 L5 8 L10 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="3" y1="4" x2="3" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- Down chevron -->
+    <symbol id="i-chev" viewBox="0 0 12 12"><path d="M2 4 L6 8 L10 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- Copy (URL copy icon) -->
+    <symbol id="i-copy" viewBox="0 0 14 14">
+      <rect x="4" y="4" width="8" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M2 10 L2 2 L10 2" fill="none" stroke="currentColor" stroke-width="1.2"/>
+    </symbol>
+    <!-- Entity icon (event-sourced entity — rounded rect with corner tag) -->
+    <symbol id="i-entity" viewBox="0 0 24 24">
+      <rect x="4" y="5" width="14" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M14 5 L14 10 L19 10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="7" y1="10" x2="12" y2="10" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="7" y1="14" x2="15" y2="14" stroke="currentColor" stroke-width="1.4"/>
+    </symbol>
+    <!-- Endpoint icon (chain link) -->
+    <symbol id="i-endpoint" viewBox="0 0 24 24">
+      <rect x="4" y="8" width="8" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="12" y="8" width="8" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.6"/>
+    </symbol>
+    <!-- Agent icon (chip with dots) -->
+    <symbol id="i-agent" viewBox="0 0 24 24">
+      <rect x="6" y="6" width="12" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="9" y="9" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <line x1="3" y1="9"  x2="6" y2="9" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="3" y1="12" x2="6" y2="12" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="3" y1="15" x2="6" y2="15" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="18" y1="9"  x2="21" y2="9" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="18" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="18" y1="15" x2="21" y2="15" stroke="currentColor" stroke-width="1.4"/>
+    </symbol>
+    <!-- Workflow icon -->
+    <symbol id="i-workflow" viewBox="0 0 24 24">
+      <circle cx="5" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="19" cy="19" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="7" y1="5" x2="10" y2="10" stroke="currentColor" stroke-width="1.4"/>
+      <line x1="14" y1="14" x2="17" y2="19" stroke="currentColor" stroke-width="1.4"/>
+    </symbol>
+    <!-- View icon -->
+    <symbol id="i-view" viewBox="0 0 24 24">
+      <rect x="4" y="6" width="16" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="4" y="10" width="16" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="4" y="14" width="16" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    </symbol>
+    <!-- Consumer icon -->
+    <symbol id="i-consumer" viewBox="0 0 24 24">
+      <path d="M4 12 A8 8 0 0 1 20 12" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M20 12 A8 8 0 0 1 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1 2"/>
+      <path d="M18 8 L20 12 L16 12" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M6 16 L4 12 L8 12" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================================================
+     SHOT 1 — Services home (local console)
+     ============================================================ -->
+<div class="shot-src" id="s-services-home">
+  <div class="ak-hdr">
+    <div class="ak-brand">AKKA</div>
+    <input class="ak-search" value="Search" readonly>
+    <div class="ak-hdr-r">
+      <div class="ak-services-pill"><svg width="16" height="16"><use href="#i-cube"/></svg>Services</div>
+      <div class="ak-kebab"><i></i></div>
+    </div>
+  </div>
+  <div class="ak-body">
+    <div class="ak-side">
+      <div class="ak-side-hdr"><span class="t">Services</span><svg width="16" height="16" style="color:var(--muted)"><use href="#i-collapse"/></svg></div>
+      <div class="ak-row" style="margin-top:14px;"><svg width="16" height="16" style="color:var(--muted)"><use href="#i-grid"/></svg>All services</div>
+      <div class="ak-row on"><span class="dot"></span>shopping-cart-quickstart<svg width="12" height="12" class="caret"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="ak-main">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:22px;">Services</div>
+      <div class="sv-wrap" style="margin:20px auto 0;">
+        <div class="sv-card">
+          <div class="sv-hdr">
+            <svg class="ico" style="color:var(--yellow)" width="32" height="32"><use href="#i-cube-fill"/></svg>
+            <div class="name">shopping-cart-quickstart</div>
+          </div>
+          <div class="sv-status"><span class="dot"></span><span class="lbl">READY</span></div>
+          <div class="sv-url">URL:<span class="u"> localhost:9000</span><svg class="copy" width="12" height="12" style="vertical-align:-1px"><use href="#i-copy"/></svg></div>
+          <div class="sv-comp">
+            <div class="sv-comp-h"><span>Components</span><svg width="12" height="12" style="color:var(--muted); transform:rotate(180deg)"><use href="#i-chev"/></svg></div>
+            <div class="sv-comp-row"><svg width="18" height="18" style="color:var(--muted)"><use href="#i-entity"/></svg>ShoppingCartEntity</div>
+            <div class="sv-comp-row"><svg width="18" height="18" style="color:var(--muted)"><use href="#i-endpoint"/></svg>ShoppingCartEndpoint</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SHOT 2 — Event-sourced entity events (local console)
+     ============================================================ -->
+<div class="shot-src" id="s-entity-events">
+  <div class="ak-hdr">
+    <div class="ak-brand">AKKA</div>
+    <div></div>
+    <div class="ak-hdr-r">
+      <div class="ak-services-pill"><svg width="16" height="16"><use href="#i-cube"/></svg>Services</div>
+      <div class="ak-kebab"><i></i></div>
+    </div>
+  </div>
+  <div class="ak-body">
+    <div class="ak-side">
+      <div class="ak-side-hdr"><span class="t">Services</span><svg width="16" height="16" style="color:var(--muted)"><use href="#i-collapse"/></svg></div>
+      <div class="ak-row" style="margin-top:14px;"><svg width="16" height="16" style="color:var(--muted)"><use href="#i-grid"/></svg>All services</div>
+      <div class="ak-row on"><span class="dot"></span>shopping-cart-quickstart<svg width="12" height="12" class="caret"><use href="#i-chev"/></svg></div>
+    </div>
+    <div class="ak-main">
+      <div class="ak-crumb">services<span class="sep">›</span>shopping-cart-quickstart<span class="info">i</span><span class="sep">›</span>components<span class="sep">›</span>shoppingcart.application.ShoppingCartEntity<span class="sep">›</span><span class="cur">123</span></div>
+      <div class="ak-title">
+        <svg class="ico" style="color:var(--yellow)"><use href="#i-entity"/></svg>
+        <div><div class="name">123</div><div class="kind">Event Sourced Entity Events</div></div>
+      </div>
+      <table class="ev-tbl">
+        <thead><tr>
+          <th class="seq">Seq<br>No</th><th class="ts">Timestamp</th><th class="ev">Event</th><th>State</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="n">1</td>
+            <td>2024-10-30 15:28:34</td>
+            <td><span class="ename">item-added</span>
+<span class="p">{</span> <span class="exp">▾</span>
+  <span class="k">item:</span> <span class="p">{</span> <span class="exp">▾</span>
+    <span class="k">productId:</span> <span class="s">"akka-tshirt"</span>
+    <span class="k">name:</span> <span class="s">"Akka Tshirt"</span>
+    <span class="k">quantity:</span> <span class="num">3</span>
+  <span class="p">}</span>
+<span class="p">}</span></td>
+            <td><span class="p">{</span>
+  <span class="k">cartId:</span> <span class="s">"123"</span>,
+  <span class="k">checkedOut:</span> <span class="num">false</span>,
+  <span class="k">items:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="k">"productId":</span> <span class="s">"akka-tshirt"</span>,
+      <span class="k">"name":</span> <span class="s">"Akka Tshirt"</span>,
+      <span class="k">"quantity":</span> <span class="num">3</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></td>
+          </tr>
+          <tr>
+            <td class="n">2</td>
+            <td>2024-10-30 15:28:39</td>
+            <td><span class="ename">item-added</span>
+<span class="p">{</span> <span class="exp">▾</span>
+  <span class="k">item:</span> <span class="p">{</span> <span class="exp">▾</span>
+    <span class="k">productId:</span> <span class="s">"blue-jeans"</span>
+    <span class="k">name:</span> <span class="s">"Blue Jeans"</span>
+    <span class="k">quantity:</span> <span class="num">2</span>
+  <span class="p">}</span>
+<span class="p">}</span></td>
+            <td><span class="p">{</span>
+  <span class="k">cartId:</span> <span class="s">"123"</span>,
+  <span class="k">checkedOut:</span> <span class="num">false</span>,
+  <span class="k">items:</span> <span class="p">[</span>
+    <span class="num">0:</span> <span class="p">{</span>
+      <span class="k">"productId":</span> <span class="s">"akka-tshirt"</span>,
+      <span class="k">"name":</span> <span class="s">"Akka Tshirt"</span>,
+      <span class="k">"quantity":</span> <span class="num">3</span>
+    <span class="p">}</span>,
+    <span class="num">1:</span> <span class="p">{</span>
+      <span class="k">"productId":</span> <span class="s">"blue-jeans"</span>,
+      <span class="k">"name":</span> <span class="s">"Blue Jeans"</span>,
+      <span class="k">"quantity":</span> <span class="num">2</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SHOT 3 — Trace flow view (local console)
+     ============================================================ -->
+<div class="shot-src" id="s-trace-flow">
+  <div class="ak-hdr">
+    <div class="ak-brand">AKKA</div>
+    <div></div>
+    <div class="ak-hdr-r">
+      <div class="ak-services-pill"><svg width="16" height="16"><use href="#i-cube"/></svg>Services</div>
+      <div class="ak-kebab"><i></i></div>
+    </div>
+  </div>
+  <div class="ak-body">
+    <div class="ak-side">
+      <div class="ak-side-hdr"><span class="t">Services</span><svg width="16" height="16" style="color:var(--muted)"><use href="#i-collapse"/></svg></div>
+      <div class="ak-row" style="margin-top:14px;"><svg width="16" height="16" style="color:var(--muted)"><use href="#i-grid"/></svg>All services</div>
+      <div class="ak-row on"><svg width="12" height="12" style="color:var(--dim)"><use href="#i-chev"/></svg>multi-agent</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-entity"/></svg>PreferencesEntity</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-workflow"/></svg>AgentTeamWorkflow</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-view"/></svg>ActivityView</div>
+      <div class="ak-child on"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-endpoint"/></svg>ActivityEndpoint</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-consumer"/></svg>PreferencesConsumer</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-agent"/></svg>Selector Agent</div>
+      <div class="ak-child"><svg width="14" height="14" style="color:var(--muted)"><use href="#i-agent"/></svg>Weather Agent</div>
+    </div>
+    <div class="ak-main" style="padding-top:22px;">
+      <div class="ak-title">
+        <svg class="ico" style="color:var(--yellow); width:30px; height:30px;"><use href="#i-endpoint"/></svg>
+        <div><div class="name" style="color:var(--white); font-size:22px;">ActivityEndpoint</div><div class="kind">Trace</div></div>
+      </div>
+      <div class="tv-back">← Back to Endpoint</div>
+      <div class="tv-canvas">
+        <!-- select-agents step -->
+        <div class="tv-node step" style="left:60px; top:0;">
+          <div class="chip">S</div><div class="name">select-agents</div>
+        </div>
+        <!-- Selector Agent 1 -->
+        <div class="tv-node agent" style="left:380px; top:60px;">
+          <span style="font-size:14px; margin-right:4px">✦</span>
+          <div><div class="name">Selector Agent</div><div class="dur">1.97s</div></div>
+        </div>
+        <!-- GetHistory command -->
+        <div class="tv-node cmd" style="left:660px; top:160px;">
+          <div class="chip">C</div><div class="name">GetHistory</div>
+        </div>
+        <!-- Agent Session Memory -->
+        <div class="tv-node mem" style="left:660px; top:230px;">
+          <svg width="16" height="16" style="color:var(--white); margin-right:2px" viewBox="0 0 24 24"><use href="#i-entity"/></svg>
+          <div><div class="name">Agent Session Memory</div><div class="dur">1ms</div></div>
+        </div>
+        <!-- Selector Agent 2 -->
+        <div class="tv-node agent" style="left:660px; top:305px;">
+          <span style="font-size:14px; margin-right:4px">✦</span>
+          <div><div class="name">Selector Agent</div><div class="dur">1.94s</div></div>
+        </div>
+
+        <div class="tv-line" style="left:225px; top:16px;  width:155px; border-top-style:dashed;"></div>
+        <div class="tv-line" style="left:510px; top:82px;  width:150px;"></div>
+        <div class="tv-line" style="left:510px; top:82px;  height:245px; width:0; border-left:1px dashed rgba(255,255,255,0.20);"></div>
+      </div>
+      <div class="tv-timeline">
+        <div class="tv-tl-h"><span class="t">Timeline</span><svg width="14" height="14" class="chev"><use href="#i-chev"/></svg></div>
+        <div class="tv-tl-scale"><span>0s</span><span>5.75s</span><span>11.5s</span><span>17.25s</span><span>23s</span></div>
+        <div class="tv-tl-bars">
+          <div class="tv-tl-bar cmd"   style="left:2%;  top:4px;  width:6%;"  >C</div>
+          <div class="tv-tl-bar step"  style="left:8%;  top:22px; width:10%;" >select-a…</div>
+          <div class="tv-tl-bar agent" style="left:18%; top:4px;  width:52%;" >Selector Agent</div>
+          <div class="tv-tl-bar mem"   style="left:70%; top:22px; width:4%;"  >M</div>
+          <div class="tv-tl-bar agent" style="left:74%; top:4px;  width:24%;" >Selector Agent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SHOT 4 — AAO Project services
+     ============================================================ -->
+<div class="shot-src" id="s-aao-services">
+  <div class="ak-hdr">
+    <div class="ak-brand">AKKA</div>
+    <input class="ak-search" value="Search" readonly>
+    <div class="ak-hdr-r">
+      <div class="ak-services-pill"><svg width="16" height="16"><use href="#i-cube"/></svg>Services</div>
+      <div class="ak-kebab"><i></i></div>
+    </div>
+  </div>
+  <div class="ak-topnav">
+    <a href="#" class="on">Services</a>
+    <a href="#">Members</a>
+    <a href="#">Regions</a>
+    <a href="#">Secrets</a>
+    <a href="#">Networks</a>
+    <a href="#">Settings</a>
+  </div>
+  <div class="ak-body">
+    <div class="ak-side">
+      <div class="ak-side-hdr"><span class="t">Services</span><svg width="16" height="16" style="color:var(--muted)"><use href="#i-collapse"/></svg></div>
+      <div class="ak-row" style="margin-top:14px;"><svg width="16" height="16" style="color:var(--muted)"><use href="#i-grid"/></svg>All services</div>
+      <div class="ak-row on"><span class="dot half"></span>cart-service</div>
+    </div>
+    <div class="ak-main" style="position:relative;">
+      <div class="ak-title ak-title-lg" style="margin-top:6px;">
+        <svg class="ico" style="color:var(--yellow); width:32px; height:32px;"><use href="#i-cube-fill"/></svg>
+        <div class="name">Project services</div>
+      </div>
+      <button class="ak-deploy"><span class="plus">+</span> DEPLOY A SERVICE</button>
+      <div class="sv-wrap" style="margin:44px auto 0; max-width:480px;">
+        <div class="sv-card" style="padding:22px 26px 32px;">
+          <div class="sv-hdr">
+            <svg class="ico" style="color:var(--yellow)"><use href="#i-cube-fill"/></svg>
+            <div class="name">cart-service</div>
+          </div>
+          <div style="height:98px;"></div>
+          <div class="sv-status"><span class="dot" style="background:linear-gradient(90deg, transparent 50%, var(--green) 50%);"></span><span class="lbl">PARTIALLY READY</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SHOT 5 — AAO Members list
+     ============================================================ -->
+<div class="shot-src" id="s-aao-members">
+  <div class="ak-hdr">
+    <div class="ak-brand">AKKA</div>
+    <input class="ak-search" value="Search" readonly>
+    <div class="ak-hdr-r">
+      <div class="ak-services-pill"><svg width="16" height="16"><use href="#i-cube"/></svg>Services</div>
+      <div class="ak-kebab"><i></i></div>
+    </div>
+  </div>
+  <div class="ak-topnav">
+    <a href="#">Services</a>
+    <a href="#" class="on">Members</a>
+    <a href="#">Regions</a>
+    <a href="#">Secrets</a>
+    <a href="#">Networks</a>
+    <a href="#">Settings</a>
+  </div>
+  <div class="ak-body">
+    <div class="ak-side">
+      <div class="ak-side-hdr"><span class="t">Services</span><svg width="16" height="16" style="color:var(--muted)"><use href="#i-collapse"/></svg></div>
+      <div class="ak-row" style="margin-top:14px;"><svg width="16" height="16" style="color:var(--muted)"><use href="#i-grid"/></svg>All services</div>
+      <div class="ak-row"><span class="dot half"></span>cart-service</div>
+    </div>
+    <div class="ak-main">
+      <div class="ak-title" style="margin-top:6px;">
+        <svg class="ico" style="color:var(--yellow); width:30px; height:30px;" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 20 C6 15 18 15 20 20" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <div><div class="name" style="color:var(--white)">Members</div></div>
+      </div>
+      <table class="m-tbl">
+        <thead><tr><th style="width:38%">Email</th><th style="width:16%">Status</th><th style="width:26%">Name</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="em">amelia.reyes@acme.com</td>       <td class="st">ACTIVE</td>  <td>Amelia Reyes</td>      <td class="rl">owner</td></tr>
+          <tr><td class="em">jonas.thorsen@acme.com</td>      <td class="st">ACTIVE</td>  <td>Jonas Thorsen</td>     <td class="rl">admin</td></tr>
+          <tr><td class="em">priya.narayanan@acme.com</td>    <td class="st">ACTIVE</td>  <td>Priya Narayanan</td>   <td class="rl">developer</td></tr>
+          <tr><td class="em">marc.laurent@acme.com</td>       <td class="st">ACTIVE</td>  <td>Marc Laurent</td>      <td class="rl">developer</td></tr>
+          <tr><td class="em">sofia.melo@acme.com</td>         <td class="st pend">INVITED</td><td>&mdash;</td>           <td class="rl">developer</td></tr>
+          <tr><td class="em">yuki.tanaka@acme.com</td>        <td class="st">ACTIVE</td>  <td>Yuki Tanaka</td>       <td class="rl">viewer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Screen detail">
+  <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+  <div class="lb-inner">
+    <div class="lb-frame" id="lb-frame"></div>
+    <div class="lb-cap"><div class="lb-cap-t" id="lb-title"></div><div class="lb-cap-d" id="lb-desc"></div></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.toggle('active', x === t));
+    const id = t.dataset.panel;
+    panels.forEach(p => p.classList.toggle('active', p.id === id));
+    renderActiveThumbs();
+  }));
+
+  function renderActiveThumbs(){
+    document.querySelectorAll('.panel.active .thumb').forEach(btn => {
+      if (btn.dataset.rendered) return;
+      const src = document.getElementById(btn.dataset.src);
+      if (!src) return;
+      const clone = src.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.classList.add('thumb-scale');
+      const w = btn.clientWidth || 200;
+      clone.style.transform = 'scale(' + (w / 1200) + ')';
+      btn.insertBefore(clone, btn.firstChild);
+      btn.dataset.rendered = '1';
+    });
+  }
+  let raf = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      document.querySelectorAll('.panel.active .thumb').forEach(btn => {
+        const clone = btn.querySelector('.thumb-scale');
+        if (!clone) return;
+        clone.style.transform = 'scale(' + (btn.clientWidth / 1200) + ')';
+      });
+    });
+  });
+  renderActiveThumbs();
+
+  const lb = document.getElementById('lb');
+  const lbFrame = document.getElementById('lb-frame');
+  const lbTitle = document.getElementById('lb-title');
+  const lbDesc  = document.getElementById('lb-desc');
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  document.addEventListener('click', e => {
+    const t = e.target.closest('.thumb');
+    if (t) openLightbox(t);
+  });
+
+  function openLightbox(btn){
+    const src = document.getElementById(btn.dataset.src);
+    if (!src) return;
+    lbFrame.innerHTML = '';
+    const clone = src.cloneNode(true);
+    clone.removeAttribute('id');
+    lbFrame.appendChild(clone);
+    lbTitle.textContent = btn.dataset.title || '';
+    lbDesc.textContent  = btn.dataset.desc  || '';
+    lb.classList.add('open');
+    const fit = () => {
+      const s = Math.min(1, lbFrame.clientWidth / 1200);
+      clone.style.transform = 'scale(' + s + ')';
+      clone.style.transformOrigin = '0 0';
+      lbFrame.style.height = (750 * s) + 'px';
+    };
+    fit();
+    lb._fit = fit;
+    window.addEventListener('resize', fit);
+  }
+  function closeLightbox(){
+    lb.classList.remove('open');
+    if (lb._fit) window.removeEventListener('resize', lb._fit);
+    lbFrame.innerHTML = '';
+    lbFrame.style.height = '';
+  }
+})();
+</script>
+
+</body>
+</html>

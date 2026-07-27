@@ -226,6 +226,7 @@
   #s6::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.03) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
   .s6-reveal{opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1); position:relative; z-index:1;}
   .s6-reveal.visible{opacity:1; transform:none;}
+  #s6 > .s6-top, #s6 > .s6-frame-wrap{width:100%; max-width:1400px; margin-left:auto; margin-right:auto;}
   .s6-top{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; gap:40px; flex-shrink:0;}
   .s6-top-left{flex:1;}
   .s6-eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:3px; color:var(--yellow); font-weight:600; margin-bottom:10px;}
@@ -361,7 +362,7 @@
   #s-scale .sc-d{font-size:13.5px; line-height:1.5; color:#9A9A9A;}
   #s-scale .sc-d b{color:var(--green); font-weight:600;}
 
-  #s-scale .sc-quotes{display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; border-top:1px solid var(--line); padding-top:46px;}
+  #s-scale .sc-quotes{display:grid; grid-template-columns:1fr 1fr; gap:40px; border-top:1px solid var(--line); padding-top:46px; max-width:1000px; margin:0 auto;}
   #s-scale .p-quote{text-align:center; position:relative; margin:0;}
   #s-scale .p-quote::before{content:'\201C'; display:block; font-family:Georgia,'Times New Roman',serif; font-size:52px; line-height:0.7; color:var(--yellow); margin-bottom:4px;}
   #s-scale .p-quote p{font-size:clamp(15px,1.45vw,20px); line-height:1.4; font-weight:600; letter-spacing:-0.01em; color:var(--white); margin:0 auto; max-width:30ch; text-wrap:balance;}
@@ -776,10 +777,6 @@
       <blockquote class="p-quote">
         <p>7.5&times; more orders on half the hardware. 70% less infrastructure spend &mdash; over $10M a year.</p>
         <cite>&middot; Verizon</cite>
-      </blockquote>
-      <blockquote class="p-quote">
-        <p>AI-based merchant onboarding deployed to production in weeks by college grads.</p>
-        <cite>&middot; Dojo</cite>
       </blockquote>
     </div>
   </div>

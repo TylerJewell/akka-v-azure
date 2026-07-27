@@ -61,6 +61,18 @@ each of these unless the port overrides it under the wrapper class (WRAPPER =
                      akka.io URLs; host demos on /hubfs (akka.io/hubfs/…). Never leave them
                      relative (404 under the page slug) or on github.io (external dependency).
                      [checked automatically below]
+    7. Header offset — the akka.io header is position:fixed, 78px desktop / 64px mobile.
+                     Section eyebrows / stat rows that sit at padding-top:48-64px get
+                     clipped by the header (seen on #s-scale and #s6 in the Overview deck).
+                     Append to the port CSS:
+                       @media (min-width:1001px){
+                         WRAPPER section{ padding-top:88px !important; }
+                         /* sticky slides need their own: */
+                         WRAPPER #<sticky-section>{ top:78px !important; height:calc(100dvh - 78px) !important; }
+                       }
+                       @media (max-width:1000px){ WRAPPER section{ padding-top:74px !important; } }
+                     Local view is unaffected — port-only rule. Preserves existing
+                     padding-bottom/side values from the shorthand.
 
 FULL DEPLOY PLAYBOOK — see PUBLISHING.md (co-located) for the end-to-end procedure
 (verified 2026-07-27): deck & compare port+split (scope, 3 partials, the preserved

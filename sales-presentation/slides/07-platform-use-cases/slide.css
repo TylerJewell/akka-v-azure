@@ -43,6 +43,10 @@
   max-height: 900px;
   gap: 14px;
   justify-content: center;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .pp-head {
   max-width: none;
