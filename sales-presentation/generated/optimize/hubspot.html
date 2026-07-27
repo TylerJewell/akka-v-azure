@@ -348,27 +348,25 @@
 .akka-embed .arc-sub { font-size:clamp(15px,1.3vw,19px); color:#b8b8b8; line-height:1.45; max-width:1150px; margin-bottom:22px; }
 .akka-embed [data-arc] { opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1); }
 .akka-embed [data-arc].visible { opacity:1; transform:none; }
-.akka-embed #arc-wrapper .dia { margin-top:0; }
+.akka-embed #arc-wrapper .dia { margin-top:0; position:relative; }
 .akka-embed #arc-wrapper .dia svg { width:100%; height:auto; display:block; }
 .akka-embed #arc-wrapper .svgcap { font-family:var(--mono); font-size:11px; color:var(--grey4); letter-spacing:.5px; margin-top:14px; }
-.akka-embed #arc-wrapper .arc-m { display:none; }
-.akka-embed #arc-wrapper .arc-m .plane { border:1px dashed #3F3F3F; border-radius:10px; padding:14px; }
-.akka-embed #arc-wrapper .arc-m .plane.managed { border:1px solid rgba(245,197,24,0.28); background:rgba(245,197,24,0.04); }
-.akka-embed #arc-wrapper .arc-m .plane.infra { border:1px solid var(--line); }
-.akka-embed #arc-wrapper .arc-m .plane-lab { font-family:var(--mono); font-size:10px; letter-spacing:1px; color:#888; margin-bottom:10px; }
-.akka-embed #arc-wrapper .arc-m .plane.managed .plane-lab { color:var(--yellow); }
-.akka-embed #arc-wrapper .arc-m .grp-lab { font-family:var(--mono); font-size:9px; letter-spacing:1px; color:#666; margin:10px 0 6px; }
-.akka-embed #arc-wrapper .arc-m .card { background:#141414; border:1px solid var(--line); border-radius:6px; padding:8px 10px; margin-bottom:6px; }
-.akka-embed #arc-wrapper .arc-m .card.hl { border-color:var(--yellow); }
-.akka-embed #arc-wrapper .arc-m .card.dash { border:1px dashed #666; }
-.akka-embed #arc-wrapper .arc-m .card .t { font-size:13px; color:#fff; line-height:1.3; }
-.akka-embed #arc-wrapper .arc-m .card .d { font-family:var(--mono); font-size:9.5px; color:#777; margin-top:3px; line-height:1.4; }
-.akka-embed #arc-wrapper .arc-m .down { text-align:center; color:var(--yellow); font-size:16px; margin:6px 0; }
+.akka-embed #arc-wrapper .arc-zoomhint { display:none; position:absolute; right:10px; bottom:10px; z-index:3;
+  font-family:var(--mono); font-size:11px; letter-spacing:.5px; color:var(--yellow);
+  background:rgba(20,20,20,.82); border:1px solid rgba(245,197,24,.5); border-radius:6px;
+  padding:7px 11px; cursor:zoom-in; -webkit-tap-highlight-color:transparent; }
+.akka-embed #arc-wrapper .arc-zoom { position:fixed; inset:0; z-index:9999; display:none; background:rgba(0,0,0,.94); touch-action:none; overscroll-behavior:contain; }
+.akka-embed #arc-wrapper .arc-zoom.open { display:block; }
+.akka-embed #arc-wrapper .arc-zoom .arc-zoom-stage { position:absolute; inset:0; overflow:hidden; touch-action:none; cursor:grab; }
+.akka-embed #arc-wrapper .arc-zoom .arc-zoom-stage svg { position:absolute; top:0; left:0; transform-origin:0 0; width:1440px; max-width:none; height:auto; will-change:transform; }
+.akka-embed #arc-wrapper .arc-zoom .arc-zoom-bar { position:absolute; top:calc(env(safe-area-inset-top,0px) + 12px); right:12px; z-index:2; display:flex; gap:8px; }
+.akka-embed #arc-wrapper .arc-zoom .arc-zoom-bar button { width:44px; height:44px; border-radius:8px; border:1px solid #333; background:rgba(20,20,20,.9); color:#fff; font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; }
+.akka-embed #arc-wrapper .arc-zoom .arc-zoom-bar button:active { background:var(--yellow); color:#000; }
 @media (max-width:820px) {
 .akka-embed #arc-wrapper { padding:56px 5vw; }
 .akka-embed #arc-wrapper .arc-eyebrow { letter-spacing:2px; }
-.akka-embed #arc-wrapper .dia svg, .akka-embed #arc-wrapper .dia .svgcap { display:none !important; }
-.akka-embed #arc-wrapper .arc-m { display:block; }
+.akka-embed #arc-wrapper .dia svg { cursor:zoom-in; }
+.akka-embed #arc-wrapper .arc-zoomhint { display:block; }
 }
 .akka-embed #ts4-wrapper { height: 240vh;
   position: relative; }
@@ -1202,39 +1200,7 @@
           <line x1="1196" y1="38" x2="1216" y2="38" stroke="#8A8A8A" stroke-width="1.6" stroke-dasharray="4 3"/>
           <text x="1224" y="38" dominant-baseline="middle" font-family="var(--mono)" font-size="10" fill="#8A8A8A">training &middot; data flow</text>
         </svg>
-        <!-- Mobile-only stacked variant of the architecture SVG above. KEEP IN SYNC with the <svg> — same three planes, same labels. -->
-        <div class="arc-m" aria-label="Managed plane architecture">
-          <div class="plane client">
-            <div class="plane-lab">CLIENT ENVIRONMENT</div>
-            <div class="grp-lab">HARNESSES</div>
-            <div class="card"><div class="t">Cursor</div></div>
-            <div class="card"><div class="t">Claude Code</div></div>
-            <div class="card"><div class="t">Codex</div></div>
-            <div class="card"><div class="t">GitHub Copilot</div></div>
-            <div class="grp-lab">CONNECTORS</div>
-            <div class="card"><div class="t">BYO-agent plugin</div><div class="d">endpoint config · trace capture</div></div>
-            <div class="card"><div class="t">Log forwarder</div><div class="d">production logs → AI Gateway</div></div>
-            <div class="card"><div class="t">Repo &amp; CI connection</div><div class="d">codebases · sandbox RL deploys</div></div>
-          </div>
-          <div class="down">↓</div>
-          <div class="plane managed">
-            <div class="plane-lab">AKKA MANAGED PLANE · SINGLE TENANT · SOVEREIGN</div>
-            <div class="card"><div class="t">Governance</div><div class="d">consent · policy · RBAC · audit · checks</div></div>
-            <div class="card"><div class="t">Scorecards &amp; dashboards</div><div class="d">quality · velocity · cost · autonomy</div></div>
-            <div class="card hl"><div class="t">AI Gateway</div><div class="d">OpenAI-compatible ingress · tier select · adapter hot-swap · cache · canary · shadow · rollback</div></div>
-            <div class="card dash"><div class="t">Frontier fallback</div><div class="d">GPT-5.5 · Opus 4.8 · external API</div></div>
-            <div class="grp-lab">CONTINUOUS TRAINING</div>
-            <div class="card"><div class="t">Trace store → Scrub &amp; curate → Judges &amp; evals → RL envs → Synthetic data → SFT · DPO · RL</div><div class="d">agent traces · PII/secrets scrub · reward models · suites/sandbox · teacher/RLVR · LoRA out</div></div>
-          </div>
-          <div class="down">↓</div>
-          <div class="plane infra">
-            <div class="plane-lab">INFRASTRUCTURE · COMPUTE</div>
-            <div class="card hl"><div class="t">Inference</div><div class="d">endpoints · elastic auto-scale · base + adapters</div></div>
-            <div class="card"><div class="t">GLM-5 · DeepSeek V4 Pro · Kimi K2</div><div class="d">adapted — code review · deploy · security · SRE</div></div>
-            <div class="card hl"><div class="t">Your GPUs</div><div class="d">vLLM serving + verl training · in your VPC · sovereign · air-gapped · you own the weights</div></div>
-            <div class="card"><div class="t">Fireworks</div><div class="d">Fireworks serving + tuning · their cloud · managed · you own the adapters</div></div>
-          </div>
-        </div>
+        <button type="button" class="arc-zoomhint" aria-label="Open the diagram to zoom">⤢ Tap to zoom</button>
       </div>
     </div>
   </div>
@@ -1903,6 +1869,86 @@ const arcObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.12 });
 document.querySelectorAll('[data-arc]').forEach(el => arcObs.observe(el));
+
+/* ── opt-06 tap-to-zoom lightbox — keeps the full-fidelity SVG (no mobile redraw) ── */
+(function () {
+  var wrap = document.getElementById('arc-wrapper');
+  if (!wrap) return;
+  var srcSvg = wrap.querySelector('.dia svg');
+  var hint = wrap.querySelector('.arc-zoomhint');
+  if (!srcSvg) return;
+
+  var NW = 1440, NH = 646;                 // svg native viewBox
+  var overlay, stage, svg, s = 1, x = 0, y = 0, minS = 0.1, maxS = 6;
+
+  function apply() { svg.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')'; }
+  function fit() {
+    var vw = window.innerWidth, vh = window.innerHeight, f = Math.min(vw / NW, vh / NH) * 0.96;
+    minS = f * 0.9; s = f; x = (vw - NW * f) / 2; y = (vh - NH * f) / 2; apply();
+  }
+  function zoomAt(cx, cy, factor) {
+    var ns = Math.max(minS, Math.min(maxS, s * factor)), k = ns / s;
+    x = cx - (cx - x) * k; y = cy - (cy - y) * k; s = ns; apply();
+  }
+  function open() { if (!overlay) build(); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; fit(); }
+  function close() { if (overlay) overlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+  function build() {
+    overlay = document.createElement('div');
+    overlay.className = 'arc-zoom';
+    overlay.innerHTML =
+      '<div class="arc-zoom-bar">' +
+        '<button type="button" data-z="out" aria-label="Zoom out">−</button>' +
+        '<button type="button" data-z="in" aria-label="Zoom in">+</button>' +
+        '<button type="button" data-z="close" aria-label="Close">×</button>' +
+      '</div><div class="arc-zoom-stage"></div>';
+    stage = overlay.querySelector('.arc-zoom-stage');
+    svg = srcSvg.cloneNode(true);
+    svg.removeAttribute('style');
+    stage.appendChild(svg);
+    wrap.appendChild(overlay);
+
+    overlay.querySelector('[data-z=close]').addEventListener('click', close);
+    overlay.querySelector('[data-z=in]').addEventListener('click', function () { zoomAt(innerWidth / 2, innerHeight / 2, 1.4); });
+    overlay.querySelector('[data-z=out]').addEventListener('click', function () { zoomAt(innerWidth / 2, innerHeight / 2, 1 / 1.4); });
+
+    var pts = new Map(), last = null, pinch = null;
+    function pinchState() {
+      var a = Array.from(pts.values()), dx = a[1].x - a[0].x, dy = a[1].y - a[0].y;
+      return { dist: Math.hypot(dx, dy) || 1, mx: (a[0].x + a[1].x) / 2, my: (a[0].y + a[1].y) / 2 };
+    }
+    stage.addEventListener('pointerdown', function (e) {
+      stage.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) { pinch = pinchState(); last = null; } else last = { x: e.clientX, y: e.clientY };
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size >= 2 && pinch) {
+        var p = pinchState();
+        zoomAt(p.mx, p.my, p.dist / pinch.dist);
+        x += p.mx - pinch.mx; y += p.my - pinch.my; apply(); pinch = p;
+      } else if (last) {
+        x += e.clientX - last.x; y += e.clientY - last.y; last = { x: e.clientX, y: e.clientY }; apply();
+      }
+    });
+    function endPtr(e) {
+      pts.delete(e.pointerId);
+      if (pts.size < 2) pinch = null;
+      if (pts.size === 1) { var v = pts.values().next().value; last = { x: v.x, y: v.y }; }
+      else if (pts.size === 0) last = null;
+    }
+    stage.addEventListener('pointerup', endPtr);
+    stage.addEventListener('pointercancel', endPtr);
+    stage.addEventListener('wheel', function (e) { e.preventDefault(); zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.12 : 1 / 1.12); }, { passive: false });
+  }
+
+  if (hint) hint.addEventListener('click', open);
+  srcSvg.addEventListener('click', function () { if (window.matchMedia('(max-width:820px)').matches) open(); });
+  window.addEventListener('resize', function () { if (overlay && overlay.classList.contains('open')) fit(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
 
 
 /* ── opt-05-prove ── */

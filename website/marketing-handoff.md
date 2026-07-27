@@ -10,8 +10,8 @@ A running list of site changes to implement. New canonical URL structure below; 
 
 | # | Item | Current URL | New URL | Notes |
 |---|------|-------------|---------|-------|
-| 1 | **Platform** page | `akka.io/platform-intro` | `akka.io/offerings/platform` | Establishes the `/offerings/` parent. |
-| 2 | **Akka Specify** page | `doc.akka.io/sdk/spec-driven-development.html` | `akka.io/offerings/specify` | New marketing page; will host the **new Akka Specify presentation**. Moves Specify from docs onto the marketing site alongside Platform. |
+| 1 | **Platform** page | `akka.io/platform-intro` | `akka.io/platform/overview` | Establishes the `/platform/` parent. |
+| 2 | **Akka Specify** page | `doc.akka.io/sdk/spec-driven-development.html` | `akka.io/platform/specify` | New marketing page; will host the **new Akka Specify presentation**. Moves Specify from docs onto the marketing site alongside Platform. |
 | 3 | **Customer stories** | `akka.io/customer-stories` (index + scattered) | `akka.io/customers/<customer-name>` | One page per customer under `/customers/`. (17 stories.) |
 | 4 | **Battlecards** | not yet on site | `akka.io/compare/<competitor-name>` | One page per competitor under `/compare/`. (14 cards.) |
 

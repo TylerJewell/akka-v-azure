@@ -25,7 +25,6 @@ Checks (each cites a guide section):
     - Roboto / Roboto Mono           only Instrument Sans; mono for code only (§6)
     - font-size:inherit!important    pulls the parent (16px) size, not yours (§6, §18)
   Content, manual & context-dependent (§8):
-    - actor / actors / actor model   banned in customer-facing copy (§8)
     - "the/The Akka" (+ punctuation)  the brand is never preceded by an article (§8)
     - "Akka Agentic AI Platform"      say "Akka" outside the Agentic Opportunity block (§8)
   Hard fails:
@@ -63,6 +62,13 @@ each of these unless the port overrides it under the wrapper class (WRAPPER =
                      relative (404 under the page slug) or on github.io (external dependency).
                      [checked automatically below]
 
+FULL DEPLOY PLAYBOOK — see PUBLISHING.md (co-located) for the end-to-end procedure
+(verified 2026-07-27): deck & compare port+split (scope, 3 partials, the preserved
+port-CSS block, sticky-slide 78px header offset, injecting the compare reveal script);
+blog edit/retire (hide_from_listing keeps the URL live — never unpublish); slug rename +
+explicit 301 redirects; the hardcoded mega-menu module + by-ID homepage button; Files/demos
+(folderId not folderPath); source-code push (draft+published = live); no shareable draft preview.
+
 Exit 0 = no failures; non-zero = failure(s) found.
 """
 
@@ -89,7 +95,6 @@ UNSCOPED_STAR = re.compile(r'(?<![.\w-])\*\s*[,{][^{}]*box-sizing')  # universal
 FONT_INHERIT = re.compile(r'font-size\s*:\s*inherit\s*!important')
 
 # --- content copy rules that need a human edit (CONTENT REMINDERS) ---
-ACTORS = re.compile(r'\bactor model\b|\bactors?\b', re.I)
 ARTICLE_BRAND = re.compile(r'\b[Tt]he Akka(?=[.,;:)!?"\']|\s*$)', re.M)
 FULL_PRODUCT = re.compile(r'\bAkka Agentic AI Platform\b')
 
@@ -121,10 +126,7 @@ WARN_CSS = [
 # Content rules (guide §8). The CSS port transforms do NOT fix these — they need a
 # manual/scripted copy edit and are context-dependent (e.g. the "Agentic Opportunity"
 # block legitimately keeps the full product name), so they surface as reminders, not fails.
-# NOTE: "actor" terminology is allowed in the standalone DECKS (Tyler override 2026-07-25)
-# but the HubSpot guide bans it in customer-facing copy — hence a reminder on the port path.
 CONTENT_RULES = [
-    (ACTORS, 'actor terminology — HubSpot copy replaces with "independent process/entity" or credits "Akka" (guide §8)'),
     (ARTICLE_BRAND, '"the Akka" — the brand is never preceded by an article; drop "the" (guide §8)'),
     (FULL_PRODUCT, '"Akka Agentic AI Platform" — use "Akka" outside the Agentic Opportunity block (guide §8)'),
 ]

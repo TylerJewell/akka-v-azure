@@ -107,39 +107,7 @@
           <line x1="1196" y1="38" x2="1216" y2="38" stroke="#8A8A8A" stroke-width="1.6" stroke-dasharray="4 3"/>
           <text x="1224" y="38" dominant-baseline="middle" font-family="var(--mono)" font-size="10" fill="#8A8A8A">training &middot; data flow</text>
         </svg>
-        <!-- Mobile-only stacked variant of the architecture SVG above. KEEP IN SYNC with the <svg> — same three planes, same labels. -->
-        <div class="arc-m" aria-label="Managed plane architecture">
-          <div class="plane client">
-            <div class="plane-lab">CLIENT ENVIRONMENT</div>
-            <div class="grp-lab">HARNESSES</div>
-            <div class="card"><div class="t">Cursor</div></div>
-            <div class="card"><div class="t">Claude Code</div></div>
-            <div class="card"><div class="t">Codex</div></div>
-            <div class="card"><div class="t">GitHub Copilot</div></div>
-            <div class="grp-lab">CONNECTORS</div>
-            <div class="card"><div class="t">BYO-agent plugin</div><div class="d">endpoint config · trace capture</div></div>
-            <div class="card"><div class="t">Log forwarder</div><div class="d">production logs → AI Gateway</div></div>
-            <div class="card"><div class="t">Repo &amp; CI connection</div><div class="d">codebases · sandbox RL deploys</div></div>
-          </div>
-          <div class="down">↓</div>
-          <div class="plane managed">
-            <div class="plane-lab">AKKA MANAGED PLANE · SINGLE TENANT · SOVEREIGN</div>
-            <div class="card"><div class="t">Governance</div><div class="d">consent · policy · RBAC · audit · checks</div></div>
-            <div class="card"><div class="t">Scorecards &amp; dashboards</div><div class="d">quality · velocity · cost · autonomy</div></div>
-            <div class="card hl"><div class="t">AI Gateway</div><div class="d">OpenAI-compatible ingress · tier select · adapter hot-swap · cache · canary · shadow · rollback</div></div>
-            <div class="card dash"><div class="t">Frontier fallback</div><div class="d">GPT-5.5 · Opus 4.8 · external API</div></div>
-            <div class="grp-lab">CONTINUOUS TRAINING</div>
-            <div class="card"><div class="t">Trace store → Scrub &amp; curate → Judges &amp; evals → RL envs → Synthetic data → SFT · DPO · RL</div><div class="d">agent traces · PII/secrets scrub · reward models · suites/sandbox · teacher/RLVR · LoRA out</div></div>
-          </div>
-          <div class="down">↓</div>
-          <div class="plane infra">
-            <div class="plane-lab">INFRASTRUCTURE · COMPUTE</div>
-            <div class="card hl"><div class="t">Inference</div><div class="d">endpoints · elastic auto-scale · base + adapters</div></div>
-            <div class="card"><div class="t">GLM-5 · DeepSeek V4 Pro · Kimi K2</div><div class="d">adapted — code review · deploy · security · SRE</div></div>
-            <div class="card hl"><div class="t">Your GPUs</div><div class="d">vLLM serving + verl training · in your VPC · sovereign · air-gapped · you own the weights</div></div>
-            <div class="card"><div class="t">Fireworks</div><div class="d">Fireworks serving + tuning · their cloud · managed · you own the adapters</div></div>
-          </div>
-        </div>
+        <button type="button" class="arc-zoomhint" aria-label="Open the diagram to zoom">⤢ Tap to zoom</button>
       </div>
     </div>
   </div>

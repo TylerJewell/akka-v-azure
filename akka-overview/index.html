@@ -16,7 +16,7 @@
     --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
   }
   html{background:var(--black); scroll-behavior:smooth;}
-  body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:hidden;}
+  body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:clip;}
   section{position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:64px 6vw; overflow:hidden;}
   .inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
   section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
