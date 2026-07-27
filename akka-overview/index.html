@@ -133,7 +133,7 @@
   .chal{position:relative;}
   .chal h3{font-size:clamp(18px,1.85vw,25px); font-weight:700; letter-spacing:-0.02em; color:var(--white); margin-bottom:10px;}
   .chal p{font-size:clamp(13.5px,1.12vw,16px); color:var(--muted); line-height:1.55; max-width:40ch;}
-  .chal-q{margin-top:13px; padding-left:15px; border-left:2px solid rgba(255,206,74,0.45); font-size:clamp(12.5px,1vw,14px); color:#d0d0d0; font-style:italic; line-height:1.5; max-width:42ch;}
+  .chal-q{margin-top:13px; padding-left:14px; border-left:1px solid var(--yellow); border-radius:0; font-size:clamp(12.5px,1vw,14px); color:#d0d0d0; font-style:italic; line-height:1.5; max-width:42ch;}
   .chal-q cite{display:block; margin-top:8px; font-style:normal; font-size:11.5px; letter-spacing:.3px; color:var(--yellow); font-weight:600;}
 
   /* ---- morph transition (problem -> answer) ---- */
@@ -399,7 +399,7 @@
 
 <section id="s-morph">
   <div class="inner">
-    <h2 class="shead reveal">The Emerging <span class="accent">Enterprise AI</span> Stack</h2>
+    <h2 class="shead reveal">Enterprise <span class="accent">Agentic AI</span></h2>
     <div class="pf-grid">
 
       <div class="cake-wrap reveal">
@@ -445,7 +445,7 @@
           <div class="chal">
             <h3>AI costs</h3>
             <p>Frontier model costs are increasing unsustainably.</p>
-            <blockquote class="chal-q">&ldquo;You pay for intelligence twice: once with money, and again with the proprietary knowledge you must reveal.&rdquo;<cite>Satya Nadella, Microsoft</cite></blockquote>
+            <blockquote class="chal-q">You pay for intelligence twice: once with money, and again with the proprietary knowledge you must reveal.<cite>Satya Nadella, Microsoft</cite></blockquote>
           </div>
           <div class="chal">
             <h3>Policy enforcement</h3>
@@ -862,7 +862,7 @@
 <section id="s-routes" data-active="specify">
 <div class="inner">
   <h2 class="shead reveal">Explore our <span class="accent">platform.</span></h2>
-  <div class="ssub reveal">Our platform is composable, enabling you to start with development, governance, orchestration, or optimization.</div>
+  <div class="ssub reveal">Everything it takes to build, run, govern, and improve agentic AI, all on one runtime.</div>
 
   <div class="pf-grid reveal">
 
@@ -1072,6 +1072,8 @@
   // problem -> answer morph
   const morph = document.getElementById('s-morph');
   let morphed = false;
+  let animating = false;      // guard against sizeBox clobbering an in-progress transition
+  let animTimer = null;
 
   // size the draw-box SVG to the wrapper's real pixels so corners are a true 16px radius
   const box = morph.querySelector('.drawbox');
@@ -1084,10 +1086,16 @@
     boxRect.setAttribute('x', 1); boxRect.setAttribute('y', 1);
     boxRect.setAttribute('width', w - 2); boxRect.setAttribute('height', h - 2);
     boxRect.setAttribute('rx', 16); boxRect.setAttribute('ry', 16);
-    boxLen = boxRect.getTotalLength();
-    boxRect.style.transition = 'none';                       // never animate on load / resize
+    const newLen = boxRect.getTotalLength();
+    // If the box's actual pixel size hasn't meaningfully changed, don't touch
+    // the transition/dashoffset — otherwise we can clobber an in-progress
+    // animation triggered by a spurious resize/load event.
+    if (Math.abs(newLen - boxLen) < 1 && boxLen) return;
+    boxLen = newLen;
+    if (animating) return;    // resize during animation: preserve the in-flight transition
+    boxRect.style.transition = 'none';
     boxRect.style.strokeDasharray = boxLen;
-    boxRect.style.strokeDashoffset = morphed ? 0 : boxLen;   // fully hidden until drawn
+    boxRect.style.strokeDashoffset = morphed ? 0 : boxLen;
   }
   sizeBox();
   window.addEventListener('resize', sizeBox);
@@ -1117,7 +1125,22 @@
   function setMorph(on){
     if (morphed === on) return;
     morphed = on;
+    animating = true;
+    // Clear the animating flag after the transition and text-flip settle (1.15s
+    // box draw + 230ms text swap + safety margin). Guards sizeBox from clobbering
+    // the transition mid-flight.
+    clearTimeout(animTimer);
+    animTimer = setTimeout(() => { animating = false; }, 1600);
     if (on) animDone = false;
+    // Clear any inline chalcol overrides from a prior completeMorph so the CSS
+    // .answered rule can drive the transition properly on this pass.
+    const chalcol = morph.querySelector('.chalcol');
+    if (chalcol) {
+      chalcol.style.transition = '';
+      chalcol.style.opacity = '';
+      chalcol.style.transform = '';
+      chalcol.style.pointerEvents = '';
+    }
     morph.classList.toggle('answered', on);
     boxRect.style.transition = 'stroke-dashoffset 1.15s ease';   // animate only on space
     boxRect.style.strokeDashoffset = on ? 0 : boxLen;   // trace the box on / off
@@ -1137,6 +1160,16 @@
     boxRect.style.strokeDashoffset = 0;
     morph.classList.remove('txhide');
     applyText(true);
+    // Force chalcol invisible instantly. Otherwise its .answered fade has a
+    // 1.3s delay + 0.4s duration, so hitting Down twice (which calls this
+    // path) shows segments OVER the still-visible chalcol until 1.7s elapses.
+    const chalcol = morph.querySelector('.chalcol');
+    if (chalcol) {
+      chalcol.style.transition = 'none';
+      chalcol.style.opacity = '0';
+      chalcol.style.transform = 'translateY(-14px)';
+      chalcol.style.pointerEvents = 'none';
+    }
     segEls.forEach(s => s.classList.add('on'));
     animDone = true;
   }
@@ -1152,8 +1185,20 @@
     }
     e.preventDefault(); go(fwd ? 1 : -1);
   });
+  // Auto-trigger the morph animation when the section scrolls into view. Without
+  // this, mouse-wheel / trackpad scrolling past the section skips the animation
+  // entirely — users only got the reveal via PgDn/Space/click. One-shot:
+  // disconnect after firing (or after morphed becomes true from click/PgDn) so
+  // ratio wobble around the 0.6 boundary can't retrigger anything.
+  const morphIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.intersectionRatio >= 0.6 && !morphed) setMorph(true);
+    });
+    if (morphed) morphIO.disconnect();
+  }, { threshold: [0.6] });
+  morphIO.observe(morph);
 
-  // resilience demo (ported from 11-resilience/slide.js) — reveal + expand toggle
+  // resilience demo (ported from 11-resilience/slide.js) — reveal + expand toggle + iframe fit
   (function() {
     var revObs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
@@ -1171,6 +1216,56 @@
         toggle.setAttribute('aria-label', expanded ? 'Collapse resilience tester' : 'Expand resilience tester');
         toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
       });
+    }
+
+    // Dynamically fit the iframe so the tester content fits vertically without a
+    // scrollbar at any viewport. The static 119%/scale(0.84) works on large
+    // screens but leaves a scrollbar on smaller ones. Measure the tester's
+    // natural content height on load and compute the scale needed to fit.
+    var iframe = document.querySelector('#s6 .s6-frame-wrap iframe');
+    if (iframe) {
+      var lastScale = null;
+      function fitIframe() {
+        var wrap = iframe.parentElement;
+        if (!wrap) return;
+        var doc;
+        try { doc = iframe.contentDocument; } catch (e) { return; }
+        if (!doc || !doc.body) return;
+        var wrapH = wrap.clientHeight;
+        var wrapW = wrap.clientWidth;
+        if (wrapH < 40 || wrapW < 40) return;
+        // Reset transforms so we measure natural
+        iframe.style.width = ''; iframe.style.height = ''; iframe.style.transform = '';
+        var contentH = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+        var contentW = Math.max(doc.body.scrollWidth,  doc.documentElement.scrollWidth);
+        // Choose the tighter of vertical / horizontal fit; cap at 1 (never enlarge)
+        var scale = Math.min(1, wrapH / contentH, wrapW / contentW);
+        // Add a tiny safety margin so no scrollbar at the rounding boundary
+        scale = Math.max(0.3, scale * 0.98);
+        var inv = 100 / scale;
+        iframe.style.width = inv + '%';
+        iframe.style.height = inv + '%';
+        iframe.style.transform = 'scale(' + scale + ')';
+        iframe.style.transformOrigin = 'top left';
+        lastScale = scale;
+      }
+      iframe.addEventListener('load', function(){
+        // rAFs let the iframe's inner layout settle before measuring
+        requestAnimationFrame(function(){ requestAnimationFrame(fitIframe); });
+      });
+      var rafId = 0;
+      window.addEventListener('resize', function(){
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(fitIframe);
+      });
+      // Also refit when the expand toggle changes the frame size
+      if (toggle) toggle.addEventListener('click', function(){
+        requestAnimationFrame(function(){ requestAnimationFrame(fitIframe); });
+      });
+      // In case iframe was already loaded (cached), attempt once
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        requestAnimationFrame(function(){ requestAnimationFrame(fitIframe); });
+      }
     }
   })();
 </script>
