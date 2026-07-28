@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Akka — Reliable AI for Every Industry</title>
+<title>Akka Platform — Reliable AI for Every Industry</title>
 <link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1076,10 +1076,20 @@
     return y;
   }
   function go(dir){
+    const HDR = 78;   // fixed header height on akka.io
     const y = window.scrollY;
+    // Section headers are considered "already at" a section when scrollY is
+    // within half a viewport of its top. Advance/retreat to the *next* one.
     const targets = secs.map(docTop);
-    if (dir > 0){ const n = targets.find(t => t > y + 8); if (n != null) window.scrollTo({top:n, behavior:'smooth'}); }
-    else { const prev = [...targets].reverse().find(t => t < y - 8); if (prev != null) window.scrollTo({top:prev, behavior:'smooth'}); }
+    const currentY = y + HDR;   // account for header — section under header is "current"
+    if (dir > 0){
+      // Find first section whose top is meaningfully below current position
+      const n = targets.find(t => t > currentY + 20);
+      if (n != null) window.scrollTo({top: Math.max(0, n - HDR), behavior:'smooth'});
+    } else {
+      const prev = [...targets].reverse().find(t => t < currentY - 20);
+      if (prev != null) window.scrollTo({top: Math.max(0, prev - HDR), behavior:'smooth'});
+    }
   }
 
   // problem -> answer morph

@@ -40,9 +40,14 @@
   .header-2026__overlay{background:rgba(0,0,0,.5);display:none;inset:0;position:fixed;z-index:10001}
   .header-2026.is-menu-open .header-2026__overlay{display:block}
   .header-2026__overlay-inner{height:100vh;overflow-y:auto;padding-top:74px}
+  /* Akka-styled scrollbar (matches resilience demo) — shows only when viewport is too short */
+  .header-2026__overlay-inner::-webkit-scrollbar{width:6px}
+  .header-2026__overlay-inner::-webkit-scrollbar-track{background:#141414;border-radius:3px}
+  .header-2026__overlay-inner::-webkit-scrollbar-thumb{background:#606060;border-radius:3px}
+  .header-2026__overlay-inner::-webkit-scrollbar-thumb:hover{background:#c9c9c9}
   .header-2026__megamenu-panel{background:var(--panel-bg);border-top:1px solid var(--panel-line);box-shadow:0 12px 40px rgba(0,0,0,.35);width:100%}
   .mega-grid{align-items:start;display:grid;gap:0;grid-template-columns:1.45fr .9fr 1fr .85fr;margin:0 auto;max-width:1600px}
-  .mega-col{background:var(--panel-bg);border-right:1px solid var(--panel-line);min-height:520px;padding:18px 24px 28px}
+  .mega-col{background:var(--panel-bg);border-right:1px solid var(--panel-line);min-height:440px;padding:14px 22px 20px}
   .mega-col:last-child{border-right:0}
   .mega-heading{color:var(--heading);font-size:11px;font-weight:700;letter-spacing:.05em;line-height:1;margin:0 -24px 18px;padding:0 24px 12px;text-transform:uppercase}
   .mega-links .hs-menu-wrapper>ul,.mega-links ul{list-style:none;margin:0;padding:0}
