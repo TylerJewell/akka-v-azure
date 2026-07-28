@@ -362,7 +362,7 @@
   #s-scale .sc-d{font-size:13.5px; line-height:1.5; color:#9A9A9A;}
   #s-scale .sc-d b{color:var(--green); font-weight:600;}
 
-  #s-scale .sc-quotes{display:grid; grid-template-columns:1fr 1fr; gap:40px; border-top:1px solid var(--line); padding-top:46px; max-width:1000px; margin:0 auto;}
+  #s-scale .sc-quotes{display:grid; grid-template-columns:1fr 1fr 1fr; gap:40px; border-top:1px solid var(--line); padding-top:46px;}
   #s-scale .p-quote{text-align:center; position:relative; margin:0;}
   #s-scale .p-quote::before{content:'\201C'; display:block; font-family:Georgia,'Times New Roman',serif; font-size:52px; line-height:0.7; color:var(--yellow); margin-bottom:4px;}
   #s-scale .p-quote p{font-size:clamp(15px,1.45vw,20px); line-height:1.4; font-weight:600; letter-spacing:-0.01em; color:var(--white); margin:0 auto; max-width:30ch; text-wrap:balance;}
@@ -778,6 +778,10 @@
         <p>7.5&times; more orders on half the hardware. 70% less infrastructure spend &mdash; over $10M a year.</p>
         <cite>&middot; Verizon</cite>
       </blockquote>
+      <blockquote class="p-quote">
+        <p>AI-based merchant onboarding deployed to production in weeks by college grads.</p>
+        <cite>&middot; Dojo</cite>
+      </blockquote>
     </div>
   </div>
 </section>
@@ -1062,9 +1066,18 @@
 
   // section nav
   const secs = [...document.querySelectorAll('section')];
+  // offsetTop is relative to offsetParent. On HubSpot the deck lives inside
+  // positioned wrapper divs (.overview-content etc.), so offsetTop measures
+  // from the wrapper, not the document. window.scrollTo needs an absolute
+  // document position — walk the offsetParent chain to get it.
+  function docTop(el) {
+    let y = 0;
+    while (el) { y += el.offsetTop; el = el.offsetParent; }
+    return y;
+  }
   function go(dir){
     const y = window.scrollY;
-    const targets = secs.map(s => s.offsetTop);
+    const targets = secs.map(docTop);
     if (dir > 0){ const n = targets.find(t => t > y + 8); if (n != null) window.scrollTo({top:n, behavior:'smooth'}); }
     else { const prev = [...targets].reverse().find(t => t < y - 8); if (prev != null) window.scrollTo({top:prev, behavior:'smooth'}); }
   }
@@ -1302,13 +1315,16 @@
   var sel = '.rsc-diagram, .cake-wrap';
   var graphics = Array.prototype.slice.call(document.querySelectorAll(sel));
 
-  // fullscreen overlay
+  // fullscreen overlay — append inside the deck wrapper (if present, e.g. on
+  // HubSpot) so the scoped .overview-content CSS matches. Falls back to body
+  // for the standalone GitHub Pages build.
   var ov = document.createElement('div');
   ov.id = 'gzoom';
   ov.innerHTML = '<div id="gzoom-tip">Pinch to zoom · drag to pan</div>'
                + '<button id="gzoom-x" aria-label="Close">✕</button>'
                + '<div id="gzoom-scroll"></div>';
-  document.body.appendChild(ov);
+  var host = document.querySelector('.overview-content') || document.body;
+  host.appendChild(ov);
   var scroll = ov.querySelector('#gzoom-scroll');
   function closeZoom(){ ov.classList.remove('on'); scroll.innerHTML=''; document.body.style.overflow=''; }
   function openZoom(g){
