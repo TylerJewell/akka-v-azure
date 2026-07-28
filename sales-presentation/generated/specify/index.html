@@ -73,7 +73,7 @@ body {
 .title-logo {
   margin-bottom: 40px;
   position: relative; z-index: 2;
-  opacity:0; transform:translateY(16px);
+  opacity:0;
   animation: fadeUp .6s ease forwards .3s;
 }
 .title-logo svg { height: 48px; width: auto; }
@@ -83,7 +83,7 @@ body {
   line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
   max-width: 1000px; margin-bottom: 24px;
   position: relative; z-index: 2;
-  opacity:0; transform:translateY(16px);
+  opacity:0;
   animation: fadeUp .6s ease forwards .6s;
 }
 .title-headline .accent { color: var(--yellow); }
@@ -94,7 +94,7 @@ body {
   letter-spacing: 4px; line-height: 1.5;
   max-width: 600px; margin-bottom: 48px;
   position: relative; z-index: 2;
-  opacity:0; transform:translateY(16px);
+  opacity:0;
   animation: fadeUp .5s ease forwards .9s;
 }
 
@@ -108,7 +108,7 @@ body {
 .title-presenter {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   position: relative; z-index: 2;
-  opacity:0; transform:translateY(16px);
+  opacity:0;
   animation: fadeUp .5s ease forwards 1.2s;
 }
 .title-presenter a {
@@ -3007,8 +3007,9 @@ const views = [
   function docTop(el){
     return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
   }
+  var HDR = 78;
   function currentIndex() {
-    var y = (window.scrollY || window.pageYOffset) + 4;
+    var y = (window.scrollY || window.pageYOffset) + HDR + 4;
     var best = 0;
     for (var i = 0; i < views.length; i++) {
       if (docTop(views[i]) <= y) best = i;
@@ -3017,7 +3018,7 @@ const views = [
   }
   function goTo(i) {
     if (i < 0 || i >= views.length) return;
-    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
+    window.scrollTo({ top: Math.max(0, docTop(views[i]) - HDR), behavior: 'smooth' });
   }
   function navNext() { goTo(currentIndex() + 1); }
   function navPrev() { goTo(currentIndex() - 1); }

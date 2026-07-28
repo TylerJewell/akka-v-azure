@@ -8,8 +8,9 @@ const views = [
   function docTop(el){
     return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
   }
+  var HDR = 78;
   function currentIndex() {
-    var y = (window.scrollY || window.pageYOffset) + 4;
+    var y = (window.scrollY || window.pageYOffset) + HDR + 4;
     var best = 0;
     for (var i = 0; i < views.length; i++) {
       if (docTop(views[i]) <= y) best = i;
@@ -18,7 +19,7 @@ const views = [
   }
   function goTo(i) {
     if (i < 0 || i >= views.length) return;
-    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
+    window.scrollTo({ top: Math.max(0, docTop(views[i]) - HDR), behavior: 'smooth' });
   }
   function navNext() { goTo(currentIndex() + 1); }
   function navPrev() { goTo(currentIndex() - 1); }

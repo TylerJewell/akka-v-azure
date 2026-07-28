@@ -174,12 +174,15 @@ def audit_deck(deck):
             issues = []
             if m['firstChildTop'] is not None and m['firstChildTop'] < HEADER_H - 2:
                 issues.append('HEADER_CLIP first_child_top=' + str(m['firstChildTop']) + ' < ' + str(HEADER_H))
-            # Title X consistency — only for left-anchored (non-centered) slides.
-            # Centered slides intentionally place titles in the middle.
-            if m['justify'] != 'center' and m['titleLeft'] is not None:
+            # Title X consistency — only for UNSCALED left-anchored slides.
+            # For scaled slides, title X shifts inward proportionally to the
+            # scale factor (we scale from horizontal center for visual balance),
+            # so measured X depends on scale and doesn't need to match unscaled.
+            unscaled = not m.get('transform')
+            if unscaled and m['justify'] != 'center' and m['titleLeft'] is not None:
                 drift = abs(m['titleLeft'] - STANDARD_TITLE_X)
                 if drift > TITLE_X_TOLERANCE:
-                    issues.append('TITLE_X_DRIFT left=' + str(m['titleLeft']) + ' vs standard=' + str(STANDARD_TITLE_X) + ' (drift=' + str(drift) + 'px)')
+                    issues.append('TITLE_X_DRIFT left=' + str(m['titleLeft']) + ' vs standard=' + str(STANDARD_TITLE_X) + ' (drift=' + str(drift) + 'px, unscaled)')
             # Effective visible-area bottom: min of raw viewport and top of any
             # fixed bottom banner (cookie prompt, etc.). Content extending past
             # this is hidden from the user.
