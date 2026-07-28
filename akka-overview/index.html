@@ -1076,16 +1076,20 @@
     return y;
   }
   function go(dir){
-    const HDR = 78;   // fixed header height on akka.io
+    const HDR = 78;
     const y = window.scrollY;
-    // Section headers are considered "already at" a section when scrollY is
-    // within half a viewport of its top. Advance/retreat to the *next* one.
     const targets = secs.map(docTop);
-    const currentY = y + HDR;   // account for header — section under header is "current"
+    const currentY = y + HDR;
     if (dir > 0){
-      // Find first section whose top is meaningfully below current position
       const n = targets.find(t => t > currentY + 20);
-      if (n != null) window.scrollTo({top: Math.max(0, n - HDR), behavior:'smooth'});
+      if (n != null) {
+        window.scrollTo({top: Math.max(0, n - HDR), behavior:'smooth'});
+      } else {
+        // No more sections above current — the CTA/last slide is showing.
+        // PgDn should continue down to the FOOTER (page bottom), not stop.
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (y < maxScroll - 10) window.scrollTo({top: maxScroll, behavior:'smooth'});
+      }
     } else {
       const prev = [...targets].reverse().find(t => t < currentY - 20);
       if (prev != null) window.scrollTo({top: Math.max(0, prev - HDR), behavior:'smooth'});

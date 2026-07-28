@@ -32,6 +32,11 @@ BASE = 'https://akka.io/platform/'
 CSS_W, CSS_H = 1536, 861
 HEADER_H = 78
 BUFFER = 12
+# Standard title X for LEFT-ALIGNED (Pattern A) slides. Derived from section
+# padding-left = 6vw = 92px at 1536 CSS viewport. All non-centered slides
+# should have their first visible headline/eyebrow near this X.
+STANDARD_TITLE_X = 92
+TITLE_X_TOLERANCE = 15   # tight — title X should match unscaled sibling slides within ~15px
 
 
 def find_edge():
@@ -150,9 +155,12 @@ def audit_deck(deck):
                 "if(cs.position==='absolute'||cs.position==='fixed')return false;"
                 "var rr=el.getBoundingClientRect();return rr.width>4&&rr.height>4;});"
                 "var firstTop=kids.length?Math.min.apply(null,kids.map(function(k){return k.getBoundingClientRect().top;})):null;"
+                "var titleEl=s.querySelector('.eyebrow, [class*=\"eyebrow\"], h1, h2, [class*=\"headline\"], .shead');"
+                "var titleLeft=titleEl?Math.round(titleEl.getBoundingClientRect().left):null;"
                 "return JSON.stringify({id:s.id,vh:window.innerHeight,secTop:Math.round(r.top),secBot:Math.round(r.bottom),"
                 "contentTop:Math.round(cr.top),contentBot:Math.round(cr.bottom),"
                 "firstChildTop:firstTop!=null?Math.round(firstTop):null,"
+                "titleLeft:titleLeft,"
                 "dataFit:s.getAttribute('data-fit'),transform:s.style.transform||null,"
                 "justify:getComputedStyle(s).justifyContent});"
                 "})()"
@@ -166,6 +174,12 @@ def audit_deck(deck):
             issues = []
             if m['firstChildTop'] is not None and m['firstChildTop'] < HEADER_H - 2:
                 issues.append('HEADER_CLIP first_child_top=' + str(m['firstChildTop']) + ' < ' + str(HEADER_H))
+            # Title X consistency — only for left-anchored (non-centered) slides.
+            # Centered slides intentionally place titles in the middle.
+            if m['justify'] != 'center' and m['titleLeft'] is not None:
+                drift = abs(m['titleLeft'] - STANDARD_TITLE_X)
+                if drift > TITLE_X_TOLERANCE:
+                    issues.append('TITLE_X_DRIFT left=' + str(m['titleLeft']) + ' vs standard=' + str(STANDARD_TITLE_X) + ' (drift=' + str(drift) + 'px)')
             # Effective visible-area bottom: min of raw viewport and top of any
             # fixed bottom banner (cookie prompt, etc.). Content extending past
             # this is hidden from the user.
