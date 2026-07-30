@@ -129,3 +129,31 @@ escapes so no shell layer can re-encode them.
 To detect the damage on any page: `t.encode('cp1252').decode('utf-8')` succeeds
 and returns something different only when the text is mojibaked. That expression
 is also the repair.
+
+## Reserving image space in modules
+
+Almost every `<img>` a module emits has a HubL src, so literal `width`/`height`
+would be wrong on most pages. Take the dimensions from the field instead, and
+guard them so nothing is emitted when the field has none:
+
+```
+<img src="{{ module.background_image.src|escape_url }}" loading="lazy"
+     {% if module.background_image.width and module.background_image.height %}
+     width="{{ module.background_image.width }}"
+     height="{{ module.background_image.height }}" {% endif %}>
+```
+
+Fields of `"type": "image"` carry `.width` and `.height`. Blog values do not:
+`post.featured_image` and `content.blog_post_author.avatar` are bare URL strings.
+Where the rendered size is fixed and square (author avatars at 25px) literal
+attributes are safe; otherwise reserve the space in CSS.
+
+Sizing only helps where CSS leaves a dimension free. `width:100%;height:100%`
+and a wrapper with `aspect-ratio` already reserve the box, so attributes there
+are consistency, not a fix. An absolutely positioned image inside such a wrapper
+must be left alone: it renders at its intrinsic size and attributes would change
+what the reader sees.
+
+`scratchpad/cls.py` reports layout shift, the elements that moved, unsized
+images, and declared-vs-intrinsic ratio per page. A non-zero `skew` means a
+width/height pair is lying and the image is being distorted.
