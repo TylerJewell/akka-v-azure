@@ -239,3 +239,31 @@ ordinary reload.
 Eliminating it on cold loads means stopping the injection, which is a theme font
 setting rather than a source-code change, and it changes font resolution site
 wide.
+
+## The font swap shows on warm loads, not cold ones
+
+Counter-intuitive and worth measuring before theorising. A cold load of the blog
+first paints at about 2830ms, by which time the preloaded font has arrived, so
+the text renders once. A warm load paints from cache at about 670ms, sooner than
+the font can be applied, so text shows in the fallback for roughly 30ms and then
+repaints. Testing with a hard refresh hides this, because a hard refresh forces
+the slow path.
+
+`font-display` cannot fix it on this site: HubSpot injects the family with
+`font-display: swap`, and swap wins for the family no matter what else is
+declared.
+
+What can be fixed is the movement. Instrument Sans has ascent 97 and descent 25
+where Arial has 91 and 21, so the fallback line box is the wrong height and text
+shifts when the real face arrives. `theme-overrides.css` declares an
+`Instrument Sans Fallback` family: `local('Arial')` restated with Instrument
+Sans's metrics through `size-adjust`, `ascent-override` and `descent-override`,
+per weight, and inserted into the font stacks ahead of the generic fallbacks.
+
+Measured after: cold and warm loads both report one geometry state for the whole
+load, and blocking the font files entirely gives the same title width, title
+height and body offset as the loaded page. The swap changes letter shapes and
+moves nothing.
+
+Derive the numbers with `scratchpad/metrics.py`, which renders the same string in
+each candidate fallback on a canvas and reports width, ascent and descent.
