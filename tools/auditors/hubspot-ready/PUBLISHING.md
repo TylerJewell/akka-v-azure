@@ -113,3 +113,19 @@ CMS v3 Blog Posts API. Find by slug: paginate `GET /cms/v3/blogs/posts?limit=100
 - Leave "Lightbend"/"library" that appears **inside working GitHub / doc / image URLs** (e.g.
   `github.com/lightbend/akka-projection-grpc-benchmark`, `doc.akka.io/libraries/…`, `downloads.lightbend.com/…`) —
   rewriting them breaks the link.
+
+## The render-forcing PATCH can mojibake the page title
+
+Forcing a re-render means PATCHing a field, and echoing `htmlTitle` back is the
+least invasive choice. Decode the GET response as strict UTF-8. Reading it with
+`errors='replace'`, or letting a cp1252 default apply, turns an em dash into
+`\xe2\x80\x9d`-style junk (it shows in the browser tab as three garbled glyphs),
+and the PATCH writes that damage back.
+
+Send the body as a file (`--data-binary @file`) written from
+`json.dumps(...).encode('utf-8')`; `ensure_ascii` keeps non-ASCII as `\uXXXX`
+escapes so no shell layer can re-encode them.
+
+To detect the damage on any page: `t.encode('cp1252').decode('utf-8')` succeeds
+and returns something different only when the text is mojibaked. That expression
+is also the repair.

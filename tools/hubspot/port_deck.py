@@ -92,13 +92,47 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     window.scrollTo({{ top: Math.max(0, y - HDR_LINK), behavior: smooth ? 'smooth' : 'instant' }});
     return true;
   }}
+  function dropHash() {{
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  }}
+  /* The browser re-applies the URL fragment repeatedly while the document lays
+     out, and updateHash() writes a slug into the URL as the reader scrolls, so
+     any reload carries a fragment that drags them back to that slide mid-scroll.
+     No script here does that scrolling. The cure is to remove the fragment the
+     moment the reader takes over, which also stands the deferred deep-link pass
+     down. Listen for input events, not 'scroll', so our own scrollTo calls do
+     not cancel themselves. A hash written later by replaceState does not restart
+     fragment scrolling, so the shareable-slug behaviour is unaffected. */
+  var userScrolled = false;
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function(ev){{
+    window.addEventListener(ev, function(){{ userScrolled = true; dropHash(); }},
+      {{ passive: true, once: true }});
+  }});
+  /* Scrolling done before this inline script parsed never reaches the listeners
+     above, and on a slow connection that window is several seconds wide. A fresh
+     load sits at 0 (scrollRestoration is manual) and the browser's fragment jump
+     leaves the target at the viewport top or one header height above it, so any
+     other position means the reader has already moved. */
+  (function(){{
+    var raw = (location.hash || '').replace(/^#/, '');
+    if (!raw) return;
+    var y = window.scrollY || window.pageYOffset;
+    if (y < 4) return;
+    var el = document.getElementById(resolveHash(raw) || '');
+    if (!el) return;
+    var off = el.getBoundingClientRect().top + y;   /* target's document offset */
+    if (Math.abs(y - off) > 120 && Math.abs(y - (off - HDR_LINK)) > 120) {{
+      userScrolled = true;
+      dropHash();
+    }}
+  }})();
   function initialScroll() {{
     var raw = (location.hash || '').replace(/^#/, '');
     if (!raw) return;
     var id = resolveHash(raw);
     if (!id) return;
-    setTimeout(function(){{ scrollToSlide(id, false); }}, 300);
-    setTimeout(function(){{ scrollToSlide(id, false); }}, 900);
+    setTimeout(function(){{ if (!userScrolled) scrollToSlide(id, false); }}, 300);
+    setTimeout(function(){{ if (!userScrolled) scrollToSlide(id, false); }}, 900);
   }}
   if (document.readyState === 'complete') initialScroll();
   else window.addEventListener('load', initialScroll);
@@ -423,10 +457,11 @@ SLIDE_SLUGS = {
     'specify': {
         'title': 'title',
         'spwhat': 'what-is-specify',
-        'spec-sticky': 'specifications',
-        's5': 'weeks-not-months',
-        'platform-pattern': 'your-environment',
-        'stax-sticky': 'labor-vs-spec-driven',
+        'spec-sticky': 'spec-driven-delivery',
+        's5': 'delivered-in-weeks',
+        'fact-sticky': 'what-changes',
+        'sdlc-sticky': 'your-existing-sdlc',
+        'proof-sticky': 'results',
         'family': 'platform',
         'closing': 'contact',
     },

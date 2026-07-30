@@ -130,6 +130,31 @@ id and the slug are accepted on input. On scroll, the URL hash is updated
 with the friendly slug via `history.replaceState`. **Never** use `pushState`
 here — it spams history.
 
+### The browser fights the reader when a fragment is in the URL
+
+Because the hash tracks the current slide, every reload carries one. The browser
+re-applies the URL fragment as the document lays out, so a reader who starts
+scrolling during a slow load gets dragged back to the hashed slide seconds later.
+No script causes this — patching `window.scrollTo`, `scrollIntoView` and
+`documentElement.scrollTop` records zero calls while the page still moves.
+
+`dropHash()` removes the fragment via `replaceState` as soon as the reader takes
+over, leaving the browser nothing to scroll to. Two triggers are needed:
+
+- a one-shot `wheel` / `touchstart` / `keydown` / `mousedown` listener, and
+- a parse-time position check, because scrolling done before the inline script
+  parsed never reaches those listeners and on a throttled connection that window
+  is several seconds wide. A fresh load sits at 0 (`scrollRestoration` is
+  `manual`) and the browser's fragment jump leaves the target at the viewport top
+  or one header height above it, so any other position means the reader moved.
+
+A hash written later by `replaceState` does not restart fragment scrolling, so
+shareable slugs still work. Verify with a throttled load plus wheel events: the
+scroll position must be unchanged 10s later.
+
+Keep `SLIDE_SLUGS` in step with the deck's real section ids. A stale map silently
+falls back to raw ids and the slugs stop resolving.
+
 ## LinkedIn icon
 
 **Never** publish LinkedIn icons on the HubSpot pages. They are reserved for
