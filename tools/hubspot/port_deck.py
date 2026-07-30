@@ -465,6 +465,19 @@ CENTERED_EXCEPTIONS = {
     'specify':  ['#title', '#closing', '#family'],
 }
 
+# The integrated-platform cake slide, per deck. It carries more content than the
+# other centred slides, so centring alone can leave its first line against the
+# header. Measured before this rule: 0px of clearance on specify against 80-102px
+# elsewhere. Given padding-top on a centred box, the content moves down by half
+# the padding.
+CAKE_SLIDE = {
+    'overview': '#s-routes',
+    'sdk':      '#family',
+    'verify':   '#family',
+    'optimize': '#family',
+    'specify':  '#family',
+}
+
 # Per-deck lists of sticky sections that need explicit top:78px + height override
 # so they pin below the fixed header instead of tucking under it.
 STICKY_OVERRIDES = {
@@ -580,9 +593,17 @@ EXTRA_CSS = {
 }
 
 
-def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css=''):
+def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css='', cake=''):
     """Combined R2 (header clearance) + R5 (unified top-anchored layout)."""
     centered_sel = ',\n  '.join(f'.{wrapper} {sid}' for sid in centered)
+    cake_css = (f"""
+  /* The cake slide holds more than the other centred slides, and centring alone
+     left its first line hard against the header — measured at 0px of clearance
+     on specify where the other decks had 80-102px. Padding a centred box moves
+     its content down by half the padding, so 32px buys 16px of clearance and
+     the slide keeps its own vertical balance. */
+  .{wrapper} {cake} {{ padding-top: 32px !important; }}
+""" if cake else '')
     sticky_sel = (
         ',\n  '.join(f'.{wrapper} {sid}' for sid in sticky)
         if sticky else ''
@@ -656,7 +677,7 @@ def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css=''):
        box is already the right size at first paint and R4's correction is a no-op. */
     height: calc(100dvh - 78px) !important;
   }}
-{sticky_block}
+{sticky_block}{cake_css}
   /* Wheel scrolling stops wherever momentum runs out, so a slide could sit a
      few dozen pixels off and show a strip of the next one. Snap points at the
      slide boundaries make a wheel gesture settle exactly where PageDown lands.
@@ -752,6 +773,7 @@ for _name, _cfg in DECKS.items():
         STICKY_OVERRIDES[_name],
         SLIDE_WRAPPERS[_name],
         EXTRA_CSS[_name],
+        CAKE_SLIDE[_name],
     )
     _cfg['slide_wrappers'] = SLIDE_WRAPPERS[_name]
     _cfg['autofit_skip'] = AUTOFIT_SKIP[_name]
