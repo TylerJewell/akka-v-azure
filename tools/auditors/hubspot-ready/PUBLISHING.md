@@ -219,12 +219,23 @@ reserve the same space in CSS so the aligned state is the first state. Verify by
 sampling each column's height and its next element's offset every 100ms across
 the load — they must be equal to each other and constant from the first sample.
 
-## font-display on HubSpot-injected faces
+## font-display on HubSpot-injected faces cannot be overridden
 
 HubSpot injects `@font-face` with `font-display: swap`, which paints in a
-fallback and repaints when the font lands, visibly changing the type. Descriptors
-cannot be overridden by a later rule — the faces have to be redeclared with the
-same family, weight and style, after `{{ standard_header_includes }}` so they
-win. `base.html` redeclares them with `font-display: optional`: the font is used
-only if it is ready almost immediately, and otherwise the fallback is kept for
-that whole load. Either way the text is painted once.
+fallback and repaints when the font lands, visibly changing the type.
+
+Redeclaring the same family with `font-display: optional` does not fix it, in
+either order. `scratchpad/facetest.py` serves one page declaring the family twice
+against a font held back three seconds, and measures a probe span's width: the
+width changes when the font lands whether the optional face is declared before or
+after the swap face. While any swap face for a family exists, swap behaviour
+applies. Do not spend time on shadowing.
+
+What does help is the preloads in `base.html`: same-origin, highest priority, so
+the font is normally in hand before first paint and there is nothing to swap. A
+hard refresh bypasses the cache and will still show the swap — test with an
+ordinary reload.
+
+Eliminating it on cold loads means stopping the injection, which is a theme font
+setting rather than a source-code change, and it changes font resolution site
+wide.
