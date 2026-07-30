@@ -314,13 +314,46 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     }});
   }}
 
+  /* Slides taller than one screen are scroll-through regions holding a pinned
+     child. Each carries a single snap point, at its top, so a wheel gesture that
+     ends inside one rests wherever momentum ran out — and in the last screen of
+     the region, where the child unpins, that reads as a slide caught halfway.
+     PageDown is unaffected because it computes slide tops directly.
+     Dropping a zero-size snap anchor at every screen height gives those regions
+     the same one-stop-per-screen behaviour the short slides get from their own
+     boundaries, without shortening any animation. Anchors are absolutely
+     positioned and inert, so they add nothing to layout. */
+  function snapAnchors(){{
+    var band = window.innerHeight - HDR;
+    if (band < 200) return;
+    document.querySelectorAll('.{wrapper} > [id]').forEach(function(el){{
+      Array.prototype.forEach.call(el.children, function(c){{
+        if (c.className === 'r4-snap') c.remove();
+      }});
+      if (getComputedStyle(el).position === 'fixed') return;
+      var h = el.offsetHeight;
+      if (h <= band + 10) return;
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      for (var y = band; y + 40 < h; y += band) {{
+        var a = document.createElement('div');
+        a.className = 'r4-snap';
+        a.style.cssText = 'position:absolute;left:0;width:1px;height:1px;'
+          + 'pointer-events:none;visibility:hidden;top:' + y + 'px;'
+          + 'scroll-snap-align:start;scroll-margin-top:' + HDR + 'px;';
+        el.appendChild(a);
+      }}
+    }});
+  }}
+
   function schedule(){{
     /* First rAF pair handles the fast-path (CSS parsed, DOM laid out).
        Additional timeouts catch late-loading images, fonts, iframes that
        change section heights after load. */
-    requestAnimationFrame(function(){{ requestAnimationFrame(fitAll); }});
-    setTimeout(fitAll, 400);
-    setTimeout(fitAll, 1200);
+    requestAnimationFrame(function(){{ requestAnimationFrame(function(){{
+      fitAll(); snapAnchors();
+    }}); }});
+    setTimeout(function(){{ fitAll(); snapAnchors(); }}, 400);
+    setTimeout(function(){{ fitAll(); snapAnchors(); }}, 1200);
   }}
 
   if (document.readyState === 'complete') schedule();
@@ -331,7 +364,7 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(function(){{
       document.querySelectorAll(SEL).forEach(reset);
-      requestAnimationFrame(fitAll);
+      requestAnimationFrame(function(){{ fitAll(); snapAnchors(); }});
     }});
   }});
 }})();

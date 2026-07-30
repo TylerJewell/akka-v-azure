@@ -139,6 +139,29 @@ while the pinned slide animates. `mandatory` would forbid that.
 wheel click settles on a slide even when the click was longer than the distance
 to it, and the next click resumes full length.
 
+### Tall slides need a snap point per screen
+
+A slide taller than the viewport is a scroll-through region holding a pinned
+child, and it carries one snap point, at its top. Past that, the next point is a
+whole slide away, so a gesture ending inside rests wherever momentum ran out. In
+the last screen of the region, where the child unpins, that reads as a slide
+caught halfway. PageDown is unaffected, which is why the two disagree.
+
+The decks differ sharply in how much of this they carry: verify has 439px of
+unsnapped scroll-through in total and overview 576px, both under one screen,
+while specify has 5,461px and optimize 6,264px. The same CSS therefore feels
+precise on two decks and loose on the other two.
+
+`snapAnchors()` in the R4 runtime drops a zero-size anchor at every screen height
+inside any slide taller than the band, carrying `scroll-snap-align: start` and
+the same 78px `scroll-margin-top`. Anchors are absolutely positioned, 1x1 and
+hidden, so they add nothing to layout, and they are rebuilt on resize. Specify
+goes from 9 snap points to 23, optimize from 10 to 25, and no deck is left with a
+gap wider than one screen.
+
+Verify with `scratchpad/sliver.py`, which must still report zero leaked pixels:
+the anchors must not change slide framing.
+
 Synthetic wheel events via CDP `Input.dispatchMouseEvent` do not reliably drive
 the compositor's snap path, so headless runs under-report snapping. Confirm the
 applied CSS headlessly; confirm the feel in a real browser.
