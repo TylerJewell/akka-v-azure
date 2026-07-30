@@ -200,3 +200,31 @@ the site had one unused italic rule, so nothing regressed.
 
 To check the source in use: watch `Network.responseReceived` for `.woff2` and
 confirm every hit is on this domain, never `fonts.gstatic.com`.
+
+## Rows that square up after load must reserve their space in CSS
+
+The blog's three featured cards clamp the title to two lines and line the
+descriptions up across the row. A one-line title therefore has to hold two lines
+of space. That space was only being taken after load, so the text under every
+short title dropped at that moment while the card with a naturally two-line title
+never moved — which is what makes this look like an image or font problem and is
+neither.
+
+`min-height: 2lh` on the heading fixes it. Put it on the heading rather than the
+clamp box: `lh` is the element's own line box, and the clamp box's line-height
+differs from the heading's, which left a 3px mismatch.
+
+The general rule: if a row is aligned by anything that runs after first paint,
+reserve the same space in CSS so the aligned state is the first state. Verify by
+sampling each column's height and its next element's offset every 100ms across
+the load — they must be equal to each other and constant from the first sample.
+
+## font-display on HubSpot-injected faces
+
+HubSpot injects `@font-face` with `font-display: swap`, which paints in a
+fallback and repaints when the font lands, visibly changing the type. Descriptors
+cannot be overridden by a later rule — the faces have to be redeclared with the
+same family, weight and style, after `{{ standard_header_includes }}` so they
+win. `base.html` redeclares them with `font-display: optional`: the font is used
+only if it is ready almost immediately, and otherwise the fallback is kept for
+that whole load. Either way the text is painted once.
