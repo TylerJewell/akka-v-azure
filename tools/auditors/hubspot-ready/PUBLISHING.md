@@ -157,3 +157,22 @@ what the reader sees.
 `scratchpad/cls.py` reports layout shift, the elements that moved, unsized
 images, and declared-vs-intrinsic ratio per page. A non-zero `skew` means a
 width/height pair is lying and the image is being distorted.
+
+## Containers that JS fills need their line reserved
+
+An element that is empty in the served HTML and gets text from JS is zero-height
+on first paint, so everything below it jumps when the text lands. The blog
+listing moved 28px this way: `#mf-results-info` is empty markup that the filter
+script fills with "93 of 93 showing" once it has counted the posts. A
+`min-height` matching the rendered line holds the space.
+
+This looks like an image problem and is not one. Attribute it by timing rather
+than by eye: sample the moving element's document offset every 100ms while
+recording image-complete events and `document.fonts.ready`, then read which event
+the move coincides with. On the blog it coincided with neither the featured
+images nor the font swap.
+
+Diff layout state with an attribute stamped onto each node, never with an index
+from `querySelectorAll`. Indices shift when JS inserts nodes, so an index-keyed
+diff silently compares different elements and invents movement that never
+happened.
