@@ -1,0 +1,107 @@
+/* These faces are self-hosted. font-display is optional so the text is
+   painted once: the browser uses the font if it is ready immediately, and
+   otherwise keeps the fallback for that load rather than repainting mid-view.
+   This has no effect while the theme's global font is set to the Google
+   variant of Instrument Sans, because HubSpot then injects its own faces with
+   font-display: swap and swap behaviour wins for the whole family. See
+   tools/auditors/hubspot-ready/PUBLISHING.md.
+
+   The files are addressed on akka.io rather than the portal's
+   hubspotusercontent host. Same bytes, same origin as the page, so the
+   browser needs no extra DNS lookup or TLS handshake to fetch them. */
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: optional;
+}
+
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.eot');
+    src: url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.eot?#iefix') format('embedded-opentype'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.woff2') format('woff2'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.woff') format('woff'),
+        url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: optional;
+}
+

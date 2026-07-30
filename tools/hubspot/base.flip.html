@@ -1,0 +1,108 @@
+<!--
+  templateType: none
+-->
+<!doctype html>
+<html lang="{{ html_lang }}" {{ html_lang_dir }}>
+  <head>
+    <meta charset="utf-8">
+    {% if page_meta.html_title or pageTitle %}<title>{{ page_meta.html_title or pageTitle }}</title>{% endif %}
+    <link rel="icon" href="https://akka.io/hubfs/website/static/favicon/favicon.ico" />
+    <meta name="description" content="{{ page_meta.meta_description }}">
+    <meta meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if content.featured_image %} 
+      <meta property="og:image" content="{{content.featured_image}}" />
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "image": "{{content.featured_image}}"
+        }
+      </script>
+
+    {% else %}
+      <meta property="og:image" content="https://akka.io/hubfs/website/social-share-images/akka-1200-628.jpg" />
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "image": "https://akka.io/hubfs/website/social-share-images/akka-1200-628.jpg"
+        }
+      </script>
+    {% endif %}
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {# Instrument Sans is self-hosted; the faces are declared in _typography.css
+       with font-display: optional. Preloading the four upright weights same-origin
+       gets them in before first paint, so the text is painted once. Italic faces
+       are not preloaded because italic text is rare on the site. crossorigin is
+       required even same-origin, because fonts are always fetched in CORS mode.
+
+       Superseded note, kept for context: this used to read
+       @font-face rules for it are already injected into every page. Fetching the
+       same family from Google as well meant the copy that actually rendered came
+       from gstatic, behind a stylesheet request on a third origin: the text
+       painted in a fallback face and repainted seconds later when the font
+       finally arrived. Preloading the same-origin files instead gets them in
+       before first paint. crossorigin is required even same-origin, because
+       fonts are always fetched in CORS mode. #}
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.woff2">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">    
+    {# The self-hosted Instrument Sans faces. Loaded ahead of the other
+       stylesheets so the faces are declared before anything uses them. #}
+    {{ require_css(get_asset_url("../../css/elements/_typography.css")) }}
+    {{ require_css(get_asset_url("../../css/Plugin.css")) }}
+    {{ require_css(get_asset_url("../../css/main.css")) }}
+    {% if template_css %}
+    {{ require_css(get_asset_url(template_css)) }}
+    {% endif %}
+
+    {{ require_css(get_asset_url("../../css/theme-overrides.css")) }}
+    {{ require_css(get_asset_url("../../css/Dev1.css")) }}    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+ 
+    {{ standard_header_includes }}
+    {# Do not try to re-declare the Instrument Sans faces here with a different
+       font-display. HubSpot injects them with font-display: swap, and an isolated
+       test of both orders (scratchpad/facetest.py) shows the swap face still
+       renders either way: while any swap face for a family exists, swap
+       behaviour applies, so shadowing it achieves nothing. The preloads above are
+       what actually help - they get the font in before first paint on a warm
+       cache, which is when a swap would otherwise be visible. Removing the swap
+       entirely means changing the theme's font setting so HubSpot stops
+       injecting the face at all. #}
+  </head>
+  <body id="akka-marketing-site" class="{{ body_class }}">
+    
+
+
+    <div class="body-wrapper {{ builtin_body_classes }}">
+      {% block header %}
+      {% global_partial path="../partials/header-april.html" %}
+      {% endblock header %}
+
+      {# The main-content ID is used for the navigation skipper in the header.html file. More information on the navigation skipper can be found here: https://github.com/HubSpot/cms-theme-boilerplate/wiki/Accessibility #}
+
+      <main id="main-content" class="body-container-wrapper">
+        {% block body %}
+        {% endblock body %}
+      </main>
+
+      {% block footer %}
+      {% global_partial path="../partials/footer.html" %}
+      {% endblock footer %}
+    </div>
+    {{ require_js(get_asset_url("../../js/jquery-1.12.4.min.js")) }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>  
+    {{ require_js(get_asset_url("../../js/main.js")) }}
+    <script src="{{ get_asset_url('/AKKA-2024/js/preCodeCopy.js') }}"></script>
+    {{ standard_footer_includes }}
+  </body>
+</html>
