@@ -10,19 +10,38 @@ The injection is driven by the theme setting `global_fonts.primary` and
 `global_fonts.secondary` being the Google variant of Instrument Sans. It stops
 when those fields no longer name a Google font.
 
-## Already applied
+## Outcome: the setting change is not available
+
+The theme font picker on this portal offers Common Fonts and All Fonts only,
+which are HubSpot's web-safe and Google lists. There is no custom font, so the
+family cannot be named without selecting the Google entry, and the injection
+cannot be stopped. Do not change those fields: a Common Font would rename the
+family in `body`, `p`, `a` and `h1`-`h6` and drop the site to a web-safe face.
+
+## What was done instead
+
+The visible symptom was headings reshaping while body copy looked steady. The
+heading font fields carry a `serif` fallback and the body field carries
+`sans-serif`, so headings painted in Times and then became Instrument Sans, while
+body copy painted in Arial and changed too little to notice. `theme-overrides.css`
+now ends with a rule giving the 11 heading-derived selectors the same sans-serif
+fallback as body copy. Verified by blocking the font files: headings render in a
+near-identical sans face rather than Times.
+
+The family in that rule still comes from `{{ primary_font }}`, so the theme
+setting continues to control it.
+
+## Prepared but not applied
 
 1. `AKKA-2024/css/elements/_typography.css` — 8 self-hosted faces (400/500/600/700,
-   upright and italic), `font-display: optional`, addressed on akka.io rather than
-   the portal's hubspotusercontent host so they are same-origin with the page.
-   A copy is in `tools/hubspot/_typography.css`.
-2. `AKKA-2024/templates/layouts/base.html` — the `require_css` for that file is no
-   longer commented out, and loads ahead of the other stylesheets.
+   upright and italic), `font-display: optional`, addressed on akka.io so they are
+   same-origin with the page. Copy in `tools/hubspot/_typography.css`.
+2. The `require_css` for it in `base.html` is commented out again. Loading it costs
+   a 29,208 byte fetch and changes nothing while HubSpot's swap faces exist.
+3. `tools/hubspot/base.flip.html` repoints the preloads at the self-hosted files.
 
-Interim cost until the setting changes: the browser fetches
-`InstrumentSans-Regular.woff2` (29,208 bytes) in addition to the four proxy files
-it still uses. Typography is unchanged — body, headings and weights verified
-identical on the home, blog and overview pages.
+Re-enable 2 and publish 3 only if a custom font becomes available in the theme
+picker.
 
 ## The setting change
 
