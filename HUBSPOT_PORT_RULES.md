@@ -139,6 +139,29 @@ while the pinned slide animates. `mandatory` would forbid that.
 wheel click settles on a slide even when the click was longer than the distance
 to it, and the next click resumes full length.
 
+### Every sticky slide belongs in STICKY_OVERRIDES
+
+A sticky slide left out of that table keeps the source's `top: 0` and its
+full-viewport height, so the moment it pins, its first 78px sit under the fixed
+header and its title is covered. PageDown hides the fault, because it lands on
+the wrapper before the child pins. Scrolling exposes it, which is why the two
+appear to disagree and why it looks like a scrolling bug.
+
+Six slides were missing: `#spwhat` on specify, `#s13` on sdk, and
+`#ts1-sticky` through `#ts4-sticky` on optimize.
+
+Audit it directly: for every sticky descendant of the deck wrapper, computed
+`top` must read 78px. Anything else is a slide that will hide under the header
+as soon as the reader scrolls.
+
+### Do not use scroll-snap-type: mandatory
+
+Tried and measured on these decks. A single 100px wheel notch could not advance
+the page at all, stalling ten times out of ten, because a gesture shorter than
+the distance to the next snap position is returned to the one it started from. It
+also held the reader at the last slide, 889px short of the document end, putting
+the footer out of reach. `proximity` is the only workable setting here.
+
 ### Tall slides need a snap point per screen
 
 A slide taller than the viewport is a scroll-through region holding a pinned

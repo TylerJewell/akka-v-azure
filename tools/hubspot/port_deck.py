@@ -469,11 +469,18 @@ CENTERED_EXCEPTIONS = {
 # so they pin below the fixed header instead of tucking under it.
 STICKY_OVERRIDES = {
     'overview': ['#s6-wrapper #s6'],
-    'sdk':      [],
+    'sdk':      ['#s13'],
     'verify':   [],
-    'optimize': ['#cog-sticky'],
-    'specify':  ['#spec-sticky', '#s5', '#fact-sticky', '#sdlc-sticky', '#proof-sticky'],
+    'optimize': ['#cog-sticky', '#ts1-sticky', '#ts2-sticky', '#ts3-sticky', '#ts4-sticky'],
+    'specify':  ['#spec-sticky', '#s5', '#fact-sticky', '#sdlc-sticky', '#proof-sticky',
+                 '#spwhat'],
 }
+# Every sticky slide belongs in this table. One left out keeps the source's
+# `top: 0` and full-viewport height, so the moment it pins, its first 78px sit
+# under the fixed header and its title is covered. PageDown hides the fault,
+# because it lands on the wrapper before the child pins; scrolling exposes it.
+# Audit with: for each sticky descendant of the deck wrapper, computed `top`
+# must read 78px.
 
 # Per-deck lists of -wrapper elements that ARE slides (100vh containers with
 # content directly inside, no inner sticky child). Everything else in
@@ -654,9 +661,13 @@ def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css=''):
      few dozen pixels off and show a strip of the next one. Snap points at the
      slide boundaries make a wheel gesture settle exactly where PageDown lands.
      scroll-margin-top:78px on these same elements is what makes the two agree.
-     proximity, not mandatory: a gesture inside a tall sticky scroll-through
-     region stays free to rest anywhere, and one gesture past a boundary carries
-     on to the next slide instead of being trapped. */
+
+     proximity, never mandatory. mandatory was tried and measured: a single 100px
+     wheel notch could not advance the page at all, stalling 10 times out of 10,
+     because a gesture shorter than the distance to the next snap position is
+     returned to the one it started from. It also made the footer unreachable,
+     holding at the last slide 889px short of the document end. A reader with a
+     fine-grained wheel or a trackpad would have been unable to move. */
   html {{ scroll-snap-type: y proximity; }}
   .{wrapper} > section,
   .{wrapper} > [id$="-sticky"],
