@@ -347,6 +347,26 @@ def _r4_shrink(wrapper):
 # Asset rewriting (rule 6). Relative iframe / href pointing to a local *.html
 # becomes https://akka.io/hubfs/demos/<basename>. Skips absolute URLs, anchors,
 # mailtos, and empty values.
+DECK_FONT_FACES = """/* Akka Sans is the same font files as Instrument Sans under a family HubSpot
+   does not inject font-display:swap faces for, so the type is painted once
+   instead of repainting after load. Declared here rather than taken from
+   theme-overrides.css, because these pages are served an older compiled copy
+   of that stylesheet. The fallback families carry Instrument Sans's metrics so
+   text holds its width and line height while the font arrives. */
+@font-face{font-family:'Akka Sans';font-weight:400;font-style:normal;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Regular.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:400;font-style:italic;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Italic.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:500;font-style:normal;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Medium.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:500;font-style:italic;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-MediumItalic.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:600;font-style:normal;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBold.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:600;font-style:italic;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-SemiBoldItalic.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:700;font-style:normal;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-Bold.woff2') format('woff2');}
+@font-face{font-family:'Akka Sans';font-weight:700;font-style:italic;font-display:block;src:url('https://akka.io/hubfs/AKKA-2024/Fonts/InstrumentSans-BoldItalic.woff2') format('woff2');}
+@font-face{font-family:'IS Fallback System';font-weight:400;font-style:normal;src:local('Segoe UI');size-adjust:102.36%;ascent-override:94.8%;descent-override:24.4%;line-gap-override:0%;}
+@font-face{font-family:'IS Fallback System';font-weight:500;font-style:normal;src:local('Segoe UI');size-adjust:103.54%;ascent-override:93.7%;descent-override:24.1%;line-gap-override:0%;}
+@font-face{font-family:'IS Fallback';font-weight:400;font-style:normal;src:local('Helvetica Neue'), local('Arial'), local('Liberation Sans');size-adjust:102.36%;ascent-override:94.8%;descent-override:24.4%;line-gap-override:0%;}
+@font-face{font-family:'IS Fallback';font-weight:500;font-style:normal;src:local('Helvetica Neue'), local('Arial'), local('Liberation Sans');size-adjust:103.54%;ascent-override:93.7%;descent-override:24.1%;line-gap-override:0%;}
+"""
+
 def rewrite_assets(html):
     def repl_demo(m):
         prefix, val = m.group(1), m.group(2)
@@ -772,6 +792,7 @@ def build(deck_name):
     new_styles = (
         HUBL_HEADER +
         '<style>\n' +
+        DECK_FONT_FACES +
         fresh_css.strip() +
         '\n\n' +
         existing_port_css +
@@ -779,6 +800,14 @@ def build(deck_name):
         _r4_shrink(cfg['wrapper']) +
         '</style>\n'
     )
+    # Point the deck's text at Akka Sans: the same font files under a family
+    # HubSpot does not inject font-display:swap faces for, so the type is painted
+    # once instead of repainting after load. Applied to the assembled stylesheet,
+    # because the preserved port block carries its own heading rule for the
+    # family. Monospace blocks name their own stack and are untouched.
+    new_styles = new_styles.replace(
+        "'Instrument Sans'",
+        "'Akka Sans', 'IS Fallback System', 'IS Fallback'")
     new_body = HUBL_HEADER + fresh_body.strip() + '\n<!-- DEMO_HTML_MARKER -->\n'
     new_scripts = (
         HUBL_HEADER +

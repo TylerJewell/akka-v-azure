@@ -286,3 +286,30 @@ shapes and changes nothing else.
 
 Derive the numbers with `scratchpad/metrics.py`, which renders the same string in
 each candidate fallback on a canvas and reports width, ascent and descent.
+
+## Akka Sans: the family that stops the repaint
+
+`font-display` on HubSpot's injected faces cannot be overridden, and the theme
+picker offers no custom font, so the family it manages cannot be taken out of its
+hands. It has no say over a family it did not declare. `theme-overrides.css`
+declares the same self-hosted files as **Akka Sans** and the page's text names
+that instead, so HubSpot's `Instrument Sans` faces are never matched and never
+fetched.
+
+`font-display: block`, not `optional`. optional lets the browser skip the font
+when it is not ready within about 100ms, and on the heavier deck pages it did:
+most text fell back while the elements the rule does not reach still used
+Instrument Sans, so one page carried two typefaces. block waits instead, and the
+files are preloaded same-origin so the wait is short.
+
+A missed selector keeps using Instrument Sans and behaves as before, so the cost
+of incomplete coverage is a repaint on that element rather than the wrong
+typeface. That is why this is safer than renaming the theme font, which would
+drop anything missed to a web-safe face.
+
+The deck pages are served an older compiled copy of `theme-overrides.css`, so
+`port_deck.py` emits its own copy of the `@font-face` declarations
+(`DECK_FONT_FACES`) rather than relying on the theme stylesheet reaching them.
+
+These selectors no longer read their family from the theme font setting. Editing
+that picker will not change them.
