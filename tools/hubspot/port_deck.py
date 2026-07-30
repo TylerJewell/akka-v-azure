@@ -244,8 +244,14 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     /* Always include HDR in effective content top: nav go() scrolls sections to
        viewport y=HDR, and even without nav-hijack, sticky pins at y=HDR. */
     var effectiveContentTop = HDR + padTop;
+    /* Centered sections are sized to the band below the header with 40px of
+       padding-bottom, so their content box is vh - HDR - 40. Targeting less than
+       that shrank content that already fitted, and a scaled box is inset from its
+       layout box, which pushed the layout box up and let the next slide show
+       below. Target the box we actually give them. */
+    var CENTERED_PAD_BOTTOM = 40;
     var target = centered
-      ? vh - 2 * (HDR + BUFFER) - bottomBanner
+      ? vh - HDR - CENTERED_PAD_BOTTOM - bottomBanner
       : vh - effectiveContentTop - BOTTOM_BUFFER - bottomBanner;
     if (contentH <= target) {{
       section.setAttribute('data-fit', 'fits contentH=' + Math.round(contentH) + ' target=' + Math.round(target) + ' vh=' + vh + ' padTop=' + padTop + ' sticky=' + isSticky);
@@ -555,23 +561,44 @@ def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css=''):
     max-height: none !important;
   }}
   /* R5 exceptions: intentional Pattern B (hero/close/cake) sections stay centered.
-     Section box reduced by header + breathing room (78px header + 40px extra)
-     so centered content doesn't creep under the fixed header when the section
-     is scrolled to viewport top. Without the extra 40px, content ~600-700px
-     tall centered in a 783px box lands only 5-40px below the header, visually
-     touching it. */
+     The box fills the whole band below the header. It used to stop 40px short,
+     which meant that even when a slide was landed correctly the next slide's
+     first 40px showed underneath it — visible as a strip of the following
+     headline. The 40px is now padding-bottom instead, so the content box and
+     therefore the centred position are unchanged (box-sizing is border-box)
+     while the section itself covers the band and occludes what follows. */
   {centered_sel} {{
     justify-content: center !important;
     padding-top: 0 !important;
-    min-height: calc(100dvh - 118px) !important;
+    padding-bottom: 40px !important;
+    min-height: calc(100dvh - 78px) !important;
     /* Source CSS for these sections sets an explicit height:100dvh, which beats
        min-height and leaves the box full-height. R4 then has to correct the
        centering late with padding-bottom, which the viewer sees as the content
        jumping up ~56px once the intro animation finishes. Override height so the
        box is already the right size at first paint and R4's correction is a no-op. */
-    height: calc(100dvh - 118px) !important;
+    height: calc(100dvh - 78px) !important;
   }}
 {sticky_block}
+  /* Wheel scrolling stops wherever momentum runs out, so a slide could sit a
+     few dozen pixels off and show a strip of the next one. Snap points at the
+     slide boundaries make a wheel gesture settle exactly where PageDown lands.
+     scroll-margin-top:78px on these same elements is what makes the two agree.
+     proximity, not mandatory: a gesture inside a tall sticky scroll-through
+     region stays free to rest anywhere, and one gesture past a boundary carries
+     on to the next slide instead of being trapped. */
+  html {{ scroll-snap-type: y proximity; }}
+  .{wrapper} > section,
+  .{wrapper} > [id$="-sticky"],
+  .{wrapper} > [id$="-wrapper"] {{
+    scroll-snap-align: start;
+    /* A fast gesture is allowed to cross at most one boundary and must stop
+       there, so one wheel click always settles on a slide even if that click was
+       larger than the distance to it. The next click resumes full size. Without
+       this, proximity lets a long gesture sail past a boundary and rest tens of
+       pixels below it. */
+    scroll-snap-stop: always;
+  }}
   /* Modest breathing between subtitle and following content — enough to
      separate visually but tight enough that supporting elements (icons,
      pills, small side rows) feel like they belong to the subhead, not a

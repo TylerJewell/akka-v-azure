@@ -106,6 +106,43 @@ exceptions (`CENTERED_EXCEPTIONS`) — heroes, closes, cakes — keep
 `justify-content: center` and `padding-top: 0`. Ensures title X and Y line up
 across the deck.
 
+## Slides must occlude what follows them
+
+A slide landed at the header must cover the band down to the viewport bottom.
+Centred sections used to be sized `calc(100dvh - 118px)`, which stopped 40px
+short, so even a correctly landed slide showed the next slide's first 40px as a
+strip of stray headline. The box is now `calc(100dvh - 78px)` with
+`padding-bottom: 40px`, so the content box — and therefore the centred position
+— is unchanged while the section covers the whole band.
+
+R4's target for centred sections must match that content box
+(`vh - 78 - 40 - bottomBanner`). A smaller target shrank content that already
+fitted, and a scaled box is inset from its layout box, which lifts the layout box
+above the header and lets the next slide show underneath. Two decks leaked this
+way before the target was aligned.
+
+`scratchpad/sliver.py` lands every slide of every deck at the header and reports
+how many pixels of the next slide are visible. It must report zero.
+
+## Wheel scrolling snaps to the PageDown position
+
+`scroll-snap-type: y proximity` on `html`, plus `scroll-snap-align: start` and
+`scroll-snap-stop: always` on the deck wrapper's direct children. The snap
+position equals the PageDown landing because both derive from the same
+`scroll-margin-top: 78px`.
+
+`proximity`, never `mandatory`: the tall sticky wrappers (up to 2755px) carry one
+snap point at their top and the reader must be free to rest anywhere inside them
+while the pinned slide animates. `mandatory` would forbid that.
+
+`scroll-snap-stop: always` caps a gesture at one boundary crossing, so a single
+wheel click settles on a slide even when the click was longer than the distance
+to it, and the next click resumes full length.
+
+Synthetic wheel events via CDP `Input.dispatchMouseEvent` do not reliably drive
+the compositor's snap path, so headless runs under-report snapping. Confirm the
+applied CSS headlessly; confirm the feel in a real browser.
+
 ## R6 — Asset rewriting
 
 Relative `.html` in `src`/`href` becomes
