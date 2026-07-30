@@ -176,3 +176,27 @@ Diff layout state with an attribute stamped onto each node, never with an index
 from `querySelectorAll`. Indices shift when JS inserts nodes, so an index-keyed
 diff silently compares different elements and invents movement that never
 happened.
+
+## Instrument Sans is served from this domain — do not re-add Google Fonts
+
+The head used to link `fonts.googleapis.com/css2?family=Instrument+Sans` while
+HubSpot was already injecting `@font-face` rules for the same family pointing at
+its own proxy under `/_hcms/googlefonts/`. Two sources for one family, and the
+Google copy is the one that rendered, behind a stylesheet request on a third
+origin and then a font request on a fourth. Text painted in a fallback face and
+repainted seconds later when the font finally arrived — the whole site, every
+page, every load.
+
+`base.html` now drops the Google link and preloads the same-origin files for
+400/500/600/700. `crossorigin` is required on those preloads even though they are
+same-origin, because fonts are always fetched in CORS mode; without it the file
+is fetched twice and the preload is wasted.
+
+On the blog this moved `fonts.ready` from 6502ms to 3418ms, which is earlier than
+the text's first paint, so the text renders once instead of twice. Box geometry
+was byte-identical before and after, so HubSpot's static 400/500/600/700 faces
+wrap the same as Google's variable font. HubSpot's proxy carries no italic face;
+the site had one unused italic rule, so nothing regressed.
+
+To check the source in use: watch `Network.responseReceived` for `.woff2` and
+confirm every hit is on this domain, never `fonts.gstatic.com`.
