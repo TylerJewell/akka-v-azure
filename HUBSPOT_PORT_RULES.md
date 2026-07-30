@@ -24,6 +24,44 @@ account for it:
   bare `docTop(el)` — otherwise the section top gets pinned to y=0 and the
   header covers the title. Same offset in the `currentIndex()` reverse lookup.
 
+## Header height is a shared constant — three places must agree
+
+The akka.io header is `position: fixed`. Three things encode its height and they must
+match, or every page renders offset and then jumps when the script runs:
+
+| Where | Value |
+|---|---|
+| `AKKA-2024/css/theme-overrides.css` -> `body { padding-top }` | 78px at >=768, 64px at <=767 |
+| `template_main.min.js` -> `hStickyPadd()` | sets `body` padding-top to `$("header.header").outerHeight()` after load |
+| This file's R2 / R5 offsets | 78px |
+
+Fixed 2026-07-30. The CSS had `95px` at >=992 and `66px` at <=991 while the real header
+is 78px / 64px, so **every page on the site** rendered 17px low (or 12px high on tablet)
+and jumped when `hStickyPadd()` corrected it. The CSS values now match the measured
+header, which makes that script a no-op. If the header design changes height, all three
+rows above change together.
+
+Anchor targets need the same offset. Native fragment navigation scrolls the target to
+viewport 0 — behind the header. Deck pages used to correct this in JS at load, +300ms and
++900ms, which the viewer saw as a jump; other pages never corrected it and left the target
+hidden. Both are handled by `scroll-margin-top`: per-deck in the R2+R5 block, and
+site-wide via `:target` in `theme-overrides.css`.
+
+**The theme lives outside this repo.** `theme-overrides.css` is edited through the
+source-code API only, so these values are not version controlled anywhere. Back the file
+up before touching it (see `PUBLISHING.md`).
+
+## Port tooling
+
+`tools/hubspot/port_deck.py <deck>` builds and PUTs the three partials. It reads the token
+from the gitignored `scratchpad/.hs_env` and writes fragments to `scratchpad/hs-out/`, so
+secrets and build output stay out of git while the script itself is tracked.
+
+**Anything hand-appended to a live styles partial is destroyed on the next port.** The
+script strips everything from `/* Rules that apply on all viewport sizes` to the end of the
+preserved block, plus several named blocks, so re-ports do not stack duplicates. Hotfix in
+the generator, never in the live partial.
+
 ## R4 — Runtime auto-fit (transform:scale)
 
 For any slide whose natural content exceeds the visible viewport, apply

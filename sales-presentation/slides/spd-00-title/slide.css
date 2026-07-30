@@ -1,3 +1,9 @@
+/* Opacity-only intro fade. shared.css's fadeUp also animates transform, which
+   promotes each element to a compositing layer and back. Nothing here declares an
+   initial translateY, so that transform buys nothing, and HUBSPOT_PORT_RULES.md
+   requires opacity-only fades on title slides. */
+@keyframes titleFade { from { opacity: 0; } to { opacity: 1; } }
+
 #title {
   height: 100vh; height: 100dvh; min-height: 680px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -18,8 +24,8 @@
 .title-logo {
   margin-bottom: 40px;
   position: relative; z-index: 2;
-  opacity:0;
-  animation: fadeUp .6s ease forwards .3s;
+  opacity: 0;
+  animation: titleFade .6s ease forwards .3s;
 }
 .title-logo svg { height: 48px; width: auto; }
 
@@ -28,8 +34,8 @@
   line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
   max-width: 1000px; margin-bottom: 24px;
   position: relative; z-index: 2;
-  opacity:0;
-  animation: fadeUp .6s ease forwards .6s;
+  opacity: 0;
+  animation: titleFade .6s ease forwards .6s;
 }
 .title-headline .accent { color: var(--yellow); }
 
@@ -39,22 +45,22 @@
   letter-spacing: 4px; line-height: 1.5;
   max-width: 600px; margin-bottom: 48px;
   position: relative; z-index: 2;
-  opacity:0;
-  animation: fadeUp .5s ease forwards .9s;
+  opacity: 0;
+  animation: titleFade .5s ease forwards .9s;
 }
 
 .title-divider {
   width: 56px; height: 3px; background: var(--yellow); margin-bottom: 40px;
   position: relative; z-index: 2;
-  opacity:0;
-  animation: fadeUp .5s ease forwards 1.1s;
+  opacity: 0;
+  animation: titleFade .5s ease forwards 1.1s;
 }
 
 .title-presenter {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   position: relative; z-index: 2;
-  opacity:0;
-  animation: fadeUp .5s ease forwards 1.2s;
+  opacity: 0;
+  animation: titleFade .5s ease forwards 1.2s;
 }
 .title-presenter a {
   color: var(--white); text-decoration: none;
@@ -72,7 +78,7 @@
 .title-scroll-hint {
   position:absolute; bottom:36px; left:0; right:0;
   display:flex; flex-direction:column; align-items:center; gap:10px; z-index:2;
-  opacity:0; animation:fadeUp .5s ease forwards 1.8s;
+  opacity: 0; animation: titleFade .5s ease forwards 1.8s;
 }
 .title-scroll-hint span { font-size:9px; text-transform:uppercase; letter-spacing:3px; color:var(--gray); }
 .title-scroll-arrow {
