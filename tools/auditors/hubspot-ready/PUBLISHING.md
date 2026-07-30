@@ -258,21 +258,31 @@ declares an `Instrument Sans Fallback` family: `local('Arial')` restated with
 Instrument Sans's metrics through `size-adjust`, `ascent-override` and
 `descent-override`, inserted into the font stacks ahead of the generic fallbacks.
 
-**Match x-height, not advance width.** The obvious reading is to scale the
-fallback until a string measures the same, which at weight 500 means scaling
-Arial up 2.7%. Arial's x-height is already larger than Instrument Sans's, 52
-against 51, so that scaling made the letters about 4.7% bigger than the face
-replacing them, and the swap read as text shrinking. `size-adjust: 98.1%` is
-51/52, which holds apparent size exactly and leaves the advance width 1.2% out.
+**Choose the fallback before tuning the numbers.** One `size-adjust` can only
+match x-height and advance width together if the fallback shares the target's
+proportions. Arial does not: matching its x-height to Instrument Sans leaves the
+advance width 4.8% short at weight 500, which renders visibly narrow and then
+widens. Segoe UI leaves 0.2%. `scratchpad/bestfallback.py` measures the installed
+candidates and ranks them by that residual. Segoe UI is tried first for Windows,
+with an Arial-based family behind it for macOS and Linux.
 
-Watch the weight mapping when measuring. Arial ships 400 and 700 only, so a
+**Declare only the weights you can address.** `local('Segoe UI')` resolves to one
+physical file, so declaring it at 600 and 700 as well makes bold text render
+un-bolded and then thicken. `local('Segoe UI Bold')` does not resolve at all.
+Weights 400 and 500 carry the body copy and headings; 600 and 700 fall through to
+the plain family names at the end of the stack, where ordinary matching picks the
+right physical face.
+
+**Watch the weight mapping when measuring.** Arial ships 400 and 700 only, so a
 browser renders Regular at 500 and Bold at 600. Measuring 600 against Arial
-Regular gives a size-adjust 5.8% too high.
+Regular gives a size-adjust 5.8% too high. Measure faces through real DOM spans;
+canvas `measureText` resolves weights differently and produced a false reading
+that `size-adjust` was being ignored on `local()` sources.
 
-Measured after: cold and warm loads both report one geometry state for the whole
-load. With the font files blocked, x-height matches to 0.0%, and title height,
-body offset, body height and line count are identical to the loaded page on all
-three cards. The swap changes letter shapes and moves nothing.
+Measured after: a probe span in the fallback matches Instrument Sans to 0.00% in
+both advance width and line height at weights 400 and 500, and cold and warm
+loads report one geometry state for the whole load. The swap changes letter
+shapes and changes nothing else.
 
 Derive the numbers with `scratchpad/metrics.py`, which renders the same string in
 each candidate fallback on a canvas and reports width, ascent and descent.
