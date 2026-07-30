@@ -152,12 +152,27 @@ unsnapped scroll-through in total and overview 576px, both under one screen,
 while specify has 5,461px and optimize 6,264px. The same CSS therefore feels
 precise on two decks and loose on the other two.
 
-`snapAnchors()` in the R4 runtime drops a zero-size anchor at every screen height
-inside any slide taller than the band, carrying `scroll-snap-align: start` and
-the same 78px `scroll-margin-top`. Anchors are absolutely positioned, 1x1 and
-hidden, so they add nothing to layout, and they are rebuilt on resize. Specify
-goes from 9 snap points to 23, optimize from 10 to 25, and no deck is left with a
-gap wider than one screen.
+`snapAnchors()` in the R4 runtime drops a zero-size anchor at each screen height
+inside a tall slide, carrying `scroll-snap-align: start` and the same 78px
+`scroll-margin-top`. Anchors are absolutely positioned, 1x1 and hidden, so they
+add nothing to layout, and they are rebuilt on resize.
+
+Two conditions decide where an anchor may go, and both were learned by putting
+them in the wrong places first:
+
+- **Stop at the last pinned position.** A pinned child holds still only while the
+  wrapper has that child's height left to give; past that it unpins and slides up
+  under the header. An anchor there parks the reader on a half-released slide with
+  its title cut off, which is exactly what an anchor at 783px did inside specify's
+  1205px `spwhat-wrapper`, whose child stays pinned for only 422px.
+- **Only where the child pins at the header line.** Some wrappers pin a
+  full-viewport child at `top: 0`, leaving its first 78px under the header.
+  Passing through that is tolerable; landing on it is not. Three of optimize's
+  `ts*-wrapper` slides behave this way and take no anchors.
+
+Remove anchors with `querySelectorAll(':scope > .r4-snap')`, never by iterating
+`el.children`: that collection is live, and removing while iterating it skips
+entries and leaves duplicates behind on every rebuild.
 
 Verify with `scratchpad/sliver.py`, which must still report zero leaked pixels:
 the anchors must not change slide framing.

@@ -327,14 +327,31 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     var band = window.innerHeight - HDR;
     if (band < 200) return;
     document.querySelectorAll('.{wrapper} > [id]').forEach(function(el){{
-      Array.prototype.forEach.call(el.children, function(c){{
-        if (c.className === 'r4-snap') c.remove();
-      }});
+      /* querySelectorAll returns a static list. el.children is live, and removing
+         while iterating it skips entries, which left duplicate anchors behind on
+         every rebuild. */
+      el.querySelectorAll(':scope > .r4-snap').forEach(function(c){{ c.remove(); }});
       if (getComputedStyle(el).position === 'fixed') return;
       var h = el.offsetHeight;
       if (h <= band + 10) return;
+      /* A pinned child holds still only until the wrapper has that child's
+         height left to give. Past that it unpins and slides up under the header,
+         so an anchor there would snap to a slide with its title already cut off.
+         Stop at the last pinned position; the release stretch ends at the next
+         slide's own snap point, which scroll-snap-stop already forces a halt at. */
+      var pinned = null;
+      var kids = el.querySelectorAll('*');
+      for (var k = 0; k < kids.length; k++) {{
+        if (getComputedStyle(kids[k]).position === 'sticky') {{ pinned = kids[k]; break; }}
+      }}
+      /* Only anchor where the pinned child comes to rest at the header line. Some
+         wrappers pin a full-viewport child at top:0, which leaves its first 78px
+         under the header; passing through that is one thing, but landing on it
+         would park the reader on a clipped title. */
+      if (pinned && Math.abs(parseFloat(getComputedStyle(pinned).top) - HDR) > 4) return;
+      var limit = pinned ? h - pinned.offsetHeight : h - band;
       if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
-      for (var y = band; y + 40 < h; y += band) {{
+      for (var y = band; y <= limit + 4 && y + 40 < h; y += band) {{
         var a = document.createElement('div');
         a.className = 'r4-snap';
         a.style.cssText = 'position:absolute;left:0;width:1px;height:1px;'
