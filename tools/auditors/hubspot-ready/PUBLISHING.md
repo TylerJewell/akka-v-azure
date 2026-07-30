@@ -253,17 +253,26 @@ the slow path.
 `font-display: swap`, and swap wins for the family no matter what else is
 declared.
 
-What can be fixed is the movement. Instrument Sans has ascent 97 and descent 25
-where Arial has 91 and 21, so the fallback line box is the wrong height and text
-shifts when the real face arrives. `theme-overrides.css` declares an
-`Instrument Sans Fallback` family: `local('Arial')` restated with Instrument
-Sans's metrics through `size-adjust`, `ascent-override` and `descent-override`,
-per weight, and inserted into the font stacks ahead of the generic fallbacks.
+What can be fixed is how different the fallback looks. `theme-overrides.css`
+declares an `Instrument Sans Fallback` family: `local('Arial')` restated with
+Instrument Sans's metrics through `size-adjust`, `ascent-override` and
+`descent-override`, inserted into the font stacks ahead of the generic fallbacks.
+
+**Match x-height, not advance width.** The obvious reading is to scale the
+fallback until a string measures the same, which at weight 500 means scaling
+Arial up 2.7%. Arial's x-height is already larger than Instrument Sans's, 52
+against 51, so that scaling made the letters about 4.7% bigger than the face
+replacing them, and the swap read as text shrinking. `size-adjust: 98.1%` is
+51/52, which holds apparent size exactly and leaves the advance width 1.2% out.
+
+Watch the weight mapping when measuring. Arial ships 400 and 700 only, so a
+browser renders Regular at 500 and Bold at 600. Measuring 600 against Arial
+Regular gives a size-adjust 5.8% too high.
 
 Measured after: cold and warm loads both report one geometry state for the whole
-load, and blocking the font files entirely gives the same title width, title
-height and body offset as the loaded page. The swap changes letter shapes and
-moves nothing.
+load. With the font files blocked, x-height matches to 0.0%, and title height,
+body offset, body height and line count are identical to the loaded page on all
+three cards. The swap changes letter shapes and moves nothing.
 
 Derive the numbers with `scratchpad/metrics.py`, which renders the same string in
 each candidate fallback on a canvas and reports width, ascent and descent.
