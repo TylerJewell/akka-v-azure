@@ -1,0 +1,19 @@
+{
+  "id": "spd-06-proof",
+  "nav_id": "proof-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "200vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".proof-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable", "live", "hands-on"]
+}

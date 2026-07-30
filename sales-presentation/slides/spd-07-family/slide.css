@@ -1,0 +1,103 @@
+/* Mirrors #s-routes in akka-overview/index.html. The deck's shared.css has no
+   --muted/--line/--dim/--mono, so those values are inlined here. */
+#family {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding: 96px var(--pad-6) 64px; position: relative;
+  background: var(--black); overflow: hidden;
+}
+#family::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+.fam-inner { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin: 0 auto; }
+
+.fam-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+.fam-reveal.visible { opacity: 1; transform: none; }
+
+.fam-head { font-size: clamp(30px,4.4vw,58px); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; color: var(--white); margin-bottom: 14px; max-width: 22ch; }
+.fam-head .accent { color: var(--yellow); }
+.fam-sub { font-size: clamp(15px,1.35vw,19px); color: #A6A6A6; max-width: 64ch; line-height: 1.55; margin-bottom: 40px; }
+
+/* Head stays anchored at the top; the cake and its notes centre in what is left. */
+#family > .fam-inner { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+.fam-body { flex: 1 1 auto; display: flex; align-items: center; min-height: 0; }
+.fam-grid { width: 100%; display: grid; grid-template-columns: 1.5fr 0.9fr; gap: 56px; align-items: center; margin-top: 0; }
+.fam-grid > * { min-width: 0; }
+
+.cake-wrap { position: relative; border: 1.5px solid rgba(245,197,24,0.85); border-radius: 16px; padding: 40px 34px 34px; background: rgba(245,197,24,0.02); box-shadow: 0 0 90px -28px rgba(245,197,24,0.55); }
+.cake-tab { position: absolute; top: 0; left: 50%; transform: translate(-50%,-50%); background: linear-gradient(90deg, transparent 0, var(--black) 14%, var(--black) 86%, transparent 100%); padding: 2px 30px; font-size: clamp(20px,2vw,30px); letter-spacing: -0.02em; color: var(--yellow); font-weight: 700; white-space: nowrap; }
+.cake { display: flex; flex-direction: column; }
+.layer { display: grid; grid-template-columns: 98px 1fr; gap: 0 22px; align-items: stretch; }
+.role { align-self: center; text-align: right; font-family: 'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; font-weight: 600; color: #888; line-height: 1.7; }
+.role b { color: #A6A6A6; font-weight: 600; display: block; }
+.cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.cards.two { grid-template-columns: 1fr 1fr; }
+.cards.two.govwide { grid-template-columns: 0.8fr 1.2fr; }
+.ocard { border: 1px solid #2A2A2A; border-radius: 11px; padding: 26px 24px; text-align: center; background: rgba(255,255,255,0.025); transition: border-color .2s, transform .2s; }
+.ocard:hover { border-color: rgba(245,197,24,0.5); transform: translateY(-2px); }
+.oname { font-size: clamp(16px,1.6vw,21px); font-weight: 600; letter-spacing: -0.01em; color: var(--white); }
+.osub { margin-top: 12px; color: #A6A6A6; font-size: clamp(11.5px,0.92vw,13px); letter-spacing: .2px; line-height: 1.5; white-space: nowrap; }
+.osub .d { color: var(--yellow); font-weight: 600; padding: 0 4px; }
+#family .osub-wrap { white-space: normal; line-height: 1.7; }
+
+.conn { display: grid; grid-template-columns: 98px 1fr; gap: 0 22px; height: 26px; }
+.conn .rail { display: grid; }
+.conn.two .rail { grid-template-columns: 1fr 1fr; }
+.conn.one .rail { grid-template-columns: 1fr; }
+.conn .rail span { justify-self: center; width: 2px; height: 100%; background: linear-gradient(var(--yellow) 0 45%, transparent 45% 100%); background-size: 100% 8px; opacity: .55; animation: famflow .9s linear infinite; }
+@keyframes famflow { from { background-position: 0 0; } to { background-position: 0 8px; } }
+
+.rt-pick { cursor: pointer; }
+.rt-pick:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.rt-pick[aria-pressed="true"] { background: linear-gradient(160deg, rgba(245,197,24,0.13), rgba(245,197,24,0.035)); border-color: rgba(245,197,24,0.55); box-shadow: 0 0 60px -22px rgba(245,197,24,0.6); }
+.rt-pick[aria-pressed="true"] .oname { color: var(--yellow); }
+
+#family .rt-comp { white-space: nowrap; color: #A6A6A6; cursor: pointer; text-decoration: none; border-bottom: 1px dotted rgba(245,197,24,0.5); transition: color .2s, border-color .2s; }
+#family .rt-comp:hover { color: var(--yellow); border-bottom-color: var(--yellow); }
+#family .rt-comp:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+#family .rt-comp[aria-pressed="true"] { color: var(--yellow); border-bottom-color: var(--yellow); font-weight: 600; }
+
+.rt-panel { align-self: start; padding-top: 6px; }
+.rt-panel h3 { font-size: clamp(20px,2vw,29px); font-weight: 700; letter-spacing: -0.02em; color: var(--yellow); margin-bottom: 18px; }
+.rt-panel p { font-size: clamp(15px,1.32vw,19px); line-height: 1.66; color: #A6A6A6; }
+.rt-panel p + p { margin-top: 18px; }
+.rt-panel .accent { color: var(--yellow); font-weight: 600; }
+.rt-panel code { font-family: 'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size: 0.9em; }
+.rt-panel-body[hidden] { display: none; }
+
+/* Short viewports (laptops): compress vertical rhythm so the cake fits one screen */
+@media (max-height: 880px) {
+  #family { padding-top: 88px; padding-bottom: 34px; }
+  .fam-head { font-size: clamp(26px,3.4vw,42px); margin-bottom: 10px; }
+  .fam-sub { margin-bottom: 18px; }
+  .fam-grid { margin-top: 20px; }
+  .cake-wrap { padding: 26px 30px 22px; }
+  .ocard { padding: 16px 22px; }
+  .conn { height: 16px; }
+  .rt-panel h3 { margin-bottom: 12px; }
+}
+@media (max-height: 720px) {
+  #family { padding-top: 72px; padding-bottom: 24px; }
+  .fam-sub { margin-bottom: 12px; }
+  .fam-grid { margin-top: 14px; }
+  .cake-wrap { padding: 22px 26px 18px; }
+  .ocard { padding: 12px 20px; }
+  .conn { height: 12px; }
+}
+
+@media (max-width: 900px) { .fam-grid { grid-template-columns: 1fr; gap: 34px; } }
+
+@media (max-width: 820px) {
+  .cake-wrap { padding: 34px 18px 26px; }
+  .cake-tab { white-space: normal; text-align: center; line-height: 1.2; font-size: 18px; padding: 2px 16px; max-width: calc(100% - 24px); }
+  .layer { grid-template-columns: 1fr; gap: 8px; }
+  .role { text-align: left; align-self: start; }
+  .cards.two, .cards.two.govwide { grid-template-columns: 1fr; }
+  .ocard { padding: 18px 16px; }
+  .osub, #family .osub-wrap { white-space: normal; overflow-wrap: anywhere; }
+  .conn { grid-template-columns: 1fr; height: 20px; }
+  .conn > div:first-child { display: none; }
+  .conn .rail, .conn.two .rail { grid-template-columns: 1fr; }
+}

@@ -40,6 +40,9 @@ DECKS = [
      '--out', 'generated/specify/index.html'],
     ['--registry', 'optimize-registry.json', '--nav', 'nav-optimize.js',
      '--out', 'generated/optimize/index.html'],
+    # Specify modernization deck — the deck published at platform/specify.
+    ['--registry', 'specify-draft-registry.json', '--nav', 'nav-specify-draft.js',
+     '--out', 'generated/specify-draft/index.html'],
 ]
 for extra in DECKS:
     subprocess.run([sys.executable, 'builder/build.py', '--no-zip', *extra],

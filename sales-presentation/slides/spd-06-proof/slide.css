@@ -1,0 +1,77 @@
+#proof-wrapper { height: 200vh; position: relative; }
+#proof-sticky {
+  height: 100vh; height: 100dvh; min-height: 680px;
+  position: sticky; top: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6); background: var(--black); overflow: hidden;
+}
+
+.proof-head { max-width: 900px; margin-bottom: 34px; }
+.proof-eyebrow {
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:11px; text-transform:uppercase; letter-spacing:3px;
+  color:var(--yellow); font-weight:600; margin-bottom:20px;
+}
+.proof-eyebrow::before { content:''; display:block; width:28px; height:2px; background:var(--yellow); }
+.proof-headline {
+  font-size: clamp(30px, 4vw, 58px); font-weight:700;
+  line-height:1.06; letter-spacing:-0.03em; color:var(--white);
+}
+.proof-headline .accent { color:var(--yellow); }
+
+.proof-rows { display:flex; flex-direction:column; max-width:980px; margin:0 auto; }
+.proof-row {
+  display:grid; grid-template-columns: 190px 1fr; gap:28px;
+  padding:20px 0; border-top:1px solid rgba(255,255,255,0.10); align-items:start;
+}
+.proof-row:last-child { border-bottom:1px solid rgba(255,255,255,0.10); }
+
+.proof-num {
+  font-size:clamp(32px,3.6vw,52px); font-weight:700;
+  letter-spacing:-0.04em; line-height:1; color:var(--yellow);
+}
+.proof-unit {
+  margin-top:8px; font-size:10px; text-transform:uppercase;
+  letter-spacing:1.8px; color:var(--gray); font-weight:600;
+}
+.proof-rule { margin-top:12px; width:44px; height:2px; background:rgba(245,197,24,0.5); }
+
+
+.proof-body { display:flex; align-items:flex-start; gap:18px; }
+.proof-text { min-width:0; }
+/* Circular customer mark, same treatment as the platform-pattern slide. */
+.proof-mark {
+  width:52px; height:52px; flex:0 0 52px;
+  border-radius:50%; border:2px solid var(--yellow);
+  background-size:cover; background-position:center;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(0.85);
+  transition:opacity .5s ease .2s, transform .5s cubic-bezier(0.16,1,0.3,1) .2s;
+}
+.proof-row.visible .proof-mark { opacity:1; transform:scale(1); }
+.proof-mark--logo { background-color:#fff; background-size:74%; background-repeat:no-repeat; }
+.proof-mark svg { width:24px; height:24px; fill:var(--yellow); }
+
+.proof-who {
+  font-size:clamp(15px,1.3vw,19px); font-weight:700;
+  color:var(--white); letter-spacing:-0.015em; margin-bottom:8px;
+}
+.proof-story { font-size:clamp(13px,1.02vw,15px); line-height:1.5; color:#9a9a9a; max-width:52ch; }
+.proof-proves {
+  margin-top:10px; font-size:clamp(12px,0.95vw,14px); line-height:1.5;
+  color:#cfcfcf; border-left:2px solid rgba(245,197,24,0.45); padding-left:12px;
+}
+
+.proof-reveal { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.proof-reveal.visible { opacity:1; transform:none; }
+
+@media (max-width: 820px) {
+  #proof-wrapper { height: auto; }
+  #proof-sticky {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    position: relative; padding-top: 96px; padding-bottom: 88px;
+  }
+  .proof-headline { font-size: clamp(28px, 8vw, 42px); }
+  .proof-row { grid-template-columns: 1fr; gap: 14px; }
+  .proof-mark { width:44px; height:44px; flex:0 0 44px; }
+}

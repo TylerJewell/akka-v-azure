@@ -1,0 +1,19 @@
+{
+  "id": "spd-04-factory",
+  "nav_id": "fact-wrapper",
+  "pre_spacer": 0,
+  "scroll": {
+    "envelope_vh": "180vh"
+  },
+  "reveals": {
+    "scroll_progress": null,
+    "intersection": [
+      {
+        "selector": ".fact-reveal",
+        "threshold": 0.15
+      }
+    ]
+  },
+  "images": [],
+  "include_in": ["overview", "shareable", "live", "hands-on"]
+}

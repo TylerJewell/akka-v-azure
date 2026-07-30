@@ -29,6 +29,13 @@ all content lives in **three partials** the template `{% include %}`s:
   split the fragment into: styles = the `<style>` block, body = the `<div class="<deck>-content">…</div>`
   with `<script>`/`<style>` stripped out, scripts = all inline JS concatenated → `PUT` each to the
   source-code **draft AND published** endpoints.
+- **A partial-only change does NOT reliably invalidate the rendered page.** After PUTting the
+  three partials, `POST .../draft/push-live` alone often keeps serving a cached render (verified
+  2026-07-29: the styles partial had the new CSS via the API while the page still served the old).
+  What forces a re-render is marking the page dirty first: `PATCH /cms/v3/pages/site-pages/{id}`
+  with any field at its current value (e.g. `{"htmlTitle": <current>}`), then push-live. Build the
+  PATCH body with `json.dumps` and read the current page as UTF-8 — the deck titles contain em
+  dashes and a shell-quoted body returns 400. Allow 60-90s for the CDN afterwards.
 - **PRESERVE the appended port-transform CSS block.** The live styles partial has HubSpot-only overrides
   appended after the deck CSS, starting at the comment `/* === Neutralize HubSpot wrapper containers …`.
   Extract that block from the current live partial and re-append it before `</style>` — regenerating from

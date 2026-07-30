@@ -1,0 +1,42 @@
+{
+  "title": "Akka Specify \u2014 Continuous modernization (DRAFT)",
+  "slides": [
+    {
+      "id": "spd-00-title",
+      "folder": "slides/spd-00-title"
+    },
+    {
+      "id": "spd-01-what",
+      "folder": "slides/spd-01-what"
+    },
+    {
+      "id": "spd-02-specs",
+      "folder": "slides/spd-02-specs"
+    },
+    {
+      "id": "spd-03-weeks",
+      "folder": "slides/spd-03-weeks"
+    },
+    {
+      "id": "spd-04-factory",
+      "folder": "slides/spd-04-factory"
+    },
+    {
+      "id": "spd-05-sdlc",
+      "folder": "slides/spd-05-sdlc"
+    },
+    {
+      "id": "spd-06-proof",
+      "folder": "slides/spd-06-proof"
+    },
+    {
+      "id": "spd-07-family",
+      "folder": "slides/spd-07-family"
+    },
+    {
+      "id": "spd-08-close",
+      "folder": "slides/spd-08-close"
+    }
+  ],
+  "product": "verify"
+}
