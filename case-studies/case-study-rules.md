@@ -14,6 +14,17 @@ State what happened and what it means. Nothing else. If a sentence is doing anyt
 - No hype verbs: "unlock," "supercharge," "leverage" (as a flourish), "harness" (as a flourish), "empower," "revolutionize," "seamless," "game-changer," "journey," "delve," "tapestry," "fast-paced world."
 - No em-dash used as a dramatic punchline. Em-dash is allowed only to attach a clarifying clause.
 - No adjectives standing in for numbers ("blazing-fast," "massive," "incredible"). Use the number.
+- No aspirational "together" or unity tag: not "Growing X — Together," "build the future together," "let's do this together," "X, together." It is empty warmth. State what happens, and cut "together."
+- No "X, not Y" antithesis or abstract negation for rhythm ("a partnership, not a handoff"; "we don't bet the plant, we grow it"; "the gap is not the product"). State the fact once, plainly and positively.
+- No rhythmic triads assembled for cadence ("protect the standard, keep the crew, and grow the business"). List only what carries information.
+- No aspirational abstractions ("the reputation the business runs on," "share in what it earns next," "a modern, credible front door") and no reassurance tags ("without compromising the standard," "stays exactly as it is"). Say the concrete thing.
+- No flippant or presumptuous colloquial closers ("tell me if you want in," "let's do this," "sound good?," "here's the deal"). They read as glib or condescending. End on a fact or a plain, respectful ask.
+- No stilted, bookish phrasing no one says out loud ("price is not the first of them," "not the least of which," "chief among them," "therein lies"). Read every sentence aloud; if you would not say it in conversation, rewrite it.
+- No decorative numbered markers (01 / 02 / 03) on cards, boxes, tiles, or sections that are not an actual ordered sequence. Numbering is allowed only when the order carries real meaning (a true process or ranked steps).
+- No clipped, telegraphic object-lists no one would say out loud, and never treat people or values as things you "keep," "hold," or "retain" ("I keep the standard and the crew," "we retain quality and talent"). Say what actually happens to the work and to the people.
+- Don't tack a benefit, payoff, reassurance, or invitation onto the end of a statement or paragraph ("...so you win too," "I'd rather you tell me where I'm wrong now than later," "and that's how we all succeed"). State the point and stop. The last sentence has to be content, not a closer.
+- Don't editorialize or over-emphasize a point ("This is the big one," "This is key," "what really matters is," "make no mistake"). State it plainly and move on; emphasis comes from order or a number, not narration.
+- No empty intensifiers used for emphasis: "real" ("a real website," "a real stake," "real money"), "actually," "truly," "genuine." Name the thing plainly.
 
 **Required instead:** subject–verb–fact. "Throughput rose from 1,600 to 12,000 orders per minute." Lead every paragraph with the fact; explain after. If you would not say it to a skeptical engineer across a table, do not write it.
 
