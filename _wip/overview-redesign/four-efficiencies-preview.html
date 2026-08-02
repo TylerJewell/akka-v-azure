@@ -37,7 +37,7 @@
      and its accompanying copy read as a pair. */
   .eff-cell{display:grid; grid-template-columns:max-content minmax(0,1fr); gap:22px; align-items:center;}
 
-  .eff-graphic{width:100%; max-width:clamp(300px, 30vh, 420px);}
+  .eff-graphic{width:100%; max-width:clamp(330px, 34vh, 460px); margin:6px 0;}
   .eff-graphic svg{width:100%; height:auto; display:block;}
 
   .eff-text{display:flex; flex-direction:column; gap:8px;}
@@ -55,7 +55,7 @@
     .shead{font-size:clamp(26px,3.2vw,42px);}
     .ssub{margin-bottom:20px;}
     .eff-grid{gap:104px 72px;}
-    .eff-graphic{max-width:300px;}
+    .eff-graphic{max-width:390px;}
     .eff-body{font-size:14px;}
   }
   @media (max-height:760px){
@@ -93,6 +93,32 @@
   #audit-overlay .cell-box{position:absolute; border:1px dashed rgba(0,219,221,0.5); box-sizing:border-box;}
   #audit-overlay .graphic-box{position:absolute; border:1px dashed rgba(114,211,91,0.55); box-sizing:border-box;}
   #audit-overlay .row-guide{position:absolute; left:0; right:0; height:1px; background:repeating-linear-gradient(90deg, rgba(255,206,74,0.35) 0 6px, transparent 6px 12px);}
+
+  /* ---- four efficiencies as vertical tabs ---- */
+  .eff-main{display:grid; grid-template-columns:max-content minmax(0,1fr); gap:40px; margin-top:36px; align-items:start;}
+  .eff-tabs{display:flex; flex-direction:column; gap:8px;}
+  .eff-tab{font-family:'Instrument Sans',sans-serif; font-size:clamp(15px,1.2vw,18px); font-weight:600;
+           letter-spacing:-0.01em; color:#A6A6A6; background:transparent; text-align:left;
+           border:1px solid rgba(245,197,24,0.28); border-radius:8px; padding:12px 20px;
+           cursor:pointer; white-space:nowrap; transition:color .18s ease, border-color .18s ease, background .18s ease;}
+  .eff-tab:hover{color:var(--white); border-color:rgba(245,197,24,0.55);}
+  .eff-tab.active{color:#0A0A0A; background:var(--yellow); border-color:var(--yellow);}
+  .eff-panels{display:grid;}
+  .eff-panel{grid-area:1/1; display:block; visibility:hidden; opacity:0;}
+  .eff-panel.active{visibility:visible; opacity:1; animation:effIn .28s ease;}
+  @keyframes effIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .eff-panel-copy{display:flex; flex-direction:column; gap:18px; max-width:820px;}
+  .eff-quote{margin:6px 0 0; padding-left:18px; border-left:2px solid var(--yellow);}
+  .eff-quote p{margin:0; font-size:clamp(15px,1.25vw,18px); line-height:1.45; font-weight:600;
+               letter-spacing:-0.01em; color:var(--white);}
+  .eff-quote .accent{color:var(--yellow);}
+  .eff-quote cite{display:block; margin-top:8px; font-style:normal; font-size:12px;
+                  letter-spacing:1.5px; text-transform:uppercase; color:#8A8A8A;}
+  @media (max-width:900px){
+    .eff-main{grid-template-columns:1fr; gap:20px;}
+    .eff-tabs{flex-direction:row; flex-wrap:wrap;}
+    .eff-panel{grid-template-columns:1fr; gap:20px;}
+  }
 </style>
 </head>
 <body>
@@ -104,12 +130,19 @@
     <h2 class="shead">Efficient at <span class="accent">every scale.</span></h2>
     <div class="ssub">We guarantee AI efficiencies at the smallest scale, so that none exist at the largest scale.</div>
 
-    <div class="eff-grid">
-
-      <!-- Akka Specify -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
+    <div class="eff-main">
+        <div class="eff-tabs" id="effTabs">
+          <button class="eff-tab active" data-i="0">Akka Specify</button>
+          <button class="eff-tab" data-i="1">Akka SDK</button>
+          <button class="eff-tab" data-i="2">Akka Optimize</button>
+          <button class="eff-tab" data-i="3">Akka Verify</button>
+        </div>
+        <div class="eff-panels">
+        <div class="eff-panel active" data-i="0">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Specify</div>
+            <div class="eff-body">Any role writes plain-language specs. Every change is verified against them, so code and specs stay in agreement.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
             <defs>
               <marker id="ar-sp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L7,3 L0,6 Z" fill="#FFCE4A"/>
@@ -135,18 +168,18 @@
             <line x1="196" y1="80" x2="232" y2="80" stroke="#FFCE4A" stroke-width="1.5" marker-end="url(#ar-sp)"/>
             <rect x="238" y="58" width="52" height="44" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="5"/>
             <text x="264" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#FFCE4A" font-weight="600" letter-spacing="1">SYSTEM</text>
-          </svg>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>AI-based merchant onboarding deployed to production in weeks by college grads.</p>
+              <cite>&middot; Dojo</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Specify</div>
-        <div class="eff-body">Any role writes plain-language specs. Every change is verified against them, so code and specs stay in agreement.</div>
-        </div>
-      </div>
-
-      <!-- Akka SDK -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dense grid of agents on a shared runtime, with elastic capacity below">
+        <div class="eff-panel" data-i="1">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka SDK</div>
+            <div class="eff-body">Thousands of agents run per core. Shared compute pools resources across services, so capacity scales without over-provisioning.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dense grid of agents on a shared runtime, with elastic capacity below">
             <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">SHARED RUNTIME</text>
             <rect x="50" y="22" width="200" height="82" fill="none" stroke="#FFCE4A" stroke-width="1.5" rx="8"/>
             <g fill="#FFCE4A">
@@ -157,18 +190,18 @@
             </g>
             <text x="150" y="123" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">ELASTIC CAPACITY</text>
             <path d="M 55 145 L 80 139 L 105 149 L 130 135 L 155 147 L 180 137 L 205 150 L 230 139 L 250 145" stroke="#FFCE4A" stroke-width="1.5" fill="none" opacity="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>5 billion tokens per second on <span class="accent">22K cores</span>, at 40% lower cost per personalized session.</p>
+              <cite>&middot; Fox</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka SDK</div>
-        <div class="eff-body">Thousands of agents run per core. Shared compute pools resources across services, so capacity scales without over-provisioning.</div>
-        </div>
-      </div>
-
-      <!-- Akka Optimize -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cost per verified task descends as your own smaller models take over from frontier models">
+        <div class="eff-panel" data-i="2">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Optimize</div>
+            <div class="eff-body">Trains SLMs on your data and routes work to them as they improve. You own the models, and token costs fall.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cost per verified task descends as your own smaller models take over from frontier models">
             <text x="30" y="17" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">COST / TASK</text>
             <line x1="40" y1="22" x2="40" y2="120" stroke="#4E4E4E" stroke-width="1"/>
             <line x1="40" y1="50" x2="270" y2="50" stroke="#2A2A2A" stroke-dasharray="2,3"/>
@@ -184,18 +217,17 @@
             <text x="62" y="35" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">FRONTIER</text>
             <!-- Moved above the descending curve, clear of any line stroke. -->
             <text x="265" y="80" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">YOUR SLMs</text>
-          </svg>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>P99 prediction latency fell from 144ms to <span class="accent">71ms</span>, at 5,000+ predictions per second.</p>
+              <cite>&middot; Swiggy</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Optimize</div>
-        <div class="eff-body">Trains SLMs on your data and routes work to them as they improve. You own the models, and token costs fall.</div>
-        </div>
-      </div>
-
-      <!-- Akka Verify -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One central policy is enforced across every agent, mapped to 190 global regulations">
+        <div class="eff-panel" data-i="3">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Verify</div>
+            <div class="eff-body">Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.  <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One central policy is enforced across every agent, mapped to 190 global regulations">
             <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">POLICY</text>
             <rect x="120" y="22" width="60" height="45" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="4"/>
             <line x1="130" y1="34" x2="170" y2="34" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
@@ -223,14 +255,12 @@
               <circle cx="245" cy="125" r="4.5"/>
             </g>
             <text x="150" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">EVERY AGENT</text>
-          </svg>
+          </svg></div>
+            </div>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Verify</div>
-        <div class="eff-body">Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.</div>
         </div>
       </div>
-
     </div>
 
   </div>
@@ -435,5 +465,22 @@ if (new URLSearchParams(location.search).has('audit')) {
 }
 </script>
 
+
+<script>
+/* Vertical tabs for the four efficiencies. */
+(function(){
+  var tabs = [].slice.call(document.querySelectorAll('#effTabs .eff-tab'));
+  var panels = [].slice.call(document.querySelectorAll('.eff-panel'));
+  if (!tabs.length) return;
+  function show(i){
+    tabs.forEach(function(t,k){ t.classList.toggle('active', k === i); });
+    panels.forEach(function(p,k){ p.classList.toggle('active', k === i); });
+  }
+  document.getElementById('effTabs').addEventListener('click', function(e){
+    var b = e.target.closest('.eff-tab');
+    if (b) show(parseInt(b.getAttribute('data-i'), 10));
+  });
+})();
+</script>
 </body>
 </html>

@@ -543,14 +543,14 @@
   .ssub{font-size:clamp(14px,1.25vw,18px); color:var(--muted); max-width:80ch; line-height:1.5; margin-bottom:36px;}
 
   /* 2x2 grid with generous buffer between cells */
-  .eff-grid{display:grid; grid-template-columns:1fr 1fr; gap:52px 96px;}
+  .eff-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(104px, 15vh, 190px) 72px; margin-top:36px;}
 
   /* Each cell splits horizontally: graphic on the left, title + body on the right,
      centred vertically against each other. Tighter inner gap so the graphic
      and its accompanying copy read as a pair. */
-  .eff-cell{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:center;}
+  .eff-cell{display:grid; grid-template-columns:max-content minmax(0,1fr); gap:22px; align-items:center;}
 
-  .eff-graphic{width:100%; max-width:260px;}
+  .eff-graphic{width:100%; max-width:clamp(330px, 34vh, 460px); margin:6px 0;}
   .eff-graphic svg{width:100%; height:auto; display:block;}
 
   .eff-text{display:flex; flex-direction:column; gap:8px;}
@@ -567,16 +567,16 @@
     
     .shead{font-size:clamp(26px,3.2vw,42px);}
     .ssub{margin-bottom:20px;}
-    .eff-grid{gap:20px 48px;}
-    .eff-graphic{max-width:260px;}
+    .eff-grid{gap:104px 72px;}
+    .eff-graphic{max-width:390px;}
     .eff-body{font-size:14px;}
   }
   @media (max-height:760px){
     
     .shead{font-size:clamp(24px,3vw,36px);}
     .ssub{margin-bottom:16px; font-size:14px;}
-    .eff-grid{gap:16px 40px;}
-    .eff-graphic{max-width:230px;}
+    .eff-grid{gap:56px 64px;}
+    .eff-graphic{max-width:260px;}
     .eff-body{font-size:13.5px; line-height:1.45;}
     .eff-name{font-size:20px;}
   }
@@ -587,7 +587,31 @@
   /* Visual auditor — opens with ?audit=1 */
                             
   /* Alignment overlay */
-    body.audit-on       #audit-overlay .row-guide{position:absolute; left:0; right:0; height:1px; background:repeating-linear-gradient(90deg, rgba(255,206,74,0.35) 0 6px, transparent 6px 12px);}
+      /* ---- four efficiencies as vertical tabs ---- */
+  .eff-main{display:grid; grid-template-columns:max-content minmax(0,1fr); gap:40px; margin-top:36px; align-items:start;}
+  .eff-tabs{display:flex; flex-direction:column; gap:8px;}
+  .eff-tab{font-family:'Instrument Sans',sans-serif; font-size:clamp(15px,1.2vw,18px); font-weight:600;
+           letter-spacing:-0.01em; color:#A6A6A6; background:transparent; text-align:left;
+           border:1px solid rgba(245,197,24,0.28); border-radius:8px; padding:12px 20px;
+           cursor:pointer; white-space:nowrap; transition:color .18s ease, border-color .18s ease, background .18s ease;}
+  .eff-tab:hover{color:var(--white); border-color:rgba(245,197,24,0.55);}
+  .eff-tab.active{color:#0A0A0A; background:var(--yellow); border-color:var(--yellow);}
+  .eff-panels{display:grid;}
+  .eff-panel{grid-area:1/1; display:block; visibility:hidden; opacity:0;}
+  .eff-panel.active{visibility:visible; opacity:1; animation:effIn .28s ease;}
+  @keyframes effIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .eff-panel-copy{display:flex; flex-direction:column; gap:18px; max-width:820px;}
+  .eff-quote{margin:6px 0 0; padding-left:18px; border-left:2px solid var(--yellow);}
+  .eff-quote p{margin:0; font-size:clamp(15px,1.25vw,18px); line-height:1.45; font-weight:600;
+               letter-spacing:-0.01em; color:var(--white);}
+  .eff-quote 
+  .eff-quote cite{display:block; margin-top:8px; font-style:normal; font-size:12px;
+                  letter-spacing:1.5px; text-transform:uppercase; color:#8A8A8A;}
+  @media (max-width:900px){
+    .eff-main{grid-template-columns:1fr; gap:20px;}
+    .eff-tabs{flex-direction:row; flex-wrap:wrap;}
+    .eff-panel{grid-template-columns:1fr; gap:20px;}
+  }
 /* ================================================================= */
 
 /* ---- overrides for the new agentic-platform slide ---- */
@@ -600,9 +624,15 @@
    tint. Strip it here so the new slide's cake sits directly on the page. */
 #s-akka-platform .cake-wrap{border:none !important; background:none !important; box-shadow:none !important; padding:0 !important;}
 
-/* Right-side body copy sized up so the four paragraphs read at roughly the
-   same total height as the cake box on the left. */
-#s-akka-platform .pf-msg p{font-size:clamp(18px,1.55vw,24px); line-height:1.6;}
+/* Clearance under the subtitle. Measured at 24px from the subtitle's last line
+   to the top of the cake, which read as the graphic hanging off the subtitle.
+   tools/auditors/slide-align holds the floor at 40px. */
+#s-akka-platform .pf-grid{margin-top:44px !important;}
+
+/* Right-side body copy. The size is set at runtime by fitPfMsg() below so the
+   copy starts level with the top box and finishes level with the Akka Optimize
+   box; this rule only supplies the starting point and the line spacing. */
+#s-akka-platform .pf-msg p{font-size:22px; line-height:1.6;}
 #s-akka-platform .pf-msg .seg{margin-bottom:18px;}
 #s-akka-platform .pf-msg .seg:last-child{margin-bottom:0;}
 
@@ -1071,18 +1101,25 @@
     <h2 class="shead">Efficient at <span class="accent">every scale.</span></h2>
     <div class="ssub">We guarantee AI efficiencies at the smallest scale, so that none exist at the largest scale.</div>
 
-    <div class="eff-grid">
-
-      <!-- Akka Specify -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
+    <div class="eff-main">
+        <div class="eff-tabs" id="effTabs">
+          <button class="eff-tab active" data-i="0">Akka Specify</button>
+          <button class="eff-tab" data-i="1">Akka SDK</button>
+          <button class="eff-tab" data-i="2">Akka Optimize</button>
+          <button class="eff-tab" data-i="3">Akka Verify</button>
+        </div>
+        <div class="eff-panels">
+        <div class="eff-panel active" data-i="0">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Specify</div>
+            <div class="eff-body">Any role writes plain-language specs. Every change is verified against them, so code and specs stay in agreement.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
             <defs>
               <marker id="ar-sp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L7,3 L0,6 Z" fill="#FFCE4A"/>
               </marker>
             </defs>
-            <text x="45" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">ANYONE</text>
+            <text x="45" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">ANYONE</text>
             <!-- Dots vertically aligned within the spec's y-range (55–105) -->
             <circle cx="45" cy="60" r="4.5" fill="#FFCE4A"/>
             <circle cx="45" cy="75" r="4.5" fill="#FFCE4A"/>
@@ -1098,23 +1135,23 @@
             <line x1="142" y1="76" x2="182" y2="76" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <line x1="142" y1="85" x2="177" y2="85" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <line x1="142" y1="94" x2="182" y2="94" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
-            <text x="162" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFCE4A" font-weight="600" letter-spacing="1.5">SPEC</text>
+            <text x="162" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#FFCE4A" font-weight="600" letter-spacing="1.5">SPEC</text>
             <line x1="196" y1="80" x2="232" y2="80" stroke="#FFCE4A" stroke-width="1.5" marker-end="url(#ar-sp)"/>
             <rect x="238" y="58" width="52" height="44" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="5"/>
-            <text x="264" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFCE4A" font-weight="600" letter-spacing="1">SYSTEM</text>
-          </svg>
+            <text x="264" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#FFCE4A" font-weight="600" letter-spacing="1">SYSTEM</text>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>AI-based merchant onboarding deployed to production in weeks by college grads.</p>
+              <cite>&middot; Dojo</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Specify</div>
-        <div class="eff-body">Plain-language specs let any engineer, data scientist, product manager, or citizen developer create systems. Every change is verified against the specs, so code and specs stay in continuous agreement.</div>
-        </div>
-      </div>
-
-      <!-- Akka SDK -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dense grid of agents on a shared runtime, with elastic capacity below">
-            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">SHARED RUNTIME</text>
+        <div class="eff-panel" data-i="1">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka SDK</div>
+            <div class="eff-body">Thousands of agents run per core. Shared compute pools resources across services, so capacity scales without over-provisioning.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dense grid of agents on a shared runtime, with elastic capacity below">
+            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">SHARED RUNTIME</text>
             <rect x="50" y="22" width="200" height="82" fill="none" stroke="#FFCE4A" stroke-width="1.5" rx="8"/>
             <g fill="#FFCE4A">
               <circle cx="70" cy="38" r="2.3"/><circle cx="93" cy="38" r="2.3"/><circle cx="116" cy="38" r="2.3"/><circle cx="139" cy="38" r="2.3"/><circle cx="162" cy="38" r="2.3"/><circle cx="185" cy="38" r="2.3"/><circle cx="208" cy="38" r="2.3"/><circle cx="231" cy="38" r="2.3"/>
@@ -1122,55 +1159,54 @@
               <circle cx="70" cy="76" r="2.3"/><circle cx="93" cy="76" r="2.3"/><circle cx="116" cy="76" r="2.3"/><circle cx="139" cy="76" r="2.3"/><circle cx="162" cy="76" r="2.3"/><circle cx="185" cy="76" r="2.3"/><circle cx="208" cy="76" r="2.3"/><circle cx="231" cy="76" r="2.3"/>
               <circle cx="70" cy="93" r="2.3"/><circle cx="93" cy="93" r="2.3"/><circle cx="116" cy="93" r="2.3"/><circle cx="139" cy="93" r="2.3"/><circle cx="162" cy="93" r="2.3"/><circle cx="185" cy="93" r="2.3"/><circle cx="208" cy="93" r="2.3"/><circle cx="231" cy="93" r="2.3"/>
             </g>
-            <text x="150" y="123" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">ELASTIC CAPACITY</text>
+            <text x="150" y="123" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">ELASTIC CAPACITY</text>
             <path d="M 55 145 L 80 139 L 105 149 L 130 135 L 155 147 L 180 137 L 205 150 L 230 139 L 250 145" stroke="#FFCE4A" stroke-width="1.5" fill="none" opacity="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>5 billion tokens per second on <span class="accent">22K cores</span>, at 40% lower cost per personalized session.</p>
+              <cite>&middot; Fox</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka SDK</div>
-        <div class="eff-body">Actor-based concurrency runs thousands of agents per core. A shared compute model pools resources across services. Elastic infrastructure eliminates over-provisioning waste.</div>
-        </div>
-      </div>
-
-      <!-- Akka Optimize -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cost per verified task descends as your own smaller models take over from frontier models">
-            <text x="30" y="17" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">COST / TASK</text>
+        <div class="eff-panel" data-i="2">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Optimize</div>
+            <div class="eff-body">Trains SLMs on your data and routes work to them as they improve. You own the models, and token costs fall.</div>
+              <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cost per verified task descends as your own smaller models take over from frontier models">
+            <text x="30" y="17" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">COST / TASK</text>
             <line x1="40" y1="22" x2="40" y2="120" stroke="#4E4E4E" stroke-width="1"/>
             <line x1="40" y1="50" x2="270" y2="50" stroke="#2A2A2A" stroke-dasharray="2,3"/>
             <line x1="40" y1="80" x2="270" y2="80" stroke="#2A2A2A" stroke-dasharray="2,3"/>
             <line x1="40" y1="110" x2="270" y2="110" stroke="#2A2A2A" stroke-dasharray="2,3"/>
             <line x1="40" y1="120" x2="270" y2="120" stroke="#4E4E4E" stroke-width="1"/>
-            <text x="270" y="138" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">USAGE OVER TIME &rarr;</text>
+            <text x="270" y="138" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">USAGE OVER TIME &rarr;</text>
             <path d="M 55 40 Q 90 45 115 62 T 175 92 T 260 112" stroke="#FFCE4A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <circle cx="55" cy="40" r="3" fill="#FFCE4A"/>
             <circle cx="115" cy="62" r="3" fill="#FFCE4A"/>
             <circle cx="175" cy="92" r="3" fill="#FFCE4A"/>
             <circle cx="260" cy="112" r="3" fill="#FFCE4A"/>
-            <text x="62" y="35" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">FRONTIER</text>
+            <text x="62" y="35" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">FRONTIER</text>
             <!-- Moved above the descending curve, clear of any line stroke. -->
-            <text x="265" y="80" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">YOUR SLMs</text>
-          </svg>
+            <text x="265" y="80" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">YOUR SLMs</text>
+          </svg></div>
+            <blockquote class="eff-quote">
+              <p>P99 prediction latency fell from 144ms to <span class="accent">71ms</span>, at 5,000+ predictions per second.</p>
+              <cite>&middot; Swiggy</cite>
+            </blockquote>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Optimize</div>
-        <div class="eff-body">Continuously exploits the latest open-weight models and trains new SLMs on your proprietary data. You own your intelligence, and total token costs keep falling.</div>
-        </div>
-      </div>
-
-      <!-- Akka Verify -->
-      <div class="eff-cell">
-        <div class="eff-graphic">
-          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One central policy is enforced across every agent, mapped to 190 global regulations">
-            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">POLICY</text>
+        <div class="eff-panel" data-i="3">
+          <div class="eff-panel-copy">
+            <div class="eff-name">Akka Verify</div>
+            <div class="eff-body">Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.  <div class="eff-graphic"><svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One central policy is enforced across every agent, mapped to 190 global regulations">
+            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">POLICY</text>
             <rect x="120" y="22" width="60" height="45" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="4"/>
             <line x1="130" y1="34" x2="170" y2="34" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <line x1="130" y1="42" x2="170" y2="42" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <line x1="130" y1="50" x2="165" y2="50" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <line x1="130" y1="58" x2="170" y2="58" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
             <rect x="200" y="35" width="65" height="18" fill="none" stroke="#A6A6A6" stroke-width="1" rx="2"/>
-            <text x="232" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">190 REGS</text>
+            <text x="232" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1">190 REGS</text>
             <g stroke="#4E4E4E" stroke-width="1">
               <line x1="150" y1="69" x2="55" y2="125"/>
               <line x1="150" y1="69" x2="87" y2="125"/>
@@ -1189,15 +1225,13 @@
               <circle cx="213" cy="125" r="4.5"/>
               <circle cx="245" cy="125" r="4.5"/>
             </g>
-            <text x="150" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">EVERY AGENT</text>
-          </svg>
+            <text x="150" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">EVERY AGENT</text>
+          </svg></div>
+            </div>
+          </div>
         </div>
-        <div class="eff-text">
-          <div class="eff-name">Akka Verify</div>
-        <div class="eff-body">Risk and compliance teams define policies centrally. The runtime enforces them globally across every agent. Systems stay continuously in compliance against 190 global regulations.</div>
         </div>
       </div>
-
     </div>
 
   </div>
@@ -1840,5 +1874,99 @@
   setTimeout(fit, 600);
 })();
 </script>
+
+<script>
+/* Vertical tabs on the four-efficiencies slide. The preview file carries its own
+   copy, but the assembler lifts only the section markup, so it is restated here. */
+(function(){
+  var host = document.getElementById('effTabs');
+  if (!host) return;
+  var tabs = [].slice.call(host.querySelectorAll('.eff-tab'));
+  var panels = [].slice.call(document.querySelectorAll('.eff-panel'));
+  function show(i){
+    tabs.forEach(function(t,k){ t.classList.toggle('active', k === i); });
+    panels.forEach(function(p,k){ p.classList.toggle('active', k === i); });
+  }
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.eff-tab');
+    if (b) show(parseInt(b.getAttribute('data-i'), 10));
+  });
+})();
+</script>
+
+<script>
+/* === right-column fit for #s-akka-platform === */
+(function(){
+  var MIN = 14, MAX = 26, BASE_GAP = 14;
+
+  function inkHeight(el){
+    var rg = document.createRange();
+    rg.selectNodeContents(el);
+    return rg.getBoundingClientRect().height;
+  }
+
+  /* Ink height moves in whole lines, so scaling toward the target overshoots and
+     undershoots forever: 21.78px gave 437px and 20.25px gave 378px against a
+     407px target, and the ratio step just swung between them. Take the largest
+     size that still fits, then put the leftover into the gaps between
+     paragraphs, which is continuous and lands the last line exactly. */
+  function fitPfMsg(){
+    var sec = document.querySelector('#s-akka-platform');
+    if (!sec) return;
+    var msg = sec.querySelector('.pf-msg');
+    var cards = sec.querySelectorAll('.ocard');
+    if (!msg || cards.length < 2) return;
+    var paras = msg.querySelectorAll('p');
+    var segs = msg.querySelectorAll('.seg');
+    if (!paras.length) return;
+
+    var target = cards[cards.length - 1].getBoundingClientRect().bottom
+               - cards[0].getBoundingClientRect().top;
+    if (target < 80) return;
+
+    function setSize(px){
+      for (var j = 0; j < paras.length; j++) paras[j].style.fontSize = px.toFixed(2) + 'px';
+    }
+    for (var g = 0; g < segs.length; g++){
+      segs[g].style.marginBottom = (g === segs.length - 1) ? '0px' : BASE_GAP + 'px';
+    }
+
+    var lo = MIN, hi = MAX, best = MIN;
+    for (var i = 0; i < 14; i++){
+      var mid = (lo + hi) / 2;
+      setSize(mid);
+      if (inkHeight(msg) <= target){ best = mid; lo = mid; } else { hi = mid; }
+      if (hi - lo < 0.15) break;
+    }
+    setSize(best);
+
+    var slack = target - inkHeight(msg);
+    if (segs.length > 1 && slack > 0){
+      var add = slack / (segs.length - 1);
+      for (var k = 0; k < segs.length - 1; k++){
+        segs[k].style.marginBottom = (BASE_GAP + add).toFixed(2) + 'px';
+      }
+    }
+  }
+  function schedule(){
+    requestAnimationFrame(function(){ requestAnimationFrame(fitPfMsg); });
+    setTimeout(fitPfMsg, 300);
+    setTimeout(fitPfMsg, 1000);
+    setTimeout(fitPfMsg, 2500);
+    /* The web font changes how the copy wraps, so a fit computed against the
+       fallback goes stale the moment the real face lands. Measured: ink went
+       from 411px to 437px after the swap, leaving the column 31px long. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPfMsg);
+  }
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule);
+  var raf = 0;
+  window.addEventListener('resize', function(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fitPfMsg);
+  });
+})();
+</script>
+
 </body>
 </html>

@@ -155,6 +155,27 @@ overrides = """
 # converges in two or three passes because ink height is near enough linear in
 # font size; the bounds keep the copy readable if the span is ever too small to
 # satisfy honestly.
+tab_script = """
+<script>
+/* Vertical tabs on the four-efficiencies slide. The preview file carries its own
+   copy, but the assembler lifts only the section markup, so it is restated here. */
+(function(){
+  var host = document.getElementById('effTabs');
+  if (!host) return;
+  var tabs = [].slice.call(host.querySelectorAll('.eff-tab'));
+  var panels = [].slice.call(document.querySelectorAll('.eff-panel'));
+  function show(i){
+    tabs.forEach(function(t,k){ t.classList.toggle('active', k === i); });
+    panels.forEach(function(p,k){ p.classList.toggle('active', k === i); });
+  }
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.eff-tab');
+    if (b) show(parseInt(b.getAttribute('data-i'), 10));
+  });
+})();
+</script>
+"""
+
 fit_script = """
 <script>
 /* === right-column fit for #s-akka-platform === */
@@ -306,9 +327,9 @@ base = base.replace(
 # Runtime fit for the agentic-platform slide's right column, appended last so it
 # runs after every stylesheet the base file brings with it.
 if "</body>" in base:
-    base = base.replace("</body>", fit_script + "\n</body>", 1)
+    base = base.replace("</body>", tab_script + fit_script + "\n</body>", 1)
 else:
-    base += fit_script
+    base += tab_script + fit_script
 
 # Write output
 out = SCRATCH / "overview-new.html"

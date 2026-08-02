@@ -6,6 +6,7 @@ slide, labels too small to see from a room, and a slide that leaves most of the
 viewport empty.
 
   PAIR_GAP      distance from each graphic to its own text
+  QUOTE         every panel carries a quote with a source
   WORDS         words of body copy per cell
   LABEL_SIZE    SVG label text below the legible floor
   VIEWPORT_FILL share of the usable band the content occupies
@@ -56,20 +57,32 @@ MEASURE = r"""
     return {top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height)};
   }
 
+  /* The slide was a four-cell grid and is now four vertical tabs. Panels are
+     the unit either way; only .eff-cell became .eff-panel. Inactive panels are
+     hidden, so each is activated in turn before it is measured. */
   var cells = [], smallLabels = [];
-  sec.querySelectorAll('.eff-cell').forEach(function(cell, i){
+  var tabs = sec.querySelectorAll('#effTabs .eff-tab');
+  var units = sec.querySelectorAll('.eff-panel');
+  if (!units.length) units = sec.querySelectorAll('.eff-cell');
+  units.forEach(function(cell, i){
+    if (tabs.length > i) tabs[i].click();
     var g = cell.querySelector('.eff-graphic');
+    var quote = cell.querySelector('.eff-quote');
+    var cite = quote ? quote.querySelector('cite') : null;
     var name = cell.querySelector('.eff-name');
     var body = cell.querySelector('.eff-body');
     var txt = cell.querySelector('.eff-text') || body;
     var words = body ? (body.textContent || '').trim().split(/\s+/).filter(Boolean).length : 0;
 
-    /* Gap between the graphic's box and the start of its text column. */
+    /* Distance from the graphic to the copy it belongs to, whichever way the
+       panel is laid out. */
     var gap = null;
-    if (g && txt){
-      var gb = r(g), tb = r(txt);
-      gap = (tb.left >= gb.right) ? tb.left - gb.right
-          : (gb.left >= tb.right) ? gb.left - tb.right
+    if (g && body){
+      var gb = r(g), bb = r(body);
+      gap = (bb.left >= gb.right) ? bb.left - gb.right
+          : (gb.left >= bb.right) ? gb.left - bb.right
+          : (gb.top >= bb.bottom) ? gb.top - bb.bottom
+          : (bb.top >= gb.bottom) ? bb.top - gb.bottom
           : 0;
     }
     cells.push({
@@ -78,6 +91,8 @@ MEASURE = r"""
       words: words,
       gap: gap,
       cell: r(cell),
+      hasQuote: !!quote,
+      cited: !!(cite && (cite.textContent || '').trim().length > 2),
       graphic: g ? r(g) : null,
       textInk: txt ? ink(txt) : null
     });
@@ -205,6 +220,17 @@ def audit(url, section, width, height):
             print('               cell %d  %-24r %.1fpx' % (s['cell'], s['text'], s['px']))
         if under:
             fails.append('LABEL_SIZE %d labels < %dpx' % (len(under), MIN_LABEL_PX))
+
+    missing = [c['name'] for c in d['cells'] if not c['hasQuote']]
+    uncited = [c['name'] for c in d['cells'] if c['hasQuote'] and not c['cited']]
+    print('    QUOTE      %d of %d panels carry a sourced quote'
+          % (len(d['cells']) - len(missing) - len(uncited), len(d['cells'])))
+    for n in missing:
+        print('               %-16s no quote' % n)
+    for n in uncited:
+        print('               %-16s quote without a source' % n)
+    if missing or uncited:
+        fails.append('QUOTE %d panel(s) unsourced' % (len(missing) + len(uncited)))
 
     band = d['vh'] - HEADER
     top = d['head']['top'] if d['head'] else d['section']['top']
