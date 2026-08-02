@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform slide — preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --yellow:#FFCE4A; --black:#000000; --white:#F1F1F1;
+    --line:#2A2A2A; --muted:#A6A6A6; --dim:#888; --green:#72D35B; --red:#FF5400;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  }
+  html{background:var(--black);}
+  body{font-family:'Instrument Sans',-apple-system,sans-serif; background:var(--black); color:var(--white); overflow-x:clip;}
+  section{position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:64px 6vw; overflow:hidden;}
+  .inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
+  section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
+  .accent{color:var(--yellow);}
+  .pos{color:var(--green);}
+  .neg{color:var(--red);}
+
+  /* Title + subtitle — matched to existing overview deck (.shead / .ssub) */
+  .shead{font-size:clamp(30px,4.4vw,58px); margin-bottom:14px; max-width:22ch; line-height:1.05; font-weight:700; letter-spacing:-0.03em; color:var(--white);}
+  .ssub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:80ch; line-height:1.55; margin-bottom:40px;}
+
+  /* Layout — left column trimmed ~50px vs the original so the right side has
+     more room for body copy. Top-align both columns so the text on the right
+     starts at the same horizontal line as the first row of cards on the left. */
+  #s-platform .pf-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:50px; align-items:start; margin-top:20px;}
+
+  /* Cake diagram — no outer frame or glow. No top padding, so the top of the
+     first card sits exactly at the top of the column and lines up with the
+     first line of body copy on the right. */
+  .cake-wrap{position:relative;}
+
+  .cake{display:flex; flex-direction:column;}
+  .layer{display:grid; grid-template-columns:98px 1fr; gap:0 22px; align-items:stretch;}
+  .role{align-self:center; text-align:right; font-family:var(--mono); text-transform:uppercase; letter-spacing:2px; font-size:10px; font-weight:600; color:var(--dim); line-height:1.7;}
+  .role b{color:var(--muted); font-weight:600; display:block;}
+  .cards{display:grid; grid-template-columns:1fr; gap:14px;}
+  .cards.two{grid-template-columns:1fr 1fr;}
+  .cards.two.govwide{grid-template-columns:0.8fr 1.2fr;}
+
+  .ocard{border:1px solid rgba(255,206,74,0.4); border-radius:11px; padding:26px 24px; text-align:center; background:rgba(255,255,255,0.025);}
+  .oname{font-size:clamp(16px,1.6vw,21px); font-weight:700; letter-spacing:-0.01em; color:var(--yellow);}
+  .osub{margin-top:12px; color:var(--muted); font-size:clamp(11.5px,0.92vw,13px); letter-spacing:.2px; line-height:1.5;}
+  .osub .d{color:var(--yellow); font-weight:600; padding:0 4px;}
+  .osub-wrap{line-height:1.75;}
+
+  .conn{display:grid; grid-template-columns:98px 1fr; gap:0 22px; height:26px;}
+  .conn .rail{display:grid;}
+  .conn.two .rail{grid-template-columns:1fr 1fr;}
+  .conn.one .rail{grid-template-columns:1fr;}
+  .conn .rail span{justify-self:center; width:2px; height:100%; background:linear-gradient(var(--yellow) 0 45%, transparent 45% 100%); background-size:100% 8px; opacity:.55; animation:flow .9s linear infinite;}
+  @keyframes flow{from{background-position:0 0;}to{background-position:0 8px;}}
+
+  /* Right-side pf-msg — matches existing overview deck format */
+  .pf-msg{align-self:start;}
+  .pf-msg p{margin:0; font-size:clamp(16px,1.4vw,21px); line-height:1.66; color:var(--muted); font-weight:400;}
+  .pf-msg .accent{color:var(--yellow); font-weight:600;}
+  .pf-msg .seg{display:block; margin-bottom:14px;}
+  .pf-msg .seg:last-child{margin-bottom:0;}
+
+  @media (max-width:900px){
+    #s-platform .pf-grid{grid-template-columns:1fr; gap:40px;}
+  }
+</style>
+</head>
+<body>
+
+<section id="s-platform">
+  <div class="inner">
+
+    <h2 class="shead">Akka <span class="accent">Agentic AI</span> Platform</h2>
+    <div class="ssub">A platform designed to scale AI efficiently across diverse dev teams, projects,<br>and geographies while lowering token costs and enforcing policies.</div>
+
+    <div class="pf-grid">
+
+      <div class="cake-wrap">
+        <div class="cake">
+
+          <div class="layer">
+            <div class="role">Deliver<b>&amp; Govern</b></div>
+            <div class="cards two govwide">
+              <div class="ocard">
+                <div class="oname">Akka Specify</div>
+                <div class="osub">specs<span class="d">·</span>generation<span class="d">·</span>modernization</div>
+              </div>
+              <div class="ocard">
+                <div class="oname">Akka Verify</div>
+                <div class="osub">evaluations<span class="d">·</span>guardrails<span class="d">·</span>policies<span class="d">·</span>evidence</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conn two"><div></div><div class="rail"><span></span><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Build<b>&amp; Run</b></div>
+            <div class="cards">
+              <div class="ocard">
+                <div class="oname">Akka SDK</div>
+                <div class="osub osub-wrap">agents<span class="d">·</span>autonomous agents<span class="d">·</span>workflows<span class="d">·</span>event sourced entities<span class="d">·</span>key value entities<span class="d">·</span>views<br>HTTP / gRPC / MCP endpoints<span class="d">·</span>timers<span class="d">·</span>real-time streaming</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conn one"><div></div><div class="rail"><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Models<b>&amp; Compute</b></div>
+            <div class="cards">
+              <div class="ocard">
+                <div class="oname">Akka Optimize</div>
+                <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="pf-msg">
+        <p>
+          <span class="seg">Akka runs your agentic system in our <span class="accent">proprietary platform that guarantees resilience and scalability</span>, including the agents, their memory, orchestration, guardrails, evaluations, training, and inference.</span>
+          <span class="seg">Spec-driven delivery enables citizen, ML, and pro-code developers to create <span class="accent">production-ready systems in days</span>.</span>
+          <span class="seg">Once there, the platform keeps identifying and training smaller models so your agents cost less to run.</span>
+          <span class="seg">And, it <span class="accent">enforces your guardrails and policies</span> at runtime, even for agents not written in Akka.</span>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

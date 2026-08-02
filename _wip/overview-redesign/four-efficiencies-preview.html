@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four efficiencies — preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --yellow:#FFCE4A; --black:#000000; --white:#F1F1F1;
+    --line:#2A2A2A; --muted:#A6A6A6; --dim:#888; --dark:#4E4E4E;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  }
+  html{background:var(--black);}
+  body{font-family:'Instrument Sans',-apple-system,sans-serif; background:var(--black); color:var(--white); overflow-x:clip;}
+  /* Design to 860px usable height (CLAUDE.md rule). Section padding shrinks as
+     viewport shrinks so the four-cell grid always fits without a scrollbar. */
+  section{position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:48px 6vw; overflow:hidden;}
+  .inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
+  section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
+  .accent{color:var(--yellow);}
+
+  /* Standard title / subtitle. Title weight reduced from 700 to 600 and
+     colour softened from pure white to a muted off-white — the pure-white
+     shead was overpowering the four cells below it. */
+  .shead{font-size:clamp(26px,3.2vw,44px); line-height:1.08; font-weight:600; letter-spacing:-0.03em; color:#D8D8D8; margin-bottom:10px; max-width:24ch;}
+  .ssub{font-size:clamp(14px,1.25vw,18px); color:var(--muted); max-width:80ch; line-height:1.5; margin-bottom:36px;}
+
+  /* 2x2 grid with generous buffer between cells */
+  .eff-grid{display:grid; grid-template-columns:1fr 1fr; gap:52px 96px;}
+
+  /* Each cell splits horizontally: graphic on the left, title + body on the right,
+     centred vertically against each other. Tighter inner gap so the graphic
+     and its accompanying copy read as a pair. */
+  .eff-cell{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:center;}
+
+  .eff-graphic{width:100%; max-width:260px;}
+  .eff-graphic svg{width:100%; height:auto; display:block;}
+
+  .eff-text{display:flex; flex-direction:column; gap:8px;}
+  .eff-name{font-family:'Instrument Sans',sans-serif; font-size:clamp(18px,1.55vw,22px); font-weight:700; letter-spacing:-0.01em; color:var(--yellow);}
+  /* Body copy matches the muted grey used on the Akka Agentic AI Platform
+     slide (var(--muted) = #A6A6A6), sized so the grey reads clearly instead
+     of looking washed-out white. */
+  .eff-body{font-size:clamp(14px,1.15vw,16px); line-height:1.5; color:#A6A6A6;}
+
+  /* Height-responsive breakpoints — mirror the pattern used elsewhere in the
+     overview deck. Everything compresses gracefully so the slide fits in
+     ~860px of usable height. */
+  @media (max-height:880px){
+    section{padding:32px 6vw;}
+    .shead{font-size:clamp(26px,3.2vw,42px);}
+    .ssub{margin-bottom:20px;}
+    .eff-grid{gap:20px 48px;}
+    .eff-graphic{max-width:260px;}
+    .eff-body{font-size:14px;}
+  }
+  @media (max-height:760px){
+    section{padding:24px 6vw;}
+    .shead{font-size:clamp(24px,3vw,36px);}
+    .ssub{margin-bottom:16px; font-size:14px;}
+    .eff-grid{gap:16px 40px;}
+    .eff-graphic{max-width:230px;}
+    .eff-body{font-size:13.5px; line-height:1.45;}
+    .eff-name{font-size:20px;}
+  }
+  @media (max-width:900px){
+    .eff-grid{grid-template-columns:1fr; gap:24px;}
+  }
+
+  /* Visual auditor — opens with ?audit=1 */
+  #audit-panel{position:fixed; top:16px; right:16px; width:400px; max-height:calc(100vh - 32px); overflow:auto; background:rgba(20,20,20,0.96); border:1px solid #333; border-radius:6px; padding:16px 18px; color:#eee; font-family:'Instrument Sans',sans-serif; font-size:12px; z-index:999; display:none; box-shadow:0 12px 40px rgba(0,0,0,0.6);}
+  #audit-panel.on{display:block;}
+  #audit-panel h2{font-size:14px; color:var(--yellow); margin-bottom:12px; font-weight:600; letter-spacing:0.5px;}
+  #audit-panel .btn{display:inline-block; background:var(--yellow); color:#000; padding:5px 10px; border:none; border-radius:3px; font-family:inherit; font-size:11px; font-weight:600; cursor:pointer; margin-bottom:14px;}
+  #audit-panel .check{padding:9px 11px; margin-bottom:6px; border-radius:3px; border-left:3px solid #555; background:#1a1a1a; font-size:12px; line-height:1.4;}
+  #audit-panel .check.pass{border-left-color:#72D35B;}
+  #audit-panel .check.fail{border-left-color:#FF5400;}
+  #audit-panel .check.warn{border-left-color:#FFCE4A;}
+  #audit-panel .check .st{font-family:var(--mono); font-weight:700; margin-right:6px;}
+  #audit-panel .check.pass .st{color:#72D35B;}
+  #audit-panel .check.fail .st{color:#FF5400;}
+  #audit-panel .check.warn .st{color:#FFCE4A;}
+  #audit-panel .check .nm{font-weight:600; display:block; margin-bottom:2px;}
+  #audit-panel .check .dt{color:#999; font-size:10.5px; font-family:var(--mono);}
+
+  /* Alignment overlay */
+  #audit-overlay{position:absolute; inset:0; pointer-events:none; z-index:5; display:none;}
+  body.audit-on #audit-overlay{display:block;}
+  #audit-overlay .cell-box{position:absolute; border:1px dashed rgba(0,219,221,0.5); box-sizing:border-box;}
+  #audit-overlay .graphic-box{position:absolute; border:1px dashed rgba(114,211,91,0.55); box-sizing:border-box;}
+  #audit-overlay .row-guide{position:absolute; left:0; right:0; height:1px; background:repeating-linear-gradient(90deg, rgba(255,206,74,0.35) 0 6px, transparent 6px 12px);}
+</style>
+</head>
+<body>
+
+<section id="s-eff">
+  <div class="inner" style="position:relative;">
+    <div id="audit-overlay"></div>
+
+    <h2 class="shead">Efficient at <span class="accent">every scale.</span></h2>
+    <div class="ssub">We guarantee AI efficiencies at the smallest scale, so that none exist at the largest scale.</div>
+
+    <div class="eff-grid">
+
+      <!-- Akka Specify -->
+      <div class="eff-cell">
+        <div class="eff-graphic">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
+            <defs>
+              <marker id="ar-sp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L7,3 L0,6 Z" fill="#FFCE4A"/>
+              </marker>
+            </defs>
+            <text x="45" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">ANYONE</text>
+            <!-- Dots vertically aligned within the spec's y-range (55–105) -->
+            <circle cx="45" cy="60" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="75" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="90" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="105" r="4.5" fill="#FFCE4A"/>
+            <!-- Lines terminate at the spec's left edge (x=132), meeting its vertical midpoint (y=80). -->
+            <line x1="52" y1="60" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="75" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="90" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="105" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <rect x="132" y="55" width="60" height="50" fill="none" stroke="#FFCE4A" stroke-width="1.5" rx="3"/>
+            <line x1="142" y1="67" x2="182" y2="67" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="76" x2="182" y2="76" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="85" x2="177" y2="85" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="94" x2="182" y2="94" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <text x="162" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFCE4A" font-weight="600" letter-spacing="1.5">SPEC</text>
+            <line x1="196" y1="80" x2="232" y2="80" stroke="#FFCE4A" stroke-width="1.5" marker-end="url(#ar-sp)"/>
+            <rect x="238" y="58" width="52" height="44" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="5"/>
+            <text x="264" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#FFCE4A" font-weight="600" letter-spacing="1">SYSTEM</text>
+          </svg>
+        </div>
+        <div class="eff-text">
+          <div class="eff-name">Akka Specify</div>
+        <div class="eff-body">Plain-language specs let any engineer, data scientist, product manager, or citizen developer create systems. Every change is verified against the specs, so code and specs stay in continuous agreement.</div>
+        </div>
+      </div>
+
+      <!-- Akka SDK -->
+      <div class="eff-cell">
+        <div class="eff-graphic">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dense grid of agents on a shared runtime, with elastic capacity below">
+            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">SHARED RUNTIME</text>
+            <rect x="50" y="22" width="200" height="82" fill="none" stroke="#FFCE4A" stroke-width="1.5" rx="8"/>
+            <g fill="#FFCE4A">
+              <circle cx="70" cy="38" r="2.3"/><circle cx="93" cy="38" r="2.3"/><circle cx="116" cy="38" r="2.3"/><circle cx="139" cy="38" r="2.3"/><circle cx="162" cy="38" r="2.3"/><circle cx="185" cy="38" r="2.3"/><circle cx="208" cy="38" r="2.3"/><circle cx="231" cy="38" r="2.3"/>
+              <circle cx="70" cy="57" r="2.3"/><circle cx="93" cy="57" r="2.3"/><circle cx="116" cy="57" r="2.3"/><circle cx="139" cy="57" r="2.3"/><circle cx="162" cy="57" r="2.3"/><circle cx="185" cy="57" r="2.3"/><circle cx="208" cy="57" r="2.3"/><circle cx="231" cy="57" r="2.3"/>
+              <circle cx="70" cy="76" r="2.3"/><circle cx="93" cy="76" r="2.3"/><circle cx="116" cy="76" r="2.3"/><circle cx="139" cy="76" r="2.3"/><circle cx="162" cy="76" r="2.3"/><circle cx="185" cy="76" r="2.3"/><circle cx="208" cy="76" r="2.3"/><circle cx="231" cy="76" r="2.3"/>
+              <circle cx="70" cy="93" r="2.3"/><circle cx="93" cy="93" r="2.3"/><circle cx="116" cy="93" r="2.3"/><circle cx="139" cy="93" r="2.3"/><circle cx="162" cy="93" r="2.3"/><circle cx="185" cy="93" r="2.3"/><circle cx="208" cy="93" r="2.3"/><circle cx="231" cy="93" r="2.3"/>
+            </g>
+            <text x="150" y="123" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">ELASTIC CAPACITY</text>
+            <path d="M 55 145 L 80 139 L 105 149 L 130 135 L 155 147 L 180 137 L 205 150 L 230 139 L 250 145" stroke="#FFCE4A" stroke-width="1.5" fill="none" opacity="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="eff-text">
+          <div class="eff-name">Akka SDK</div>
+        <div class="eff-body">Actor-based concurrency runs thousands of agents per core. A shared compute model pools resources across services. Elastic infrastructure eliminates over-provisioning waste.</div>
+        </div>
+      </div>
+
+      <!-- Akka Optimize -->
+      <div class="eff-cell">
+        <div class="eff-graphic">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cost per verified task descends as your own smaller models take over from frontier models">
+            <text x="30" y="17" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">COST / TASK</text>
+            <line x1="40" y1="22" x2="40" y2="120" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="40" y1="50" x2="270" y2="50" stroke="#2A2A2A" stroke-dasharray="2,3"/>
+            <line x1="40" y1="80" x2="270" y2="80" stroke="#2A2A2A" stroke-dasharray="2,3"/>
+            <line x1="40" y1="110" x2="270" y2="110" stroke="#2A2A2A" stroke-dasharray="2,3"/>
+            <line x1="40" y1="120" x2="270" y2="120" stroke="#4E4E4E" stroke-width="1"/>
+            <text x="270" y="138" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">USAGE OVER TIME &rarr;</text>
+            <path d="M 55 40 Q 90 45 115 62 T 175 92 T 260 112" stroke="#FFCE4A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <circle cx="55" cy="40" r="3" fill="#FFCE4A"/>
+            <circle cx="115" cy="62" r="3" fill="#FFCE4A"/>
+            <circle cx="175" cy="92" r="3" fill="#FFCE4A"/>
+            <circle cx="260" cy="112" r="3" fill="#FFCE4A"/>
+            <text x="62" y="35" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">FRONTIER</text>
+            <!-- Moved above the descending curve, clear of any line stroke. -->
+            <text x="265" y="80" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">YOUR SLMs</text>
+          </svg>
+        </div>
+        <div class="eff-text">
+          <div class="eff-name">Akka Optimize</div>
+        <div class="eff-body">Continuously exploits the latest open-weight models and trains new SLMs on your proprietary data. You own your intelligence, and total token costs keep falling.</div>
+        </div>
+      </div>
+
+      <!-- Akka Verify -->
+      <div class="eff-cell">
+        <div class="eff-graphic">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One central policy is enforced across every agent, mapped to 190 global regulations">
+            <text x="150" y="15" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">POLICY</text>
+            <rect x="120" y="22" width="60" height="45" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="4"/>
+            <line x1="130" y1="34" x2="170" y2="34" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="130" y1="42" x2="170" y2="42" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="130" y1="50" x2="165" y2="50" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="130" y1="58" x2="170" y2="58" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <rect x="200" y="35" width="65" height="18" fill="none" stroke="#A6A6A6" stroke-width="1" rx="2"/>
+            <text x="232" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1">190 REGS</text>
+            <g stroke="#4E4E4E" stroke-width="1">
+              <line x1="150" y1="69" x2="55" y2="125"/>
+              <line x1="150" y1="69" x2="87" y2="125"/>
+              <line x1="150" y1="69" x2="119" y2="125"/>
+              <line x1="150" y1="69" x2="150" y2="125"/>
+              <line x1="150" y1="69" x2="181" y2="125"/>
+              <line x1="150" y1="69" x2="213" y2="125"/>
+              <line x1="150" y1="69" x2="245" y2="125"/>
+            </g>
+            <g fill="#FFCE4A">
+              <circle cx="55" cy="125" r="4.5"/>
+              <circle cx="87" cy="125" r="4.5"/>
+              <circle cx="119" cy="125" r="4.5"/>
+              <circle cx="150" cy="125" r="4.5"/>
+              <circle cx="181" cy="125" r="4.5"/>
+              <circle cx="213" cy="125" r="4.5"/>
+              <circle cx="245" cy="125" r="4.5"/>
+            </g>
+            <text x="150" y="148" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#A6A6A6" letter-spacing="1.5">EVERY AGENT</text>
+          </svg>
+        </div>
+        <div class="eff-text">
+          <div class="eff-name">Akka Verify</div>
+        <div class="eff-body">Risk and compliance teams define policies centrally. The runtime enforces them globally across every agent. Systems stay continuously in compliance against 190 global regulations.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div id="audit-panel">
+  <h2>Design audit</h2>
+  <button class="btn" onclick="runAudit()">Re-run</button>
+  <div id="audit-results"></div>
+</div>
+
+<script>
+function runAudit(){
+  const results = document.getElementById('audit-results');
+  results.innerHTML = '';
+  const cells = Array.from(document.querySelectorAll('.eff-cell'));
+  const graphics = Array.from(document.querySelectorAll('.eff-graphic'));
+  const bodies = Array.from(document.querySelectorAll('.eff-body'));
+
+  const checks = [
+    {
+      name: 'All four cells same height',
+      run: () => {
+        const heights = cells.map(c => Math.round(c.getBoundingClientRect().height));
+        const diff = Math.max(...heights) - Math.min(...heights);
+        return { pass: diff <= 3, warn: diff <= 12, detail: `heights: ${heights.join(', ')}px · diff ${diff}px` };
+      }
+    },
+    {
+      name: 'Graphic top-positions align within each row',
+      run: () => {
+        const tops = graphics.map(g => Math.round(g.getBoundingClientRect().top));
+        // Row 1 = cells 0,1; Row 2 = cells 2,3
+        const row1Diff = Math.abs(tops[0] - tops[1]);
+        const row2Diff = Math.abs(tops[2] - tops[3]);
+        const worst = Math.max(row1Diff, row2Diff);
+        return { pass: worst <= 2, warn: worst <= 8, detail: `row 1 diff ${row1Diff}px · row 2 diff ${row2Diff}px` };
+      }
+    },
+    {
+      name: 'Graphic vertically centred within cell',
+      run: () => {
+        const offsets = cells.map((c, i) => {
+          const cb = c.getBoundingClientRect();
+          const gb = graphics[i].getBoundingClientRect();
+          const cellMid = cb.top + cb.height/2;
+          const graphicMid = gb.top + gb.height/2;
+          return Math.abs(cellMid - graphicMid);
+        });
+        const worst = Math.max(...offsets);
+        return { pass: worst <= 2, warn: worst <= 6, detail: `centring offsets (px): ${offsets.map(o => o.toFixed(1)).join(', ')} · worst ${worst.toFixed(1)}` };
+      }
+    },
+    {
+      name: 'Text stretches top-to-bottom of cell (name at top, body at bottom)',
+      run: () => {
+        const results = cells.map((c, i) => {
+          const cb = c.getBoundingClientRect();
+          const text = c.querySelector('.eff-text');
+          const name = c.querySelector('.eff-name');
+          const body = c.querySelector('.eff-body');
+          const tb = text.getBoundingClientRect();
+          const nb = name.getBoundingClientRect();
+          const bb = body.getBoundingClientRect();
+          const topGap = nb.top - cb.top;
+          const botGap = cb.bottom - bb.bottom;
+          return { topGap, botGap };
+        });
+        const worstTop = Math.max(...results.map(r => r.topGap));
+        const worstBot = Math.max(...results.map(r => r.botGap));
+        return {
+          pass: worstTop <= 3 && worstBot <= 3,
+          warn: worstTop <= 10 && worstBot <= 10,
+          detail: `worst top-gap ${worstTop.toFixed(1)}px · worst bottom-gap ${worstBot.toFixed(1)}px (both should be ≈0)`
+        };
+      }
+    },
+    {
+      name: 'All SVG text labels at least 10px effective',
+      run: () => {
+        const svgs = document.querySelectorAll('.eff-graphic svg');
+        const undersize = [];
+        svgs.forEach((svg, i) => {
+          const rect = svg.getBoundingClientRect();
+          const vb = svg.viewBox.baseVal;
+          const scale = rect.width / vb.width;
+          Array.from(svg.querySelectorAll('text')).forEach(t => {
+            const fs = parseFloat(t.getAttribute('font-size') || 12);
+            const effective = fs * scale;
+            if (effective < 10) undersize.push(`${['Specify','SDK','Optimize','Verify'][i]}:"${t.textContent.trim()}"(${effective.toFixed(1)}px)`);
+          });
+        });
+        return { pass: undersize.length === 0, warn: undersize.length < 4, detail: undersize.length ? `${undersize.length} labels below 10px: ${undersize.slice(0,4).join('; ')}${undersize.length>4?' …':''}` : 'all labels ≥ 10px' };
+      }
+    },
+    {
+      name: 'Body copy line count within 2 of shortest',
+      run: () => {
+        const lineHeights = bodies.map(b => {
+          const cs = getComputedStyle(b);
+          return Math.round(b.getBoundingClientRect().height / parseFloat(cs.lineHeight));
+        });
+        const range = Math.max(...lineHeights) - Math.min(...lineHeights);
+        return { pass: range <= 1, warn: range <= 2, detail: `lines per cell: ${lineHeights.join(', ')} · range ${range}` };
+      }
+    },
+    {
+      name: 'Graphic fills ≥ 50% of cell width',
+      run: () => {
+        const ratios = cells.map((c, i) => {
+          const cw = c.getBoundingClientRect().width;
+          const gw = graphics[i].getBoundingClientRect().width;
+          return gw / cw;
+        });
+        const min = Math.min(...ratios);
+        return { pass: min >= 0.5, warn: min >= 0.4, detail: `graphic/cell width ratios: ${ratios.map(r => (r*100).toFixed(0)+'%').join(', ')}` };
+      }
+    },
+    {
+      name: 'Slide fits in 860px viewport',
+      run: () => {
+        const s = document.getElementById('s-eff');
+        const contentH = s.scrollHeight;
+        return { pass: contentH <= 860, warn: contentH <= 960, detail: `section scrollHeight ${contentH}px · target ≤ 860px` };
+      }
+    },
+    {
+      name: 'Cell 2×2 grid — columns aligned',
+      run: () => {
+        const c0Left = cells[0].getBoundingClientRect().left;
+        const c2Left = cells[2].getBoundingClientRect().left;
+        const c1Left = cells[1].getBoundingClientRect().left;
+        const c3Left = cells[3].getBoundingClientRect().left;
+        const colDiff = Math.max(Math.abs(c0Left-c2Left), Math.abs(c1Left-c3Left));
+        return { pass: colDiff <= 1, detail: `col alignment diff ${colDiff.toFixed(1)}px` };
+      }
+    },
+    {
+      name: 'Body copy density under 25 words per cell',
+      run: () => {
+        const counts = bodies.map(b => b.textContent.trim().split(/\s+/).length);
+        const max = Math.max(...counts);
+        return { pass: max <= 25, warn: max <= 35, detail: `word counts: ${counts.join(', ')} · max ${max}` };
+      }
+    }
+  ];
+
+  checks.forEach(c => {
+    let r;
+    try { r = c.run(); } catch (e) { r = { pass: false, detail: 'error: ' + e.message }; }
+    const cls = r.pass ? 'pass' : (r.warn ? 'warn' : 'fail');
+    const sym = r.pass ? '✓' : (r.warn ? '!' : '✗');
+    const el = document.createElement('div');
+    el.className = 'check ' + cls;
+    el.innerHTML = `<span class="st">${sym}</span><span class="nm">${c.name}</span><div class="dt">${r.detail}</div>`;
+    results.appendChild(el);
+  });
+}
+
+function drawOverlay(){
+  const ov = document.getElementById('audit-overlay');
+  ov.innerHTML = '';
+  const inner = document.querySelector('.inner');
+  const innerBox = inner.getBoundingClientRect();
+  document.querySelectorAll('.eff-cell').forEach(c => {
+    const b = c.getBoundingClientRect();
+    const box = document.createElement('div');
+    box.className = 'cell-box';
+    box.style.left = (b.left - innerBox.left) + 'px';
+    box.style.top = (b.top - innerBox.top) + 'px';
+    box.style.width = b.width + 'px';
+    box.style.height = b.height + 'px';
+    ov.appendChild(box);
+  });
+  document.querySelectorAll('.eff-graphic').forEach(g => {
+    const b = g.getBoundingClientRect();
+    const box = document.createElement('div');
+    box.className = 'graphic-box';
+    box.style.left = (b.left - innerBox.left) + 'px';
+    box.style.top = (b.top - innerBox.top) + 'px';
+    box.style.width = b.width + 'px';
+    box.style.height = b.height + 'px';
+    ov.appendChild(box);
+  });
+  const rowTops = new Set();
+  document.querySelectorAll('.eff-graphic').forEach(g => {
+    rowTops.add(Math.round(g.getBoundingClientRect().top - innerBox.top));
+  });
+  rowTops.forEach(y => {
+    const guide = document.createElement('div');
+    guide.className = 'row-guide';
+    guide.style.top = y + 'px';
+    ov.appendChild(guide);
+  });
+}
+
+if (new URLSearchParams(location.search).has('audit')) {
+  document.body.classList.add('audit-on');
+  document.getElementById('audit-panel').classList.add('on');
+  window.addEventListener('load', () => setTimeout(() => { drawOverlay(); runAudit(); }, 250));
+  window.addEventListener('resize', () => { drawOverlay(); runAudit(); });
+}
+</script>
+
+</body>
+</html>
