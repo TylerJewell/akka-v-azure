@@ -1583,134 +1583,16 @@
     }
   }
 
-  // problem -> answer morph
-  const morph = document.getElementById('s-morph');
-  let morphed = false;
-  let animating = false;      // guard against sizeBox clobbering an in-progress transition
-  let animTimer = null;
-
-  // size the draw-box SVG to the wrapper's real pixels so corners are a true 16px radius
-  const box = morph.querySelector('.drawbox');
-  const boxRect = box.querySelector('rect');
-  let boxLen = 0;
-  function sizeBox(){
-    const w = box.clientWidth, h = box.clientHeight;
-    if (!w || !h) return;
-    box.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-    boxRect.setAttribute('x', 1); boxRect.setAttribute('y', 1);
-    boxRect.setAttribute('width', w - 2); boxRect.setAttribute('height', h - 2);
-    boxRect.setAttribute('rx', 16); boxRect.setAttribute('ry', 16);
-    const newLen = boxRect.getTotalLength();
-    // If the box's actual pixel size hasn't meaningfully changed, don't touch
-    // the transition/dashoffset — otherwise we can clobber an in-progress
-    // animation triggered by a spurious resize/load event.
-    if (Math.abs(newLen - boxLen) < 1 && boxLen) return;
-    boxLen = newLen;
-    if (animating) return;    // resize during animation: preserve the in-flight transition
-    boxRect.style.transition = 'none';
-    boxRect.style.strokeDasharray = boxLen;
-    boxRect.style.strokeDashoffset = morphed ? 0 : boxLen;
-  }
-  sizeBox();
-  window.addEventListener('resize', sizeBox);
-  window.addEventListener('load', sizeBox);
-
-  function dots(str){ return str.split('|').join('<span class="d">·</span>'); }
-  function applyText(on){
-    morph.querySelectorAll('.morphtext').forEach(el => { el.textContent = on ? el.dataset.ans : el.dataset.prob; });
-    morph.querySelectorAll('.morphsub').forEach(el => { el.innerHTML = dots(on ? el.dataset.ans : el.dataset.prob); });
-  }
-
-  // reveal the differentiation statement one phrase at a time: fade in, hold ~1s, next
-  const PHRASE_INTERVAL = 1500, TYPE_START = 1900;
-  const segEls = [...morph.querySelectorAll('.pf-msg .seg')];
-  let segTimer = null, typeStartTimer = null, animDone = false;
-  function typeReset(){ clearTimeout(segTimer); segTimer = null; segEls.forEach(s => s.classList.remove('on')); }
-  function typeOn(){
-    let i = 0;
-    const step = () => {
-      if (i >= segEls.length) { animDone = true; return; }
-      segEls[i++].classList.add('on');
-      segTimer = setTimeout(step, PHRASE_INTERVAL);
-    };
-    step();
-  }
-
-  function setMorph(on){
-    if (morphed === on) return;
-    morphed = on;
-    animating = true;
-    // Clear the animating flag after the transition and text-flip settle (1.15s
-    // box draw + 230ms text swap + safety margin). Guards sizeBox from clobbering
-    // the transition mid-flight.
-    clearTimeout(animTimer);
-    animTimer = setTimeout(() => { animating = false; }, 1600);
-    if (on) animDone = false;
-    // Clear any inline chalcol overrides from a prior completeMorph so the CSS
-    // .answered rule can drive the transition properly on this pass.
-    const chalcol = morph.querySelector('.chalcol');
-    if (chalcol) {
-      chalcol.style.transition = '';
-      chalcol.style.opacity = '';
-      chalcol.style.transform = '';
-      chalcol.style.pointerEvents = '';
-    }
-    morph.classList.toggle('answered', on);
-    boxRect.style.transition = 'stroke-dashoffset 1.15s ease';   // animate only on space
-    boxRect.style.strokeDashoffset = on ? 0 : boxLen;   // trace the box on / off
-    const lead = on ? 1150 : 0;              // flip the headline as the box finishes drawing
-    setTimeout(() => {
-      morph.classList.add('txhide');
-      setTimeout(() => { applyText(on); morph.classList.remove('txhide'); }, 230);
-    }, lead);
-    // type out the differentiation statement once the box + label + pain-point clear have played
-    clearTimeout(typeStartTimer); typeReset();
-    if (on) typeStartTimer = setTimeout(typeOn, TYPE_START);
-  }
-  function centered(el){ const r = el.getBoundingClientRect(); return r.top < innerHeight*0.5 && r.bottom > innerHeight*0.5; }
-  function completeMorph(){
-    clearTimeout(segTimer); clearTimeout(typeStartTimer);
-    boxRect.style.transition = 'none';
-    boxRect.style.strokeDashoffset = 0;
-    morph.classList.remove('txhide');
-    applyText(true);
-    // Force chalcol invisible instantly. Otherwise its .answered fade has a
-    // 1.3s delay + 0.4s duration, so hitting Down twice (which calls this
-    // path) shows segments OVER the still-visible chalcol until 1.7s elapses.
-    const chalcol = morph.querySelector('.chalcol');
-    if (chalcol) {
-      chalcol.style.transition = 'none';
-      chalcol.style.opacity = '0';
-      chalcol.style.transform = 'translateY(-14px)';
-      chalcol.style.pointerEvents = 'none';
-    }
-    segEls.forEach(s => s.classList.add('on'));
-    animDone = true;
-  }
-  morph.addEventListener('click', () => { if (!morphed) setMorph(true); else if (!animDone) completeMorph(); });
+  /* All that survives of the #s-morph block: the deck's PgDn/PgUp nav. The rest
+     drove an animation on a slide the efficiency redesign removed. Keep this
+     registration free of any lookup that can return null — anything that throws
+     here silently disables keyboard navigation for the whole deck. */
   window.addEventListener('keydown', (e) => {
     const fwd = ['PageDown','ArrowDown','ArrowRight',' '].includes(e.key);
     const back = ['PageUp','ArrowUp','ArrowLeft'].includes(e.key);
     if (!fwd && !back) return;
-    if (centered(morph)){
-      if (fwd && !morphed){ e.preventDefault(); setMorph(true); return; }
-      if (fwd && morphed && !animDone){ e.preventDefault(); completeMorph(); return; }
-      if (back && morphed){ e.preventDefault(); setMorph(false); return; }
-    }
     e.preventDefault(); go(fwd ? 1 : -1);
   });
-  // Auto-trigger the morph animation when the section scrolls into view. Without
-  // this, mouse-wheel / trackpad scrolling past the section skips the animation
-  // entirely — users only got the reveal via PgDn/Space/click. One-shot:
-  // disconnect after firing (or after morphed becomes true from click/PgDn) so
-  // ratio wobble around the 0.6 boundary can't retrigger anything.
-  const morphIO = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.intersectionRatio >= 0.6 && !morphed) setMorph(true);
-    });
-    if (morphed) morphIO.disconnect();
-  }, { threshold: [0.6] });
-  morphIO.observe(morph);
 
   // resilience demo (ported from 11-resilience/slide.js) — reveal + expand toggle + iframe fit
   (function() {

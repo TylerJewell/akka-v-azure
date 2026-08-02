@@ -284,6 +284,36 @@ base = re.sub(r"</style>", new_css + overrides + "\n</style>", base, count=1)
 # --- remove old #s-morph section (replaced by thesis + agentic-platform) ---
 base = re.sub(r'<section id="s-morph">.*?</section>\s*', '', base, count=1, flags=re.DOTALL)
 
+# The section's script has to go with it. It opened with an unguarded
+# `document.getElementById('s-morph').querySelector(...)`, so with the section
+# gone it threw a TypeError on its first statement and took the rest of the
+# block down with it — including the keydown handler at the end, which is the
+# deck's entire PgDn/PgUp nav. The page then fell back to the browser's native
+# PageDown, which scrolls one viewport at a time and parks the reader between
+# slides with the next headline halfway down the screen.
+#
+# Only the nav is kept. Everything else in the block animated a slide that no
+# longer exists.
+MORPH_JS = re.compile(
+    r'\n  // problem -> answer morph\n.*?\n  morphIO\.observe\(morph\);\n',
+    re.DOTALL)
+NAV_KEYS = """
+  /* All that survives of the #s-morph block: the deck's PgDn/PgUp nav. The rest
+     drove an animation on a slide the efficiency redesign removed. Keep this
+     registration free of any lookup that can return null — anything that throws
+     here silently disables keyboard navigation for the whole deck. */
+  window.addEventListener('keydown', (e) => {
+    const fwd = ['PageDown','ArrowDown','ArrowRight',' '].includes(e.key);
+    const back = ['PageUp','ArrowUp','ArrowLeft'].includes(e.key);
+    if (!fwd && !back) return;
+    e.preventDefault(); go(fwd ? 1 : -1);
+  });
+"""
+base, _n_morph_js = MORPH_JS.subn(NAV_KEYS, base, count=1)
+if _n_morph_js != 1:
+    raise SystemExit('morph script block not found — check the base file before shipping, '
+                     'the deck loses PgDn without this replacement')
+
 # --- remove old #s-scale section (replaced by four-efficiencies) ---
 # Handle possible surrounding whitespace/blank lines
 base = re.sub(r'<section id="s-scale">.*?</section>\s*', '', base, count=1, flags=re.DOTALL)

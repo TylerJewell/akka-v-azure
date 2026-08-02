@@ -319,6 +319,38 @@ Expected known failures:
 
 Run: `python tools/auditors/live-deck/audit.py [deck…]`. Exit 0 = clean.
 
+`tools/auditors/js-errors/audit.py <file|url…>` reports uncaught exceptions and
+names the file each came from. Expected known failure on any **live akka.io URL**:
+`Uncaught TypeError: e.indexOf is not a function [jquery.min.js:1]` — the theme's
+own jQuery, present on the untouched `platform/overview` too. A local file or a
+composed fragment must be clean.
+
+### Removing a slide means removing its script
+
+A slide's script goes with the slide. The overview redesign dropped `#s-morph`
+and left its script block behind, and the block opened with an unguarded
+`document.getElementById('s-morph').querySelector('.drawbox')`. That threw a
+TypeError on its first statement — and a throw abandons the whole block, so the
+`keydown` handler at the *end* of it never registered. That handler is the deck's
+entire PgDn/PgUp nav.
+
+PageDown then fell through to the browser's native scroll-one-viewport, which
+lands wherever a viewport happens to end: the reader got the next slide's
+headline 300px down the screen with its content cut off at the bottom, on every
+press. Nothing in the console was surfaced, and every layout auditor passed,
+because the layout was right and only the landing position was wrong.
+
+Two rules from it:
+
+- **Never register the nav inside a block that can throw.** Keep any lookup that
+  can return null out of the same block, or guard it.
+- **Run `tools/auditors/js-errors/audit.py` on every port.** It is the only check
+  that catches a silently disabled feature.
+
+`assemble_overview.py` now strips the morph block and re-emits the nav handler on
+its own, and raises if the block it expects to remove is not found — a deck that
+assembles without it is a deck with no keyboard navigation.
+
 ### pgdn-frame does not judge TITLE_X on a scaled section
 
 R4 scales an over-tall section from `transform-origin: 50%`, which insets it from
@@ -361,7 +393,9 @@ Confirm both with live-deck after publishing.
    `sales-presentation/slides/...`).
 2. `python build-all.py` — regenerates `sales-presentation/generated/<deck>/`.
 3. `python tools/hubspot/port_deck.py <deck> --build-only` — build the partials.
-4. Compose and audit them locally (previous section).
+4. Compose and audit them locally (previous section). Include
+   `tools/auditors/js-errors/audit.py` — a throw disables everything registered
+   after it, silently, and no layout auditor sees it.
 5. `python tools/hubspot/port_deck.py <deck>` — pushes draft + published to
    HubSpot `custom-templates/partials/<deck>-{styles,body,scripts}.html`.
 6. `python tools/auditors/live-deck/audit.py <deck>` — verify.
