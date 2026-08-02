@@ -1,0 +1,27 @@
+<svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Any contributor role can write specifications that generate systems">
+            <defs>
+              <marker id="ar-sp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L7,3 L0,6 Z" fill="#FFCE4A"/>
+              </marker>
+            </defs>
+            <text x="45" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#A6A6A6" letter-spacing="1.5">ANYONE</text>
+            <!-- Dots vertically aligned within the spec's y-range (55–105) -->
+            <circle cx="45" cy="60" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="75" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="90" r="4.5" fill="#FFCE4A"/>
+            <circle cx="45" cy="105" r="4.5" fill="#FFCE4A"/>
+            <!-- Lines terminate at the spec's left edge (x=132), meeting its vertical midpoint (y=80). -->
+            <line x1="52" y1="60" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="75" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="90" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <line x1="52" y1="105" x2="132" y2="80" stroke="#4E4E4E" stroke-width="1"/>
+            <rect x="132" y="55" width="60" height="50" fill="none" stroke="#FFCE4A" stroke-width="1.5" rx="3"/>
+            <line x1="142" y1="67" x2="182" y2="67" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="76" x2="182" y2="76" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="85" x2="177" y2="85" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <line x1="142" y1="94" x2="182" y2="94" stroke="#FFCE4A" stroke-width="1" opacity="0.55"/>
+            <text x="162" y="125" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#FFCE4A" font-weight="600" letter-spacing="1.5">SPEC</text>
+            <line x1="196" y1="80" x2="232" y2="80" stroke="#FFCE4A" stroke-width="1.5" marker-end="url(#ar-sp)"/>
+            <rect x="238" y="58" width="52" height="44" fill="rgba(255,206,74,0.13)" stroke="#FFCE4A" stroke-width="1.5" rx="5"/>
+            <text x="264" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#FFCE4A" font-weight="600" letter-spacing="1">SYSTEM</text>
+          </svg>

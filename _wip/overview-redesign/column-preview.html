@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Efficiency column — Akka Specify</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0A0A0A; --white:#F1F1F1; --muted:#A6A6A6; --yellow:#FFCE4A;
+    --line:rgba(255,206,74,0.28);
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  body{margin:0; background:var(--black); color:var(--white);
+       font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+       min-height:100vh; display:flex; align-items:center; justify-content:center; gap:48px;}
+
+  /* The column. Fixed narrow measure, tall enough to own the viewport, so the
+     four elements read as one object instead of four things scattered across a
+     wide slide. */
+  .eff-col{
+    width:200px; height:min(660px, 82vh);
+    display:flex; flex-direction:column; align-items:center;
+    border:1px solid var(--line); border-radius:14px;
+    padding:22px 18px; background:linear-gradient(180deg,rgba(255,206,74,0.05),transparent 42%);
+  }
+  .eff-col-name{font-size:17px; font-weight:700; letter-spacing:-0.01em; color:var(--yellow);
+                text-align:center; line-height:1.15;}
+  .eff-col-rule{width:28px; height:2px; background:var(--yellow); margin:10px 0 0;}
+
+  /* The drawing is redrawn portrait. The wide version's labels were 12 units in
+     a 300-unit viewBox, which renders at 7px inside a 200px column - under the
+     10px floor tools/auditors/slide-ux holds. Here the viewBox is the column's
+     own width, so a 13-unit label renders at 13px. */
+  .eff-col-art{width:100%; margin:16px 0 14px;}
+  .eff-col-art svg{width:100%; height:auto; display:block;}
+
+  .eff-col-body{font-size:12.5px; line-height:1.55; color:var(--muted); text-align:center;
+                margin:0;}
+
+  .eff-col-quote{margin:auto 0 0; padding-top:16px; border-top:1px solid rgba(255,255,255,0.09);
+                 text-align:center; width:100%;}
+  .eff-col-quote::before{content:'“'; display:block; font-family:Georgia,'Times New Roman',serif;
+                         font-size:34px; line-height:0.7; color:var(--yellow); margin-bottom:4px;}
+  .eff-col-quote p{margin:0; font-size:12.5px; line-height:1.35; font-weight:600;
+                   letter-spacing:-0.01em; color:var(--white);}
+  .eff-col-quote cite{display:block; margin-top:9px; font-style:normal; font-size:10px;
+                      text-transform:uppercase; letter-spacing:1.5px; color:var(--muted);
+                      font-weight:600;}
+
+  .note{max-width:300px; font-size:13px; line-height:1.6; color:var(--muted);}
+  .note b{color:var(--white); font-weight:600;}
+</style>
+</head>
+<body>
+
+  <div class="eff-col">
+    <div class="eff-col-name">Akka Specify</div>
+    <div class="eff-col-rule"></div>
+
+    <div class="eff-col-art">
+      <svg viewBox="0 0 164 236" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Any role writes a specification, which produces the system">
+        <defs>
+          <marker id="cx" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+            <path d="M0,0 L8,3.2 L0,6.4 Z" fill="#FFCE4A"/>
+          </marker>
+        </defs>
+
+        <text x="82" y="12" text-anchor="middle" font-family="JetBrains Mono, monospace"
+              font-size="13" fill="#A6A6A6" letter-spacing="1.6">ANYONE</text>
+
+        <circle cx="26" cy="34" r="5" fill="#FFCE4A"/>
+        <circle cx="63" cy="34" r="5" fill="#FFCE4A"/>
+        <circle cx="101" cy="34" r="5" fill="#FFCE4A"/>
+        <circle cx="138" cy="34" r="5" fill="#FFCE4A"/>
+
+        <path d="M26,41 L82,74" stroke="#6E6E6E" stroke-width="1.1" fill="none"/>
+        <path d="M63,41 L82,74" stroke="#6E6E6E" stroke-width="1.1" fill="none"/>
+        <path d="M101,41 L82,74" stroke="#6E6E6E" stroke-width="1.1" fill="none"/>
+        <path d="M138,41 L82,74" stroke="#6E6E6E" stroke-width="1.1" fill="none"/>
+
+        <rect x="48" y="78" width="68" height="60" rx="6" fill="none" stroke="#FFCE4A" stroke-width="1.4"/>
+        <line x1="60" y1="93"  x2="104" y2="93"  stroke="#FFCE4A" stroke-width="1.4" opacity="0.85"/>
+        <line x1="60" y1="105" x2="104" y2="105" stroke="#FFCE4A" stroke-width="1.4" opacity="0.85"/>
+        <line x1="60" y1="117" x2="104" y2="117" stroke="#FFCE4A" stroke-width="1.4" opacity="0.85"/>
+        <line x1="60" y1="129" x2="88"  y2="129" stroke="#FFCE4A" stroke-width="1.4" opacity="0.55"/>
+        <text x="82" y="154" text-anchor="middle" font-family="JetBrains Mono, monospace"
+              font-size="13" fill="#FFCE4A" letter-spacing="1.6" font-weight="500">SPEC</text>
+
+        <path d="M82,162 L82,182" stroke="#FFCE4A" stroke-width="1.4" marker-end="url(#cx)"/>
+
+        <rect x="34" y="190" width="96" height="40" rx="6" fill="rgba(255,206,74,0.10)"
+              stroke="#FFCE4A" stroke-width="1.4"/>
+        <text x="82" y="215" text-anchor="middle" font-family="JetBrains Mono, monospace"
+              font-size="13" fill="#FFCE4A" letter-spacing="1.6" font-weight="500">SYSTEM</text>
+      </svg>
+    </div>
+
+    <p class="eff-col-body">Any role writes plain-language specs. Every change is verified against them, so code and specs stay in agreement.</p>
+
+    <blockquote class="eff-col-quote">
+      <p>AI-based merchant onboarding deployed to production in weeks by college grads.</p>
+      <cite>&middot; Dojo</cite>
+    </blockquote>
+  </div>
+
+  <div class="note">
+    <p><b>One column, 200px wide.</b> Name, rule, drawing, summary, quote — bound
+      by a single hairline box so the four parts read as one object.</p>
+    <p>The drawing is redrawn portrait. The wide version's labels render at 7px
+      inside a column this narrow; here the viewBox matches the column width, so
+      each label renders at 13px.</p>
+    <p>The quote is pinned to the bottom of the box, so all four columns line up
+      on their quote regardless of how long the summary runs.</p>
+  </div>
+
+</body>
+</html>
