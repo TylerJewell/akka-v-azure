@@ -54,7 +54,11 @@
   /* Drawings are portrait, with the viewBox at the column's own width so a
      13-unit label renders at 13px. The wide versions used a 300-unit viewBox,
      which renders their labels at 7px in a column this narrow. */
-  .eff-col-art{width:82%; margin:12px 0 14px;}
+  /* 82% of a 250px column is 179px, which is the size the drawing was tuned
+     against. The cap holds it there when the column gets wider: stacked on a
+     phone the column goes to 460px, and a percentage width grew the drawing 36%
+     while the type stayed the same size, so it swallowed the screen. */
+  .eff-col-art{width:82%; max-width:180px; margin:12px 0 14px;}
   .eff-col-art svg{width:100%; height:auto; display:block;}
 
   .eff-col-body{font-size:12.5px; line-height:1.55; color:var(--muted); margin:0; text-align:left;}
@@ -78,14 +82,32 @@
      its own line, so below that the copy is left to wrap on its own. */
   @media (max-width:1240px){
     .eff-col-quote p br{display:none;}
+    /* With the hand-set breaks off, a centred three-line quote strands its last
+       word. balance evens the lines out; pretty just keeps the body copy from
+       ending on a single word. Both are ignored where unsupported. */
+    .eff-col-quote p{text-wrap:balance;}
+    .eff-col-body{text-wrap:pretty;}
   }
+  /* Two explicit columns, not flex-wrap. Wrapping fits as many as the width
+     allows, and between roughly 907 and 940px that is three — leaving a single
+     orphan on the second row, the same fault the fixed 250px columns had at
+     1024. A grid cannot produce a row of three. */
   @media (max-width:940px){
-    .eff-cols{flex-wrap:wrap; gap:24px;}
-    .eff-col{flex:0 0 250px; max-width:250px;}
+    .eff-cols{display:grid; grid-template-columns:repeat(2, 250px);
+              justify-content:center; gap:24px;}
+    .eff-col{width:250px; max-width:250px;}
   }
   @media (max-width:620px){
-    .eff-cols{flex-direction:column; align-items:center;}
-    .eff-col{flex:0 0 auto; width:100%; max-width:340px;}
+    .eff-cols{grid-template-columns:minmax(0, 460px);}
+    /* One column per row, so it should take the measure the viewport offers.
+       The old 340px cap left the body wrapping at a 290px measure inside a
+       528px content box, which stranded single words on their own line while
+       the space to avoid it sat empty on both sides. */
+    .eff-col{width:100%; max-width:460px;}
+    /* Stacked, the card is only as tall as its content, so the quote's auto top
+       margin has no slack to give and the separation collapses to the padding
+       alone. The body's own bottom margin is what holds it open here. */
+    .eff-col-body{margin-bottom:18px;}
     .eff-col-quote{min-height:0; padding-top:26px;}
   }
 </style>
