@@ -10,12 +10,21 @@ import re
 import pathlib
 
 # Resolve paths relative to this script so it runs on any machine after a
-# `git clone`. `SCRATCH` is _internal/overview-redesign/, siblings of the
-# assembly script. The base overview lives at ../../akka-overview/index.html.
+# `git clone`. `SCRATCH` is _wip/overview-redesign/, siblings of the assembly
+# script.
+#
+# The base used to be akka-overview/index.html, which is also where the deck is
+# published from. That only worked while the redesign was a preview: the moment
+# the output is written back to the deck, reading the deck as input makes the
+# script destroy its own source on the second run — #s-morph and #s-scale are
+# already gone, so nothing is replaced and the new sections are inserted twice.
+# The pristine pre-redesign deck is kept here instead, and the assembled deck is
+# the published artifact.
 HERE = pathlib.Path(__file__).resolve().parent
 SCRATCH = HERE
 REPO = HERE.parent.parent
-BASE_SOURCE = REPO / "akka-overview" / "index.html"
+BASE_SOURCE = SCRATCH / "overview-base.html"
+DECK = REPO / "akka-overview" / "index.html"
 
 BASE = SCRATCH / "overview-new.html"
 THESIS = SCRATCH / "thesis-preview.html"
@@ -163,23 +172,32 @@ overrides = """
 # converges in two or three passes because ink height is near enough linear in
 # font size; the bounds keep the copy readable if the span is ever too small to
 # satisfy honestly.
-tab_script = """
+cols_script = """
 <script>
-/* Vertical tabs on the four-efficiencies slide. The preview file carries its own
-   copy, but the assembler lifts only the section markup, so it is restated here. */
+/* The four columns on #s-eff arrive one after another once the slide is on
+   screen, then stay up so they can be compared. The preview file carries its own
+   copy of this, but the assembler lifts only the section markup, so it is
+   restated here.
+
+   Opacity only, no translate. HUBSPOT_PORT_RULES.md R4 measures the section with
+   Range.selectNodeContents, which includes in-flight child transforms, so a
+   column sitting at translateY(20px) reports the slide 20px taller than it ends
+   up and the auto-fit commits a scale against a height that no longer exists. */
 (function(){
-  var host = document.getElementById('effTabs');
+  var host = document.getElementById('effCols');
   if (!host) return;
-  var tabs = [].slice.call(host.querySelectorAll('.eff-tab'));
-  var panels = [].slice.call(document.querySelectorAll('.eff-panel'));
-  function show(i){
-    tabs.forEach(function(t,k){ t.classList.toggle('active', k === i); });
-    panels.forEach(function(p,k){ p.classList.toggle('active', k === i); });
+  var cols = [].slice.call(host.querySelectorAll('.eff-col'));
+  var STEP = 160;
+  function reveal(){
+    cols.forEach(function(c, i){ setTimeout(function(){ c.classList.add('in'); }, i * STEP); });
   }
-  host.addEventListener('click', function(e){
-    var b = e.target.closest('.eff-tab');
-    if (b) show(parseInt(b.getAttribute('data-i'), 10));
-  });
+  if (!('IntersectionObserver' in window)) { reveal(); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { reveal(); io.disconnect(); }
+    });
+  }, { threshold: 0.25 });
+  io.observe(host);
 })();
 </script>
 """
@@ -335,14 +353,16 @@ base = base.replace(
 # Runtime fit for the agentic-platform slide's right column, appended last so it
 # runs after every stylesheet the base file brings with it.
 if "</body>" in base:
-    base = base.replace("</body>", tab_script + fit_script + "\n</body>", 1)
+    base = base.replace("</body>", cols_script + fit_script + "\n</body>", 1)
 else:
-    base += tab_script + fit_script
+    base += cols_script + fit_script
 
-# Write output
+# Write output. The working copy stays alongside the previews for inspection;
+# the deck itself is what port_deck.py and the auditors read.
 out = SCRATCH / "overview-new.html"
 out.write_text(base, encoding="utf-8")
-print(f"Written {out} ({len(base)} chars, {base.count(chr(10))} lines)")
+DECK.write_text(base, encoding="utf-8")
+print(f"Written {out} and {DECK} ({len(base)} chars, {base.count(chr(10))} lines)")
 
 # Report the section order in the output
 sections = re.findall(r'<section id="([^"]+)"', base)

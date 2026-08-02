@@ -57,20 +57,25 @@ MEASURE = r"""
     return {top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height)};
   }
 
-  /* The slide was a four-cell grid and is now four vertical tabs. Panels are
-     the unit either way; only .eff-cell became .eff-panel. Inactive panels are
-     hidden, so each is activated in turn before it is measured. */
+  /* The slide has been a four-cell grid, then four vertical tabs, and is now
+     four side-by-side columns. The unit is the same each time and only its class
+     changed, so all three are accepted. Tabs, where they exist, hide the
+     inactive panel and are clicked in turn; columns are all on screen at once
+     but start at opacity 0 until the reveal fires, so the reveal class is forced
+     on before anything is measured. */
   var cells = [], smallLabels = [];
   var tabs = sec.querySelectorAll('#effTabs .eff-tab');
-  var units = sec.querySelectorAll('.eff-panel');
+  var units = sec.querySelectorAll('.eff-col');
+  if (!units.length) units = sec.querySelectorAll('.eff-panel');
   if (!units.length) units = sec.querySelectorAll('.eff-cell');
   units.forEach(function(cell, i){
     if (tabs.length > i) tabs[i].click();
-    var g = cell.querySelector('.eff-graphic');
-    var quote = cell.querySelector('.eff-quote');
+    cell.classList.add('in');
+    var g = cell.querySelector('.eff-col-art') || cell.querySelector('.eff-graphic');
+    var quote = cell.querySelector('.eff-col-quote') || cell.querySelector('.eff-quote');
     var cite = quote ? quote.querySelector('cite') : null;
-    var name = cell.querySelector('.eff-name');
-    var body = cell.querySelector('.eff-body');
+    var name = cell.querySelector('.eff-col-name') || cell.querySelector('.eff-name');
+    var body = cell.querySelector('.eff-col-body') || cell.querySelector('.eff-body');
     var txt = cell.querySelector('.eff-text') || body;
     var words = body ? (body.textContent || '').trim().split(/\s+/).filter(Boolean).length : 0;
 
@@ -114,7 +119,7 @@ MEASURE = r"""
     });
   });
 
-  var grid = sec.querySelector('.eff-grid');
+  var grid = sec.querySelector('.eff-cols') || sec.querySelector('.eff-grid');
   var head = sec.querySelector('.shead');
   var sub  = sec.querySelector('.ssub');
   return JSON.stringify({

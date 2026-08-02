@@ -27,16 +27,25 @@
      name, its drawing, one summary and one customer quote, so those four parts
      read as a single object instead of scattering across the slide.
      250px x 4 plus three 32px gaps is 1096px, inside the 1400px content cap. */
-  .eff-cols{display:flex; gap:32px; justify-content:center; align-items:stretch; margin-top:30px;}
+  .eff-cols{display:flex; gap:clamp(14px,2.2vw,32px); justify-content:center;
+            align-items:stretch; margin-top:30px;}
   .eff-col{
-    width:250px;
+    /* Fluid rather than fixed at 250px. A fixed width plus flex-wrap broke the
+       row into 3 + 1 at 1024px, which reads as a mistake and pushed the slide
+       past the viewport horizontally. Shrinking all four evenly keeps the
+       comparison on one line for as long as the copy stays readable; the
+       breakpoints below take over once it does not. */
+    flex:1 1 0; min-width:0; max-width:250px;
     display:flex; flex-direction:column; align-items:center;
     border:1px solid var(--line); border-radius:14px; padding:20px 16px;
     background:linear-gradient(180deg,rgba(255,206,74,0.05),transparent 42%);
-    opacity:0; transform:translateY(20px);
-    transition:opacity .5s ease, transform .5s cubic-bezier(0.16,1,0.3,1);
+    /* Opacity only. HUBSPOT_PORT_RULES.md R4 measures the section with
+       Range.selectNodeContents, which includes in-flight child transforms, so a
+       column resting at translateY(20px) reports the slide taller than it ends
+       up and the auto-fit scales against a height that never renders. */
+    opacity:0; transition:opacity .55s ease;
   }
-  .eff-col.in{opacity:1; transform:none;}
+  .eff-col.in{opacity:1;}
 
   .eff-col-name{font-size:17px; font-weight:700; letter-spacing:-0.01em; color:var(--yellow);
                 text-align:center; line-height:1.15;}
@@ -61,14 +70,23 @@
                       text-transform:uppercase; letter-spacing:1.5px; color:var(--muted);
                       font-weight:600;}
 
-  @media (max-width:1180px){
-    .eff-cols{flex-wrap:wrap; gap:24px;}
-    .eff-col{width:230px; height:auto; min-height:380px;}
-  }
-  @media (max-width:900px){
+  /* Below roughly 940px a four-up line puts the body copy in a measure under
+     170px, which wraps to three and four words a line. Two rows of two, then a
+     single stack. */
+  /* The line breaks in the quotes are hand-set for a 250px column, which the
+     flex row holds down to about 1215px. Any narrower and they strand a word on
+     its own line, so below that the copy is left to wrap on its own. */
+  @media (max-width:1240px){
     .eff-col-quote p br{display:none;}
+  }
+  @media (max-width:940px){
+    .eff-cols{flex-wrap:wrap; gap:24px;}
+    .eff-col{flex:0 0 250px; max-width:250px;}
+  }
+  @media (max-width:620px){
     .eff-cols{flex-direction:column; align-items:center;}
-    .eff-col{width:100%; max-width:340px; min-height:0;}
+    .eff-col{flex:0 0 auto; width:100%; max-width:340px;}
+    .eff-col-quote{min-height:0; padding-top:26px;}
   }
 </style>
 </head>
@@ -148,7 +166,12 @@
         </div>
         <p class="eff-col-body">Actor-based concurrency and shared infra model drops operating costs up to 90%.</p>
         <blockquote class="eff-col-quote">
-          <p>AI personalization engine<br>shrunk from <span class="accent">150k &rarr; 22k cores</span><br>after porting to Akka.</p>
+          <!-- The space after each <br> is what the words fall back on when the
+               break is switched off in a narrow column. Without it the text
+               nodes butt together and read "engineshrunk". A leading space on a
+               line is collapsed away, so it costs nothing while the break is
+               visible. -->
+          <p>AI personalization engine<br> shrunk from <span class="accent">150k &rarr; 22k cores</span><br> after porting to Akka.</p>
           <cite>&middot; Fox</cite>
         </blockquote>
       </div>
@@ -220,7 +243,7 @@
         </div>
         <p class="eff-col-body">Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.</p>
         <blockquote class="eff-col-quote">
-          <p>Rolled out Akka to <span class="accent">2,000</span><br><span class="accent">global devs</span> in 6 countries<br>with corporate risk policies.</p>
+          <p>Rolled out Akka to <span class="accent">2,000</span><br> <span class="accent">global devs</span> in 6 countries<br> with central risk control.</p>
           <cite>&middot; Manulife</cite>
         </blockquote>
       </div>

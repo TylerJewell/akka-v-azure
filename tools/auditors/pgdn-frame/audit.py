@@ -144,6 +144,15 @@ MEASURE_JS = r"""
     centered: centered,
     titleLeft: tl,
     titleAlign: ta,
+    /* R4 scales an over-tall section from transform-origin 50%, so a scaled
+       slide's title is pulled in from the left by design. Report the factor so
+       TITLE_X can stand down, the way the live-deck auditor already does. */
+    scale: (function(){
+      var tr = getComputedStyle(best).transform;
+      if (!tr || tr === 'none') return 1;
+      var n = Number(tr.slice(tr.indexOf('(') + 1).split(',')[0]);
+      return isFinite(n) ? n : 1;
+    })(),
     blockCentred: blockCentred,
     scrollY: Math.round(window.scrollY),
     headerH: HDR
@@ -248,7 +257,12 @@ def evaluate(rows):
                 issues.append('TOO_HIGH   top gap %d vs bottom gap %d (%d high)'
                               % (gap_top, gap_bot, -drift))
 
-        if (m['titleLeft'] is not None and m['titleAlign'] != 'center'
+        # A section R4 has scaled is inset from its layout box by design, so its
+        # title is not at 92 and cannot be. Judging it here reported four slides
+        # as drifted when all four were correctly framed; the live-deck auditor
+        # has always restricted this check to unscaled sections.
+        scaled = m.get('scale', 1) < 0.995
+        if (m['titleLeft'] is not None and m['titleAlign'] != 'center' and not scaled
                 and abs(m['titleLeft'] - STANDARD_TITLE_X) > TITLE_X_TOLERANCE):
             issues.append('TITLE_X    title left %d, standard is %d'
                           % (m['titleLeft'], STANDARD_TITLE_X))

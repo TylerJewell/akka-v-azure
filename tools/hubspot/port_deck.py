@@ -54,10 +54,11 @@ HUBL_HEADER = '<!--\n  templateType: "none"\n  isAvailableForNewContent: false\n
 #   6. Skips absolute/fixed overlays via getComputedStyle position check.
 #   7. Re-measures on resize with rAF debounce; resets transforms and overflow
 #      before re-measuring.
-def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
+def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None, retired=None):
     slide_wrappers = slide_wrappers or []
     skip_ids = skip_ids or []
     slugs = slugs or {}
+    retired = retired or {}
     extra_selectors = ''.join(f', .{wrapper} {sid}' for sid in slide_wrappers)
     skip_check = (
         'if (' + ' || '.join(f"section.id === {sid[1:]!r}" for sid in skip_ids) + ') return;'
@@ -65,6 +66,7 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
     )
     # JSON serialize the id → slug map for JS
     slug_json = json.dumps(slugs)
+    retired_json = json.dumps(retired)
     return f"""
 <script>
 /* === R4 auto-fit v4 (2026-07-27) — top-anchored scale for .{wrapper} === */
@@ -78,11 +80,16 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None):
   var SLUG_BY_ID = {slug_json};
   var ID_BY_SLUG = {{}};
   Object.keys(SLUG_BY_ID).forEach(function(k){{ ID_BY_SLUG[SLUG_BY_ID[k]] = k; }});
+  /* Slugs from an earlier cut of the deck, pointed at whichever section now
+     carries their subject. Links to them are already shared, and without this a
+     retired slug matches nothing and silently leaves the reader at the top. */
+  var RETIRED = {retired_json};
   var HDR_LINK = 78;
   function resolveHash(hash) {{
     /* Accept either the friendly slug or the raw element id */
     if (ID_BY_SLUG[hash]) return ID_BY_SLUG[hash];
     if (document.getElementById(hash)) return hash;
+    if (RETIRED[hash] && document.getElementById(RETIRED[hash])) return RETIRED[hash];
     return null;
   }}
   function scrollToSlide(id, smooth) {{
@@ -458,7 +465,10 @@ def rewrite_assets(html):
 CENTERED_EXCEPTIONS = {
     # #s-routes is the shared integrated-platform cake, centred on every other
     # deck via #family. Keep the same slide framed the same way everywhere.
-    'overview': ['#s-title', '#s-morph', '#s-close', '#s-routes'],
+    # #s-morph was retired with the efficiency redesign. Its replacements
+    # (#s-thesis, #s-akka-platform, #s-eff) are content slides and take the
+    # default top-anchored framing.
+    'overview': ['#s-title', '#s-close', '#s-routes'],
     'sdk':      ['#s0', '#s6', '#family'],
     'verify':   ['#s0', '#s8', '#family'],
     'optimize': ['#opt-title', '#opt-closing', '#family'],
@@ -512,11 +522,12 @@ SLIDE_WRAPPERS = {
 SLIDE_SLUGS = {
     'overview': {
         's-title': 'title',
-        's-morph': 'enterprise-agentic-ai',
-        's-proof': 'production-reliability',
+        's-thesis': 'cost-of-intelligence',
+        's-akka-platform': 'agentic-ai-platform',
         's-platform': 'resilience-and-scalability',
+        's-eff': 'efficiency',
+        's-proof': 'production-reliability',
         's6': 'resilience-tester',
-        's-scale': 'scalability',
         's-packages': 'deployment',
         's-routes': 'explore-platform',
         's-close': 'contact',
@@ -561,6 +572,23 @@ SLIDE_SLUGS = {
         'family': 'platform',
         'closing': 'contact',
     },
+}
+
+# Slugs that used to resolve and no longer name a section, mapped to whichever
+# section now carries their subject. Links to these are already in circulation,
+# and without this a retired slug resolves to nothing and drops the reader at the
+# top of the deck with no indication why. Format: retired_slug → live_id.
+RETIRED_SLUGS = {
+    'overview': {
+        # #s-morph became #s-akka-platform in the efficiency redesign.
+        'enterprise-agentic-ai': 's-akka-platform',
+        # #s-scale became #s-eff.
+        'scalability': 's-eff',
+    },
+    'sdk':      {},
+    'verify':   {},
+    'optimize': {},
+    'specify':  {},
 }
 
 
@@ -778,6 +806,7 @@ for _name, _cfg in DECKS.items():
     _cfg['slide_wrappers'] = SLIDE_WRAPPERS[_name]
     _cfg['autofit_skip'] = AUTOFIT_SKIP[_name]
     _cfg['slugs'] = SLIDE_SLUGS[_name]
+    _cfg['retired_slugs'] = RETIRED_SLUGS[_name]
 
 
 def read(p):
@@ -896,7 +925,8 @@ def build(deck_name):
         HUBL_HEADER +
         '\n'.join(scripts) +
         '\n' +
-        _r4_runtime(cfg['wrapper'], cfg.get('slide_wrappers'), cfg.get('autofit_skip'), cfg.get('slugs')) +
+        _r4_runtime(cfg['wrapper'], cfg.get('slide_wrappers'), cfg.get('autofit_skip'),
+                    cfg.get('slugs'), cfg.get('retired_slugs')) +
         '\n<!-- DEMO_JS_MARKER -->\n'
     )
 
@@ -918,14 +948,23 @@ def push(deck_name, files):
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in DECKS:
-        print(f'usage: python {sys.argv[0]} <{"|".join(DECKS)}>', file=sys.stderr)
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    # push() writes to `published` as well as `draft`, so a bare run is a live
+    # change to akka.io. --build-only stops after writing scratchpad/hs-out/, so
+    # the fragments can be inspected and audited before anything ships.
+    build_only = '--build-only' in sys.argv
+    if not args or args[0] not in DECKS:
+        print(f'usage: python {sys.argv[0]} <{"|".join(DECKS)}> [--build-only]',
+              file=sys.stderr)
         return 2
-    deck = sys.argv[1]
+    deck = args[0]
     print(f'=== Porting {deck} ===')
     files = build(deck)
     for kind, p in files.items():
         print(f'  built  {os.path.relpath(p, ROOT)}  ({os.path.getsize(p)} bytes)')
+    if build_only:
+        print(f'=== {deck} built, not pushed (--build-only) ===')
+        return 0
     push(deck, files)
     print(f'=== {deck} done ===')
     return 0

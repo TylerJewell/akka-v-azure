@@ -81,13 +81,17 @@ Key constraints:
 ### R4 pitfalls
 
 - **Do NOT let content animations use `transform:translateY(...)` for the
-  intro fade.** R4's Range measurement includes in-flight child transforms.
+  intro fade — on any slide, not just the title.** R4's Range measurement
+  includes in-flight child transforms.
   Slides that animate elements from `translateY(16px)` to `translateY(0)` on
   load cause R4 to measure a taller-than-final section at 400/1200ms, commit
   a scale + centering paddingBottom based on that measurement, then let the
   last animation land — result is a visible 10–20px group shift at ~2.6s.
-  **Fix:** use opacity-only fade-in on title slides (`heroFade`, or drop the
-  `transform:translateY(16px)` initial state entirely).
+  **Fix:** use opacity-only fade-in (`heroFade`, or drop the
+  `transform:translateY(16px)` initial state entirely). Overview's
+  four-efficiency columns hit the same trap on a content slide: they revealed
+  from `translateY(20px)`, so the section measured 20px taller than it renders.
+  A staggered opacity fade still reads as a sequence and costs nothing.
 - **Cookie banner** — detect any `position:fixed` element at viewport bottom
   (`bottomBannerHeight()`) and subtract from the R4 target so scaled content
   clears it. Auditor does the same via a fixed-element probe.
@@ -204,6 +208,31 @@ Synthetic wheel events via CDP `Input.dispatchMouseEvent` do not reliably drive
 the compositor's snap path, so headless runs under-report snapping. Confirm the
 applied CSS headlessly; confirm the feel in a real browser.
 
+## Fixed-footprint graphics need a fit step per width band
+
+A graphic sized in pixels rather than in the layout — overview's architecture
+diagram is a 1230px scene at `scale(0.9)`, so a 1107px footprint — fits only
+above `1107 / 0.88 = 1258px`, because sections carry `0 6vw` of side padding.
+Below that it pushes the whole document sideways and the deck grows a horizontal
+scrollbar on every slide, not just the one with the graphic.
+
+The deck had a single `zoom:0.30` rule at `max-width:640px`, which covered
+phones and left the entire 641–1257px band broken: 1058px of content in a 1024px
+window, 963px in an 834px one. Fixed with graduated `zoom` steps, each computed
+from the **narrow** end of its range, since that is where it has to fit:
+
+    z <= 0.88 * viewport / footprint
+
+**Bound every step with `min-width`.** Declared after the phone rule, a bare
+`@media (max-width:760px){ zoom:0.50 }` also matches a 390px phone and wins on
+the cascade, putting a 553px diagram in a 390px window — worse than the overflow
+being fixed. Each step reads `@media (min-width:641px) and (max-width:N)`.
+
+Verify with `tools/auditors/mobile/audit.py <page> <width>` at 360, 390, 768 and
+834, and by checking `document.documentElement.scrollWidth` against
+`window.innerWidth` at 1024 and 1180. Nothing may exceed the viewport at any of
+them.
+
 ## R6 — Asset rewriting
 
 Relative `.html` in `src`/`href` becomes
@@ -253,6 +282,21 @@ scroll position must be unchanged 10s later.
 Keep `SLIDE_SLUGS` in step with the deck's real section ids. A stale map silently
 falls back to raw ids and the slugs stop resolving.
 
+### A retired slug needs an alias, not deletion
+
+Renaming or removing a section retires its slug, and links carrying it are
+already in circulation — in email, in a deal thread, in someone's notes. A
+retired slug matches no id and no entry in the map, so `resolveHash` returns
+null and the reader lands at the top of the deck with nothing to explain why.
+
+`RETIRED_SLUGS` maps each dead slug to whichever section now carries its subject,
+and `resolveHash` consults it last, after both the live slug map and the raw ids,
+so it can never shadow a current section. Overview's redesign retired two:
+`enterprise-agentic-ai` (was `#s-morph`) now resolves to `#s-akka-platform`, and
+`scalability` (was `#s-scale`) to `#s-eff`.
+
+Entries are permanent. Removing one to tidy the table breaks the link again.
+
 ## LinkedIn icon
 
 **Never** publish LinkedIn icons on the HubSpot pages. They are reserved for
@@ -275,15 +319,53 @@ Expected known failures:
 
 Run: `python tools/auditors/live-deck/audit.py [deck…]`. Exit 0 = clean.
 
+### pgdn-frame does not judge TITLE_X on a scaled section
+
+R4 scales an over-tall section from `transform-origin: 50%`, which insets it from
+its layout box and moves its title right. That is the fit working, not drift.
+pgdn-frame judged it anyway and reported four correctly framed overview slides as
+TITLE_X — `#s-thesis` at 127, `#s-platform` at 180, `#s6` at 168, `#s-packages`
+at 127, all scaled between 0.87 and 0.95. It now reads the computed transform and
+stands the check down below 0.995, which is what live-deck has always done.
+
+### Known: centred slides sit ~36px high in the band
+
+`padding-bottom: 40px` on a centred box lifts flex-centred content 20px above the
+box centre, and R4's centring correction only ever shifts content **up**
+(`if (offset > 4)`), so nothing puts it back. pgdn-frame measures 36px high on
+`#s-title` and `#s-close`. It is pre-existing, arrived with the occlusion fix, and
+applies to the centred slides on all five decks. Not corrected here: changing the
+centring maths touches every deck at once and belongs in its own pass.
+
+## Auditing a port before it ships
+
+`port_deck.py <deck> --build-only` writes the three partials to
+`scratchpad/hs-out/` and stops. A bare run PUTs to `published` as well as
+`draft`, so it is a live change to akka.io; `--build-only` is what makes a port
+reviewable first.
+
+The partials are not a page on their own. Stitch them under a 78px fixed header
+with `body{padding-top:78px}` and the deck's fonts, and the result exercises the
+real ported CSS and JS — R2/R5 offsets, R4, the snap anchors, the deep-link
+runtime — so slide-ux, slide-align, pgdn-frame and the mobile auditor can all run
+against it before anything is pushed. Without this the only verifiable page is
+one that has already shipped.
+
+Two things the composite cannot tell you, because it has no cookie banner:
+centred-slide framing, and any R4 target that subtracts `bottomBannerHeight()`.
+Confirm both with live-deck after publishing.
+
 ## Port workflow
 
 1. Edit source (`akka-overview/`, `akka-sdk/`, `akka-verify/`, or
    `sales-presentation/slides/...`).
 2. `python build-all.py` — regenerates `sales-presentation/generated/<deck>/`.
-3. `python scratchpad/port_deck.py <deck>` — pushes draft + published to
+3. `python tools/hubspot/port_deck.py <deck> --build-only` — build the partials.
+4. Compose and audit them locally (previous section).
+5. `python tools/hubspot/port_deck.py <deck>` — pushes draft + published to
    HubSpot `custom-templates/partials/<deck>-{styles,body,scripts}.html`.
-4. `python tools/auditors/live-deck/audit.py <deck>` — verify.
-5. If publishing all: loop over `overview sdk verify optimize specify`.
+6. `python tools/auditors/live-deck/audit.py <deck>` — verify.
+7. If publishing all: loop over `overview sdk verify optimize specify`.
 
 ## Security
 
