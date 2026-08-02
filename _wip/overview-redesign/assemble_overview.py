@@ -59,21 +59,29 @@ def strip_globals(css: str) -> str:
     # Bug fixed: `body\{...\}` was matching `.eff-body{...}` and stripping it,
     # which is why the four-efficiencies body copy was rendering with default
     # white instead of the intended muted grey. The lookbehind fixes that.
-    patterns = [
-        r"\*,\*::before,\*::after\{[^}]*\}",
-        r":root\{[^}]*\}",
-        r"(?<![\w\-])html\{[^}]*\}",
-        r"(?<![\w\-])body\{[^}]*\}",
-        r"(?<![\w\-])section\{[^}]*\}",
-        r"(?<![\w\-])\.inner\{[^}]*\}",
-        r"(?<![\w\-])section::before\{[^}]*\}",
-        r"(?<![\w\-])\.accent\{[^}]*\}",
-        r"(?<![\w\-])\.pos\{[^}]*\}",
-        r"(?<![\w\-])\.neg\{[^}]*\}",
+    # Each selector must be the WHOLE selector of its rule, so a lookbehind for
+    # word characters is not enough: it still matches the `.accent{...}` inside
+    # `.eff-quote .accent{...}`, which deletes half a rule and fuses what is left
+    # onto the next selector. Anchoring to a rule boundary - start of the sheet,
+    # or the `}` that closed the previous rule - is what makes it safe.
+    selectors = [
+        r"\*,\*::before,\*::after",
+        r":root",
+        r"html",
+        r"body",
+        r"section",
+        r"\.inner",
+        r"section::before",
+        r"\.accent",
+        r"\.pos",
+        r"\.neg",
     ]
-    for pat in patterns:
-        css = re.sub(pat, "", css)
+    for sel in selectors:
+        # Put the captured brace back: it closed the previous rule, and dropping
+        # it merges that rule into whatever selector follows.
+        css = re.sub(r"(^|\})\s*" + sel + r"\s*\{[^}]*\}", r"\1", css)
     return css
+
 
 thesis_css = strip_globals(thesis_css)
 platform_css = strip_globals(platform_css)
