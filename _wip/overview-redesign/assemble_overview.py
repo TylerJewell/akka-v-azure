@@ -135,11 +135,100 @@ overrides = """
    tint. Strip it here so the new slide's cake sits directly on the page. */
 #s-akka-platform .cake-wrap{border:none !important; background:none !important; box-shadow:none !important; padding:0 !important;}
 
-/* Right-side body copy sized up so the four paragraphs read at roughly the
-   same total height as the cake box on the left. */
-#s-akka-platform .pf-msg p{font-size:clamp(18px,1.55vw,24px); line-height:1.6;}
+/* Clearance under the subtitle. Measured at 24px from the subtitle's last line
+   to the top of the cake, which read as the graphic hanging off the subtitle.
+   tools/auditors/slide-align holds the floor at 40px. */
+#s-akka-platform .pf-grid{margin-top:44px !important;}
+
+/* Right-side body copy. The size is set at runtime by fitPfMsg() below so the
+   copy starts level with the top box and finishes level with the Akka Optimize
+   box; this rule only supplies the starting point and the line spacing. */
+#s-akka-platform .pf-msg p{font-size:22px; line-height:1.6;}
 #s-akka-platform .pf-msg .seg{margin-bottom:18px;}
 #s-akka-platform .pf-msg .seg:last-child{margin-bottom:0;}
+"""
+
+# The right-hand copy is meant to span exactly the cake's boxes: first line level
+# with the top of Akka Specify, last line level with the bottom of Akka Optimize.
+# That span changes with viewport width as the cake reflows and the copy rewraps,
+# so it is solved at runtime rather than pinned to one font size. Ratio-stepping
+# converges in two or three passes because ink height is near enough linear in
+# font size; the bounds keep the copy readable if the span is ever too small to
+# satisfy honestly.
+fit_script = """
+<script>
+/* === right-column fit for #s-akka-platform === */
+(function(){
+  var MIN = 14, MAX = 26, BASE_GAP = 14;
+
+  function inkHeight(el){
+    var rg = document.createRange();
+    rg.selectNodeContents(el);
+    return rg.getBoundingClientRect().height;
+  }
+
+  /* Ink height moves in whole lines, so scaling toward the target overshoots and
+     undershoots forever: 21.78px gave 437px and 20.25px gave 378px against a
+     407px target, and the ratio step just swung between them. Take the largest
+     size that still fits, then put the leftover into the gaps between
+     paragraphs, which is continuous and lands the last line exactly. */
+  function fitPfMsg(){
+    var sec = document.querySelector('#s-akka-platform');
+    if (!sec) return;
+    var msg = sec.querySelector('.pf-msg');
+    var cards = sec.querySelectorAll('.ocard');
+    if (!msg || cards.length < 2) return;
+    var paras = msg.querySelectorAll('p');
+    var segs = msg.querySelectorAll('.seg');
+    if (!paras.length) return;
+
+    var target = cards[cards.length - 1].getBoundingClientRect().bottom
+               - cards[0].getBoundingClientRect().top;
+    if (target < 80) return;
+
+    function setSize(px){
+      for (var j = 0; j < paras.length; j++) paras[j].style.fontSize = px.toFixed(2) + 'px';
+    }
+    for (var g = 0; g < segs.length; g++){
+      segs[g].style.marginBottom = (g === segs.length - 1) ? '0px' : BASE_GAP + 'px';
+    }
+
+    var lo = MIN, hi = MAX, best = MIN;
+    for (var i = 0; i < 14; i++){
+      var mid = (lo + hi) / 2;
+      setSize(mid);
+      if (inkHeight(msg) <= target){ best = mid; lo = mid; } else { hi = mid; }
+      if (hi - lo < 0.15) break;
+    }
+    setSize(best);
+
+    var slack = target - inkHeight(msg);
+    if (segs.length > 1 && slack > 0){
+      var add = slack / (segs.length - 1);
+      for (var k = 0; k < segs.length - 1; k++){
+        segs[k].style.marginBottom = (BASE_GAP + add).toFixed(2) + 'px';
+      }
+    }
+  }
+  function schedule(){
+    requestAnimationFrame(function(){ requestAnimationFrame(fitPfMsg); });
+    setTimeout(fitPfMsg, 300);
+    setTimeout(fitPfMsg, 1000);
+    setTimeout(fitPfMsg, 2500);
+    /* The web font changes how the copy wraps, so a fit computed against the
+       fallback goes stale the moment the real face lands. Measured: ink went
+       from 411px to 437px after the swap, leaving the column 31px long. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPfMsg);
+  }
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule);
+  var raf = 0;
+  window.addEventListener('resize', function(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fitPfMsg);
+  });
+})();
+</script>
 """
 
 # Insert new_css just before the first </style>
@@ -213,6 +302,13 @@ base = base.replace(
     "{from:'.platform',      to:'#rsc-deps',    label:'integrations'}",
     "{from:'.platform',      to:'#rsc-sem',     label:'integrations'}"
 )
+
+# Runtime fit for the agentic-platform slide's right column, appended last so it
+# runs after every stylesheet the base file brings with it.
+if "</body>" in base:
+    base = base.replace("</body>", fit_script + "\n</body>", 1)
+else:
+    base += fit_script
 
 # Write output
 out = SCRATCH / "overview-new.html"
