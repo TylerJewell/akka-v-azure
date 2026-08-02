@@ -66,6 +66,7 @@
     .eff-col{width:230px; height:auto; min-height:380px;}
   }
   @media (max-width:900px){
+    .eff-col-quote p br{display:none;}
     .eff-cols{flex-direction:column; align-items:center;}
     .eff-col{width:100%; max-width:340px; min-height:0;}
   }
@@ -145,9 +146,9 @@
                   font-size="11" fill="#6E6E6E" letter-spacing="1.2">FOLLOWS DEMAND</text>
           </svg>
         </div>
-        <p class="eff-col-body">Thousands of agents run per core. Shared compute pools resources across services, so capacity scales without over-provisioning.</p>
+        <p class="eff-col-body">Actor-based concurrency and shared infra model drops operating costs up to 90%.</p>
         <blockquote class="eff-col-quote">
-          <p>AI personalization engine shrunk from <span class="accent">150k &rarr; 22k cores</span> after porting to Akka.</p>
+          <p>AI personalization engine<br>shrunk from <span class="accent">150k &rarr; 22k cores</span><br>after porting to Akka.</p>
           <cite>&middot; Fox</cite>
         </blockquote>
       </div>
@@ -219,7 +220,7 @@
         </div>
         <p class="eff-col-body">Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.</p>
         <blockquote class="eff-col-quote">
-          <p>Rolled out Akka to <span class="accent">2,000 global devs</span> in 6 countries with corporate risk policies.</p>
+          <p>Rolled out Akka to <span class="accent">2,000</span><br><span class="accent">global devs</span> in 6 countries<br>with corporate risk policies.</p>
           <cite>&middot; Manulife</cite>
         </blockquote>
       </div>
