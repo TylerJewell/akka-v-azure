@@ -167,7 +167,11 @@ def audit(page):
     except ImportError:
         raise SystemExit('Missing dependency. Install: pip install -r tools/auditors/requirements.txt')
 
-    url = 'file:///' + os.path.abspath(page).replace('\\', '/')
+    # A published page is the only place the cookie banner and the real header
+    # exist, and both move the band this auditor measures against, so accept a
+    # URL as well as a local path.
+    url = (page if page.startswith(('http://', 'https://'))
+           else 'file:///' + os.path.abspath(page).replace('\\', '/'))
     port = _free_port()
     tmpdir = tempfile.mkdtemp(prefix='pgdn_audit_')
     proc = subprocess.Popen(

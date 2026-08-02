@@ -103,6 +103,34 @@ CMS v3 Blog Posts API. Find by slug: paginate `GET /cms/v3/blogs/posts?limit=100
   object has no `previewKey`). Draft template changes are viewable only in Design Manager (logged in). To canary a
   deck, push ONE to published (it's already live; changes are additive) and review the real URL.
 
+### Reviewing a deck without touching the live one
+
+Because there is no shareable draft URL, a deck that needs review before it replaces the
+current one gets its **own published page at an unlisted slug**. Four objects, all suffixed
+`-preview`, so nothing collides with the live deck:
+
+1. `custom-templates/partials/<deck>-preview-{styles,body,scripts}.html` — copies of the
+   built partials.
+2. `custom-templates/akka-<deck>-preview-wrapper.html` — the live wrapper with the three
+   `{% include %}` paths repointed, `isAvailableForNewContent: false`, and
+   `<meta name="robots" content="noindex,nofollow">` added.
+3. A site-page at `platform/<deck>-preview` on that template.
+4. `PATCH {"state":"PUBLISHED"}` **then** `POST .../draft/push-live`. push-live alone leaves
+   the page in DRAFT and the URL 404s.
+
+The wrapper class stays `<deck>-content`, so the CSS scoping is unchanged and the preview
+renders identically to what the real port will produce.
+
+Allow ~30-60s after publishing: the first fetch 404s while the CDN catches up.
+
+`tools/auditors/pgdn-frame/audit.py` accepts a URL as well as a path, so the preview can be
+audited where the header and cookie banner actually exist.
+
+**Delete the four objects once the deck ships.** An unlisted page is invisible, not gone, and
+a stale one is a copy of the deck nobody is updating.
+
+Live now: `platform/overview-preview`, page id `218560780576`.
+
 ## 7. Content rules (see `audit.py` §8)
 
 - The **actor-terminology** rule was **removed 2026-07-27** (no longer applies).

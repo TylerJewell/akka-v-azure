@@ -35,9 +35,12 @@ The test: read any sentence and ask "is this a fact or a flourish?" Flourishes g
 - No hedges that signal a number isn't real: not "an estimated 60% lower," just "60% lower." Invented figures (allowed — see rule 6) are stated cleanly as fact, with no tell that they were invented.
 - A customer's *own* forward-looking estimate is fine as narrative ("a four-to-six-month plan," "the industry loses an estimated $7B a year") — that is the customer's number, not a disclaimer about ours.
 
-## 2. Never reference Akka libraries or runtime internals
+## 2. Runtime internals
 
-- Never name or imply the open-source Akka actor library / JVM toolkit, "actors," "actor model," garbage collection, JVM heap sizes, or a specific competing framework being replaced (e.g. Spring Boot).
+- Actors and actor-based concurrency are allowed. That restriction was lifted 2026-08-02,
+  matching the same removal from the HubSpot content rules on 2026-07-27.
+- Still out: garbage collection, JVM heap sizes, and naming a specific competing framework
+  being replaced (e.g. Spring Boot).
 - Speak only at the umbrella level: the **Akka Agentic AI Platform** or **Akka Specify**.
 - Keep customer-visible outcomes (hardware halved, TCO cut in half, latency, throughput). Drop the implementation mechanism that reveals the library era.
 - Naming the customer's *former* vendor (Oracle, etc.) is fine — that is their incumbent, not an Akka library.
