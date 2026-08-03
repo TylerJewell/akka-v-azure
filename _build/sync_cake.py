@@ -29,7 +29,12 @@ import corpus_counts
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 CANONICAL = os.path.join(ROOT, 'sales-presentation', 'slides', 'family-platform', 'slide.html')
-TARGETS = ['akka-overview/index.html', 'akka-verify/index.html', 'akka-sdk/index.html']
+# Overview is assembled, not hand-edited: _wip/overview-redesign/assemble_overview.py
+# builds akka-overview/index.html from overview-base.html on every run. Syncing
+# into the generated deck put the cake there until the next assemble silently
+# reverted it, so the base is the target.
+TARGETS = ['_wip/overview-redesign/overview-base.html',
+           'akka-verify/index.html', 'akka-sdk/index.html']
 
 GEN_NOTE = ('<!-- CAKE:BODY (generated from sales-presentation/slides/family-platform '
             'by _build/sync_cake.py — do not edit here; edit the canonical slide) -->')
