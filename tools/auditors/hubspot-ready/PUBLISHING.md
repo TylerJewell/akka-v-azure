@@ -127,9 +127,14 @@ Allow ~30-60s after publishing: the first fetch 404s while the CDN catches up.
 audited where the header and cookie banner actually exist.
 
 **Delete the four objects once the deck ships.** An unlisted page is invisible, not gone, and
-a stale one is a copy of the deck nobody is updating.
+a stale one is a copy of the deck nobody is updating. Delete the page with
+`DELETE /cms/v3/pages/site-pages/{id}` and each source-code file with
+`DELETE /cms/v3/source-code/{env}/content/{path}`. Only `published` returns 204 — `draft`
+answers 404 for these, because a source-code PUT to both environments leaves one addressable
+record. That 404 is the expected result, not a failed delete.
 
-Live now: `platform/overview-preview`, page id `218560780576`.
+None live. `platform/overview-preview` (page `218560780576`) was used for the efficiency
+redesign and removed 2026-08-03 when that deck shipped to `platform/overview`.
 
 ## 7. Content rules (see `audit.py` §8)
 
