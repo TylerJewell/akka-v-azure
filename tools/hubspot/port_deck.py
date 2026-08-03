@@ -201,6 +201,28 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None, retired
     section.style.transform = '';
     section.style.transformOrigin = '';
     section.style.overflow = '';
+    section.style.height = '';
+  }}
+
+  /* Snap points are spaced by a slide's LAYOUT height, and a wheel gesture moves
+     one screen. A slide whose box is taller than the band therefore puts the next
+     snap point further away than one gesture can travel, and with proximity the
+     reader rests between slides with nothing locking on.
+
+     A transform does not change layout, so a slide R4 has scaled to fit still
+     occupies its unscaled height: overview's architecture slide measured 978px of
+     scroll while showing 686px of content. Once the content is known to fit the
+     band, the box should be the band — that also keeps the slide covering
+     everything below it, so no strip of the next slide shows through. */
+  function boxToBand(section, vh, isSticky){{
+    if (isSticky) return;   /* sticky slides are sized by their own rule */
+    if (getComputedStyle(section).position === 'sticky') return;
+    var band = vh - HDR;
+    /* offsetHeight, not getBoundingClientRect: the latter reports the SCALED box
+       on a section R4 has transformed, which is the number that already looks
+       fine. The layout height is what spaces the snap points. */
+    if (section.offsetHeight <= band + 1) return;
+    section.style.height = band + 'px';
   }}
 
   function isCentered(section){{
@@ -261,6 +283,9 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None, retired
       ? vh - HDR - CENTERED_PAD_BOTTOM - bottomBanner
       : vh - effectiveContentTop - BOTTOM_BUFFER - bottomBanner;
     if (contentH <= target) {{
+      /* Fits without scaling, but the box can still be taller than the band —
+         a source rule setting height:100dvh leaves it a full viewport tall. */
+      if (!centered) boxToBand(section, vh, isSticky);
       section.setAttribute('data-fit', 'fits contentH=' + Math.round(contentH) + ' target=' + Math.round(target) + ' vh=' + vh + ' padTop=' + padTop + ' sticky=' + isSticky);
       return;
     }}
@@ -281,6 +306,9 @@ def _r4_runtime(wrapper, slide_wrappers=None, skip_ids=None, slugs=None, retired
        space on the right. Title X shifts inward with scale but overall slide
        feels balanced and matches the visual weight of unscaled sibling slides. */
     section.style.transformOrigin = centered ? '50% 50%' : ('50% ' + padTop + 'px');
+    /* The content now fits the band visually, so the box should be the band too.
+       Left alone, the unscaled height keeps spacing the snap points. */
+    if (!centered) boxToBand(section, vh, isSticky);
     section.setAttribute('data-fit', (centered ? 'centered ' : 'top-anchored ') + 'scale=' + scale.toFixed(3) + ' contentH=' + Math.round(contentH) + ' target=' + Math.round(target) + ' vh=' + vh + ' padTop=' + padTop + ' sticky=' + isSticky);
   }}
 
@@ -672,6 +700,18 @@ def _r2r5_block(wrapper, centered, sticky, slide_wrappers, extra_css='', cake=''
   {slide_sel} {{
     justify-content: flex-start !important;
     padding-top: 32px !important;
+    /* Floor the slide at the band below the header, the same box the centred
+       exceptions get. Without this a top-anchored slide kept the source's
+       min-height:100dvh, so its box was a full viewport tall while the band it
+       lands in is 78px shorter. Snap points then sat one viewport-plus apart and
+       a wheel gesture of one screen could not reach the next one — measured on
+       overview at 861, 880, 909 and 978px between consecutive slides against an
+       861px screen, so nothing ever locked on.
+
+       min-height only. A hard height here would collapse any section that is
+       deliberately a tall scroll-through region; the runtime clamps the ones it
+       has already proved fit. */
+    min-height: calc(100dvh - 78px) !important;
   }}
   /* R5 inner-container override: many slides nest a *-inner div with its OWN
      justify-content:center + height:100%. That flex centering pushes content
