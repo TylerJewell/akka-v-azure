@@ -21,6 +21,25 @@ This document is the complete overview. For a concise link index, see the compan
 
 **How do you get Akka?** You build on the platform yourself, or you have Akka deliver and run a production system for you. The delivered path is Akka Specify. Both paths run on the same runtime.
 
+**What is Akka's product?** Akka has one product: the Akka Agentic AI Platform, which guarantees resilience and scalability. There are four simple ways to get started with the platform, all delivered on and through it and sharing one runtime, one evidence record, and one governance model. The Akka SDK is for building agentic systems directly on the platform. Akka Specify is spec-driven development and delivery of governed systems. Akka Verify is runtime-native evaluation, enforcement, evidence, and governance for agents built on Akka or elsewhere. Akka Optimize lowers model cost on evaluated production traffic, using up to 80% fewer tokens.
+
+## Why Efficiency Decides This
+
+The cost of intelligence is dropping up to 10x each year. Frontier capability that cost thirty dollars per million input tokens in 2023 costs cents today at equivalent capability.
+
+Demand rises as that price falls. Every capability release multiplies the AI use cases an enterprise can adopt, which is Jevons Paradox applied to intelligence: as the unit cost of intelligence falls, enterprise AI demand accelerates.
+
+When capability is cheap and demand is unlimited, execution efficiency decides which enterprises scale AI adoption. Early inefficiencies compound:
+
+- AI applications spend 30 to 40% of revenue on cost of goods sold. Typical SaaS COGS are 10 to 15%.
+- GenAI projects that scale past pilot run 2x to 3x over cost.
+- 20 to 40% of engineering capacity is lost to rework caused by earlier architectural choices.
+- Switching cost off a first-choice runtime grows non-linearly with the size of the deployed base.
+
+Akka guarantees AI efficiencies at the smallest scale, so that none exist at the largest scale. Every enterprise lives in a market of cheap intelligence and unlimited ideas, and the ones that pull ahead build foundations that keep AI adoption efficient at scale.
+
+Sources: frontier model prices from vendor API pricing pages, March 2023 through 2026. Distilled model benchmarks and cost-per-capability curves from Stanford AI Index 2025 and Epoch AI. AI cost compression analysis from Andreessen Horowitz. Enterprise GenAI adoption rates from McKinsey State of AI 2024 and Deloitte GenAI enterprise studies. GenAI project cost overrun estimates from BCG and Deloitte. Path-dependence economics from W. Brian Arthur, Increasing Returns and Path Dependence in the Economy.
+
 ## One Runtime, One System
 
 The thing that makes Akka unique is not the breadth of what it does. Hyperscalers also offer a broad set of AI capabilities. The difference is that Akka runs everything in one runtime, and that runtime guarantees resilience and scalability.
@@ -129,16 +148,16 @@ One governed system comes out, with agents, safeguards, evidence, the semantic l
 
 Akka Specify is an all-inclusive managed engagement. The platform, the infrastructure, the AI tokens, any model training, the delivery of the system, and 24/7 SRE operations that keep it available, safe, and improving all come under a single agreement. The common alternative for teams that would rather not build is a months-long forward-deployed engineering engagement that hands back a bespoke system you then own and operate. Spec-driven delivery reaches the same production outcome through generation on the platform, in weeks rather than quarters, and without a standing integration team.
 
-## Akka Optimize — continuous AI intelligence
+## Akka Optimize — own your intelligence
 
-Akka Optimize is continuous AI intelligence, one loop that keeps making your AI better. Akka watches the work your agents do, routes each task to the best model, trains specialized models on your own data, and serves them, continuously. Inference, training, grading, and scoring run on the same runtime as the agents, so the loop runs inside one system.
+Akka Optimize is how you own your intelligence. It routes traffic to the best open-weight model and trains smaller ones on your data. Akka watches the work your agents do, routes each task to the model that handles it best, trains specialized models on your own data, and serves them, continuously. Inference, training, grading, and scoring run on the same runtime as the agents, so the loop runs inside one system.
 
 Optimize continuously evaluates the traffic from your agents, grading it whether the agents run on Akka or in a third-party harness such as Cursor, Claude Code, or Copilot. Grading is deterministic for structured outputs like SQL and JSON, and uses an LLM judge for unstructured outputs. Those grades train each smaller specialized model, prove it holds, and promote it, and then the loop grades again. On Akka the loop closes by construction, because the trace the agent emitted is the same record used to grade, to train, and to serve.
 
 Optimize gives you three advantages:
 
 - Model leverage: route every task to the best model from any vendor, under your own policies, so you have leverage and choice across the whole market.
-- Data sovereignty: build specialized models on your proprietary data, inside your own environment, so you own intelligence that keeps improving. Schemas from Akka agents feed reinforcement-learning training of specialized models, for faster execution and up to 70% fewer tokens than foundry models.
+- Data sovereignty: build specialized models on your proprietary data, inside your own environment, tuned from an open-weight base, so you own intelligence that keeps improving. Schemas from Akka agents feed reinforcement-learning training of specialized models, for faster execution and up to 80% fewer tokens than foundry models.
 - Cost governance: see, attribute, and control what every AI call costs under your budgets, so savings compound.
 
 Cost governance draws on several mechanisms:
@@ -228,11 +247,18 @@ Akka is trusted by innovative, regulated, and global enterprises. More than 2 bi
 - [Cone Center](https://akka.io/customer-stories/cone-center-chooses-akka-to-build-sophisticated-logistics-applications-for-major-ports-and-distribution-centers): Logistics — sophisticated applications for major ports and distribution centers.
 - [All Customer Stories](https://akka.io/customer-stories): Full list including Morgan Stanley, RBC, Apple, Starbucks, Walmart, Doctolib, Dream11, Capital One, Hewlett Packard Enterprise, and more.
 
+Efficiency results:
+
+- Fox: AI personalization engine shrunk from 150k to 22k cores after porting to Akka.
+- Swiggy: prediction latency fell from 144ms to 71ms while reducing token consumption 22%.
+- Dojo: AI-based merchant onboarding deployed to production in weeks by college graduates.
+- Manulife: rolled out Akka to 2,000 global developers in 6 countries with central risk control.
+
 Key stats: 99.9999% multi-region availability, 1.4M transactions per second, 9ms latency.
 
 ## Why Akka
 
-The Akka runtime has run in production for 18 years across more than 100,000 deployments globally. Systems built with Akka adapt to the unexpected, including hardware failures, network disruptions, workload spikes, and AI model hallucinations. Akka holds more than 19 InfoSec certifications, including the EU AI Act, the Singapore Agent Framework, ISO 42001, and SOC 2.
+The Akka runtime has run in production since 2007 across more than 100,000 deployments globally. Systems built with Akka adapt to the unexpected, including hardware failures, network disruptions, workload spikes, and AI model hallucinations. Akka holds more than 19 InfoSec certifications, including the EU AI Act, the Singapore Agent Framework, ISO 42001, and SOC 2.
 
 ## User Personas
 
@@ -405,7 +431,7 @@ The result is a 70 to 90% infrastructure cost reduction, driven by shared comput
 - **Automated operations (AAO)** — Reduces the SRE and ops headcount needed to run production AI systems.
 
 **Token and AI spend optimization (Akka Optimize)**
-- **Distillation to smaller models** — Schemas from Akka agents feed RL training of specialized models, for faster execution, higher accuracy, and up to 70% fewer tokens than foundry models.
+- **Distillation to smaller models** — Schemas from Akka agents feed RL training of specialized models, for faster execution, higher accuracy, and up to 80% fewer tokens than foundry models.
 - **Memory compaction** — Built-in context optimization that reduces tokens consumed.
 - **FinOps tooling** — Built-in token tracking and cost reporting across teams and projects.
 - **Sub-10ms memory** — Faster memory means fewer redundant LLM calls.
@@ -450,7 +476,7 @@ The first milestone is a production slice in 4 to 6 weeks, rather than a pilot.
 
 ## Company
 
-Akka is 18 years old, profitable, and high growth. Akka's largest shareholder is Dell Technologies, which is also a customer and a partner. 25% of the Fortune 500 has deployed Akka technology, and Akka runs in production within 52 financial services institutions.
+Akka has operated since 2007, profitable and high growth. Akka's largest shareholder is Dell Technologies, which is also a customer and a partner. 1/3 of the Fortune 500 has deployed Akka technology, and Akka runs in production within 52 financial services institutions.
 
 ## Partners and Ecosystem
 
@@ -466,7 +492,7 @@ Dell Technologies is Akka's hardware partner.
 
 The Akka runtime is the same distributed-systems substrate that has powered the Akka open-source project since 2009. The libraries shipped under Apache 2.0 for thirteen years, and in 2022 they transitioned to the Business Source License under Akka Inc., the company that stewards the project. The open-source libraries remain widely adopted today.
 
-Every reliability stat in this document — 18 years of production, more than 100,000 deployments, 2 billion people touched daily, 52 financial services institutions in production, 1.4 million transactions per second, 9ms latency — comes from this heritage. The agentic systems platform is built on the same runtime substrate, applying 18 years of distributed-systems engineering to agentic AI.
+Every reliability stat in this document — production since 2007, more than 100,000 deployments, 2 billion people touched daily, 52 financial services institutions in production, 1.4 million transactions per second, 9ms latency — comes from this heritage. The agentic systems platform is built on the same runtime substrate, applying distributed-systems engineering proven since 2007 to agentic AI.
 
 ## Install
 
@@ -511,6 +537,7 @@ This configures your environment and gets you ready to start building with Akka.
 - [Concepts](https://doc.akka.io/concepts/index.html): Foundational topics on service design and behavior
 - [Operations](https://doc.akka.io/operations/index.html): Deployment, monitoring, and service management
 - [CLI Reference](https://doc.akka.io/reference/cli/akka-cli/index.html): Full command reference for the Akka CLI
+- [Platform Capabilities](https://akka.io/platform/capabilities): Complete itemized inventory of platform and offering capabilities across Akka SDK, Akka Verify, Akka Optimize, and Akka Specify
 
 ## Optional
 
@@ -519,8 +546,6 @@ This configures your environment and gets you ready to start building with Akka.
 - [Agentic AI Use Cases](https://akka.io/blog/agentic-ai-use-cases): 21 agentic AI use cases shaping the future of AI
 - [Release Notes](https://doc.akka.io/reference/release-notes.html): Latest updates and changes
 
-
-=====================================================================
 # Akka Developer Documentation — Full Content
 
 The complete Akka SDK and platform documentation follows, expanded from doc.akka.io. It opens with an index of every documentation page (title, URL, and description), followed by the full text of each page.

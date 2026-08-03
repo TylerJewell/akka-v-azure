@@ -13,6 +13,35 @@ published on akka.io, so divergence can be seen and reconciled deliberately.
 | `llms-master.txt` | Merged (this repo) | Full-content overview (the `llms-full.txt` equivalent). Restructured 2026-07-12 around the single-runtime differentiator, the three advantages (fastest way to production / cheapest AI to run / continuous enforcement), and the four-offering stack (Akka Agentic AI Platform, Akka Optimize, Akka Specify, Akka Verify). Retired the 4-dimension framing (Never Fail / Self-Governing / Self-Improving / For Every Team). Full prove/proof scrub applied; corpus numbers read live from the corpus on 2026-07-24: 190 regs / 1,215 controls / 742 penalty-bearing controls. Re-read from the corpus on every content edit before publishing. |
 | `llms-full.txt` | Merged (this repo) + `doc.akka.io` | Generated 2026-07-13. The comprehensive machine-ingest file: the full corporate positioning (all of `llms-master.txt`) followed by the complete developer documentation content pulled from `doc.akka.io/llms-full.txt` (an index of every doc page plus the full text of each). ~1.5 MB, ~29,300 lines. Rebuild by concatenating `llms-master.txt` + a fresh `curl -sSL https://doc.akka.io/llms-full.txt`. This is the candidate for what `akka.io/llms-full.txt` should serve. |
 
+### 2026-08-03 — the efficiency narrative
+
+Audited all three files against the overview deck after its efficiency redesign. The
+narrative was absent: zero occurrences of Jevons, "cost of intelligence", "efficient at
+every scale", "own your intelligence", "open-weight" or "10x", and four of "efficienc*"
+across 1.5 MB. The files were organised runtime-first, so a model asked why Akka matters
+answered with architecture and never reached the market thesis.
+
+Three changes, made in `llms-master.txt` and propagated:
+
+1. New `## Why Efficiency Decides This` ahead of `## One Runtime, One System`. States the
+   supply, demand and constraint argument with the deck's figures and sources. Efficiency
+   is the subject; the single runtime stays the mechanism.
+2. Akka Optimize renamed from "continuous AI intelligence" to "own your intelligence", and
+   open-weight routing named — it is the first thing the deck's own definition says and it
+   appeared nowhere.
+3. An `Efficiency results` list under Customers: Fox 150k to 22k cores, Swiggy 144ms to
+   71ms and 22% fewer tokens, Dojo onboarding in weeks by college graduates, Manulife 2,000
+   developers in 6 countries. None of these figures were in any of the files.
+
+Deliberately not done: mapping the four offerings to four costs. The three advantages are
+about the runtime and were left as they are.
+
+Still unreconciled, flagged rather than changed: "up to 80% fewer tokens" and "70 to 90%
+lower infrastructure cost" sit alongside the deck's "operating costs up to 90%" and
+Swiggy's measured 22%; "production-ready in days" sits alongside Specify delivering "in
+weeks". Each is defensible on its own, and a model asked "how fast" or "how much cheaper"
+will pick one.
+
 **Raw sources / snapshots (reference):**
 
 | File | Source | Notes |

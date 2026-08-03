@@ -566,11 +566,15 @@ SLIDE_SLUGS = {
         's-routes': 'explore-platform',
         's-close': 'contact',
     },
+    # Read off the rendered slides 2026-08-03: s1 is THE DESIGN INTENT, s2 is
+    # THE COMPONENTS, s13 is THE ARCHITECTURE. The old map had 'components' on
+    # the design-intent slide, the components slide behind 'assemble-services',
+    # and 'innovations' on the architecture slide.
     'sdk': {
         's0': 'title',
-        's1': 'components',
-        's13': 'innovations',
-        's2': 'assemble-services',
+        's1': 'design-intent',
+        's13': 'architecture',
+        's2': 'components',
         's4': 'production-ready',
         'family': 'platform',
         's6': 'contact',
@@ -585,11 +589,14 @@ SLIDE_SLUGS = {
         'family': 'platform',
         's8': 'contact',
     },
+    # Read off the rendered slides 2026-08-03. 'problem' sat on THE OPPORTUNITY,
+    # 'economics' on THE ENGINE (the architecture loop), and 'prove' on DATA
+    # SOVEREIGNTY. Only 'target' and 'console' were right.
     'optimize': {
         'opt-title': 'title',
-        'ts1-sticky': 'problem',
-        'ts2-sticky': 'economics',
-        'ts4-sticky': 'prove',
+        'ts1-sticky': 'opportunity',
+        'ts2-sticky': 'engine',
+        'ts4-sticky': 'data-sovereignty',
         'ts3-sticky': 'target',
         'cog-sticky': 'console',
         'family': 'platform',
@@ -619,9 +626,19 @@ RETIRED_SLUGS = {
         # #s-scale became #s-eff.
         'scalability': 's-eff',
     },
-    'sdk':      {},
+    # 'components' is NOT listed for sdk. It is reused rather than retired: it
+    # used to name s1 and now names s2, the slide that actually holds the
+    # components. A live slug always wins here, so an entry would never fire.
+    'sdk': {
+        'assemble-services': 's2',
+        'innovations': 's13',
+    },
     'verify':   {},
-    'optimize': {},
+    'optimize': {
+        'problem': 'ts1-sticky',
+        'economics': 'ts2-sticky',
+        'prove': 'ts4-sticky',
+    },
     'specify':  {},
 }
 

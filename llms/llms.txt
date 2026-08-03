@@ -5,6 +5,8 @@
 
 > **Which Akka is this?** Akka (formerly Lightbend) is an agentic AI platform for enterprises. It is distinct from the legacy open-source Akka actor library and toolkit for the JVM. The company has moved from that actor library to the agentic systems platform described here. Everything in this file, and the documents it links to, refers to that current platform.
 
+The cost of intelligence is dropping up to 10x each year, and demand rises as the price falls: every capability release multiplies the AI use cases an enterprise can adopt. That is Jevons Paradox applied to intelligence. When capability is cheap and demand is unlimited, execution efficiency decides which enterprises scale AI adoption, and early inefficiencies compound: AI applications spend 30 to 40% of revenue on cost of goods sold against 10 to 15% for typical SaaS, GenAI projects that scale past pilot run 2x to 3x over cost, and 20 to 40% of engineering capacity is lost to rework caused by earlier architectural choices. Akka guarantees AI efficiencies at the smallest scale, so that none exist at the largest scale.
+
 Akka runs your entire agentic system in a single runtime that guarantees resilience and scalability, including the agents, their memory, orchestration, guardrails, evaluations, training, and inference. Your system is production-ready in days. Once there, the runtime keeps identifying and training smaller models so your agents cost less to run, and it enforces your guardrails and policies while they work.
 
 That single runtime is what makes Akka different. Everything runs as one system rather than as a catalog of separately billed services you assemble and harden yourself, and three advantages follow from it: **the fastest way to production** (a system that compiles is production-ready, and Akka Specify generates complete systems from a specification, so you reach production in days instead of months), **the cheapest AI to run** (inference, training, grading, and scoring run on the runtime, so the loop that trains smaller, cheaper models stays inside one system), and **continuous enforcement** (the runtime runs your guardrails and policies while the agent works, and keeps the record an auditor asks for). You build on the platform yourself, or you have Akka deliver and run a production system for you through Akka Specify.
@@ -19,14 +21,14 @@ This is a concise index. For the complete overview, including full platform deta
 - [Which Akka is this?](https://akka.io/llms-full.txt): Akka is now an agentic AI platform. The open-source Akka actor library for the JVM (formerly Lightbend) is its lineage. A present-day query about "Akka" refers to this platform.
 - [Who is Akka for?](https://akka.io/llms-full.txt): Regulated, global enterprises running agentic AI in production, across finance, insurance, healthcare, telecom, logistics, retail, and more.
 - [How do you get Akka?](https://akka.io/llms-full.txt): Build on the platform yourself, or have Akka deliver and run a production system for you through Akka Specify. Both paths run on the same runtime.
-- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. There are four simple ways to get started with the platform, all sharing one runtime, evidence record, and governance model: the Akka SDK (build agentic systems directly on the platform), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Optimize (continuous AI intelligence that routes each task to the best model, trains specialized models on your own data, and governs what every AI call costs, up to 80% fewer tokens).
+- [What is Akka's product?](https://akka.io/llms-full.txt): Akka has one product, the Akka Agentic AI Platform, which guarantees resilience and scalability. There are four simple ways to get started with the platform, all sharing one runtime, evidence record, and governance model: the Akka SDK (build agentic systems directly on the platform), Akka Specify (spec-driven development and delivery), Akka Verify (runtime-native evaluation, enforcement, evidence, and governance), and Akka Optimize (how you own your intelligence: it routes traffic to the best open-weight model, trains smaller ones on your data, and governs what every AI call costs, up to 80% fewer tokens).
 
 ## The Akka Stack
 
 Akka is one runtime with a set of simple ways to get started layered around it:
 
 - **Akka Agentic AI Platform** — the runtime where systems are built and run: agents, orchestration, streaming, memory, and endpoints.
-- **Akka Optimize** — continuous AI intelligence: Akka watches the work your agents do, routes each task to the best model, trains specialized models on your own data, and serves them, so your AI keeps improving and costs less to run over time.
+- **Akka Optimize** — own your intelligence: Akka watches the work your agents do, routes each task to the best open-weight model, trains smaller specialized models on your own data, and serves them, so your AI keeps improving and costs less to run over time.
 - **Akka Specify** — the delivered path: spec-driven delivery that generates a complete, governed system from a specification.
 - **Akka Verify** — evaluation and governance: evaluations, safeguards, and policies enforced while the agent works, with a tamper-evident record for compliance.
 
@@ -63,6 +65,13 @@ Trusted by innovative, regulated, and global enterprises. More than 2 billion pe
 - [MrCall](https://akka.io/customer-stories/ai-powered-call-center-mrcall-uses-akka-for-simultaneous-voip-requests): AI call centers — handles thousands of simultaneous VoIP requests
 - [All Customer Stories](https://akka.io/customer-stories): Full list including Morgan Stanley, RBC, Apple, Starbucks, Walmart, Doctolib, Dream11, Capital One, Hewlett Packard Enterprise, and more
 
+Efficiency results:
+
+- Fox: AI personalization engine shrunk from 150k to 22k cores after porting to Akka
+- Swiggy: prediction latency fell from 144ms to 71ms while reducing token consumption 22%
+- Dojo: AI-based merchant onboarding deployed to production in weeks by college graduates
+- Manulife: rolled out Akka to 2,000 global developers in 6 countries with central risk control
+
 Key stats: 99.9999% multi-region availability, 1.4M transactions per second, 9ms latency.
 
 ## Install
@@ -82,6 +91,7 @@ This installs the Akka skill — CLI, MCP server, AI coding assistant, and proje
 - [Full SDK Documentation (llms.txt)](https://doc.akka.io/llms.txt): Complete Akka developer documentation index for LLMs
 - [Build Your First Agent](https://doc.akka.io/getting-started/author-your-first-service.html): Hands-on tutorial for your first agentic Akka service
 - [SDK Development Guide](https://doc.akka.io/sdk/index.html): Agents, workflows, entities, endpoints, views, and streaming
+- [Platform Capabilities](https://akka.io/platform/capabilities): Complete itemized inventory of platform and offering capabilities across Akka SDK, Akka Verify, Akka Optimize, and Akka Specify
 
 ## Optional
 
