@@ -202,6 +202,94 @@ cols_script = """
 </script>
 """
 
+grow_script = """
+<script>
+/* === #s-routes grows into the band it is given === */
+(function(){
+  /* The cake and its panel are a fixed-size object in a band that keeps getting
+     taller. Anchoring the title at the top and centring the row split the slack
+     evenly, which read as a hole: 275px between the subtitle and the graphic on
+     a 1200px screen. Growing the row into the slack removes the space instead of
+     moving it — the mirror of what R4 already does when content is too tall.
+
+     zoom, not transform: zoom reflows, so the row's layout box grows with it and
+     the section still measures honestly. A transform would leave the box at its
+     unscaled size and put the visible content outside it. */
+  var MAX = 1.3;        /* past this the type reads as bloated, not generous */
+  var HDR = 78, BOTTOM = 28;
+
+  function bottomBanner(){
+    var h = 0, vh = window.innerHeight;
+    var all = document.body.getElementsByTagName('*');
+    for (var i = 0; i < all.length; i++){
+      if (getComputedStyle(all[i]).position !== 'fixed') continue;
+      var r = all[i].getBoundingClientRect();
+      if (r.bottom >= vh - 2 && r.height > 24 && r.height < vh * 0.5 &&
+          r.width > window.innerWidth * 0.6) h = Math.max(h, Math.round(r.height));
+    }
+    return h;
+  }
+
+  function growRoutes(){
+    var sec = document.getElementById('s-routes');
+    if (!sec) return;
+    /* The graphic only, not the whole row. Zooming the row scaled the panel copy
+       with it, which put this slide's body text a third larger than every other
+       slide's, and widened the grid until the Verify box collided with the
+       panel heading. A width-constrained block lays out in W/k units and renders
+       at W, so the cake keeps its column width and grows only downward. */
+    var grid = sec.querySelector('.cake-wrap');
+    if (!grid) return;
+    grid.style.zoom = '';                       /* always measure unzoomed */
+    /* Below R5's breakpoint the slide stacks and scrolls; there is no band to
+       fill and growing would only push content off the screen. */
+    if (window.innerWidth < 1001) return;
+    /* If R4 had to scale this section down, there is no slack by definition.
+       No attribute at all means R4 is not present (the standalone deck), which
+       is not a reason to skip. */
+    var fit = sec.getAttribute('data-fit');
+    if (fit && fit.indexOf('fits') !== 0) return;
+
+    /* Offset within the section, NOT the viewport. This runs at load with the
+       reader still at the top of the deck, where the grid's viewport top is a
+       few thousand pixels and every available height comes out negative. When
+       the slide is landed the section top sits at HDR, so the band it gets is
+       (vh - HDR) less whatever the title and subtitle above it consume. */
+    var gridTop = grid.getBoundingClientRect().top - sec.getBoundingClientRect().top;
+    var h = grid.getBoundingClientRect().height;
+    if (h < 40) return;
+    var availH = (window.innerHeight - HDR) - bottomBanner() - BOTTOM - gridTop;
+
+    /* Height is not the only limit. The cake keeps its aspect, so growing it
+       taller grows it wider, and its column is fixed by the grid. Left uncapped
+       at 1.3 the boxes ran under the panel copy — "views" printed straight
+       through "accumulate". The drawing sits narrower than its column, so there
+       is real headroom, but only about 1.17x of it. */
+    var cake = grid.querySelector('.cake') || grid.firstElementChild;
+    var availW = grid.getBoundingClientRect().width;
+    var w = cake ? cake.getBoundingClientRect().width : availW;
+    var kW = w > 10 ? availW / w : 1;
+
+    var k = Math.min(MAX, availH / h, kW);
+    if (k > 1.02) grid.style.zoom = k.toFixed(3);
+  }
+
+  function schedule(){
+    /* After R4's beats, so data-fit is already written. */
+    [0, 600, 1500, 2800].forEach(function(t){ setTimeout(growRoutes, t); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(growRoutes);
+  }
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule);
+  var raf = 0;
+  window.addEventListener('resize', function(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(growRoutes);
+  });
+})();
+</script>
+"""
+
 fit_script = """
 <script>
 /* === right-column fit for #s-akka-platform === */
@@ -383,9 +471,9 @@ base = base.replace(
 # Runtime fit for the agentic-platform slide's right column, appended last so it
 # runs after every stylesheet the base file brings with it.
 if "</body>" in base:
-    base = base.replace("</body>", cols_script + fit_script + "\n</body>", 1)
+    base = base.replace("</body>", cols_script + grow_script + fit_script + "\n</body>", 1)
 else:
-    base += cols_script + fit_script
+    base += cols_script + grow_script + fit_script
 
 # Write output. The working copy stays alongside the previews for inspection;
 # the deck itself is what port_deck.py and the auditors read.

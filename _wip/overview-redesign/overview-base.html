@@ -37,21 +37,35 @@
      border around them added a second rectangle inside a slide that is mostly
      rectangles. The tab sits over where the border used to be, so it loses the
      black gradient that used to knock a hole in that line. */
-  #s-routes .cake-wrap{border:none; border-radius:0; background:none; box-shadow:none; padding:0;}
-  #s-routes .cake-tab{position:static; transform:none; background:none; padding:0 0 18px;
-                      display:block; text-align:center;}
+  /* Child selector for the padding: the short-viewport blocks below re-add
+     `#s-routes .cake-wrap{padding:26px 30px 22px}` and win on source order,
+     which pushed the boxes 26px below the panel and broke the alignment at
+     exactly the 861px height the deck is designed against. */
+  #s-routes .pf-grid > .cake-wrap{border:none; border-radius:0; background:none;
+                                  box-shadow:none; padding:0;}
+  /* The slide headline already says which platform this is, so the tab was
+     naming it twice. Removing it also makes the top of the graphic the Specify
+     and Verify boxes, which is what the right-hand panel aligns to. */
+  #s-routes .cake-tab{display:none;}
 
-  /* Title and subtitle sit on the deck's standard line. The graphic and its
-     panel take whatever is left and centre in it, so the slide is not top-heavy
-     with a dead band underneath. Auto margins beat the justify-content the port
-     forces on both the section and .inner.
+  /* Panel copy starts level with the top row of boxes. The grid centred its two
+     cells against each other, so the panel floated against a graphic three rows
+     tall and lined up with nothing. */
+  #s-routes .pf-grid{align-items:start;}
+  #s-routes .rt-panel{align-self:start; padding-top:0;}
+
+  /* Title and subtitle sit on the deck's standard line and the row sits a fixed
+     distance below the subtitle, as on every other slide. Centring the row in
+     the leftover height instead split the slack evenly, which opened a 275px
+     hole under the subtitle on a 1200px-tall screen. growRoutes() takes the
+     slack out by growing the row into it.
 
      Specificity, not order: the short-viewport blocks further down this file set
      "#s-routes .pf-grid{margin-top:20px}" and win on source order at 861px tall,
      which is exactly the height the deck is designed against. The child selector
      outranks them. */
   #s-routes .inner{flex:1 1 auto; display:flex; flex-direction:column;}
-  #s-routes .inner > .pf-grid{margin-top:auto; margin-bottom:auto;}
+  #s-routes .inner > .pf-grid{margin-top:56px; margin-bottom:0;}
   /* selectable product boxes — reuse the platform cake, swap the terms */
   .rt-pick{cursor:pointer;}
   .rt-pick:focus-visible{outline:2px solid var(--yellow); outline-offset:3px;}
