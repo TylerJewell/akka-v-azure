@@ -491,12 +491,15 @@ def rewrite_assets(html):
 # Per-deck lists of sections that INTENTIONALLY keep centered layout
 # (hero, close, cake). Everything else defaults to top-anchored.
 CENTERED_EXCEPTIONS = {
-    # #s-routes is the shared integrated-platform cake, centred on every other
-    # deck via #family. Keep the same slide framed the same way everywhere.
     # #s-morph was retired with the efficiency redesign. Its replacements
     # (#s-thesis, #s-akka-platform, #s-eff) are content slides and take the
     # default top-anchored framing.
-    'overview': ['#s-title', '#s-close', '#s-routes'],
+    #
+    # #s-routes is the shared integrated-platform cake, and it used to be centred
+    # here to match #family on the other four decks. It is top-anchored on
+    # overview from 2026-08-03 so its title sits on the same line as every other
+    # slide in this deck; the other decks are unchanged and still centre theirs.
+    'overview': ['#s-title', '#s-close'],
     'sdk':      ['#s0', '#s6', '#family'],
     'verify':   ['#s0', '#s8', '#family'],
     'optimize': ['#opt-title', '#opt-closing', '#family'],
@@ -509,7 +512,10 @@ CENTERED_EXCEPTIONS = {
 # elsewhere. Given padding-top on a centred box, the content moves down by half
 # the padding.
 CAKE_SLIDE = {
-    'overview': '#s-routes',
+    # Overview's cake is top-anchored now, so it takes the standard padding-top
+    # and needs no centred-box clearance. The rule below only applies to centred
+    # slides, so naming it here would be inert; left empty to say so.
+    'overview': '',
     'sdk':      '#family',
     'verify':   '#family',
     'optimize': '#family',
