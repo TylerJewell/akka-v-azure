@@ -241,17 +241,29 @@ def _in_faq(text, pos):
     return any(m.start() <= pos <= m.end() for m in FAQ_BLOCK.finditer(text))
 
 
+# A tag name written inside a stylesheet comment opens a match that runs to the
+# next real closing tag, swallowing the CSS in between and scoring it as prose.
+# Newlines are preserved so reported line numbers still point at the source.
+NON_PROSE = re.compile(r"<(style|script)\b[^>]*>.*?</\1>|<!--.*?-->", re.S | re.I)
+
+
+def strip_non_prose(text):
+    return NON_PROSE.sub(lambda m: '\n' * m.group(0).count('\n'), text)
+
+
 def blocks(text, path):
     """Yield (line, kind, sentence-bearing text) for prose-bearing elements."""
     if path.lower().endswith(('.md', '.markdown')):
+        # Headings are single lines. Prose is wrapped, so it is yielded as whole
+        # paragraphs: a pattern bounded by sentence punctuation cannot match
+        # across a line break, and rules were silently passing on wrapped copy.
         for i, raw in enumerate(text.split('\n'), 1):
             s = raw.strip()
-            if not s or s.startswith(('|', '```', '<!--', '    ')):
-                continue
             if s.startswith('#'):
                 yield i, 'heading', s.lstrip('# ').strip()
-            elif len(s) > 3:
-                yield i, 'prose', re.sub(r'[*_`\[\]]', '', s)
+        for i, para in paragraphs(text, path):
+            if len(para) > 3:
+                yield i, 'prose', para
         return
     for m in re.finditer(r'<(p|h[1-4]|figcaption|blockquote|li|dd|caption)(?:\s[^>]*)?>(.*?)</\1>', text, re.S):
         tag = m.group(1).lower()
@@ -332,7 +344,17 @@ def paragraphs(text, path):
                     yield start, ' '.join(buf)
                 buf, start = [re.sub(r'[*_`\[\]]', '', item.group(1))], i
                 continue
-            if not s or s.startswith(('|', '```', '#', '<!--', '>')):
+            # A markdown blockquote holds our own copy as often as a quotation,
+            # so its text is audited with the marker stripped.
+            quote = re.match(r'^>\s?(.*)$', s)
+            if quote:
+                s = quote.group(1).strip()
+                if not s:
+                    if buf:
+                        yield start, ' '.join(buf)
+                        buf = []
+                    continue
+            elif not s or s.startswith(('|', '```', '#', '<!--')):
                 if buf:
                     yield start, ' '.join(buf)
                     buf = []
@@ -416,10 +438,29 @@ def _exempt(sentence, match):
     return bool(EXEMPT.search(sentence[lo:hi]))
 
 
+QUOTED = re.compile(r'"[^"]{4,}"|&ldquo;.{4,}?&rdquo;|“.{4,}?”', re.S)
+
+
+def in_quote(block, sent):
+    """A sentence sitting inside quotation marks is speech, not copy.
+
+    Dialogue in a role-play brief and a customer quote in a case study are both
+    evidence of how someone talks, and rewriting either misrepresents them. The
+    HTML path already skips a block that opens on a quote; this covers a quote
+    that sits inside a longer line.
+    """
+    at = block.find(sent)
+    if at < 0:
+        return False
+    return any(m.start() < at + len(sent) and at < m.end() for m in QUOTED.finditer(block))
+
+
 def structural(line, kind, s):
     """Checks that need a whole sentence: fragments, bare subjects, splices."""
     out = []
     for sent in sentences(s):
+        if in_quote(s, sent):
+            continue
         if FRAGMENT_ANSWER.match(sent):
             rule, match = 'fragment answer', sent
         elif is_fragment(sent):
@@ -439,6 +480,8 @@ def audit_file(path, context=None, standalone_zones=('answer', 'faq')):
     with open(path, encoding='utf-8') as f:
         text = f.read()
     is_md = path.lower().endswith(('.md', '.markdown'))
+    if not is_md:
+        text = strip_non_prose(text)
     hits = []
     lede = lede_defines_subject(text)
     if lede:
@@ -474,14 +517,8 @@ def audit_file(path, context=None, standalone_zones=('answer', 'faq')):
         if kind == 'diagram' and s.endswith('.') and len(s.split()) >= 6:
             hits.append({'line': line, 'kind': kind, 'rule': 'sentence inside a diagram',
                          'match': s[:110], 'context': s[:170]})
-        # Structural checks read whole sentences. Markdown wraps them across
-        # lines, so for markdown they run over paragraphs in a second pass and
-        # a wrapped fragment of a sentence is never mistaken for a sentence.
-        if kind == 'prose' and not is_md:
+        if kind == 'prose':
             hits.extend(structural(line, kind, s))
-    if is_md:
-        for line, para in paragraphs(text, path):
-            hits.extend(structural(line, 'prose', para))
     # One hit per rule per line keeps the report readable.
     seen, out = set(), []
     for h in hits:

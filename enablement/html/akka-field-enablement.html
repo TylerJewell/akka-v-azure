@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka Field Enablement Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px; line-height: 1.55; color: #1A1A1A; background: #fff;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  display: flex; min-height: 100vh;
+}
+h1 {
+  font-size: 27px; font-weight: 700; line-height: 1.2;
+  margin: 0 0 18px; padding-bottom: 11px; border-bottom: 3px solid #FFCE4A;
+}
+h2 {
+  font-size: 19px; font-weight: 700; line-height: 1.3;
+  border-left: 4px solid #FFCE4A; padding-left: 11px;
+  margin: 30px 0 11px; page-break-after: avoid;
+}
+h3 { font-size: 16px; font-weight: 600; color: #333; margin: 21px 0 7px; page-break-after: avoid; }
+h4 { font-size: 15px; font-weight: 600; color: #4E4E4E; margin: 16px 0 5px; }
+p { margin-bottom: 11px; }
+ul, ol { padding-left: 22px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+strong { font-weight: 600; }
+em { font-style: italic; }
+code {
+  font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 13px;
+  background: #F4F4F4; padding: 1px 5px; border-radius: 2px; white-space: nowrap;
+}
+pre { background: #F4F4F4; padding: 11px 14px; border-radius: 3px; margin-bottom: 13px; overflow-x: auto; }
+pre code { background: none; padding: 0; white-space: pre; }
+blockquote {
+  border-left: 3px solid #DDD; padding: 9px 0 9px 16px; margin: 13px 0;
+  color: #4E4E4E; background: #FAFAFA;
+}
+blockquote p:last-child { margin-bottom: 0; }
+.table-wrap { overflow-x: auto; margin: 13px 0 18px; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; page-break-inside: avoid; }
+th {
+  background: #000; color: #fff; text-align: left; padding: 7px 9px;
+  font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.4px;
+}
+td { padding: 7px 9px; border-bottom: 1px solid #E5E5E5; vertical-align: top; }
+tr:nth-child(even) td { background: #FAFAFA; }
+hr { border: none; border-top: 1px solid #E0E0E0; margin: 26px 0; }
+a { color: #0B7C7D; text-decoration: none; border-bottom: 1px solid #B9DEDE; }
+a:hover { border-bottom-color: #0B7C7D; }
+code a { border-bottom: 1px dotted #0B7C7D; }
+.toc {
+  width: 268px; flex: 0 0 268px; background: #0E0E0E; color: #CFCFCF;
+  height: 100vh; position: sticky; top: 0; overflow-y: auto; padding: 20px 0 40px;
+}
+.toc .brand { padding: 0 20px 14px; border-bottom: 1px solid #262626; margin-bottom: 14px; }
+.toc .brand .wordmark { display: block; color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+.toc .brand .mark { display: block; color: #FFCE4A; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.5px; margin-top: 5px; line-height: 1.4; }
+.toc .group { padding: 14px 20px 5px; color: #6E6E6E; font-size: 10.5px;
+  text-transform: uppercase; letter-spacing: 0.9px; font-weight: 600; }
+.toc a {
+  display: block; padding: 6px 20px; color: #CFCFCF; font-size: 13.5px;
+  border: none; border-left: 3px solid transparent; line-height: 1.35;
+}
+.toc a:hover { background: #1C1C1C; color: #fff; border-left-color: #FFCE4A; }
+main { flex: 1; min-width: 0; padding: 34px 44px 90px; max-width: 1000px; }
+section { scroll-margin-top: 18px; }
+section + section { margin-top: 54px; padding-top: 40px; border-top: 4px solid #111; }
+.top { display: block; margin-top: 30px; font-size: 12.5px; color: #7A7A7A; border: none; }
+.top:hover { color: #0B7C7D; }
+@media (max-width: 860px) {
+  body { display: block; }
+  .toc { width: auto; height: auto; position: static; }
+  main { padding: 24px 20px 60px; }
+}
+@media print {
+  body { display: block; font-size: 9.5pt; }
+  .toc, .top { display: none; }
+  main { padding: 0; max-width: none; }
+  section + section { page-break-before: always; border-top: none; margin-top: 0; padding-top: 0; }
+  h1 { font-size: 17pt; } h2 { font-size: 12pt; } h3 { font-size: 10pt; }
+  table { font-size: 8.5pt; } th { font-size: 7.5pt; }
+  @page { size: letter; margin: 0.6in 0.65in 0.55in 0.65in; }
+}
+</style></head>
+<body><nav class="toc"><div class="brand"><span class="wordmark">AKKA</span><span class="mark">INTERNAL &mdash; NOT FOR CUSTOMER DISTRIBUTION</span></div><div class="group">Program</div><a href="#contents">Akka Field Enablement Program</a><div class="group">Core</div><a href="#00-foundation">Foundation</a><a href="#01-solution-akka-sdk">Akka SDK — removes infrastructure cost</a><a href="#02-solution-akka-specify">Akka Specify — removes rework</a><a href="#03-solution-akka-optimize">Akka Optimize — removes token spend</a><a href="#04-solution-akka-verify">Akka Verify — removes governance effort</a><a href="#05-routing">Routing</a><a href="#06-mandate-owners">Mandate owners, and the AI Transformation Officer</a><a href="#07-competitive">Competitive</a><a href="#08-role-tracks">Role tracks</a><div class="group">Scenarios</div><a href="#scn-01-wrong-door">Scenario 1 — The wrong door</a><a href="#scn-02-stalled-pilot">Scenario 2 — The pilot that will not ship</a><a href="#scn-03-token-bill">Scenario 3 — The bill that tripled</a><a href="#scn-04-regulator-letter">Scenario 4 — The exam finding</a><a href="#scn-05-integrator-incumbent">Scenario 5 — The engagement in month seven</a><a href="#scn-06-hyperscaler-mandate">Scenario 6 — The architecture review board</a><a href="#scn-07-sovereign-insurer">Scenario 7 — One system under five regulators</a><a href="#scn-08-partner-sourced">Scenario 8 — Thirty minutes, no briefing</a><a href="#scn-09-transformation-officer">Scenario 9 — Eleven use cases and no engineers</a><a href="#scn-10-the-year-long-estimate">Scenario 10 — The fourteen-month estimate</a></nav><main><section id="contents"><h1>Akka Field Enablement Program</h1>
+<p>For account executives, forward-deployed engineers, field CTOs, and delivery partners.</p>
+<h2>What this program trains</h2>
+<p>Akka sells one offering, the Akka Agentic AI Platform. Four solutions run on it, and each
+removes a different cost from a different budget. Which solution leads a conversation depends
+on which cost the person in the room pays.</p>
+<p>The skill this program builds is routing: hear what a person owns, lead with the solution
+that removes their cost, and name a second cost owned by someone who is not in the room. That
+second cost is the follow-up meeting, and it belongs to a different budget holder every time.
+A rep who routes well leaves every first meeting multi-threaded.</p>
+<p>Product knowledge supports that skill without being the goal.</p>
+<h2>The cost each solution removes</h2>
+<p>Learn this table before anything else. Everything after it is detail.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Solution</th>
+<th>Cost removed</th>
+<th>Proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Akka SDK</strong></td>
+<td>Infrastructure</td>
+<td>Fox shrank its AI personalization engine from 150,000 cores to 22,000</td>
+</tr>
+<tr>
+<td><strong>Akka Specify</strong></td>
+<td>Rework</td>
+<td>Dojo put AI-based merchant onboarding into production in weeks, built by college graduates</td>
+</tr>
+<tr>
+<td><strong>Akka Optimize</strong></td>
+<td>Token spend</td>
+<td>Swiggy cut prediction latency from 144ms to 71ms while reducing token consumption 22%</td>
+</tr>
+<tr>
+<td><strong>Akka Verify</strong></td>
+<td>Governance effort</td>
+<td>Manulife rolled Akka out to 2,000 developers in 6 countries under central risk control</td>
+</tr>
+</tbody>
+</table></div>
+<h2>What each module covers</h2>
+<p><strong>Foundation.</strong> What Akka is, one offering and four solutions, why execution efficiency
+decides the market, the guarantees no other vendor offers, what Akka is not, and the
+disqualifiers. The module also covers why one runtime with one correct form per problem lets any team, and any AI coding assistant, produce systems that reach production.</p>
+<p><strong>The four solution modules.</strong> For each solution: the cost, who pays it, the customer
+challenge, the capabilities and core features, the mechanism, the differentiators against
+each competitor category, the named proof, the use cases and quick wins, the discovery
+questions, the objections, and what to send after the call.</p>
+<p><strong>Routing.</strong> The model that decides which solution leads, the persona map, trigger events,
+industry defaults, and the five routing failures.</p>
+<p><strong>Mandate owners.</strong> AI Transformation Officers and anyone who owns an AI outcome across the organisation instead of one of the four costs. The routing model does not work on them, and
+this module covers what does.</p>
+<p><strong>Competitive.</strong> Frameworks, hyperscalers, SaaS agents, observability tools, integrators, and GRC platforms, what each is genuinely good at, what the customer
+inherits from each, the wedge, and the question that proves it. Plus what competitors say
+about Akka and how to answer.</p>
+<p><strong>Role tracks.</strong> Qualification, service tiers, and the business case for account executives.
+The delivery methodology and production-slice scoping for forward-deployed engineers. The
+whiteboards, the demo sequence, and the technical win plan for field CTOs. Sourcing,
+registration, and co-delivery for partners.</p>
+<p><strong>Scenarios.</strong> Ten account simulations, each running across three to five meetings with
+different people. Each brief names the account and the cast. The meetings run live in
+session.</p>
+<h2>How the sessions run</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Self-paced</th>
+<th>Live</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundation</td>
+<td>2 hours</td>
+<td>90 minutes</td>
+</tr>
+<tr>
+<td>Each solution module</td>
+<td>90 minutes</td>
+<td>2 hours</td>
+</tr>
+<tr>
+<td>Routing</td>
+<td>1 hour</td>
+<td>2 hours</td>
+</tr>
+<tr>
+<td>Mandate owners</td>
+<td>1 hour</td>
+<td>2 hours</td>
+</tr>
+<tr>
+<td>Competitive</td>
+<td>2 hours</td>
+<td>2 hours of role play</td>
+</tr>
+<tr>
+<td>Each scenario</td>
+<td>—</td>
+<td>2 hours, in groups of three</td>
+</tr>
+<tr>
+<td>Role track</td>
+<td>3 hours</td>
+<td>Half a day</td>
+</tr>
+</tbody>
+</table></div>
+<p>Take the modules in order through Competitive. Scenarios and the role track run in either
+order after that.</p>
+<h2>What you will be asked to do</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>What it takes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Foundation</td>
+<td>Deliver the 90-second platform statement live from memory, and pass a 20-question fact check</td>
+</tr>
+<tr>
+<td>Routing</td>
+<td>Run a 20-minute discovery call for each solution, and name the entry solution and follow-up cost for 15 cold opens in under 30 seconds each</td>
+</tr>
+<tr>
+<td>Competitive</td>
+<td>Three head-to-head role plays, conceding accurately before every contrast</td>
+</tr>
+<tr>
+<td>Field</td>
+<td>Two scenarios run to a scored outcome</td>
+</tr>
+<tr>
+<td>Role track</td>
+<td>The exercise for your role</td>
+</tr>
+</tbody>
+</table></div>
+<p>A new account executive reaches routing certification in the second week and scenario
+certification in the fourth. A field CTO carries the same foundation and spends the extra
+time in the solution modules at mechanism depth.</p></section><section id="00-foundation"><h1>Foundation</h1>
+<p>Every role takes this module first, including partners. The module establishes the fact base the
+rest of the program routes against.</p>
+<hr />
+<h2>1. What Akka is</h2>
+<p>Akka is an agentic AI platform for enterprises. The platform runs the whole agentic system in a single runtime: the agents, their memory, orchestration, guardrails, evaluations, training,
+and inference. That runtime guarantees resilience and scalability, so a system that compiles
+on Akka is ready for production.</p>
+<p>Akka is distinct from the open-source Akka actor library and toolkit for the JVM. That
+library, formerly maintained by Lightbend, is the lineage. The platform is the product. A
+prospect who says "we used Akka years ago" is talking about the library, and the answer is
+that the same runtime underneath that library now runs the platform.</p>
+<p>The runtime has run in production since 2007 across more than 100,000 deployments. More
+than 2 billion people touch an Akka-powered application every day. 52 financial services
+institutions run Akka in production. One third of the Fortune 500 has deployed Akka
+technology. Dell Technologies is the largest shareholder, a customer, and a partner.</p>
+<h2>2. The offering and the solutions on it</h2>
+<p>Akka has one offering: the Akka Agentic AI Platform. Four solutions run on it, over a shared runtime with a single evidence record and a single governance model. A customer can use any one of them
+on its own.</p>
+<ul>
+<li><strong>Akka SDK</strong> is the component model and runtime for building agentic systems.</li>
+<li><strong>Akka Specify</strong> is spec-driven development and delivery of governed systems.</li>
+<li><strong>Akka Optimize</strong> routes traffic to the best open-weight model and trains smaller ones on
+  your data.</li>
+<li><strong>Akka Verify</strong> is runtime-native evaluation, enforcement, evidence, and governance for
+  agents built on Akka or elsewhere.</li>
+</ul>
+<p>A customer builds on the platform, or Akka delivers and runs a production system for them. The delivered path is Akka Specify. Both paths run the same
+runtime.</p>
+<h2>3. Why efficiency decides the market</h2>
+<p>The cost of intelligence is dropping up to 10x each year. Frontier capability that cost
+thirty dollars per million input tokens in 2023 costs cents today at equivalent capability.</p>
+<p>Demand rises as that price falls. Every capability release multiplies the AI use cases an enterprise can adopt. Jevons Paradox applies to intelligence: as the unit cost of
+intelligence falls, enterprise AI demand accelerates.</p>
+<p>When capability is cheap and demand is unlimited, execution efficiency decides which
+enterprises scale AI adoption. Inefficiencies compound as deployments grow:</p>
+<ul>
+<li>AI applications spend 30 to 40% of revenue on cost of goods sold, against 10 to 15% for
+  typical SaaS.</li>
+<li>GenAI projects that scale past pilot run 2x to 3x over cost.</li>
+<li>20 to 40% of engineering capacity is lost to rework caused by earlier architectural
+  choices.</li>
+<li>Switching cost off a first-choice runtime grows non-linearly with the size of the
+  deployed base.</li>
+</ul>
+<p>Akka removes those inefficiencies at the smallest scale, so none of them compound as a deployment grows.</p>
+<p>Sources: vendor API pricing pages March 2023 through 2026; Stanford AI Index 2025 and Epoch
+AI for cost-per-capability curves; Andreessen Horowitz for cost compression; McKinsey State
+of AI 2024 and Deloitte for adoption; BCG and Deloitte for cost overruns; W. Brian Arthur
+for path dependence.</p>
+<h2>4. The cost each solution removes</h2>
+<p>Everything in this program routes against this table. Learn it before anything else.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Solution</th>
+<th>Cost removed</th>
+<th>Mechanism</th>
+<th>Proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Akka SDK</strong></td>
+<td>Infrastructure</td>
+<td>Agents, memory, orchestration, streaming, and endpoints run on shared compute inside one runtime. Actor-based concurrency and that shared model drop operating costs up to 90%.</td>
+<td>Fox shrank its AI personalization engine from 150,000 cores to 22,000 after porting to Akka.</td>
+</tr>
+<tr>
+<td><strong>Akka Specify</strong></td>
+<td>Rework</td>
+<td>Developers and non-developers write plain-language specifications, and every change is verified against them, so code never drifts from spec. Technical and knowledge debt stop accumulating.</td>
+<td>Dojo put AI-based merchant onboarding into production in weeks, built by college graduates.</td>
+</tr>
+<tr>
+<td><strong>Akka Optimize</strong></td>
+<td>Token spend</td>
+<td>Akka trains smaller models on your data and routes work to them as they improve. You own the models.</td>
+<td>Swiggy cut prediction latency from 144ms to 71ms while reducing token consumption 22%.</td>
+</tr>
+<tr>
+<td><strong>Akka Verify</strong></td>
+<td>Governance effort</td>
+<td>Risk teams define policies once. The runtime enforces them across every agent, against 190 global regulations.</td>
+<td>Manulife rolled Akka out to 2,000 developers in 6 countries under central risk control.</td>
+</tr>
+</tbody>
+</table></div>
+<h2>5. Every capability is a property of one runtime</h2>
+<p>Akka runs every part of an agentic system in one runtime. Agents, memory, orchestration,
+streaming, endpoints, guardrails, evaluations, training, and inference are properties of that
+runtime, which handles clustering, resilience, failover, scaling, and traffic steering.</p>
+<p>Hyperscalers offer comparable breadth of AI capability, delivered as separate services. The
+customer provisions each service, connects them, and operates the result. The customer
+configures failover, handles scaling, load-tests, and hardens the system before it carries
+real traffic. The integration between those services belongs to the customer to build and to
+keep working.</p>
+<p>The single runtime produces the results below.</p>
+<ul>
+<li>A system that compiles is ready for production, because the runtime already provides the
+  reliability and scale that otherwise take months to build and harden.</li>
+<li>AI costs come down over time, because inference, training, grading, and scoring run next
+  to the agents. The loop that trains smaller, cheaper models stays inside one system.</li>
+<li>Guardrails and policies are enforced while the agent works, because the runtime that
+  executes the agent is the same runtime that enforces the rules and keeps the record.</li>
+</ul>
+<p>Cloud providers sell separately provisioned, separately billed services. Running everything
+as one system on one bill works against that business model.</p>
+<h3>Every problem has one correct form</h3>
+<p>The single runtime admits one correct form for durable state, one for orchestration, and one
+for an endpoint. The constraint does not limit what a system can do or how far it scales, and
+it keeps the SDK small. A small SDK with one form per problem is a golden path expressed as
+an API.</p>
+<p>Generated code works for the same reason. A model writing against an API that offers six
+plausible ways to persist state picks one that compiles and does not survive a restart. An
+API with one form gives the model one form to write.</p>
+<p>Akka Specify extends those paths across the lifecycle. Specification, plan, tasks,
+implementation, review, build, and deploy each run as a governed step, verified as it
+completes. A team running the full sequence has an automated software factory, and work moves
+from idea to production in hours. A developer with no distributed-systems background reaches
+the same result, because the path is the one the runtime already enforces.</p>
+<h2>6. The guarantees that no other vendor offers</h2>
+<p>Know these by heart. Each is a claim a competitor cannot answer, and each carries contractual weight.</p>
+<ol>
+<li><strong>99.9999% availability on the agentic workload</strong>, with sub-1 minute RTO and zero-byte
+   RPO, backed by indemnities. Cloud AI services offer per-service SLAs at 99.9 to 99.99%,
+   and none guarantee the workload itself.</li>
+<li><strong>Sub-10ms native agentic memory.</strong> Most platforms expose memory as a roughly 200ms
+   add-on requiring DynamoDB, Spanner, AlloyDB, Cosmos DB, or an equivalent store.</li>
+<li><strong>Up to 90% lower infrastructure cost</strong> through shared compute for orchestration, agents,
+   memory, streaming, APIs, governance, and model economics.</li>
+<li><strong>A non-sampled, hash-chained interaction log with authority snapshots</strong>: SPIFFE workload
+   identity, the delegation chain from human to agent to sub-agent to tool, effective
+   permissions, and policy bindings resolved at execution and embedded in every event.</li>
+<li><strong>Durable human-in-the-loop suspension</strong> across crashes, deployments, and days. An agent
+   paused for review resumes exactly where it stopped, with no state loss and no replay.</li>
+<li><strong>BSL licensing on the runtime</strong>, so the customer keeps the right to run, modify, and
+   self-host the platform in their own environment.</li>
+</ol>
+<p>Two more that matter in governance-led deals: full-parity sovereign cloud deployment that
+preserves HA and DR across China, Hong Kong, Singapore, North America, Canada, and the EU;
+and bidirectional conformance, where the runtime reconstructs an Eval Matrix from the
+controls the deployed code enforces and compares it against the signed one.</p>
+<h2>7. What Akka is not</h2>
+<p>Reps lose credibility by claiming ground Akka does not hold. Concede these directly.</p>
+<ul>
+<li><strong>Not a desktop agent or workforce copilot.</strong> Claude Code, Copilot, and Glean inherit a user's identity and stop when the session closes. Each is the right tool when a specific human is driving. Akka runs processes unattended, under their own governed service
+  identity.</li>
+<li><strong>Not the open-source Akka actor library.</strong></li>
+<li><strong>Not a public model-serving marketplace or a foundation-model pretraining platform.</strong>
+  Akka Optimize does reinforcement learning, fine-tuning, and distillation against a
+  customer's own agents and data.</li>
+<li><strong>Not a vector database or a standalone semantic knowledge layer.</strong> When a system needs
+  semantic knowledge, Akka Specify delivers and integrates that layer as part of the system
+  it builds.</li>
+<li><strong>Not the customer's context graph</strong>, meaning the modeling of their business across all
+  domains that feeds the agentic AI layer.</li>
+</ul>
+<h2>8. Disqualifiers</h2>
+<p>Walk away, or park until the trigger arrives:</p>
+<ul>
+<li>A single-agent internal productivity tool with no production SLA and no compliance
+  exposure.</li>
+<li>A team that has not yet built anything and has no funded use case. Send them to the docs.</li>
+<li>An account whose entire agent estate lives inside one SaaS vendor's data perimeter and
+  never leaves it. Agentforce or Cortex is the right answer.</li>
+<li>A pure model-hosting or GPU-capacity requirement.</li>
+<li>A prospect who wants a chatbot on a website with no state, no tools, and no audit
+  requirement.</li>
+</ul>
+<h2>9. The 90-second platform statement</h2>
+<p>Memorize and deliver this live. The delivery is the certification for this module.</p>
+<blockquote>
+<p>Akka is an agentic AI platform for enterprises. The platform runs every part of an agentic system in
+one runtime: the agents, their memory, orchestration, guardrails, evaluations, training,
+and inference. That runtime guarantees resilience and scalability, so a system that
+compiles on Akka is ready for production.</p>
+<p>Four solutions run on that platform, and each one removes a cost.</p>
+<p>Akka SDK removes infrastructure cost. Everything runs on shared compute, which drops
+operating costs up to 90%. Fox went from 150,000 cores to 22,000.</p>
+<p>Akka Specify removes rework. You write specifications in plain language and every change
+is verified against them, so the code cannot drift from the spec. Dojo put AI-based
+merchant onboarding into production in weeks, built by college graduates.</p>
+<p>Akka Optimize removes token spend. Akka trains smaller models on your data and routes work
+to them as they improve, and you own the models. Swiggy cut prediction latency from 144ms
+to 71ms at 22% fewer tokens.</p>
+<p>Akka Verify removes governance effort. Risk teams define policies once, and the runtime
+enforces them across every agent against 190 global regulations. Manulife rolled Akka out
+to 2,000 developers in 6 countries under central risk control.</p>
+<p>You can start with any one of them. Every solution shares the same runtime, the same
+evidence record, and the same governance model.</p>
+</blockquote>
+<p>Delivery standard: 90 seconds or under, no notes, every number correct, and the four proofs
+attached to the right solutions.</p>
+<h2>10. Fact check</h2>
+<p>Twenty questions. Eighteen correct to pass.</p>
+<ol>
+<li>How many offerings does Akka sell, and what is it called?</li>
+<li>Name the four solutions.</li>
+<li>What cost does each solution remove?</li>
+<li>Name the customer proof for each solution and the figure attached to it.</li>
+<li>What is the availability guarantee, and does it cover the workload or each service?</li>
+<li>What are the RTO and RPO figures?</li>
+<li>What is Akka's memory latency, and what is the typical figure for an external store?</li>
+<li>What licence covers the runtime, and what right does it give the customer?</li>
+<li>How many AI regulations and controls are in the corpus, and how many controls carry
+   financial penalties?</li>
+<li>How many controls does a typical system draw from that corpus?</li>
+<li>What are the six specifications that go into Akka Specify?</li>
+<li>Name the seven runtime binding classes an Eval Matrix control row compiles to.</li>
+<li>What is a Governance Posture Package?</li>
+<li>What does Akka Optimize grade, and does it work for agents that do not run on Akka?</li>
+<li>Name the five service tiers.</li>
+<li>What is the first milestone of the delivery methodology, and how long does it take?</li>
+<li>Name the things Akka is not.</li>
+<li>What is the difference between Akka and the open-source Akka actor library?</li>
+<li>Why can an observability tool not serve as the compliance record for an EU AI Act
+    system? Give the reasons.</li>
+<li>Which four inefficiencies compound as AI deployments grow?</li>
+</ol>
+<p>Answers live in the Akka positioning reference. A learner who cannot find an answer there should
+not be given it verbally.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="01-solution-akka-sdk"><h1>Akka SDK — removes infrastructure cost</h1>
+<h2>1. The cost and who pays it</h2>
+<p>Akka SDK removes infrastructure cost. Agents, memory, orchestration, streaming, and
+endpoints run on shared compute inside one runtime, and that shared model together with
+actor-based concurrency drops operating costs up to 90%.</p>
+<p>The people who pay this cost:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What they own</th>
+<th>What they say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CTO, VP Engineering</td>
+<td>Technical architecture, build versus buy</td>
+<td>"The prototype works and we cannot get it to production."</td>
+</tr>
+<tr>
+<td>Head of Platform, PlatformOps</td>
+<td>The internal platform every team builds on</td>
+<td>"Every team is solving the same distributed-systems problems."</td>
+</tr>
+<tr>
+<td>Enterprise Architect</td>
+<td>Fit with the existing stack</td>
+<td>"We are assembling seven services and we own every seam."</td>
+</tr>
+<tr>
+<td>SRE, DevOps lead</td>
+<td>Availability, HA and DR, incidents</td>
+<td>"We cannot fail over an agent. There is nothing to fail over to."</td>
+</tr>
+<tr>
+<td>CIO</td>
+<td>Systems development and operational SLAs</td>
+<td>"Who guarantees this stays up?"</td>
+</tr>
+</tbody>
+</table></div>
+<h2>2. The customer challenge</h2>
+<p>Four problems bring this buyer to the market.</p>
+<p><strong>The prototype-to-production gap.</strong> An agent demo built on a framework works on a laptop. Production means clustering, resilience, identity, retries, backpressure,
+circuit breakers, failover, and an audit trail. The work runs to months, and the customer's own engineers do it.</p>
+<p><strong>The per-service bill.</strong> A typical enterprise agentic deployment on Azure, AWS, or GCP
+requires separately provisioned and billed services for model inference, agent
+orchestration, memory and state storage, event streaming, an API gateway, observability and
+logging, content safety and guardrails, and inter-service egress. Enterprise Agreements
+reduce the per-service rate and do not change the architecture. Six to eight bills compound
+with scale.</p>
+<p><strong>State loss.</strong> An agent that fails mid-task on a stateless invocation model starts over.
+An agent that waits for a human decision cannot wait across a deployment. The customer
+either builds durability themselves or accepts lost work.</p>
+<p><strong>The specialist bottleneck.</strong> Distributed-systems engineers are scarce, and every team
+that builds agents needs one. Delivery is gated on hiring.</p>
+<h2>3. Capabilities and core features</h2>
+<p><strong>Components.</strong> Agents and workflows carry behaviour. Event-sourced entities and key-value
+entities carry durable state. Views are read-side projections queryable over gRPC or HTTP.
+Endpoints expose HTTP, gRPC, and MCP. Timers schedule delayed and recurring work. Consumers
+and streaming connect the system to event sources.</p>
+<p><strong>Agentic features.</strong> Multi-agent orchestration over A2A and ACP. Tool integration over MCP.
+Autonomous and sequential agents with tools and handoffs. Real-time stream processing for AI
+feedback loops. Durable memory with sub-10ms read and write.</p>
+<p><strong>Durability.</strong> State is durable by default and replayable from its event journal, with
+snapshots. An agent that fails mid-task resumes from where it stopped. The runtime supplies execution checkpointing, retries, backpressure, throttling, and circuit breakers, so none of them are written into the application.</p>
+<p><strong>Runtime.</strong> Clustering, resilience, zero-trust networking, data sharding, and traffic
+steering. Active-active HA and DR across geographies or clouds. Elastic scaling to 10
+million agentic TPS with scale-to-zero. No-downtime rolling updates and live CVE patching.</p>
+<p><strong>Deployment.</strong> Akka's cloud, inside the customer's hyperscaler VPC, or on their own
+Kubernetes. The runtime is BSL-licensed, so the customer keeps the right to run, modify, and
+self-host it.</p>
+<p><strong>Measured performance.</strong> 99.9999% multi-region availability, 1.4 million transactions per
+second, 9ms latency, sub-1 minute RTO, zero-byte RPO.</p>
+<h2>4. The mechanism</h2>
+<p>Every capability draws on the same compute and is billed once. There is no separate memory
+charge, no streaming charge, and no observability charge, because they are properties of the
+platform. Five mechanisms produce the cost reduction: shared compute in place of per-service
+billing, sub-10ms native memory in place of per-query external stores, scale-to-zero in
+place of always-on service minimums, no inter-service egress, and built-in evaluation,
+guardrails, observability, governance, and model economics in place of separate tooling
+purchases.</p>
+<p>Fox is the measurement: an AI personalization engine that shrank from 150,000 cores to
+22,000 after porting to Akka.</p>
+<p>The single runtime also decides the shape of the SDK. One correct form exists for durable
+state, one for orchestration, and one for an endpoint, so the SDK stays small. A developer
+with no distributed-systems background writes the same code a specialist would, and a model
+generating that code has one form to generate. Change velocity follows from that. Every team
+ships along the same path, and the path is the one the runtime already enforces.</p>
+<h2>5. Differentiators</h2>
+<p><strong>Against agentic frameworks (LangChain, CrewAI, Autogen, Letta, n8n).</strong> Frameworks
+accelerate the prototype. Clustering, resilience, identity, governance, evidence, and
+multi-region failover are the customer's work. LangChain has no runtime, no HA or DR, no
+operational guarantees, and no built-in governance.</p>
+<p><strong>Against durable-execution orchestrators (Temporal, trigger.dev, LangGraph).</strong> Concede the
+real ground first: these products do provide durable execution, and LangGraph has
+checkpoint persistence. The distinction is explicit versus implicit. Temporal and LangGraph make durability a programming model the developer opts into by
+structuring code a certain way, declaring retry policies, and wiring backpressure and
+circuit breakers. Akka makes durability and resilience properties of the runtime, so an agent gets retries,
+backpressure, throttling, circuit breakers, durable memory, execution checkpointing, and a
+tamper-evident audit log by running there. Akka also offers the explicit model through
+workflows and sagas when a developer wants it. Temporal has no agents, no memory, and no
+governance.</p>
+<p><strong>Against hyperscaler agent services.</strong> Azure AI Foundry Agent Service has no SLA, and
+Microsoft's own documentation states that the recovery point for stateful content can be
+total loss and that there is no supported method for active-active multi-region replication.
+AWS Bedrock runs agents as stateless Lambda invocations, with state and memory provisioned
+separately through DynamoDB or Aurora at roughly 150 to 200ms retrieval. Gemini Enterprise
+Agent Platform has no native active-active HA or DR for agents and requires external Spanner
+or AlloyDB for memory.</p>
+<p><strong>On code an AI assistant writes.</strong> Frameworks expose several ways to do the same thing, and a
+model writing against them produces code that compiles and fails under load. Akka's component
+model gives a generator one form per problem, so generated Akka services reach production.
+Raise this in any account already running Cursor, Claude Code, or Copilot against their
+backend.</p>
+<p><strong>The claim to lead with.</strong> Akka guarantees the workload at 99.9999% with sub-1 minute RTO and
+zero-byte RPO, backed by indemnities. Hyperscaler SLAs cover individual services, and the
+reliability of how those services connect belongs to the customer.</p>
+<h2>6. Use cases and quick wins</h2>
+<p><strong>Use cases that fit.</strong> High-throughput transaction processing with agents in the path.
+Multi-agent orchestration spanning CRM, ITSM, warehouse, custom systems, and partners.
+Real-time personalization and recommendation. Agentic workflows with human approval steps
+measured in days. Systems that must run active-active across regions or inside a
+jurisdiction.</p>
+<p><strong>Quick wins that land in one meeting.</strong></p>
+<ul>
+<li><em>Port one failing agent.</em> Start from the workflow that fails mid-task today.
+  Rebuild that workflow on Akka and show it resume across a forced node kill.</li>
+<li><em>Count the cores.</em> Take the customer's current agent workload and size it on shared
+  compute. Fox is the reference point for the size of the answer.</li>
+<li><em>Kill a region.</em> Show active-active failover with sub-1 minute RTO on a live workload. No
+  competitor in the agentic category can run this demo.</li>
+<li><em>Wait three days.</em> Start an agent, pause it for a human decision, deploy over the top of it, and resume it. The Bedrock conversation ends on this demo.</li>
+<li><em>Generate a service in the meeting.</em> Have the customer's own AI coding assistant write an
+  Akka service against the component model, then run it. Teams that have watched generated
+  code fail on other stacks recognise the difference without being told.</li>
+</ul>
+<h2>7. Discovery questions</h2>
+<ol>
+<li>Walk me through what happens today when an agent fails halfway through a task.</li>
+<li>How many separately billed services are in the path of one agent request right now?</li>
+<li>Where does agent memory live, and what does a read cost you in milliseconds?</li>
+<li>What is your availability commitment to the business on an agentic workload, and who
+   signed it?</li>
+<li>If a region goes down, what happens to agents that are mid-run?</li>
+<li>How many people on your team can debug a distributed-systems failure, and how many teams
+   are waiting on them?</li>
+<li>What did the last prototype-to-production transition take in weeks?</li>
+<li>What happens to the code your AI assistants generate between the pull request and
+   production?</li>
+</ol>
+<p>Question 7 is the qualifier. An answer over eight weeks means the deal is real.</p>
+<h2>8. Objections</h2>
+<p><strong>"We already have Kubernetes and we can build this."</strong> They can. The question is what it
+costs and how long it takes to reach the guarantees. Ask what their current availability
+commitment on an agentic workload is and who signed it. Most have none, because nobody will
+sign one.</p>
+<p><strong>"We are standardised on LangChain."</strong> Akka is not a replacement for how they write agent logic. Akka is where that logic runs. Agents on Akka use MCP for tools and A2A for handoffs,
+so the integration surface stays open. Lead with the production gap.</p>
+<p><strong>"Temporal already gives us durable execution."</strong> Correct, and concede it. The gap is the
+rest of the system: no agents, no memory, no governance, no evidence record. Ask what they run alongside Temporal for agents, memory, governance, and evidence, and count the bills.</p>
+<p><strong>"BSL is not open source."</strong> Correct. BSL gives the right to run, modify, and self-host in
+their own environment, which is the property that matters for exit risk. The comparison is
+against a managed hyperscaler service, where self-hosting is not offered at all.</p>
+<p><strong>"Actors are legacy."</strong> Actor-based concurrency is the mechanism behind the cost number,
+and the runtime has been in production since 2007 across more than 100,000 deployments. The
+customer is not buying an actor library, they are buying the runtime it produced.</p>
+<h2>9. What to send after the call</h2>
+<ul>
+<li><code>akka.io/guides/agent-fails-mid-task</code></li>
+<li><code>akka.io/guides/where-agent-memory-lives</code></li>
+<li><code>akka.io/guides/five-agents-to-a-hundred</code></li>
+<li><code>akka.io/guides/in-flight-work-during-deployment</code></li>
+<li><code>akka.io/guides/retry-without-repeating-side-effects</code></li>
+<li><code>akka.io/guides/agents-in-more-than-one-region</code></li>
+<li><code>akka.io/guides/developer-without-distributed-systems</code></li>
+<li>Case studies: Fox, Verizon (750% order processing capacity, 6s to 2.4s), Tubi</li>
+<li>Comparison page matching the incumbent, and the battlecard for meeting preparation</li>
+</ul><a class="top" href="#contents">&uarr; Contents</a></section><section id="02-solution-akka-specify"><h1>Akka Specify — removes rework</h1>
+<h2>1. The cost and who pays it</h2>
+<p>Akka Specify removes rework. Teams write plain-language specifications, and every change is verified against them. A change that drifts from intent fails a check before it ships, so technical and knowledge debt stop accumulating. Akka guarantees this, in the same class of contractual commitment it makes for resilience and scalability.</p>
+<p>The people who pay this cost:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What they own</th>
+<th>What they say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CIO</td>
+<td>Systems development and delivery commitments</td>
+<td>"Every release costs more than the last one."</td>
+</tr>
+<tr>
+<td>Head of Platform, PlatformOps</td>
+<td>Consistency across every team</td>
+<td>"Forty teams are building forty different ways."</td>
+</tr>
+<tr>
+<td>VP Engineering</td>
+<td>Engineering capacity</td>
+<td>"Half my team maintains what the other half shipped."</td>
+</tr>
+<tr>
+<td>Line-of-business owner</td>
+<td>The backlog waiting on engineering</td>
+<td>"I have eighteen months of requests and no engineers."</td>
+</tr>
+<tr>
+<td>Head of Modernization</td>
+<td>A legacy estate nobody wants to touch</td>
+<td>"Nobody left here knows what that system does."</td>
+</tr>
+</tbody>
+</table></div>
+<h2>2. The customer challenge</h2>
+<p><strong>Rework consumes capacity.</strong> 20 to 40% of engineering capacity is lost to rework caused by
+earlier architectural choices. That figure grows as a system ages, because the knowledge of
+what the system does drifts out of date faster than the code does.</p>
+<p><strong>Specifications go stale the day they are written.</strong> A requirements document describes
+intent at a moment. Code changes afterwards. Nothing enforces the relationship, so the
+document becomes fiction and the only description of the system is the source.</p>
+<p><strong>Engineering is the bottleneck on who can build.</strong> Product managers and business analysts
+know what the system should do and cannot express it in a form that produces a system.</p>
+<p><strong>Modernization stalls on unknown behaviour.</strong> A legacy system cannot be replaced until somebody establishes what it actually does. The expense of that work is why modernization programs get funded and then quietly stop.</p>
+<p><strong>Delivery engagements hand back systems the customer then owns.</strong> A months-long
+forward-deployed engineering engagement produces a bespoke system, and the customer inherits
+it along with a standing integration team.</p>
+<h2>3. Capabilities and core features</h2>
+<p><strong>Behaviours as checks.</strong> A system's intended behaviours are defined as checks, verified continuously, with guardrails that block any change that drifts from
+intent. Because the behaviours are checks and the checks run continuously, the specification
+stays true to the running system.</p>
+<p><strong>Six specifications produce a delivered system.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Specification</th>
+<th>What it contains</th>
+<th>What it compiles to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Goals and intent</td>
+<td>Purpose, success metrics, decision rights</td>
+<td>Acceptance criteria</td>
+</tr>
+<tr>
+<td>Functional requirements</td>
+<td>Agents, tools, orchestration, memory, APIs, UI</td>
+<td>The system's components</td>
+</tr>
+<tr>
+<td>Risk envelope</td>
+<td>What could go wrong, industry, jurisdiction</td>
+<td>Safeguards enforced at runtime and verified by testing</td>
+</tr>
+<tr>
+<td>Knowledge sources</td>
+<td>What the system must know</td>
+<td>An integrated semantic layer with a knowledge graph, hybrid retrieval, multi-hop reasoning, and durable shared memory</td>
+</tr>
+<tr>
+<td>Operational envelope</td>
+<td>SLA, regions, latency, token budget</td>
+<td>Deployment topology and token economics</td>
+</tr>
+<tr>
+<td>Improvement policy</td>
+<td>What to optimize toward, how far it may tune itself</td>
+<td>The reinforcement-learning and self-improvement loops</td>
+</tr>
+</tbody>
+</table></div>
+<p>One governed system comes out, with agents, safeguards, evidence, the semantic layer, tests,
+and deployment. Every part traces back to the specification that required it.</p>
+<p><strong>Akka Specify governs the SDLC the customer already has.</strong> A large enterprise asks first whether adoption means moving to Akka's platform or governing the tools they already run, and this is the answer.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>SDLC element</th>
+<th>How Akka Specify works within it</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repos</td>
+<td>Runs in the customer's git repo, with project state in <code>.akka/</code></td>
+<td>Built and demonstrated</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>Generates a CI workflow into the repo and verifies it gates the merge; the coverage check reds if CI is missing or not enforcing</td>
+<td>Built</td>
+</tr>
+<tr>
+<td>Security scanning</td>
+<td>SAST, secret, and dependency scanning are required surfaces; a central scanner is recorded by attestation</td>
+<td>Built, with the delegated case wired</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Deploy to the Akka platform, or record a receipt from the customer's own deploy system</td>
+<td>Platform path built; deploy to the customer's own infrastructure is a delegated adapter, partially built</td>
+</tr>
+<tr>
+<td>AI harnesses</td>
+<td>The <code>/akka:specify</code> commands run inside Claude Code, Cursor, Gemini, and Codex</td>
+<td>Built for those assistants</td>
+</tr>
+</tbody>
+</table></div>
+<p>Claim the four built surfaces. Mark deployment to the customer's own infrastructure and the
+central-system adapters (SIEM, vault, identity) as roadmap.</p>
+<p><strong>The governed steps compose into a factory.</strong> Specification, plan, tasks, implementation,
+review, build, and deploy each run as a step that is verified as it completes. A team running
+the full sequence moves work from idea to production in hours, and every step leaves a record
+of what was checked. The steps work because the runtime underneath admits one correct form
+for each problem, so a generated system has one target form. Akka Specify is
+how that property is carried across the whole lifecycle instead of stopping at the SDK.</p>
+<p><strong>Modernization uses the same system.</strong> For an existing system, Akka recovers what the
+legacy code does and turns it into checks the replacement must pass, including checks that
+the replacement reproduces the old behaviour. Modernizing one legacy system is the
+demonstration. The modernized software factory is what the customer keeps.</p>
+<p>Do not name discovery tools or discovery partners. How Akka recovers legacy behaviour is not
+part of the pitch.</p>
+<p><strong>Portability.</strong> The customer's investment is in specifications instead of vendor-proprietary primitives, so systems stay portable across deployments and Akka
+versions.</p>
+<h2>4. Engagement models</h2>
+<p>Three models. The customer-owned factory leads.</p>
+<ol>
+<li><strong>The customer's teams run the factory,</strong> operating Akka Specify inside their own repos, CI, scanners, and AI assistant. Lead with this model.</li>
+<li><strong>Akka builds for the customer.</strong></li>
+<li><strong>Akka delivers for the customer.</strong></li>
+</ol>
+<p>Each model applies to new systems and to modernization. Pricing is the platform price, set
+by Akka and all-inclusive, and it is close to the same across the three models. The customer pays
+slightly less when their own teams do all the work and slightly more when Akka does all of
+it. The choice between models is who operates the factory.</p>
+<p>The delivered model is an all-inclusive managed engagement: the platform, the
+infrastructure, the AI tokens, any model training, the delivery of the system, and 24/7 SRE
+operations, under a single agreement.</p>
+<h2>5. The wedge engagement</h2>
+<p>Akka will build a system a customer needs, agentic or not, to get the platform installed and
+carrying production traffic. The engagement is consulting and is priced as consulting. What
+it buys is an installed platform, a production reference inside the account, and a team that
+has watched delivery run at the speed the platform allows.</p>
+<p><strong>The use case does not have to involve AI.</strong> A claims intake rewrite qualifies. So does an order-promising system that has to become real-time, a batch job the business has outgrown, or a legacy service nobody left can maintain. The platform is installed either way, and every cost in the routing table is still there to route on afterwards.</p>
+<p><strong>What makes a use case a good wedge.</strong> The work is funded from a budget that already exists and is small enough to reach production in weeks. Someone inside the account has already estimated it in quarters or years. The system carries real traffic once it ships. A named business owner will
+accept it and say so afterwards.</p>
+<p><strong>This question finds one.</strong></p>
+<blockquote>
+<p>"What is on next year's roadmap that you wish were finished next month?"</p>
+</blockquote>
+<p>Ask it of an operations leader. Engineering owns the estimate and will defend it. Operations owns the delay and resents it.</p>
+<p><strong>The account remembers the estimate gap.</strong> A customer who has been told a system takes a year, and then watches it carry traffic in six weeks, has learned more about the platform than any demo teaches. The engagement returns nothing else, and it does not need to.</p>
+<p><strong>Quote weeks only when the six specifications can be filled.</strong> The estimate is the promise
+the account will hold Akka to, and a wedge that runs long installs nothing and costs the
+expansion. Agree the production slice, the acceptance criteria, and the owner before the
+engagement starts.</p>
+<p><strong>Never win the estimate argument in front of the person who made it.</strong> The fourteen-month
+figure was produced honestly, on a stack where fourteen months is correct. Say that, and let
+the difference come from the platform instead of from the estimator.</p>
+<h2>6. Differentiators</h2>
+<p><strong>Against a forward-deployed engineering engagement or a systems integrator.</strong> The common
+alternative for a team that would rather not build is a months-long engagement that hands
+back a bespoke system the customer then owns and operates. Spec-driven delivery reaches the
+same production outcome through generation on the platform, in weeks, without a standing
+integration team. What the customer keeps afterwards is a factory any team can use.</p>
+<p><strong>Against AI coding assistants.</strong> Copilot, Cursor, and Claude Code generate code, and none of them verifies that code against a specification or blocks a change that drifts from intent. Akka Specify runs inside those assistants and adds the verification. Saying so early wins credibility with an engineering audience, because the tools are a complement.</p>
+<p><strong>Against a platform team with golden paths.</strong> A golden path depends on every team
+remembering to follow it. A style guide, a platform team, and a review board all depend on a
+person applying them. Specify enforces the same intent as a check that fails a build.</p>
+<p><strong>Against low-code and workflow automation.</strong> n8n and comparable tools do not scale to
+enterprise agentic workloads and carry no clustering, no resilience guarantees, and no
+compliance posture. Specify produces systems on a runtime that guarantees both.</p>
+<p><strong>The claim to lead with.</strong> Debt prevention is contractual. Akka guarantees the customer's
+software stays free of technical and knowledge debt as it ages, because the system enforces it and the team does not have to.</p>
+<h2>7. Use cases and quick wins</h2>
+<p><strong>Use cases that fit.</strong> A backlog of line-of-business AI systems that engineering cannot
+reach. A legacy estate blocking a modernization program. An organisation standardising how
+hundreds of developers across regions build. Regulated systems where the safeguards must
+trace back to a requirement. Teams whose specifications and code have already diverged.</p>
+<p><strong>Quick wins that land in one meeting.</strong></p>
+<ul>
+<li><em>Write one requirement and watch it compile.</em> Take a real requirement from the customer's
+  backlog, in their words, and generate the specification and a running skeleton live.</li>
+<li><em>Point it at their repo.</em> Run the drift check against an existing service and show which
+  behaviours no longer match what was written down.</li>
+<li><em>Recover one legacy service.</em> Turn what the legacy code does into checks the replacement must pass. That demonstration unblocks a stalled modernization program.</li>
+<li><em>Hand the keyboard to the product manager.</em> A non-engineer states an intended behaviour and the factory produces the system. The line-of-business owner becomes the champion at that moment.</li>
+</ul>
+<h2>8. Discovery questions</h2>
+<ol>
+<li>What share of your engineering capacity goes to rework?</li>
+<li>How many teams build agentic systems here, and how many different ways do they do it?</li>
+<li>When a requirement changes, how do you find every place in the code that implements it?</li>
+<li>Who is allowed to build today, and who wants to?</li>
+<li>What does your CI gate on right now?</li>
+<li>What stalled the last modernization program?</li>
+<li>If we delivered a production slice in four to six weeks, who signs off that it is done?</li>
+</ol>
+<p>Question 7 is the qualifier. If nobody can answer it, there is no funded outcome.</p>
+<h2>9. Objections</h2>
+<p><strong>"We already use Cursor and Copilot."</strong> Correct, and Specify runs inside them. Those tools
+generate code. Ask what stops a generated change from drifting away from what was specified,
+and let the silence do the work.</p>
+<p><strong>"We have a platform team and golden paths."</strong> Ask how compliance with the golden path is
+measured today. The answer is review, and review depends on a person remembering.</p>
+<p><strong>"We are not putting AI-generated code into production."</strong> The generated system is verified
+against a specification and every safeguard traces back to the requirement that produced it.
+Offer the drift check against their existing hand-written code first, which is a lower-risk first step and produces a finding in most estates.</p>
+<p><strong>"We already signed a systems integrator."</strong> Two responses. The customer-owned factory
+model works alongside an SI, because the SI's team can operate it. And ask what the SI hands
+back at the end and who owns it afterwards.</p>
+<p><strong>"Our specs always go stale."</strong> Written specifications do. Specify defines behaviours as
+checks that run continuously, so a specification that stopped being true fails a build.</p>
+<p><strong>"This sounds like a methodology."</strong> It is a system the customer runs. Do not describe Akka
+Specify as a structure and methodology.</p>
+<h2>10. What to send after the call</h2>
+<ul>
+<li><code>akka.io/guides/code-drifting-from-spec</code></li>
+<li><code>akka.io/guides/what-a-specification-contains</code></li>
+<li><code>akka.io/guides/non-developers-build-agents</code></li>
+<li><code>akka.io/guides/many-developers-one-way</code></li>
+<li><code>akka.io/guides/spec-driven-in-existing-tools</code></li>
+<li><code>akka.io/guides/testing-a-generated-system</code></li>
+<li><code>akka.io/guides/technical-debt-over-time</code></li>
+<li><code>akka.io/guides/who-maintains-the-system</code></li>
+<li>Case study: Dojo, merchant onboarding in production in weeks, built by college graduates</li>
+<li>The Akka Specify deck</li>
+</ul><a class="top" href="#contents">&uarr; Contents</a></section><section id="03-solution-akka-optimize"><h1>Akka Optimize — removes token spend</h1>
+<h2>1. The cost and who pays it</h2>
+<p>Akka Optimize removes token spend. Akka watches the work the customer's agents do, routes
+each task to the model that handles it best, trains specialized models on their data, and
+serves them, continuously. Inference, training, grading, and scoring run on the same runtime
+as the agents, so the loop runs inside one system.</p>
+<p>The people who pay this cost:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What they own</th>
+<th>What they say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CFO, VP Finance</td>
+<td>Total cost of ownership and spend predictability</td>
+<td>"This line item tripled and nobody can tell me why."</td>
+</tr>
+<tr>
+<td>FinOps</td>
+<td>Attribution and unit economics</td>
+<td>"I cannot break the inference bill down by team."</td>
+</tr>
+<tr>
+<td>CAIO, CDO</td>
+<td>AI strategy and the model relationship</td>
+<td>"We are one price change away from a problem."</td>
+</tr>
+<tr>
+<td>AI/ML engineering lead</td>
+<td>Model selection and quality</td>
+<td>"We use the frontier model for everything because we never proved a smaller one works."</td>
+</tr>
+<tr>
+<td>Head of Data Science</td>
+<td>Proprietary data and what it produces</td>
+<td>"We train on our data and the vendor keeps the weights."</td>
+</tr>
+</tbody>
+</table></div>
+<h2>2. The customer challenge</h2>
+<p><strong>The bill grows faster than the traffic.</strong> AI applications spend 30 to 40% of revenue on
+cost of goods sold, against 10 to 15% for typical SaaS. The cost per call falls every year
+and the total rises anyway, because usage grows faster than price falls.</p>
+<p><strong>Nobody can attribute the spend.</strong> Token consumption arrives as one invoice from a model
+vendor with no mapping to teams, use cases, or outcomes.</p>
+<p><strong>Every task runs on the most expensive model available.</strong> Teams default to a frontier model
+because nothing tells them which work a smaller model could take, and nothing proves it
+safely.</p>
+<p><strong>The customer does not own what their data produced.</strong> Fine-tuning inside a model vendor's
+service produces weights the customer cannot take elsewhere.</p>
+<p><strong>Training data has to leave the environment.</strong> Building a training set from production
+traffic means exporting traces to another system, which raises a residency and compliance
+question the risk team then owns.</p>
+<h2>3. Capabilities and core features</h2>
+<p><strong>Routing.</strong> Every task is routed to the best model from any vendor, under the customer's own policies. Routing gives leverage and choice across the whole market rather than one
+vendor's catalog.</p>
+<p><strong>Grading.</strong> Optimize continuously evaluates traffic from the customer's agents. Grading is
+deterministic for structured outputs such as SQL and JSON, and uses an LLM judge for
+unstructured outputs. Grading works whether the agents run on Akka or in a third-party
+harness such as Cursor, Claude Code, or Copilot.</p>
+<p><strong>Training.</strong> Grades train each smaller specialized model, prove it holds, and promote it,
+and the loop grades again. Training is reinforcement learning and distillation from an
+open-weight base, in the customer's own environment. Schemas from Akka agents feed the
+reinforcement-learning training.</p>
+<p><strong>Serving.</strong> The specialized models are served on the same runtime, and traffic routes to
+them as they improve.</p>
+<p><strong>Cost governance.</strong> Token tracking and cost reporting across teams and projects, built in,
+without adding another ingestion-priced tool. Six mechanisms lower the bill: shared compute
+for orchestration, agents, memory, streaming, APIs, and model economics, for up to 90% lower
+infrastructure cost; sub-10ms native memory, which reduces redundant LLM calls; memory
+compaction, which reduces tokens consumed per interaction; runtime guardrails, which stop
+bad requests before they consume tokens; scale-to-zero; and the token tracking itself.</p>
+<h2>4. The mechanism</h2>
+<p>On Akka the loop closes by construction. The trace the agent emitted is the same record used
+to grade, to train, and to serve. There is no export step, no separate training corpus, and
+no second system holding a copy of production traffic.</p>
+<p>That record is the same interaction log Akka Verify uses for governance, so cost and
+compliance read the same record.</p>
+<h2>5. Handling the two token numbers</h2>
+<p>Two figures exist and they measure different things. Reps who blur them get caught.</p>
+<ul>
+<li><strong>22% is measured.</strong> Swiggy cut prediction latency from 144ms to 71ms while reducing token consumption 22%. Lead with that figure, because a customer measured it.</li>
+<li><strong>Up to 80% is the claim for distilled specialized models against foundry models.</strong> State
+  it as what a specialized model trained on the customer's data can achieve, and never
+  attach Swiggy to it as proof.</li>
+</ul>
+<h2>6. Differentiators</h2>
+<p><strong>Against observability and evaluation tools (Arize, LangSmith, Langfuse, Galileo,
+Braintrust, Helicone, Fiddler, Datadog LLM Observability, Opik, Patronus, Humanloop,
+Portkey, Confident AI).</strong> Those tools grade from outside the request path and sample by design. Grading is where they stop. None of them trains a model, serves one, or routes traffic to it. Concede that they are useful for engineering observability and
+model A/B testing, then ask what happens to the grade after it is produced.</p>
+<p><strong>Against model-vendor fine-tuning.</strong> Azure OpenAI fine-tuned models and comparable services
+produce weights that are proprietary and non-portable. Akka tunes from an open-weight base
+in the customer's own environment, so the customer owns the model and keeps improving it.</p>
+<p><strong>Against building the loop themselves.</strong> A do-it-yourself loop is four systems and a data
+pipeline: trace export, training-set curation, training infrastructure, and a serving stack,
+plus the evaluation harness that decides promotion. Each is a separate bill and a separate
+failure mode, and production traffic ends up copied into all of them.</p>
+<p><strong>The claim to lead with.</strong> The customer owns intelligence that keeps improving, built on
+their data, inside their environment, tuned from an open-weight base.</p>
+<h2>7. Use cases and quick wins</h2>
+<p><strong>Use cases that fit.</strong> High-volume, repetitive agent work where the same task shape recurs
+millions of times. Structured-output generation such as SQL, JSON, and classification, where
+grading is deterministic. Organisations with an inference bill large enough to have a named
+owner. Customers under data-residency constraints who cannot send training data to a model
+vendor. Accounts already running agents on Cursor, Claude Code, or Copilot, where Optimize
+enters without a migration.</p>
+<p><strong>Quick wins that land in one meeting.</strong></p>
+<ul>
+<li><em>Grade a week of their traffic.</em> Grading works on agents that do not run on Akka, which makes it the lowest-friction entry point in the whole portfolio. No migration, no code change,
+  and the output is a report on which work a smaller model could take.</li>
+<li><em>Compute cost per verified task.</em> Price the work on the runs that passed their
+  evaluations. Customers who have only ever measured cost per call have never seen this
+  number, and it reframes the entire budget conversation.</li>
+<li><em>Shadow a candidate.</em> Run a smaller model against live traffic without serving it, and
+  show quality holding while token count drops.</li>
+<li><em>Attribute the bill.</em> Break their current spend down by team and use case in front of
+  them.</li>
+</ul>
+<h2>8. Discovery questions</h2>
+<ol>
+<li>What is your monthly inference spend, and what was it six months ago?</li>
+<li>Can you attribute that spend to teams and use cases today?</li>
+<li>What share of your agent calls genuinely need a frontier model?</li>
+<li>How would you prove a cheaper model was good enough to promote?</li>
+<li>Who owns the weights of a model trained on your data right now?</li>
+<li>Where does the data go when you build a training set?</li>
+<li>What happens to your roadmap if your model vendor changes pricing next quarter?</li>
+</ol>
+<p>Question 1 is the qualifier. A spend without a named owner is not yet a deal.</p>
+<h2>9. Objections</h2>
+<p><strong>"Our model vendor already offers fine-tuning."</strong> Correct. Ask who owns the resulting
+weights and whether they can be served somewhere else. The answer decides whether this is
+model leverage or deeper lock-in.</p>
+<p><strong>"We already use LangSmith for evaluation."</strong> Concede that it grades well. Grading is the
+input to the loop. Ask what happens to a grade after it is produced,
+and whether anything trains on it.</p>
+<p><strong>"Smaller models are not good enough for our work."</strong> For some of it, correct. The
+mechanism answers this: a candidate shadows live traffic and is promoted only when quality
+holds and tokens drop. Nothing is promoted on an assumption.</p>
+<p><strong>"We cannot train on production data."</strong> Sanitizers, residency controls, and the same
+evidence record governance already uses. This objection belongs to a risk officer who is not in the room, which makes it the multi-thread to Akka Verify.</p>
+<p><strong>"Our agents do not run on Akka."</strong> Grading works against third-party harnesses including Cursor, Claude Code, and Copilot. That answer keeps the deal alive with no migration attached.</p>
+<p><strong>"Token prices are falling anyway."</strong> Correct, up to 10x each year. Demand rises faster,
+which is why the bill grows while the unit price falls.</p>
+<h2>10. What to send after the call</h2>
+<ul>
+<li><code>akka.io/guides/agent-costs-outrun-traffic</code></li>
+<li><code>akka.io/guides/did-a-cheaper-model-save-money</code></li>
+<li><code>akka.io/guides/routing-a-request-to-the-right-model</code></li>
+<li><code>akka.io/guides/when-a-smaller-model-makes-sense</code></li>
+<li><code>akka.io/guides/training-data-for-smaller-models</code></li>
+<li><code>akka.io/guides/who-owns-a-trained-model</code></li>
+<li><code>akka.io/guides/training-on-production-traffic</code></li>
+<li><code>akka.io/guides/optimize-agents-built-elsewhere</code></li>
+<li><code>akka.io/guides/promoting-a-smaller-model</code></li>
+<li>Case study: Swiggy, 144ms to 71ms at 22% fewer tokens</li>
+<li>The Akka Optimize deck</li>
+</ul><a class="top" href="#contents">&uarr; Contents</a></section><section id="04-solution-akka-verify"><h1>Akka Verify — removes governance effort</h1>
+<h2>1. The cost and who pays it</h2>
+<p>Akka Verify removes governance effort. Risk teams define policies once, and the runtime
+enforces them across every agent, against 190 global regulations. Manulife rolled Akka out
+to 2,000 developers in 6 countries under central risk control.</p>
+<p>The people who pay this cost:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What they own</th>
+<th>What they say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chief Risk Officer</td>
+<td>Regulatory exposure across every AI deployment. In governance-led deals the CRO is a primary budget holder alongside the CISO.</td>
+<td>"I cannot tell the board how many AI systems we run or what they are allowed to do."</td>
+</tr>
+<tr>
+<td>CISO, Security Lead</td>
+<td>Policy enforcement, access control, audit trails</td>
+<td>"We approve a system and then have no idea what it does in production."</td>
+</tr>
+<tr>
+<td>Chief Compliance Officer, DPO</td>
+<td>The regulatory deadline</td>
+<td>"The EU AI Act applies to us in months and we have not classified anything."</td>
+</tr>
+<tr>
+<td>Head of Model Risk</td>
+<td>Model governance in a regulated institution</td>
+<td>"Model risk management was built for models, and these are agents."</td>
+</tr>
+<tr>
+<td>Head of Internal Audit</td>
+<td>What gets handed to an examiner</td>
+<td>"Our evidence is screenshots."</td>
+</tr>
+</tbody>
+</table></div>
+<h2>2. The customer challenge</h2>
+<p><strong>Nobody can say which regulations apply.</strong> An enterprise building AI across jurisdictions
+has no repeatable way to derive the obligation set for a given system.</p>
+<p><strong>Governance lives in a spreadsheet and a review board.</strong> Controls are written down, approval
+is a meeting, and nothing connects either to the running code.</p>
+<p><strong>The approval cycle blocks delivery.</strong> Each new AI system restarts the whole process, and
+the process is negotiated from scratch every time.</p>
+<p><strong>The evidence does not survive an examiner.</strong> Screenshots, sampled traces, and mutable spans
+are what most enterprises can produce today.</p>
+<p><strong>Nothing can stop an agent.</strong> By the time an observability tool's judge fires, the tool has
+already executed and the response has already been sent.</p>
+<p><strong>No one can prove that what runs is what was approved.</strong> A system is signed off, and then it
+changes.</p>
+<h2>3. Capabilities and core features</h2>
+<p>Verify evaluates, enforces, and governs.</p>
+<p><strong>Evaluate.</strong> Measure the agent against what good means, using LLM-as-judge and deterministic
+evaluators, offline and online, against the interaction log.</p>
+<p><strong>Enforce.</strong> Run guardrails and policies at runtime, stop or redirect an action before it
+happens, gate a deployment, and escalate to a human. Guardrails return a decision at a
+boundary. Sanitizers redact, mask, or reshape content before it moves on. Safeguards are
+driven by a policy matrix owned by compliance and enforced by the runtime, so compliance owns
+governance and engineers do not hand-code it.</p>
+<p><strong>Govern.</strong> Keep the record an auditor asks for, map controls to regulations, and seal a
+Governance Posture Package as evidence.</p>
+<h3>The governance loop</h3>
+<ol>
+<li><strong>Define your risk.</strong> Name, in plain language, what the AI system does, what it touches,
+   what it decides, and what could go wrong.</li>
+<li><strong>Identify your controls.</strong> Translate the risk picture into the safeguards the system must
+   implement and demonstrate. Verify maps the risk across 190 AI regulations.</li>
+<li><strong>Enforce your posture.</strong> Bind the signed controls into the running system and configure
+   the test harnesses that verify each control behaves as expected.</li>
+<li><strong>Improve your posture.</strong> Detect changes that matter, to the system, the regulations, or
+   the evidence, and use evaluation, testing, and replay to keep improving safety and
+   accuracy.</li>
+</ol>
+<h3>The signed Eval Matrix</h3>
+<p>The Risk Survey answers compile into one signed contract listing every safeguard the system
+must implement and demonstrate. Rows come from regulations, corporate policy, and the project
+itself. Each row carries its citation, its runtime binding, and its evidence event.</p>
+<p>A typical system draws 30 to 60 controls from a corpus of 190 AI regulations and 1,230
+controls, 742 of which carry financial penalties. The same survey against the same corpus
+version produces the same matrix, so it is deterministic, reproducible, and replayable for
+auditors.</p>
+<h3>Jurisdiction is the first classifier</h3>
+<p>The matrix derives differently for the EU AI Act, China Generative AI Interim Measures,
+Italian AI Law Article 4, Colorado AI Act, Texas TRAIGA, NYC Local Law 144, India DPDP, Japan
+AI Promotion Act, Korea AI Act, California SB-942 and SB-53, NY RAISE, GDPR Chapter V, and
+DORA. A platform team in Singapore, an actuarial team in Italy, and a frontier lab in
+California each receive a posture derived from the same corpus.</p>
+<h3>Runtime binding classes</h3>
+<p>Every control row compiles to one of these classes, and they are the vocabulary of the audit
+trail. Learn the letters. An auditor asking for evidence of a control receives a specific event stream instead of a screenshot.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Binding</th>
+<th>Behaviour</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>G</strong></td>
+<td>Guardrail</td>
+<td>Inline check at a tool, LLM, or agent-response boundary. Returns PASS, BLOCK, or ERROR before the action proceeds, and fails closed by default.</td>
+<td><code>GuardrailDecisionRecorded</code></td>
+</tr>
+<tr>
+<td><strong>H</strong></td>
+<td>HITL boundary</td>
+<td>Escalates to a reviewer queue and blocks until a human observation returns.</td>
+<td><code>HumanDecisionRecorded</code></td>
+</tr>
+<tr>
+<td><strong>W</strong></td>
+<td>Workflow pause and resume</td>
+<td>The orchestrating workflow durably suspends until a human resumes it, across crashes, deployments, and days.</td>
+<td><code>HumanDecisionRecorded</code></td>
+</tr>
+<tr>
+<td><strong>P</strong></td>
+<td>Periodic evaluation</td>
+<td>Scheduled aggregate evaluation over the interaction log.</td>
+<td><code>PeriodicEvaluationRecorded</code></td>
+</tr>
+<tr>
+<td><strong>E</strong></td>
+<td>Event evaluation</td>
+<td>Runtime-event-triggered evaluation that does not block.</td>
+<td><code>OnlineEvaluationRecorded</code></td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>Build and deploy gate</td>
+<td>An evaluation harness runs at build and fails the deploy if the matrix is unmet.</td>
+<td>Versioned, hash-chained report</td>
+</tr>
+<tr>
+<td><strong>K</strong></td>
+<td>Kill switch and system halt</td>
+<td>Sits above per-call boundaries. All in-flight and future tool and LLM calls cease and the system moves to a defined safe state.</td>
+<td><code>HaltExercised</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Generation binds the matrix</h3>
+<p>The signed Eval Matrix is the input and a working agentic system with every safeguard bound
+at the moment of generation is the output. Every row compiles to one or more runtime, build,
+and review artifacts, and Akka wires each artifact back to the row that required it. The
+signed and sealed result is the Governance Posture Package, a tamper-evident audit artifact
+ready for regulatory handoff.</p>
+<h3>The interaction log</h3>
+<p>Every interaction is saved into petabyte-scale, tamper-evident storage, indexed, queryable,
+and cryptographically chained, so the records handed to an auditor are the records the
+runtime emitted. The same record feeds replay testing, conformance reconstruction, drift
+detection, audit evidence, test dataset generation, fine-tuning corpus curation, and incident
+investigation. Akka Optimize trains on this same record, so governance and cost read one
+record.</p>
+<p>Retention is six explicit categories, each mapped to a regulatory floor and protected by
+first-class legal hold: interaction log, trace tiers, Annex IV documentation, evidence
+exports, held-execution archive, and audit and change log.</p>
+<h3>The improvement loop</h3>
+<p>A review starts on a declared change, which is one of nineteen named change types in the AI events taxonomy; on a regulation update from the monthly corpus watch; on a scheduled review; or on runtime-detected drift. Verify then scopes the review to what actually changed. A prompt tweak is a half-day cycle. A foundation-model swap is
+multi-week, pre-determined and pre-budgeted.</p>
+<h3>Sign-off recipes</h3>
+<p>A declarative recipe engine routes change events to the right reviewers with dossiers, carry-forward rules, and quorum logic. No competitor sells this pre-production half of governance.</p>
+<h2>4. What observation cannot do</h2>
+<p>Observability and evaluation tools live outside the request path. Each capability below
+requires the runtime that executes the agent. Reps should be able to recite them.</p>
+<ol>
+<li><strong>Stop an action before it executes.</strong> A guardrail returns PASS, BLOCK, or ERROR while the
+   runtime holds the call, and required production guardrails fail closed.</li>
+<li><strong>Durably suspend for human judgment.</strong> Pause for seconds to days across crashes and
+   deployments, then resume where it stopped. The EU AI Act requires that humans can pause,
+   discontinue, override, review, or nudge an ongoing agentic process.</li>
+<li><strong>Capture an authority snapshot at execution.</strong> SPIFFE workload identity, the delegation
+   chain from human to agent to sub-agent to tool, effective permissions, policy bindings,
+   and governance version, all resolved at the moment of execution.</li>
+<li><strong>Record whether a side effect executed.</strong> The runtime gates the tool call, so the log records whether the tool ran. An observability tool sees only that an LLM said it would.</li>
+<li><strong>Capture non-sampled, tamper-evident records.</strong> Sampling is a cost lever for observability
+   tools and it destroys a compliance record.</li>
+<li><strong>Apply governance before deployment.</strong> Classification, multi-persona change approval, and
+   a sealed audit artifact, as a first-class product surface.</li>
+</ol>
+<p><strong>Observation and enforcement stay separate.</strong> Evaluations emit observations into the same
+authoritative log and cannot change runtime state. Guardrails are the only primitive that
+decides whether an action may proceed. That separation is what makes the audit trail
+trustworthy.</p>
+<h2>5. The line to state precisely</h2>
+<p>Verify covers agents built on Akka and agents built elsewhere, and the coverage differs.
+State the line precisely, because a technical buyer will find the seam.</p>
+<ul>
+<li><strong>Applies to any system, wherever it runs:</strong> classification against the corpus, the derived
+  obligation set, the signed Eval Matrix, sign-off recipes and multi-persona attestation, the
+  Governance Posture Package, and evaluation against captured traffic.</li>
+<li><strong>Requires the agent to execute on the Akka runtime:</strong> inline guardrail enforcement, durable
+  HITL suspension, authority snapshots at execution, recording whether a side effect
+  executed, the non-sampled hash-chained interaction log, and bidirectional conformance.</li>
+</ul>
+<h2>6. Differentiators</h2>
+<p><strong>Against observability and evaluation tools.</strong> Those tools sample by design, have no authority in the request path, produce mutable and unchained traces, have no signed intent artifact to
+compare against, treat retention as a billing tier instead of a regulatory mapping, and cannot record side-effect execution. Concede that they are useful for engineering
+observability, then draw the line at the compliance record.</p>
+<p><strong>Against GRC platforms (ServiceNow GRC, Archer, OneTrust).</strong> Each holds the policy. Nothing connects the policy to the running system, so there is no runtime binding, no evidence event
+per control, and no way to prove that what runs is what was approved. The two coexist: the GRC platform stays as the system of record for policy, and Verify supplies the binding and the evidence.</p>
+<p><strong>Against hyperscaler governance.</strong> Azure spreads governance across five services with no
+inline enforcement and no human intervention for running agents. Bedrock guardrails run as a
+separate evaluation layer after inference. Gemini runs safety filters and grounding as separate API calls outside the execution path.</p>
+<p><strong>Against enterprise SaaS agent governance.</strong> The Einstein Trust Layer governs Salesforce data. Cross-application agents fall outside it. Unity Catalog is data governance applied to agents, with no inline guardrails, no durable HITL suspension, and no runtime binding
+taxonomy.</p>
+<p><strong>The claim to lead with.</strong> Akka covers governance from first classification through runtime
+enforcement, across pre-production and production, in one system.</p>
+<h2>7. Use cases and quick wins</h2>
+<p><strong>Use cases that fit.</strong> Financial services under DORA and the EU AI Act, with credit scoring
+or AML monitoring classified high-risk. Insurance underwriting and claims triage requiring
+explainability for adverse-action decisions. Healthcare clinical decision support with
+clinical sign-off gates. Frontier labs under California SB-53 and NY RAISE needing a
+non-sampled research record and a system-wide kill switch. Any enterprise operating the same
+AI system across jurisdictions with different obligations.</p>
+<p><strong>Quick wins that land in one meeting.</strong></p>
+<ul>
+<li><em>Run the Risk Survey on one system.</em> The industry presets shorten time-to-matrix from weeks
+  to a half day. Do it live on a system the customer names.</li>
+<li><em>Show a guardrail block and the event it wrote.</em> The demo is the <code>GuardrailDecisionRecorded</code> event. Risk officers care about the record.</li>
+<li><em>Pause an agent for three days.</em> Start a run, suspend it for a human decision, deploy over the top, resume it. The EU AI Act oversight requirement becomes concrete in that demo.</li>
+<li><em>Reconstruct a conformance report.</em> Show the runtime rebuild an Eval Matrix from what the
+  deployed code enforces and diff it against the signed one, with missing rows, orphan rows,
+  and drift.</li>
+</ul>
+<h2>8. Discovery questions</h2>
+<ol>
+<li>How many AI systems do you have in production, and how many have a documented obligation
+   set?</li>
+<li>What happens today when an agent is about to take an action nobody approved?</li>
+<li>What do you hand an examiner, and has it been tested against one?</li>
+<li>How long does it take to get a new AI system approved here, and what drives the duration?</li>
+<li>Who signs, and what exactly are they signing?</li>
+<li>Can you prove the system running today is the system that was approved?</li>
+<li>What is your retention obligation on AI interactions, and where does that data live?</li>
+</ol>
+<p>Question 4 is the qualifier. A cycle measured in months is a funded problem.</p>
+<h2>9. Objections</h2>
+<p><strong>"We have a GRC platform already."</strong> Keep it. Ask what connects a control in that platform
+to the line of code that enforces it, and what evidence event proves the control fired.</p>
+<p><strong>"Our observability tool captures everything."</strong> It samples, and sampling is a cost lever
+they configured. Ask what their sampling rate is, then ask whether an examiner accepts a
+sampled record.</p>
+<p><strong>"Legal reviews every AI system."</strong> The review is manual and per system. Ask what a review
+costs in elapsed weeks and how many systems are queued behind the current one.</p>
+<p><strong>"The EU AI Act does not apply to us."</strong> Jurisdiction is the first classifier, and there are
+thirteen named regimes plus more. Name the one that does apply to them, from their industry
+and their footprint.</p>
+<p><strong>"Our agents run on Bedrock."</strong> Use the line in section 5. Classification, the Eval Matrix,
+sign-off, and the Governance Posture Package apply now. Inline enforcement follows the
+workload.</p>
+<p><strong>"This is a compliance tax on my engineers."</strong> Safeguards are driven by a policy matrix
+owned by compliance and enforced by the runtime. Engineers do not hand-code controls.</p>
+<h2>10. What to send after the call</h2>
+<ul>
+<li><code>akka.io/guides/which-regulations-apply</code></li>
+<li><code>akka.io/guides/what-evidence-an-auditor-asks-for</code></li>
+<li><code>akka.io/guides/stop-an-agent-before-it-acts</code></li>
+<li><code>akka.io/guides/prove-what-runs-was-approved</code></li>
+<li><code>akka.io/guides/who-is-accountable-for-an-agent</code></li>
+<li><code>akka.io/guides/agent-waits-for-a-human</code></li>
+<li><code>akka.io/guides/rules-that-differ-by-region</code></li>
+<li><code>akka.io/guides/agent-data-inside-a-jurisdiction</code></li>
+<li><code>akka.io/guides/reconstruct-what-an-agent-knew</code></li>
+<li>Case study: Manulife, 2,000 developers, 6 countries, central risk control</li>
+<li>The Akka Verify overview and the Risk Survey</li>
+<li>The industry posture for their sector</li>
+</ul><a class="top" href="#contents">&uarr; Contents</a></section><section id="05-routing"><h1>Routing</h1>
+<p>Akka sells one offering. Which of the four solutions leads a conversation depends on which
+cost the person in front of you pays. Routing is the skill this program exists to build.</p>
+<hr />
+<h2>1. The model</h2>
+<p>The cost a person owns and the sentence they said decide the entry solution. When the two
+disagree, the sentence wins.</p>
+<p><strong>Input one: the cost the person owns.</strong> Title is the prior.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cost</th>
+<th>Owner</th>
+<th>Entry solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Infrastructure, and the work of hardening to production</td>
+<td>CTO, VP Engineering, Head of Platform, Enterprise Architect, SRE lead, CIO</td>
+<td>Akka SDK</td>
+</tr>
+<tr>
+<td>Rework, and delivery time across teams</td>
+<td>CIO, Head of Delivery, VP Engineering, line-of-business owner, Head of Modernization</td>
+<td>Akka Specify</td>
+</tr>
+<tr>
+<td>Token spend</td>
+<td>CFO, VP Finance, FinOps, CAIO, AI/ML engineering lead, Head of Data Science</td>
+<td>Akka Optimize</td>
+</tr>
+<tr>
+<td>Governance effort</td>
+<td>CRO, CISO, Chief Compliance Officer, DPO, Head of Model Risk, Head of Internal Audit</td>
+<td>Akka Verify</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Input two: the sentence they said.</strong> The stated pain is evidence, and it beats the title.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>What you hear</th>
+<th>Entry solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"It works in the demo and we cannot get it to production."</td>
+<td>SDK</td>
+</tr>
+<tr>
+<td>"We are paying for eight services to run one agent."</td>
+<td>SDK</td>
+</tr>
+<tr>
+<td>"When it fails, the work is gone."</td>
+<td>SDK</td>
+</tr>
+<tr>
+<td>"Forty teams are building forty different ways."</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>"Engineering has capacity for two of my nineteen ideas."</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>"Nobody left here knows what that system does."</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>"Our inference bill tripled."</td>
+<td>Optimize</td>
+</tr>
+<tr>
+<td>"We use the frontier model for everything."</td>
+<td>Optimize</td>
+</tr>
+<tr>
+<td>"We trained on our data and the vendor owns the model."</td>
+<td>Optimize</td>
+</tr>
+<tr>
+<td>"Legal will not let us ship."</td>
+<td>Verify</td>
+</tr>
+<tr>
+<td>"I cannot tell the board what our agents are allowed to do."</td>
+<td>Verify</td>
+</tr>
+<tr>
+<td>"Our evidence is screenshots."</td>
+<td>Verify</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The resolution rule.</strong> When title and sentence disagree, lead with the sentence. A VP of
+Engineering whose first sentence is about the inference bill is an Optimize conversation,
+whatever the org chart says. People spend meetings on the thing they said out loud.</p>
+<h2>2. The second-cost rule</h2>
+<p><strong>Every first meeting ends by naming a second cost that belongs to someone who is not in the
+room.</strong> That person is the follow-up meeting.</p>
+<p>One offering with four solutions becomes a structural advantage here. The four costs
+have four different budget owners, so naming the second cost creates a reason for a second
+meeting with a second budget. A rep who does this leaves every first meeting multi-threaded.</p>
+<p>The pairs that work, and the sentence that opens the door:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Led with</th>
+<th>Name second</th>
+<th>The sentence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SDK</td>
+<td>Verify</td>
+<td>"Once this is in production, someone has to prove what it is allowed to do. Who owns that here?"</td>
+</tr>
+<tr>
+<td>SDK</td>
+<td>Optimize</td>
+<td>"The infrastructure number is one half. Who owns the model bill?"</td>
+</tr>
+<tr>
+<td>Specify</td>
+<td>Verify</td>
+<td>"The risk envelope is one of the six specifications. Who signs off on what these systems are allowed to decide?"</td>
+</tr>
+<tr>
+<td>Specify</td>
+<td>SDK</td>
+<td>"The systems this produces run on the platform. Who owns the runtime decision?"</td>
+</tr>
+<tr>
+<td>Optimize</td>
+<td>Verify</td>
+<td>"Training on production traffic is a residency question. Who would need to approve that?"</td>
+</tr>
+<tr>
+<td>Optimize</td>
+<td>SDK</td>
+<td>"The token number is one line. The infrastructure under it is the other. Who owns that budget?"</td>
+</tr>
+<tr>
+<td>Verify</td>
+<td>SDK</td>
+<td>"Enforcement happens in the runtime that executes the agent. Who owns where these agents run?"</td>
+</tr>
+<tr>
+<td>Verify</td>
+<td>Specify</td>
+<td>"Governing one system is a project. Governing every system your teams build is the actual problem. Who owns how they build?"</td>
+</tr>
+</tbody>
+</table></div>
+<p>Never name a second cost that belongs to someone already in the room, because no new meeting comes of it.</p>
+<h2>3. Routing in a multi-person meeting</h2>
+<p>Route to the cost owner whose budget carries the most exposure. Name every other attendee's cost
+once, explicitly, so each person hears their own problem stated. Then return to the primary.</p>
+<p>The failure is the platform pitch: giving SDK, Specify, Optimize, and Verify equal time. Everyone hears
+something adjacent to their problem and nobody hears their problem, so nobody funds anything.</p>
+<p>When a customer asks for the full portfolio walkthrough, give it in 90 seconds using the
+foundation statement, then return to the cost the meeting is actually about.</p>
+<h2>4. Trigger events</h2>
+<p>Each event below creates a funded problem. Each maps to an entry solution. Use them
+for prospecting as well as routing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Entry solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An AI pilot passed its demo and has not reached production after three months</td>
+<td>SDK</td>
+</tr>
+<tr>
+<td>A cloud bill review flagged AI services as the fastest-growing line</td>
+<td>SDK or Optimize</td>
+</tr>
+<tr>
+<td>An outage or incident involving an agentic workload</td>
+<td>SDK</td>
+</tr>
+<tr>
+<td>A new CIO, CTO, or Head of Platform in the first 120 days</td>
+<td>SDK or Specify</td>
+</tr>
+<tr>
+<td>A modernization program funded and then stalled</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>A funded budget line that expires before the project it was raised for can finish</td>
+<td>Specify, as a wedge engagement</td>
+</tr>
+<tr>
+<td>An internal estimate measured in quarters on a system operations needs sooner</td>
+<td>Specify, as a wedge engagement</td>
+</tr>
+<tr>
+<td>A systems integrator engagement ending, with the customer inheriting the system</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>A hiring freeze against a growing AI backlog</td>
+<td>Specify</td>
+</tr>
+<tr>
+<td>An inference contract renewal or a model vendor price change</td>
+<td>Optimize</td>
+</tr>
+<tr>
+<td>A FinOps mandate to attribute AI spend</td>
+<td>Optimize</td>
+</tr>
+<tr>
+<td>A regulatory deadline entering the board pack</td>
+<td>Verify</td>
+</tr>
+<tr>
+<td>A regulator letter, exam finding, or audit finding on AI</td>
+<td>Verify</td>
+</tr>
+<tr>
+<td>A newly appointed CRO, CISO, or AI risk lead</td>
+<td>Verify</td>
+</tr>
+<tr>
+<td>An AI incident that reached the press or the board</td>
+<td>Verify</td>
+</tr>
+</tbody>
+</table></div>
+<h2>5. Industry defaults</h2>
+<p>The industry sets the prior when nothing else is known. Full posture detail is in the
+industry postures reference.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Industry</th>
+<th>Likely entry</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Banking and financial services</td>
+<td>Verify</td>
+<td>DORA and EU AI Act high-risk classification for credit scoring. 52 institutions already in production is the proof that opens the door.</td>
+</tr>
+<tr>
+<td>Insurance</td>
+<td>Verify</td>
+<td>EU AI Act high-risk for life and health underwriting, NAIC bulletins, adverse-action explainability. Manulife is the reference.</td>
+</tr>
+<tr>
+<td>Healthcare and life sciences</td>
+<td>Verify</td>
+<td>HIPAA, EU AI Act high-risk clinical decision support, GDPR Article 9. Durable HITL for clinical sign-off.</td>
+</tr>
+<tr>
+<td>Frontier AI labs</td>
+<td>SDK</td>
+<td>Agent harness, multi-agent research, and red-teaming infrastructure. Verify follows on SB-53 and RAISE.</td>
+</tr>
+<tr>
+<td>Consumer SaaS</td>
+<td>SDK</td>
+<td>Scale-to-zero economics and sub-10ms memory for chat latency. Optimize follows on volume.</td>
+</tr>
+<tr>
+<td>Government and public sector</td>
+<td>Verify</td>
+<td>Sovereign deployment, hash-chained audit trail, multi-jurisdiction posture.</td>
+</tr>
+<tr>
+<td>Telecom, logistics, retail, media</td>
+<td>SDK</td>
+<td>Throughput and reliability lead. Verizon, Tubi, and Swiggy are the proofs.</td>
+</tr>
+</tbody>
+</table></div>
+<h2>6. The user personas behind the buyer</h2>
+<p>The person who signs is rarely the person who uses. Signers and users both matter, and they route differently.</p>
+<p><strong>Builders.</strong> Application developers, AI and ML engineers, product managers and business analysts evaluate the SDK and Specify. A product manager who discovers they can author
+specifications becomes a champion, and they carry no budget.</p>
+<p><strong>Operators.</strong> Platform engineers, PlatformOps, SREs, and DevOps own the installation and the golden paths. Platform engineers are the most common champion in an SDK deal.</p>
+<p><strong>Governance and oversight.</strong> Risk officers, InfoSec engineers, FinOps. Risk officers route
+to Verify. FinOps routes to Optimize. InfoSec engineers are always involved, always run a
+detailed review, and become primary buyers in governance-led deals.</p>
+<p><strong>Buying roles.</strong> Decision makers with budget authority are the CAIO or CDO, CTO or VP
+Engineering, CIO, and CRO. Champions who drive the deal internally are the Head of Platform
+and the Enterprise Architect. The CISO influences every deal and buys in governance-led ones.
+The CFO must approve multi-year pre-paid commitments, and procurement and legal scrutinise
+them.</p>
+<h2>7. Routing failures</h2>
+<p>These mistakes recur, and each one has a name so it can be called in the moment.</p>
+<ol>
+<li><strong>The platform pitch.</strong> Giving each solution equal time leaves nobody hearing their own problem.</li>
+<li><strong>Routing on title against the sentence.</strong> The org chart is the prior, and the sentence is
+   the evidence.</li>
+<li><strong>Routing to the solution the rep knows best.</strong> Reps who came from infrastructure sell SDK
+   into governance meetings. Reps who came from GRC sell Verify to engineers.</li>
+<li><strong>Naming a second cost owned by someone already present.</strong> No new meeting is created.</li>
+<li><strong>Selling the mechanism before the cost.</strong> Describing shared compute, the Eval Matrix, or
+   the six specifications before the customer has agreed they have the problem those
+   mechanisms solve.</li>
+</ol>
+<h2>9. When the person owns a mandate instead of a cost</h2>
+<p>Some buyers own an AI outcome across the whole organisation and own none of the four
+budgets, or claim all of them. AI Transformation Officers are the common case. Routing on
+cost fails with them, and <code><a href="#06-mandate-owners">06-mandate-owners.md</a></code> covers what to do instead.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="06-mandate-owners"><h1>Mandate owners, and the AI Transformation Officer</h1>
+<p>Some buyers own an AI outcome for the whole organisation. AI Transformation Officer is the common title, and Head of AI Enablement, Chief AI Transformation Officer, and Chief Digital Officer appear on the same charter. Such a person is increasingly the first meeting in an enterprise account, and the routing model in <code><a href="#05-routing">05-routing.md</a></code> does not work on them.</p>
+<hr />
+<h2>1. Why cost routing fails here</h2>
+<p>Routing assumes the person pays one of the four costs from one budget. A mandate owner is
+assigned an outcome instead: business transformation, identifying where AI can be used,
+securing AI, and workforce transformation. Asked which cost they own, they name every one of them, or none.</p>
+<p>The failure takes one of the shapes below, and both end the same way.</p>
+<p><strong>Too little ownership.</strong> The mandate arrives with no engineering team, no infrastructure budget, and no veto over the teams that would build. A mandate owner can convene a meeting and cannot fund one.</p>
+<p><strong>Too much ownership.</strong> A central AI budget arrives with an instruction to own AI. Every solution gets agreement and none gets bought, because a system still needs a business owner to accept it and an engineering team to run it.</p>
+<p>A rep who routes on cost gets enthusiasm, a full portfolio briefing, and no next step.</p>
+<h2>2. The charter varies, and the measure is what differs</h2>
+<p>The title is new and each company wrote its own charter. What varies decides the play:</p>
+<ol>
+<li>Whether they hold budget.</li>
+<li>Whether that budget funds engineering headcount or funds other people's teams.</li>
+<li>Whether they have authority over the teams that build.</li>
+<li>What they are measured on at the end of the year.</li>
+<li>Whether securing AI is theirs or the CISO's.</li>
+</ol>
+<p>Item 4 decides the entry solution. Ask it directly.</p>
+<h2>3. The archetypes, named by what each is measured on</h2>
+<p>Most people are a blend. Classify on the measure.</p>
+<h3>The portfolio holder</h3>
+<p>Measured on the count of AI use cases in production. Carries a list gathered from the
+business. Has few or no engineers and is blocked on delivery capacity. The most common
+archetype.</p>
+<p><strong>Entry: Akka Specify.</strong> The factory turns their list into delivered systems without hiring,
+and it turns them from a person holding a list into the owner of how the company builds.
+<strong>Second cost: governance</strong>, because the systems on their list need approval before any of
+them ships.</p>
+<h3>The safety officer</h3>
+<p>Securing AI dominates the charter. Appointed after an incident or ahead of a regulatory deadline, and sits beside or under the CISO or CRO. Measured on whether AI systems
+can be approved to ship at all.</p>
+<p><strong>Entry: Akka Verify.</strong> <strong>Second cost: rework</strong>, because governing one system is a project
+and governing everything the company builds is the actual assignment.</p>
+<h3>The economist</h3>
+<p>Measured on AI return or on holding an AI spend envelope. Frequently the person who has to
+justify last year's AI budget to the CFO this year.</p>
+<p><strong>Entry: Akka Optimize.</strong> Cost per verified task is the number they have been asked for and
+cannot produce. <strong>Second cost: infrastructure.</strong></p>
+<h3>The workforce transformer</h3>
+<p>Measured on employee adoption and productivity. Wants copilots, assistants, licences, and
+training programs.</p>
+<p><strong>Treat this archetype as a disqualifier, because saying so wins more than pretending.</strong> Akka is not a
+desktop agent or workforce copilot. Claude Code, Copilot, and Glean inherit a user's identity
+and stop when the session closes, and they are the right tool when a specific human is
+driving. Find the part of the charter that covers systems running unattended. If there is none, ask who owns that and leave.</p>
+<h2>4. The classification questions</h2>
+<ol>
+<li><strong>"What does your scorecard look like at the end of the year?"</strong> Reveals the measure, which
+   selects the archetype.</li>
+<li><strong>"Does your budget fund engineering headcount, or does it fund other people's teams?"</strong>
+   Reveals whether they can buy alone.</li>
+<li><strong>"Whose team writes the code for the use case you just described?"</strong> Names the actual cost owner, who is the person the second meeting is with.</li>
+<li><strong>"Who can say no to this?"</strong> Reveals the veto. A mandate owner who cannot name anyone is
+   describing authority they do not have.</li>
+</ol>
+<p>Ask every one of them in the first meeting. None reads as aggressive, because a mandate owner is relieved that someone understands the shape of the job.</p>
+<h2>5. The rule: sell to a use case, never to the mandate</h2>
+<p>A use case carries an owner, a profit and loss line, and a date, which is what a purchase
+requires. A mandate carries none of those.</p>
+<p>Every conversation with a mandate owner converges on one named use case in the first meeting.
+One question gets there:</p>
+<blockquote>
+<p>"Of everything on that list, which one has a business owner who is already annoyed it has
+not happened?"</p>
+</blockquote>
+<p>An annoyed business owner is already paying a cost and has a budget to stop paying it. Once
+the use case is named, route on that owner's cost using <code><a href="#05-routing">05-routing.md</a></code>, and keep the mandate
+owner as the sponsor who opens the door.</p>
+<p>Refuse the portfolio proof of concept. Propose one, delivered as a production slice in
+four to six weeks, with the mandate owner's name on the outcome.</p>
+<h2>6. What Akka gives this persona that nothing else does</h2>
+<p>Each of the following maps to a pressure the role carries.</p>
+<p><strong>Delivery capacity without hiring.</strong> The scorecard counts systems in production, and the mandate owner controls no engineers. Akka Specify produces governed systems from plain-language
+specifications, so their list stops being blocked on other teams' roadmaps.</p>
+<p><strong>An answer to securing AI.</strong> Nearly every charter includes it and almost none of them can
+answer it. Akka Verify classifies a system against 190 regulations, derives its obligation
+set, routes sign-off, and seals a Governance Posture Package. The CISO would otherwise use that question to stop them.</p>
+<p><strong>A number when asked whether it is working.</strong> Cost per verified task prices AI work on the
+runs that passed their evaluations. Most mandate owners report activity counts because
+nothing gives them an outcome number.</p>
+<p><strong>One frame turns them into a champion.</strong> A mandate ends when the person holding it
+moves on. A platform that other teams build on outlives them. Position Akka as the thing that
+converts their assignment into infrastructure the company depends on, and they will carry the
+deal internally in a way a cost owner never does.</p>
+<h2>7. Traps</h2>
+<p><strong>Some briefings go nowhere.</strong> Evaluating the market is part of the job, and a full
+portfolio briefing lets them discharge it. Do not accept a second briefing. Make a named use
+case the price of the second meeting.</p>
+<p><strong>Believing the decision-maker claim.</strong> Many will present as the decision maker. Question 4
+resolves it. Never forecast on a mandate owner alone.</p>
+<p><strong>Standardising before anything runs.</strong> A mandate owner frequently wants a company-wide AI standard first. A standard with nothing running behind it is unenforceable. Propose one production
+system that becomes the standard, which is also how Manulife reached 2,000 developers under
+central risk control.</p>
+<p><strong>Positioning centralisation in front of their peers.</strong> Their peers often resent the role.
+Never describe Akka as giving the mandate owner control over other teams' work while those
+teams are in the room. Describe it as removing work from those teams, which is the framing
+that survives the meeting.</p>
+<p><strong>Some mandates are really a reorganisation.</strong> If the charter appeared six weeks ago and no
+budget followed, the account is not ready. Keep the relationship, and prospect the four cost
+owners in parallel.</p>
+<h2>8. The sequence for a portfolio holder</h2>
+<p>The most common archetype, run end to end.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Meeting</th>
+<th>With</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>The mandate owner</td>
+<td>Classify with the four questions. Extract the use-case list. Find the one with heat and name its business owner. Deliver the 90-second platform statement, and nothing more of the portfolio.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The business owner, sponsored by the mandate owner</td>
+<td>Route on the business owner's cost. Quantify what the delay is costing them. Propose a production slice in four to six weeks.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>The CISO or CRO, introduced by the mandate owner</td>
+<td>Verify. Run the Risk Survey against the named use case. The obligation set is the deliverable.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>All three</td>
+<td>The factory, funded by the business owner's use case, sponsored centrally, approved by risk.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The mandate owner never funds the first system and decides who does, which is the whole of their value here.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="07-competitive"><h1>Competitive</h1>
+<p>Frameworks, hyperscalers, SaaS agents, observability tools, integrators, and GRC platforms all appear in Akka deals. Each solves a narrower problem, and each has
+real ground that a rep should concede before drawing the line.</p>
+<p>The battlecards and comparison pages carry the sourced detail. This module teaches the conversation.</p>
+<hr />
+<h2>1. Rules of engagement</h2>
+<p><strong>Concede first.</strong> Every category is genuinely good at something. State it before the
+contrast. A rep who concedes accurately is treated as an architect for the rest of the
+meeting.</p>
+<p><strong>Never insult a competitor.</strong> Frame a limitation as what the customer owns or inherits.
+"Azure AI Foundry is bad at HA" loses the room. "Microsoft's documentation states there is no
+supported method for active-active multi-region replication, so multi-region failover is
+yours to design" wins it.</p>
+<p><strong>Never overstate.</strong> Say "limited" when the truth is limited. Absolutes are how a technical
+buyer catches a rep, and one catch costs the meeting.</p>
+<p><strong>Cite the source.</strong> Every competitive claim in the battlecards has a source. Know it before
+using the claim, because the buyer will ask.</p>
+<p><strong>Do not compete before the customer has a problem.</strong> An architecture objection is not a
+pain. Routing failure 8 in <code><a href="#05-routing">05-routing.md</a></code> covers this.</p>
+<h2>2. Agentic frameworks</h2>
+<p>LangChain, LangGraph, CrewAI, Autogen, Letta, n8n, Pydantic AI, LlamaIndex, Vercel AI SDK,
+Temporal, trigger.dev, Orkes.</p>
+<p><strong>Concede.</strong> Frameworks accelerate the prototype, and nothing gets an agent working on a laptop sooner. LangGraph has checkpoint persistence. Temporal, trigger.dev, and
+LangGraph provide genuine durable execution. Never claim otherwise.</p>
+<p><strong>What the customer inherits.</strong> Getting from prototype to production means clustering,
+resilience, identity, governance, evidence, and multi-region failover. The customer does that work. LangChain has no runtime, no HA or DR, no operational guarantees, and no built-in
+governance. Temporal has no agents, no memory, no governance, and no AI-specific
+capabilities. Letta solves agent memory alone. n8n has no clustering, no resilience
+guarantees, and no compliance posture.</p>
+<p><strong>The wedge: explicit against implicit durability.</strong> Temporal and LangGraph make durability a programming model the developer opts into by
+structuring code a certain way, declaring retry policies, and wiring backpressure and
+circuit breakers. Akka makes durability and resilience properties of the runtime, so an agent gets retries, backpressure, throttling,
+circuit breakers, durable memory, execution checkpointing, and a tamper-evident audit log by
+running there. Akka also offers the explicit model through workflows and sagas.</p>
+<p><strong>This question proves it.</strong> "What is your availability commitment to the business on an
+agentic workload, and who signed it?"</p>
+<h2>3. Hyperscaler agent services</h2>
+<p>Azure AI Foundry, AWS Bedrock, Gemini Enterprise Agent Platform, NVIDIA.</p>
+<p><strong>Concede.</strong> Hyperscalers offer comparable breadth of AI capability, the customer already has
+the contract, and the enterprise agreement makes procurement trivial. Breadth is not the
+differentiator to argue.</p>
+<p><strong>What the customer inherits.</strong> Each capability is a separately provisioned, separately billed
+service, and the reliability of how they connect is the customer's design and the customer's
+problem. The guarantee covers individual service uptime, and stops there.
+Governance reads logs after the fact and cannot intervene in a running process. Everything is
+coupled to one provider's cloud, identity, data, and compute. Separate evaluation and
+observability products are often required, because the runtime provides no authoritative
+evidence record.</p>
+<p><strong>Per vendor, the sourced specifics.</strong></p>
+<ul>
+<li><strong>Azure AI Foundry.</strong> Six to eight separately billed services composed into a workflow:
+  Azure OpenAI, Cosmos DB, AI Search, Content Safety, API Management, Event Hubs, Monitor.
+  Agent Service has no SLA. Microsoft's own documentation states that the recovery point for
+  stateful content can be total loss and that there is no supported method for active-active
+  multi-region replication. Governance spreads across five services with no inline
+  enforcement and no human intervention for running agents. Lock-in is structural: Entra ID,
+  Prompt Flow YAML, Cosmos DB, and Azure OpenAI fine-tuned models.</li>
+<li><strong>AWS Bedrock.</strong> Agents run as stateless Lambda invocations. State and memory require
+  separate provisioning through DynamoDB or Aurora at roughly 150 to 200ms retrieval. No
+  built-in HA or DR for agentic workloads. Guardrails run as a separate evaluation layer
+  after inference, so they cannot intervene in a running process. Lock-in comes through
+  proprietary agent action schemas and IAM.</li>
+<li><strong>Gemini Enterprise Agent Platform.</strong> Dialogflow-lineage primitives with Vertex AI Pipelines
+  for batch workflows. No native active-active HA or DR for agents. Memory requires external
+  Spanner or AlloyDB. Safety filters and grounding run as separate API calls outside the execution path. Lock-in comes through proprietary agent schema definitions and
+  Vertex-specific APIs.</li>
+</ul>
+<p><strong>The wedge.</strong> Akka guarantees the workload at 99.9999% with sub-1 minute RTO and zero-byte
+RPO, backed by indemnities. Every hyperscaler guarantees services at 99.9 to 99.99% and
+leaves the composition to the customer.</p>
+<p><strong>This question proves it.</strong> "If a region goes down, what happens to the agents that are
+mid-run, and which service's SLA covers that?"</p>
+<p><strong>One structural point ends the debate.</strong> Cloud providers sell separately provisioned,
+separately billed services. Running everything as one system on one bill works against how
+they are built, so this gap persists.</p>
+<h2>4. Enterprise SaaS agents</h2>
+<p>Salesforce Agentforce, ServiceNow AI Agents, Databricks Mosaic AI and Agent Framework,
+Snowflake Cortex Agents, OpenAI Assistants API and Agents SDK.</p>
+<p><strong>Concede.</strong> Each is strong for an agent that lives inside its vendor's data perimeter.
+Agentforce inside Salesforce, ServiceNow for ITSM, Databricks for data-and-model-centric
+agents on the Lakehouse, Cortex over Snowflake data. When the whole use case falls inside one
+of those perimeters, that vendor is the right answer and Akka should not fight for it. <code><a href="#00-foundation">00-foundation.md</a></code> lists the same case as a disqualifier.</p>
+<p><strong>What the customer inherits.</strong> None of these spans CRM, ITSM, the data warehouse, custom
+systems, and external partners under a single runtime, with one governance contract and one evidence record. The Einstein Trust Layer governs Salesforce data, and cross-application agents fall outside it. Unity Catalog applies data governance to agents, with no inline guardrails, no durable HITL suspension, and no runtime binding taxonomy. OpenAI Assistants
+has no HA or DR, no enterprise data-residency story, and no inline policy enforcement across
+model vendors.</p>
+<p><strong>The wedge.</strong> Reach. The moment a process crosses two systems, the vendor's agent stops
+being the answer.</p>
+<p><strong>This question proves it.</strong> "Which of your agentic processes stay entirely inside one
+application, and which cross into another system?"</p>
+<h2>5. AI observability and evaluation tools</h2>
+<p>Arize, LangSmith, Langfuse, Galileo, Braintrust, Helicone, Fiddler, Datadog LLM
+Observability, Honeycomb, Opik and Comet, Patronus, Humanloop, Portkey, Confident AI.</p>
+<p><strong>Concede.</strong> These tools are useful for engineering observability and model A/B testing. Most accounts have already deployed one, and it does its job well. Used alongside Akka they remain useful. Say this early, because attacking a tool the team chose attacks the team.</p>
+<p><strong>What the customer inherits.</strong> These observe from outside the request path. The limits that
+follow matter for the compliance record:</p>
+<ul>
+<li>Sampling is on by design, and a compliance record cannot tolerate it.</li>
+<li>No authority exists in the request path, so nothing can block a tool call, fail-close a response, or durably suspend an agent for a reviewer.</li>
+<li>Their traces are mutable and unchained, so spans can be edited, dropped, or reshaped by
+  ingestion settings.</li>
+<li>No signed intent artifact exists: no control corpus, no signed Eval Matrix, no jurisdiction-derived obligations, no runtime binding taxonomy.</li>
+<li>Retention is a billing tier with no regulatory mapping behind it. Thirty or ninety days is not
+  EU AI Act Article 11 at ten years, Article 26 at a six-month floor, or DORA at five years
+  or more.</li>
+<li>Side-effect execution goes unrecorded, because only the runtime that gates the tool call sees it.</li>
+</ul>
+<p><strong>The wedge for Verify.</strong> No tool outside the runtime can be the governance record, because the runtime is what produces the behaviour being governed.</p>
+<p><strong>The wedge for Optimize.</strong> Grading is where they stop. Nothing trains on the grade, nothing
+serves the resulting model, and nothing routes traffic to it.</p>
+<p><strong>This question proves it.</strong> "What is your sampling rate, and would an examiner accept a
+sampled record?"</p>
+<h2>6. Systems integrators and forward-deployed engineering</h2>
+<p>Deloitte, PwC, NTT Data, Accenture, and model-vendor forward-deployed engineering teams. Some
+of these are also Akka partners, which changes the conversation from competition to
+co-delivery. Check the partner list before positioning against a firm.</p>
+<p><strong>Concede.</strong> Integrators deliver. A forward-deployed engineering engagement produces a working bespoke system, and the customer gets senior people on site.</p>
+<p><strong>What the customer inherits.</strong> A bespoke system they then own and operate, plus a standing
+integration team, plus the knowledge of how it works living in the vendor's staff.</p>
+<p><strong>The wedge.</strong> What the customer keeps at the end. Akka Specify reaches the same production
+outcome through generation on the platform, in weeks, and what remains afterwards is a factory any team can use.</p>
+<p><strong>This question proves it.</strong> "At the end of the engagement, what do you own, and who
+maintains it?"</p>
+<h2>7. GRC platforms</h2>
+<p>ServiceNow GRC, Archer, OneTrust.</p>
+<p><strong>Concede.</strong> A GRC platform holds the policy, the control library, and the audit workflow, and the customer is not replacing it.</p>
+<p><strong>What the customer inherits.</strong> Nothing connects a control in the GRC platform to the line of
+code that enforces it. There is no runtime binding, no evidence event per control, and no way
+to prove that what runs is what was approved.</p>
+<p><strong>The wedge.</strong> Coexistence. The GRC platform stays as the system of record for policy. Verify
+supplies the binding, the evidence event, and the conformance proof.</p>
+<p><strong>This question proves it.</strong> "When a control in there says an agent must escalate to a
+human, what makes that happen in the running system?"</p>
+<h2>8. Side-by-side</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Frameworks</th>
+<th>Hyperscaler AI</th>
+<th>Enterprise SaaS Agents</th>
+<th>Observability and Evaluation</th>
+<th>Akka</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Category</td>
+<td>Developer library</td>
+<td>6-8 separately billed services</td>
+<td>Agents bound to one app's data</td>
+<td>Outside the request path</td>
+<td>One runtime with shared compute</td>
+</tr>
+<tr>
+<td>Availability</td>
+<td>None, DIY</td>
+<td>99.9-99.99% per service; no SLA on Agent Service (Azure)</td>
+<td>Vendor SaaS SLA</td>
+<td>N/A</td>
+<td>99.9999% on the workload, with indemnities</td>
+</tr>
+<tr>
+<td>HA/DR</td>
+<td>DIY</td>
+<td>None for agentic workload</td>
+<td>Vendor's HA</td>
+<td>N/A</td>
+<td>Active-active, sub-1 min RTO, zero-byte RPO</td>
+</tr>
+<tr>
+<td>Memory latency</td>
+<td>DIY</td>
+<td>150-200ms via external stores</td>
+<td>Vendor data only</td>
+<td>N/A</td>
+<td>Sub-10ms native</td>
+</tr>
+<tr>
+<td>Cross-app reach</td>
+<td>Code-only</td>
+<td>Within one cloud</td>
+<td>Within one app</td>
+<td>N/A</td>
+<td>CRM, ITSM, warehouse, custom, and partner, on one runtime</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>DIY</td>
+<td>After the fact, per service</td>
+<td>Per-vendor data only</td>
+<td>Reads logs after the fact</td>
+<td>Inline runtime, fail-closed, durable HITL</td>
+</tr>
+<tr>
+<td>Pre-production governance</td>
+<td>DIY</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>Sign-off recipe engine, sealed Governance Posture Package</td>
+</tr>
+<tr>
+<td>Compliance record</td>
+<td>None</td>
+<td>Vendor telemetry, sampled</td>
+<td>Vendor logs</td>
+<td>Sampled, mutable</td>
+<td>Non-sampled, hash-chained, authority snapshots</td>
+</tr>
+<tr>
+<td>Model economics</td>
+<td>DIY</td>
+<td>Per-token inference, separate training</td>
+<td>Vendor models</td>
+<td>N/A</td>
+<td>On-runtime inference, training, grading, scoring</td>
+</tr>
+<tr>
+<td>Licensing</td>
+<td>Mixed</td>
+<td>Proprietary</td>
+<td>Proprietary</td>
+<td>Proprietary</td>
+<td>BSL, self-host and modify, no managed-service lock-in</td>
+</tr>
+<tr>
+<td>Model flexibility</td>
+<td>Any</td>
+<td>Provider-biased</td>
+<td>Provider-tied</td>
+<td>N/A</td>
+<td>Any model, any vendor</td>
+</tr>
+<tr>
+<td>Sovereign cloud</td>
+<td>DIY</td>
+<td>Feature-lagged</td>
+<td>None</td>
+<td>None</td>
+<td>Full-parity deployment, all traffic and data in-region</td>
+</tr>
+</tbody>
+</table></div>
+<h2>9. What competitors say about Akka</h2>
+<p>Seven objections, with the answer and the evidence.</p>
+<p><strong>"Akka is a JVM actor library from 2009."</strong> The open-source library is the lineage. The
+platform is the product. Every reliability figure comes from that heritage: production since
+2007, more than 100,000 deployments, 2 billion people touched daily, 1.4 million transactions
+per second, 9ms latency.</p>
+<p><strong>"BSL is not open source."</strong> Correct. BSL gives the right to run, modify, and self-host the
+runtime in the customer's own environment. The comparison is against a managed hyperscaler
+service where self-hosting is not offered at all.</p>
+<p><strong>"You are trading one lock-in for another."</strong> Three answers: BSL self-hosting, any model from
+any vendor under the customer's own policies, and native A2A, ACP, and MCP so agents and
+tools interoperate across vendors. Specify's output is specifications, which carry to any deployment.</p>
+<p><strong>"Nobody has heard of Akka."</strong> One third of the Fortune 500 has deployed Akka technology. 52 financial services institutions run it in production. Dell Technologies is the largest shareholder, a customer, and a partner. Named customers include Manulife, Verizon, Swiggy,
+Tubi, Morgan Stanley, RBC, Apple, Starbucks, Walmart, and Capital One.</p>
+<p><strong>"It will be more expensive than what we have."</strong> Akka is billed on platform tier and service cores. No line is priced per call, per token, or per service. The comparison is one invoice against
+six to eight separately billed services that scale independently with usage.</p>
+<p><strong>"We would have to rewrite everything."</strong> Optimize grades agents running in third-party
+harnesses including Cursor, Claude Code, and Copilot, with no migration. Verify's
+classification, Eval Matrix, sign-off, and Governance Posture Package apply to systems built
+anywhere. Tools integrate over MCP and agents hand off over A2A and ACP.</p>
+<p><strong>"You are a small company."</strong> Operating since 2007, profitable and growing, with Dell
+Technologies as largest shareholder, and more than 19 InfoSec certifications including EU AI
+Act, the Singapore Agent Framework, ISO 42001, and SOC 2.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="08-role-tracks"><h1>Role tracks</h1>
+<p>Everyone takes the foundation, the four solution modules, routing, mandate owners,
+competitive, and the scenarios. The track adds what the role does that the others do not.</p>
+<hr />
+<h2>Account executive</h2>
+<h3>Qualification</h3>
+<p>An opportunity is real when it carries all of the following. Missing any one, it is not a forecast.</p>
+<ol>
+<li><strong>A named cost with a number the customer supplied.</strong> Akka's percentages are not
+   qualification.</li>
+<li><strong>A person who owns that cost and holds budget.</strong> A champion without budget is an
+   organiser. <code><a href="#scn-07-sovereign-insurer">07-sovereign-insurer.md</a></code> is what happens when this is missed.</li>
+<li><strong>A trigger event with a date.</strong> From the table in <code><a href="#05-routing">05-routing.md</a></code>.</li>
+<li><strong>A second thread with a different budget owner.</strong> Single-threaded enterprise deals close
+   at a rate that does not justify the forecast.</li>
+</ol>
+<p>Disqualifiers are in <code><a href="#00-foundation">00-foundation.md</a></code> §8. The 30-second qualifier and the seven discovery
+questions in the partner enablement brief run before any of this.</p>
+<h3>Service tiers</h3>
+<p>Starter and Sandbox are the entry tiers. Both progress as needs grow.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Shape</th>
+<th>Support</th>
+<th>Use it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Starter</strong></td>
+<td>Akka-hosted in Akka's public cloud with a private data link back to the customer environment. One production region, monthly billing in arrears, no invoices or POs.</td>
+<td>Included</td>
+<td>Fastest path to a production workload without a VPC install.</td>
+</tr>
+<tr>
+<td><strong>Sandbox</strong></td>
+<td>Single region in the customer's VPC, configured for low overhead. No HA or DR. Not for production.</td>
+<td>9x5</td>
+<td>Lowest-friction evaluation inside their environment.</td>
+</tr>
+<tr>
+<td><strong>Day 2 Ops</strong></td>
+<td>Two regions in their VPC, one development and one production. Elastic scale-to-zero, live CVE patching, no-downtime rolling updates, AI explainability tooling.</td>
+<td>24/7 SRE, quarter-time TAM/FDE</td>
+<td>First production commitment.</td>
+</tr>
+<tr>
+<td><strong>Business Continuity</strong></td>
+<td>Three regions in their VPC, one development plus two in HA. Active-active across regions or clouds, sub-1 minute RTO, zero-byte RPO, conflict resolution on region split.</td>
+<td>24/7 SRE, half-time TAM/FDE</td>
+<td>Availability is contractual to their business.</td>
+</tr>
+<tr>
+<td><strong>Sovereign Cloud</strong></td>
+<td>Country-isolated. Traffic and data stay in-region, with local SREs and a private federation plane. China, the EU, Singapore, the UK, Japan, Australia, and more.</td>
+<td>24/7 SRE, two dedicated TAM/FDEs</td>
+<td>Regulatory or sovereign residency requirements.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Sandbox is not an upgrade path.</strong> Sandbox regions are not SLA-backed, and moving to a higher tier means a rebuild. Say this at the time of sale, because
+discovering it later costs trust.</p>
+<p><strong>Cores.</strong> In-VPC tiers are sized around platform cores, which are Akka's infrastructure
+overhead, and service cores, which are the customer's workloads. Akka charges for service
+cores only. Platform cores run on cloud infrastructure the customer provisions. Sandbox
+minimises platform-core overhead.</p>
+<p>Confidential tier detail is in the internal service-tiers battlecard. Do not
+quote figures from memory.</p>
+<h3>The business case</h3>
+<p>Build it from the customer's number, in this order.</p>
+<ol>
+<li><strong>The cost they stated</strong>, in their units. Manual interventions, delayed benefit, unrealised
+   revenue, penalty exposure, engineering months.</li>
+<li><strong>What the delay costs per month.</strong> Nearly every scenario in the library turns on this
+   figure, and nearly every customer has it and has not said it.</li>
+<li><strong>The replaced spend.</strong> Six to eight separately billed services, plus evaluation and
+   observability tooling that Akka's workloads no longer need.</li>
+<li><strong>The Akka price</strong>, last.</li>
+</ol>
+<p>Reversing this order produces a feature comparison. Five spend-predictability and cost-
+reduction categories are detailed in the total cost of ownership reference.</p>
+<h3>Process influencers</h3>
+<p>The CFO or VP Finance must approve multi-year pre-paid commitments and cares about TCO,
+predictability, and ROI timeline. Procurement and legal scrutinise multi-year pre-paid deals
+and care about contract terms, SLAs, and vendor viability. Neither role is a champion, and both can stop a deal in the last three weeks. Reach them before the quarter they will decide in.</p>
+<h3>Track exercise</h3>
+<p>Take a live opportunity. Produce a one-page account plan naming the four qualification items,
+the second thread with its budget owner, the tier and why, and the business case built in the
+order above. Present it in ten minutes and defend the tier choice.</p>
+<hr />
+<h2>Forward-deployed engineer</h2>
+<h3>The delivery methodology</h3>
+<p>Five phases move a team from AI idea to production system. The first milestone is a production
+slice in 4 to 6 weeks.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>What it produces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Frame</strong></td>
+<td>The first production slice selected, with a use-case brief, system map, role map, success metrics, milestones, owners, and acceptance criteria.</td>
+</tr>
+<tr>
+<td><strong>Govern</strong></td>
+<td>Runtime controls, autonomy policy, risk model, decision rights, sign-off recipes, HITL gates, retention, audit plan, and policy record.</td>
+</tr>
+<tr>
+<td><strong>Specify</strong></td>
+<td>The functional AI implementation via Akka Specify: services, agents, integrations, ontologies, workflow models, API contracts, scenarios, eval criteria, and edge cases.</td>
+</tr>
+<tr>
+<td><strong>Ship</strong></td>
+<td>The production slice deployed, with release package, runbook, cutover plan, SLA view, metrics, alerts, dashboards, review queues, overrides, and feedback capture.</td>
+</tr>
+<tr>
+<td><strong>Improve</strong></td>
+<td>Feedback loops, behaviour metrics, token analysis, cache strategy, routing plans, tuning backlogs, and release cadence.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Govern precedes Specify. A risk envelope defined after the system is built is a retrofit, and
+the whole Verify argument is that safeguards are bound at generation.</p>
+<h3>Scoping a production slice</h3>
+<p>A slice is production when it carries real traffic, has an owner who accepts it, and has its
+controls bound. A slice that only demonstrates does not meet that definition.</p>
+<p>Four questions size one:</p>
+<ol>
+<li>What is the smallest complete path from a real input to a real business outcome?</li>
+<li>Which of the six specifications is least defined today, and who owns defining it?</li>
+<li>What controls does this slice's risk envelope produce, and which bind to G, H, W, or K?</li>
+<li>Who accepts it, and against which acceptance criteria?</li>
+</ol>
+<p>Question 3 is where slices go wrong. A slice whose controls require durable HITL is not a
+two-week slice.</p>
+<h3>The specifications in practice</h3>
+<p>The customer supplies goals and intent, functional requirements, risk envelope, knowledge
+sources, operational envelope, and improvement policy. In practice the risk envelope and the
+improvement policy arrive empty, and the FDE's job in Frame and Govern is to fill them with the customer in the room.</p>
+<h3>Harnesses</h3>
+<p><code>/akka:harnesses</code> generates project-adapted enterprise-configuration assets into <code>/harnesses</code>,
+records them in the lock file, and surfaces each for approval. Know what this produces before
+the Govern phase, because it is what the customer's InfoSec team will review.</p>
+<h3>Track exercise</h3>
+<p>Take scenario 5 or 9 to the point of a signed engagement, then produce the Frame deliverable:
+the slice selected, the acceptance criteria, the owner, and the milestone plan across four to six weeks. Defend the size of the slice.</p>
+<hr />
+<h2>Field CTO and solution architect</h2>
+<h3>The whiteboards</h3>
+<p>Draw each from memory in under four minutes. These carry the technical conversation, and
+slides are the fallback.</p>
+<ol>
+<li><strong>One runtime against the per-service stack.</strong> Eight boxes with eight bills and seams the
+   customer owns, beside one box with shared compute. The claim underneath is that the guarantee applies to the whole system because the runtime is one system.</li>
+<li><strong>The durability sequence.</strong> An agent mid-task, a node dies, the journal replays, the run
+   resumes at the last completed step. Extend it to a deployment and to a three-day human wait. <code><a href="#01-solution-akka-sdk">01-solution-akka-sdk.md</a></code> carries this demo.</li>
+<li><strong>The guardrail boundary.</strong> A tool call held by the runtime, the guardrail returning PASS,
+   BLOCK, or ERROR, failing closed, and the <code>GuardrailDecisionRecorded</code> event written in the
+   same transaction. Contrast with a mirror that fires after the side effect.</li>
+<li><strong>Regulation to running code.</strong> A regulation, a control row with its citation, its runtime
+   binding class, and its evidence event, then the generated artifact and the event stream an
+   auditor receives. The seven binding classes are the vocabulary.</li>
+<li><strong>The optimization loop.</strong> Trace, grade, train, shadow, promote, serve, grade again, on one
+   record. Mark where a competitor's loop requires an export.</li>
+<li><strong>Active-active and sovereign.</strong> Two regions both taking writes, sub-1 minute RTO,
+   zero-byte RPO, conflict resolution on split, and a country-isolated configuration with
+   traffic and data in-region.</li>
+</ol>
+<h3>The demo sequence</h3>
+<p>Assets are in the demo library and the deck library. Run them in this order:</p>
+<ol>
+<li><strong>Kill something.</strong> Durability first, because it is the claim no competitor can demo.</li>
+<li><strong>Block something.</strong> A guardrail decision and the event it wrote. Show the event, because risk officers care about the record.</li>
+<li><strong>Wait.</strong> Suspend for a human decision, deploy over the top, resume.</li>
+<li><strong>Only then, build something.</strong> Spec-driven generation lands after the audience believes
+   the runtime.</li>
+</ol>
+<p>Leading with generation invites the "AI wrote this code" objection before any credibility
+exists.</p>
+<h3>The technical win plan</h3>
+<p>Write it down before the proof of concept starts. A proof of concept with no written exit
+criteria runs forever.</p>
+<ul>
+<li>The claims the customer needs proven, in their words.</li>
+<li>The measurement for each, and who reads it.</li>
+<li>What the customer commits to do if the claims hold.</li>
+<li>The date.</li>
+</ul>
+<p>Refuse a proof of concept spread across several use cases. <code><a href="#scn-09-transformation-officer">09-transformation-officer.md</a></code> covers why.</p>
+<h3>The InfoSec review</h3>
+<p>The CISO or security lead is always involved and always runs a detailed review. Prepare:
+19+ InfoSec certifications including EU AI Act, the Singapore Agent Framework, ISO 42001, and
+SOC 2; deployment options across Akka's cloud, the customer's hyperscaler VPC, and their own
+Kubernetes; zero-trust networking; SPIFFE workload identity and the delegation chain; and the
+six retention categories with legal hold.</p>
+<h3>Track exercise</h3>
+<p>Deliver whiteboards 1, 3, and 4 to a hostile technical audience in twelve minutes total, then
+write a technical win plan for scenario 4 or 6.</p>
+<hr />
+<h2>Partner</h2>
+<p>Partners take the foundation, every solution module, routing, mandate owners, and scenarios 8 and 9. This track replaces the AE track.</p>
+<h3>Sourcing and qualifying</h3>
+<p>The partner enablement brief is the working document: ideal customer profile,
+verticals that convert, trigger events, the seven discovery questions that qualify in fifteen
+minutes, the persona map, outreach hooks by cost, disqualifiers, the 30-second qualifier, and
+competitive landmines.</p>
+<p>Routing is what this program adds to it. The brief tells a partner which accounts to call.
+<code><a href="#05-routing">05-routing.md</a></code> and <code><a href="#06-mandate-owners">06-mandate-owners.md</a></code> tell them what to lead with once someone answers.</p>
+<h3>Deal registration and handoff</h3>
+<p>Follow the process in the partner enablement brief. Register on the first qualified conversation. Registration protects the partner's position when a
+second route into the account appears.</p>
+<h3>Co-delivery</h3>
+<p>Three engagement models, with the customer-owned factory leading. A partner operating a
+customer's factory is the model that produces the most follow-on work, and it is the frame
+that converts an incumbent integrator from a blocker into an advocate. <code><a href="#scn-05-integrator-incumbent">05-integrator-incumbent.md</a></code> runs this end to end.</p>
+<p>Partners who resell: NTT Data embeds and resells Akka as the runtime under its Enterprise
+Agentic Grid. Go-to-market partners include Deloitte, PwC, NTT Data, AVOWS, and BAE. Check the
+partner list before positioning against any firm.</p>
+<h3>Track exercise</h3>
+<p>Run scenario 8, then run scenario 5 from the other side of the table. Scenario 5 is where the
+partner-conflict rule stops being theoretical.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-01-wrong-door"><h1>Scenario 1 — The wrong door</h1>
+<h2>Account brief</h2>
+<p>Meridian Financial, a US regional bank with roughly $80 billion in assets. Twelve thousand
+employees, headquartered in Charlotte, with operations in four states.</p>
+<p>An inbound form fill came from their procurement portal. The subject line was "AI vendor
+evaluation — fraud analytics." Procurement scheduled you with the Chief Information Security
+Officer. You have 30 minutes.</p>
+<p>Nothing else is known.</p>
+<h2>Cast</h2>
+<p><strong>Dana Whitfield, CISO.</strong> Fourteen years at the bank. Owns security architecture, third-party
+risk, and the vendor review process.</p>
+<p><strong>Marcus Bell, Head of Platform Engineering.</strong> Not on the invite.</p>
+<p><strong>Priya Raghavan, Chief Risk Officer.</strong> Not on the invite.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-02-stalled-pilot"><h1>Scenario 2 — The pilot that will not ship</h1>
+<h2>Account brief</h2>
+<p>Nordhaven Logistics, a European freight forwarder. €3.1 billion revenue, 9,000 employees,
+operations across fourteen countries.</p>
+<p>Eleven months ago they started building an agentic system that reads customs documentation,
+extracts declarations, and routes exceptions to human brokers. The system demoed successfully to the board in March. Five months later it is still not in production.</p>
+<p>Your champion, Head of Platform Engineering, took a meeting after reading a comparison page.
+The CTO will join for the last fifteen minutes.</p>
+<h2>Cast</h2>
+<p><strong>Ingrid Halvorsen, Head of Platform Engineering.</strong> Your champion. Wants this shipped and has
+been told twice that it is nearly ready.</p>
+<p><strong>Tomas Bergqvist, Lead Engineer.</strong> Built the system. Chose LangChain and LangGraph. In the room and unhappy about it.</p>
+<p><strong>Rafael Mendes, CTO.</strong> Joins at minute 30. Approved the project, has now been asked about it
+by the board twice, and is out of patience.</p>
+<p><strong>Anneke Visser, CFO.</strong> Gates any new vendor over €250,000. Not in this meeting.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-03-token-bill"><h1>Scenario 3 — The bill that tripled</h1>
+<h2>Account brief</h2>
+<p>Cadence, a consumer SaaS company with $410 million in annual recurring revenue. Roughly 1,900
+employees. Their product is a scheduling and workflow tool used by mid-market service
+businesses in North America and the EU.</p>
+<p>Cadence shipped AI features fourteen months ago: a drafting assistant, an automated scheduling
+agent, and a support triage agent. Adoption was strong.</p>
+<p>You were introduced by an investor. The meeting is with the CFO and the Chief AI Officer,
+together, for 45 minutes.</p>
+<h2>Cast</h2>
+<p><strong>Reid Callahan, CFO.</strong> Called this meeting. Approved the AI budget last year.</p>
+<p><strong>Dr. Amara Osei, Chief AI Officer.</strong> Built the AI features. Reports to the CTO. Did not ask
+for this meeting.</p>
+<p><strong>Jules Fontaine, VP Engineering.</strong> Owns the infrastructure budget. Not present.</p>
+<p><strong>Sofia Reyes, General Counsel.</strong> Not present.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-04-regulator-letter"><h1>Scenario 4 — The exam finding</h1>
+<h2>Account brief</h2>
+<p>Rheinwerk Versicherung, a German life and health insurer. €14 billion in gross written
+premium, 7,400 employees, operating in Germany, Austria, and Switzerland.</p>
+<p>Rheinwerk put an underwriting decision support system into production eight months ago, running on AWS Bedrock.</p>
+<p>BaFin conducted a supervisory review in June and raised a finding about AI system governance.
+Separately, life and health underwriting is classified high-risk under the EU AI Act.</p>
+<p>Your meeting was requested by the Chief Risk Officer. Sixty minutes, three people.</p>
+<h2>Cast</h2>
+<p><strong>Dr. Katrin Sommer, Chief Risk Officer.</strong> Requested the meeting. Holds budget. Has a
+supervisory response due.</p>
+<p><strong>Ilse Brandt, Head of Compliance.</strong> Owns the BaFin relationship and wrote the response draft.</p>
+<p><strong>Lars Pedersen, Head of Engineering.</strong> Built the system on Bedrock. Committed to AWS, with
+three years left on an enterprise agreement.</p>
+<p><strong>Werner Klein, CFO.</strong> Not present. Signs anything over €500,000.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-05-integrator-incumbent"><h1>Scenario 5 — The engagement in month seven</h1>
+<h2>Account brief</h2>
+<p>Calloway Industrial, a US manufacturer of hydraulic and fluid-power components. $6.1 billion
+revenue, 21,000 employees, 34 plants across North America and Mexico.</p>
+<p>Fourteen months ago they signed a systems integrator to build an agentic supply-chain
+exception system: detect a disrupted inbound shipment, model the downstream impact, and
+propose recovery options to planners. The engagement is month seven of fourteen.</p>
+<p>Your meeting came through a referral from the CIO's former colleague. Two people, 45 minutes.</p>
+<p>Before you prepare: check the partner list and establish whether this integrator is an Akka
+partner.</p>
+<h2>Cast</h2>
+<p><strong>Dale Ruggiero, VP of Digital.</strong> Sponsored the integrator engagement. Personally invested in
+its success.</p>
+<p><strong>Marisol Ibarra, Head of Applications Modernization.</strong> Owns a legacy estate of eleven plant
+systems, some written in the 1990s. Was not consulted about the agentic project.</p>
+<p><strong>Chidi Nwachukwu, engagement partner at the integrator.</strong> Not in meeting 1.</p>
+<p><strong>Grant Whitfield, CIO.</strong> Not in meeting 1.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-06-hyperscaler-mandate"><h1>Scenario 6 — The architecture review board</h1>
+<h2>Account brief</h2>
+<p>Vantage Communications, a US regional telecommunications carrier. 6.2 million subscribers,
+$4.8 billion revenue, 14,000 employees, operating across nine states.</p>
+<p>Vantage is building agentic order orchestration for business fiber: take an order, validate
+serviceability, sequence provisioning across four legacy systems, and handle exceptions.</p>
+<p>Their Enterprise Architecture Review Board mandated Azure for all new workloads eighteen
+months ago. Your meeting is with the board's chair, arranged after she downloaded a comparison
+page.</p>
+<h2>Cast</h2>
+<p><strong>Priyanka Doshi, Chief Enterprise Architect.</strong> Chairs the review board. Wrote the Azure
+mandate.</p>
+<p><strong>Ray Okonkwo, Director of Order Management.</strong> Owns business fiber order fulfilment. Not in
+meeting 1.</p>
+<p><strong>Deborah Mensah, CIO.</strong> Signed the Azure enterprise agreement. Not in meeting 1.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-07-sovereign-insurer"><h1>Scenario 7 — One system under five regulators</h1>
+<h2>Account brief</h2>
+<p>Atlas Pacific Bank, headquartered in Singapore. $340 billion in assets, 31,000 employees,
+retail and commercial operations in Singapore, Hong Kong, mainland China, Australia, and the
+United Kingdom.</p>
+<p>Atlas Pacific is consolidating three separate agentic programs into one: customer servicing, AML
+transaction monitoring, and credit pre-assessment. Each was built by a different regional team
+on a different stack.</p>
+<p>Your champion is the Head of Platform Engineering, who has been researching Akka for four
+months and has read most of the public material.</p>
+<h2>Cast</h2>
+<p><strong>Wei Lin Tan, Head of Platform Engineering.</strong> Your champion. Knows the product well.</p>
+<p><strong>Sanjay Mehta, Group Chief Risk Officer.</strong> Holds governance budget. Not in meeting 1.</p>
+<p><strong>Fiona Docherty, Head of Infrastructure.</strong> Owns the multi-region estate. Not in meeting 1.</p>
+<p><strong>Aroon Srisai, Group CIO.</strong> Signs anything material. Not in meeting 1.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-08-partner-sourced"><h1>Scenario 8 — Thirty minutes, no briefing</h1>
+<h2>Account brief</h2>
+<p>A Deloitte principal you have worked with twice has an account she wants you in. She sends
+one message the night before:</p>
+<blockquote>
+<p>"Meeting is 30 minutes tomorrow at 8am with the COO. She is sharp and she does not do
+technology conversations. I have not briefed her on Akka. Please follow my lead on the
+commercial side. — Ellen"</p>
+</blockquote>
+<p>You know the account is a US property and casualty insurer. You know nothing else.</p>
+<h2>Cast</h2>
+<p><strong>Ellen Vasquez, Deloitte principal.</strong> Owns the relationship. Six years in this account.</p>
+<p><strong>Rochelle Adeyemi, Chief Operating Officer.</strong> Owns claims, underwriting operations, and
+customer service. 4,000 people report through her.</p>
+<p><strong>Nate Brolin, VP Claims Technology.</strong> Not in the meeting.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-09-transformation-officer"><h1>Scenario 9 — Eleven use cases and no engineers</h1>
+<h2>Account brief</h2>
+<p>Brightmoor Group, a diversified consumer products company. $12.4 billion revenue, 34,000
+employees, brands across household goods, personal care, and pet nutrition, sold in 40
+countries.</p>
+<p>Four months ago the board asked what the AI strategy was and did not like the answer.
+Brightmoor appointed a Chief AI Transformation Officer six weeks later.</p>
+<p>She requested this meeting after a conference. Sixty minutes, one person.</p>
+<h2>Cast</h2>
+<p><strong>Naomi Fairbanks, Chief AI Transformation Officer.</strong> Four months in post. Charter covers
+business transformation, identifying where AI can be applied, securing AI, and workforce
+transformation.</p>
+<p><strong>Halima Byrne, CTO.</strong> Owns every engineer at Brightmoor. Not in meeting 1.</p>
+<p><strong>Terrence Wu, CISO.</strong> Not in meeting 1.</p>
+<p><strong>Gordon Achebe, VP Revenue Management.</strong> Absent from meeting 1. Naomi mentions him only when asked.</p><a class="top" href="#contents">&uarr; Contents</a></section><section id="scn-10-the-year-long-estimate"><h1>Scenario 10 — The fourteen-month estimate</h1>
+<h2>Account brief</h2>
+<p>Redpoint Distribution, a US industrial distributor of fluid-power and motion-control
+components. $2.4 billion revenue, 5,600 employees, 41 branches and four regional
+distribution centres.</p>
+<p>Redpoint has no AI programme, no agent projects, and no AI budget. An analyst relations contact
+introduced you to the VP of Sales Operations, who has a delivery-date problem. You have 45
+minutes and the Director of Enterprise Applications will join partway through.</p>
+<h2>Cast</h2>
+<p><strong>Marguerite Foss, VP Sales Operations.</strong> Owns quoting, order entry, and the branch network's
+service commitments.</p>
+<p><strong>Owen Trask, Director of Enterprise Applications.</strong> Owns the ERP and the integration estate.
+Produced the estimate.</p>
+<p><strong>Bill Cusano, CIO.</strong> Holds the budget. Not in meeting 1.</p>
+<p><strong>Anita Raval, Director of Data and Analytics.</strong> Runs the reporting stack and has been asked by the board about AI. Absent from meeting 1, and surfaced only when the learner asks who owns analytics.</p><a class="top" href="#contents">&uarr; Contents</a></section></main></body></html>

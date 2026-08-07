@@ -34,6 +34,9 @@ for f in $STAGED; do
     battlecards/*)                   CTX=battlecard ;;
     comparisons/*)                   CTX=web ;;
     blog-technical/*)                CTX=blog ;;
+    # Sales enablement. Trade terms like "the wedge" are precise in a playbook
+    # and are metaphors in customer copy, so this content carries its own context.
+    enablement/*)                    CTX=internal ;;
     *)                               CTX=web ;;
   esac
   python tools/auditors/voice/audit.py --context "$CTX" "$f" || {
