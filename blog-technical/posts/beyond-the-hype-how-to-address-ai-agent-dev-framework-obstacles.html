@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond the Hype: How to address AI agent dev framework obstacles — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">beyond-the-hype-how-to-address-ai-agent-dev-framework-obstacles</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · ARCHITECT / CTO · RESOURCES</div>
+  <h1 class="title">Beyond the Hype: How to address AI agent dev framework obstacles</h1>
+  <p class="standfirst">In the recently published Hype Cycle for Cloud Platform Services, 2025 and the&nbsp; Hype Cycle for Generative AI, 2025, &nbsp;Gartner spotlights AI agent development frameworks as a transformational category. These frameworks promise the ability to accelerate development of&nbsp; agentic systems and intelligent applications. However, because many offerings in this category are still too immature for widespread application against business-critical enterprise use cases, Gartner also warns organizations of several key obstacles that can trip up and slow down enterprise adoption of agent-based AI systems. The Hype (Cycle)&nbsp;didn't start with ChatGPT Unless you're living under a rock, you're thinking about the power and risks associated with AI and Large Language Models . While the recent hype, promise, and concern is so tremendous (and warranted), many people don't realize extremely sophisticated models have been used in enterprises for decades. And business-critical 'agentic' systems have been built around these models. Just think about stock market futures, energy exploration, healthcare research, and more recently, the recommendation engines driving social media and video streaming addictions, as well as the recommendations made by your favorite online retailer. And, uncertainty in the outputs from these models existed way before "hallucinations" meant something more than a side-effect of using drugs. If model outputs were guaranteed and deterministic, making money, powering the planet wisely, and curing disease would be way easier. The reality is that "agentic systems" have been around for a while. It's just that ChatGPT, and other subsequent public LLMs, thrust the idea into the mainstream conversation, both at work and around the kitchen table. Moreover, while many people feel they can get 'expert advice' from ARTIFICIAL intelligence tools like ChatGPT (the fastest growing search engine), there is no doubting the 100's of years of collective HUMAN intelligence based on experience and research about real-world, enterprise technology that exists at Gartner. Which is why we're pleased to offer a free copy of the recently published Hype Cycle for Cloud Platform Services, 2025. This research spotlights how cloud platforms used as AI agent development frameworks are transformational. These frameworks promise the ability to accelerate development of agentic systems and intelligent applications. However, because many offerings in this category are still too immature for widespread application against business-critical enterprise use cases, Gartner also warns organizations of several key obstacles that can trip up and slow down enterprise adoption of agent-based AI systems.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2025-08-08">Aug 8, 2025</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">In the recently published <a href="https://content.akka.io/gartner-hype-cycle-for-cloud-platform-services-2025?hs_preview=PoPZWbWJ-191978805066" rel="noopener" target="_blank"><em>Hype Cycle for Cloud Platform Services, 2025 </em></a>and the&nbsp;Hype Cycle for Generative AI, 2025,&nbsp;Gartner spotlights <strong>AI agent development frameworks</strong> as a transformational category. These frameworks promise the ability to accelerate development of&nbsp;<a href="/blog/what-is-agentic-ai" rel="noopener"> agentic systems </a>and intelligent applications. However, because many offerings in this category are still too immature for widespread application against business-critical enterprise use cases, Gartner also warns organizations of several key obstacles that can trip up and slow down enterprise adoption of agent-based AI systems.</p>
+
+<h3>The Hype (Cycle)&nbsp;didn't start with ChatGPT</h3>
+
+
+<p>Unless you're living under a rock, you're thinking about the power and risks associated with AI and Large Language Models. While the recent hype, promise, and concern is so tremendous (and warranted), many people don't realize extremely sophisticated models have been used in enterprises for decades. And business-critical 'agentic' systems have been built around these models. Just think about stock market futures, energy exploration, healthcare research, and more recently, the recommendation engines driving social media and video streaming addictions, as well as the recommendations made by your favorite online retailer.</p>
+<p>And, uncertainty in the outputs from these models existed way before "hallucinations" meant something more than a side-effect of using drugs. If model outputs were guaranteed and deterministic, making money, powering the planet wisely, and curing disease would be way easier. The reality is that "agentic systems" have been around for a while. It's just that ChatGPT, and other subsequent public LLMs, thrust the idea into the mainstream conversation, both at work and around the kitchen table.</p>
+<p>Moreover, while many people feel they can get 'expert advice' from ARTIFICIAL intelligence tools like ChatGPT (the fastest growing search engine), there is no doubting the 100's of years of collective HUMAN intelligence based on experience and research about real-world, enterprise technology that exists at Gartner. Which is why we're pleased to offer a free copy of the recently published <a href="https://content.akka.io/gartner-hype-cycle-for-cloud-platform-services-2025?hs_preview=PoPZWbWJ-191978805066" rel="noopener" target="_blank"><em>Hype Cycle for Cloud Platform Services, 2025. </em></a>This research spotlights how cloud platforms used as <strong>AI agent development frameworks</strong> are transformational. These frameworks promise the ability to accelerate development of agentic systems and intelligent applications. However, because many offerings in this category are still too immature for widespread application against business-critical enterprise use cases, Gartner also warns organizations of several key obstacles that can trip up and slow down enterprise adoption of agent-based AI systems.</p>
+
+<h3>Addressing agentic obstacles for 15 years</h3>
+
+
+<p>At Akka, we’ve also heard these concerns from teams as they make the move from prototype to production with AI&nbsp;agents. We've heard about the early excitement that results in disappointment regarding LangChain, CrewAI and other frameworks based on Python. That’s why our <a href="/blog/news-akka-introduces-agentic-ai-platform" rel="noopener">newest release of the Akka Agentic Platform</a><strong>&nbsp;</strong>is so important.&nbsp; As a result of years of collaboration with customers running agentic (and other complex distributed) systems, our latest release is a battle-tested solution, proven to deliver 3x the velocity with ⅓ the compute – for any SLA and any type of agentic system, whether autonomous, adaptive, real-time, transactional, or edge.</p>
+<p>Akka is not a framework based on experimental data science, but one based on decades of proven computer science. And admittedly, it's not a "sexy" visual, low-code&nbsp;tool for users to quickly prototype projects and prove the art of the possible to an exec team. Akka is a platform to help enterprise engineering teams build, run, and evaluate production-grade, business-critical agentic systems. We are something we find "sexy" in a hard-core engineering way.&nbsp;</p>
+<p>The other very important concern we've heard from the market is about our own ease-of-use. It's true we used to be hard for people to use. While packing incredible power, the learning curve for the Akka Libraries was high for many engineers. Honestly, only seasoned engineers understood the <a href="https://content.akka.io/guide/principles-and-patterns-for-distributed-application-architecture" rel="noopener">distributed system principles</a> and computer science well enough to know how to harness the power of Akka. While we don't see everyone using Akka, this very&nbsp;power is why:</p>
+<ul>
+<li>Hundreds of startups, driven by brilliant engineers, use Akka as a force-multiplier and foundation for their own growth.</li>
+<li>Titans like&nbsp;&nbsp;HPE, Walmart, Swiggy, Dream11, Norwegian&nbsp;Cruise Lines, Verizon,&nbsp;Tubi, John Deere, Capital One, Renault, and<a href="/customer-stories" rel="noopener">&nbsp;others</a> have depended on Akka for years.</li>
+<li>33,000+ engineers believe in the <a href="https://www.reactivemanifesto.org/" rel="noopener" target="_blank">Reactive Manifesto</a> that is core to our value.</li>
+<li>Masters and PhD students are often taught about distributed computing with Akka.</li>
+</ul>
+But, with our recent release, the learning curve flattened— creating a straight-line to production.&nbsp; We still may not be right for every user and use case, but the universe of engineers that can build agentic systems with the the Akka SDK greatly expanded this past month.<br>
+<p>Our 15 years of experience powering the world’s most demanding systems and creating confidence in the face of uncertainty has prepared us to address the obstacles that Gartner advises organizations to watch out for when choosing their AI agent development frameworks.&nbsp;&nbsp;</p>
+<p>Here’s a breakdown of the Gartner obstacles —and exactly how Akka answers them.</p>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>“Most frameworks remain below version 1.0 and are evolving rapidly, which may introduce breaking changes.”</p>
+<h4>How Akka addresses this obstacle:</h4>
+<p>Akka’s maturity, commitment to backwards compatibility, and robust upgrade mechanisms directly address concerns about instability and breaking changes found in less mature frameworks. Akka is a mature, stable platform with a long track record of backwards compatibility and ongoing support:</p>
+<ul>
+<li><strong>Mature and proven platform</strong>:<strong> </strong>Akka has been in production use for over 15 years, is widely adopted in enterprise environments, and has been downloaded over 1 billion times. It is not an experimental or pre-1.0 framework, rather a stable foundation for business-critical systems.</li>
+</ul>
+<ul>
+<li><strong>Backwards compatibility and support</strong>: Akka maintains strong backwards compatibility. The libraries that have been used for the past 15 years are still included in the latest Akka releases and will continue to receive new feature investments. Feature releases are supported for two years, and managed cloud services are upgraded continuously and supported indefinitely. This commitment minimizes the risk of breaking changes and ensures long-term stability for users.</li>
+<li><strong>Safe upgrades and versioning</strong>:<strong> </strong>Akka supports rolling, no-downtime upgrades for both the application’s business logic and the Akka Agentic Platform itself. Teams are able to evolve agentic workflows, update schemas, and adopt new platform capabilities without breaking existing deployments or disrupting live systems.&nbsp;</li>
+</ul>
+<ul>
+<li><strong>Resilience indemnity</strong>:<strong> </strong>Akka indemnifies against losses caused by an Akka App becoming unreliable. This is extended to include a 99.9999% availability SLA for multi-region Akka apps.&nbsp;</li>
+</ul>
+<ul>
+<li><strong>Enterprise security</strong>:<strong> </strong>Enterprise-grade security, zero trust networking, SOC 1 Type II, SOC 2 Type II, DORA, PCI-DSS Level 1 &amp; ISO 27001 compliant.</li>
+<li><strong>IP protection</strong>:<strong> </strong>Akka indemnifies our IP and 3rd party dependencies including areas where open source cannot.</li>
+</ul>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/infosec-protections-akka.png" loading="lazy" alt="infosec-protections-akka"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>“While powerful, many tools lack built-in guardrails, requiring developers to manually implement evaluation, fallback and safety mechanisms.”</p>
+<h4>How Akka addresses this obstacle:</h4>
+<p>Guardrails, including specific functionality around evaluation, fallback, and safety isn’t an afterthought in Akka—it’s part of the core design. Akka eliminates the need for developers to manually implement core guardrails by providing built-in, declarative support for evaluation, fallback, and safety throughout the platform:</p>
+<ul>
+<li><strong>Evaluation-ready</strong>: To support robust evaluation, Akka automatically logs every interaction between agents and the LLM, including prompts, responses, and intermediate state. This enables full replay, historical analysis, and iterative improvement. Akka provides in-line evaluation and governance controls, allowing developers to measure accuracy and enforce enterprise policies directly within agentic workflows. An agentic evaluation console for auditing, tracing, and debugging is also in the works, further supporting operational oversight.</li>
+<li><strong>Fallback mechanisms</strong>:<strong> </strong>Akka Agents enables developers to define custom fallback responses for different types of failures. This ensures agents can handle errors gracefully and continue to provide meaningful responses without requiring manual error-handling boilerplate.</li>
+<li><strong>Safety and recovery</strong>:<strong> </strong>Akka includes robust error handling, timeout management, and compensation handlers within workflows. These features help prevent fault propagation, enable graceful recovery, and ensure that workflows leave the system in a consistent state even when failures occur.</li>
+</ul>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>"Most frameworks are Python-centric, making integration with enterprise applications in other languages more complex."</p>
+<h4>How Akka addresses this obstacle:</h4>
+<p>Akka is built on the JVM and designed for enterprise-grade environments out of the box.&nbsp;</p>
+<ul>
+<li><strong>JVM foundation and language support</strong>:<strong> </strong>Akka is built on the JVM and supports Java and Scala out of the box, allowing developers to build agents, workflows, and memory-backed services using these enterprise-standard languages.</li>
+</ul>
+<ul>
+<li><strong>Component exposure (HTTP, gRPC, MCP)</strong>:<strong> </strong>Akka components can be exposed over HTTP, gRPC, and MCP protocols, making it straightforward to integrate agents and tools into service meshes, APIs, and external systems Akka components.</li>
+<li><strong>Typed, synchronous/asynchronous clients and service-to-service calls</strong>: Akka supports typed, synchronous and asynchronous service-to-service calls, which allows for clean, low-latency interactions between components.</li>
+<li><strong>JVM ecosystem</strong>:<strong> </strong>Akka is designed to run entirely within the JVM ecosystem, so developers do not need to introduce Python-specific infrastructure or deal with cross-runtime overhead.</li>
+</ul>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>"The nondeterministic nature of AI agents does not allow them to fully replace the “standard” applications and core systems due to the risks of an error. This therefore slows adoption of AI agents."</p>
+<h4>How Akka addresses this obstacle:</h4>
+<p>Akka’s composable architecture lets developers blend deterministic services with non-deterministic AI agents, allowing organizations to gradually add to, and replace, “standard” applications with the safety, transparency, and control that regulated environments require.</p>
+<ul>
+<li><strong>Human-in-the-loop</strong>: Akka supports agentic workflows with human-in-the-loop checkpoints, so agents can provide decision support while final actions remain under human or traditional service control.</li>
+<li><strong>Fallback paths</strong>: Akka allows developers to define workflows with fallback paths to deterministic APIs, ensuring that if a model call fails or is uncertain, execution can be routed to trusted services or logic.</li>
+<li><strong>Session memory and event sourcing</strong>: Akka provides session memory and event sourcing to capture every user message, tool call, and model response in a replayable journal, providing full transparency and traceability for compliance and debugging.</li>
+<li><strong>In-line evaluation</strong>: Enables in-line evaluation for real-time scoring of agent responses, and workflows can pause for human input, supporting confidence-based routing and oversight.</li>
+</ul>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>"Multiagent workflows are harder to manage at scale and require thoughtful orchestration and observability design."&nbsp;</p>
+
+<h3>How Akka addresses this obstacle:</h3>
+
+
+<p>Coordinating multiple agents is fundamentally a distributed systems problem. Agents run concurrently, interact asynchronously, and may fail or restart independently. Without the right infrastructure, orchestrating these interactions become fragile and unscalable. Akka’s event-driven architecture, durable orchestration model, and built-in observability gives developers the tools to manage large-scale, multi-agent workflows.&nbsp;</p>
+<ul>
+<li><strong>Event-driven fabric</strong>:<strong> </strong>Akka uses message passing to decouple agents and carefully manage state, enabling safe, concurrent coordination. Agents react to events asynchronously, allowing them to scale independently, respond in real time, and stay loosely coupled.</li>
+<li><strong>Multi-agent orchestration</strong>:<strong> </strong>Akka Orchestration lets developers compose agents into durable, declarative workflows. Agents can call other agents, wait on events, and branch logic, all without losing context.</li>
+<li><strong>Observability</strong>: Every message, state transition, and failure is traceable and replayable in Akka. Developers gain deep visibility into agent lifecycles and system-wide behavior, making it easy to debug, audit, and evolve multi-agent workflows. Supervision strategies ensure failures are isolated and recoverable by design.</li>
+</ul>
+
+<h3>Gartner obstacle:</h3>
+
+
+<p>“Multiple agents amplify inference costs. Frameworks must support model selection, iteration controls, and execution limits.”</p>
+<h4>How Akka addresses this obstacle:</h4>
+<p>Akka helps control and reduce inference costs in multi-agent workflows through observability, flexible model integration, efficient orchestration, and optimized compute utilization. The platform provides several features that help optimize model selection, control iteration settings, and manage resource utilization, including:</p>
+<ul>
+<li><strong>Cost controls and optimization</strong>: Akka incorporates runtime cost controls and observability, allowing teams to monitor and optimize the cost of agentic workflows. This includes inline evaluation and governance to help balance quality and cost, and the ability to track and manage LLM usage in real time.</li>
+</ul>
+<ul>
+<li><strong>Context compaction</strong>:<strong> </strong>Akka Memory supports memory compaction, distilling long interaction histories into the minimal context needed for accurate reasoning. LLMs only run inference on what matters, keeping prompts lightweight, responses fast, and costs predictable, even for long-lived workflows.</li>
+<li><strong>Flexible model routing</strong>: Akka supports integration with multiple LLMs and ML algorithms, enabling dynamic selection of the most appropriate model for each task. This flexibility allows organizations to choose cost-effective models or adjust iteration settings based on workload requirements.</li>
+<li><strong>Efficient orchestration</strong>:<strong> </strong>Akka’s orchestration tools allow for the design of workflows that minimize unnecessary model invocations and iterations. Human-in-the-loop and confidence-based routing features ensure that only essential model calls are made, reducing overall inference costs.</li>
+<li><strong>Shared compute model</strong>: Akka’s shared compute architecture eliminates siloed resource allocation, increasing overall infrastructure efficiency and reducing the cost per inference compared to traditional approaches.</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>Conclusion: AI agent development frameworks can be transformational. While some frameworks are more hype than substance, Akka is mature and proven to deliver&nbsp;on the potential&nbsp;of agentic in the enterprise.</h2>
+
+
+<p>Akka offers a <strong>stable, enterprise-ready agentic platform</strong> that directly addresses every Gartner obstacle:</p>
+<ul>
+<li>Mature, versioned, and stable</li>
+<li>Guardrails, safety, and evaluation included</li>
+<li>JVM-native for the enterprise&nbsp;</li>
+<li>Enables blending deterministic services for faster adoption into standard applications</li>
+<li>Designed for enterprise scale, multi-region orchestration, and observability</li>
+<li>Controls costs through compute and resource utilization, model selection, and more.</li>
+</ul>
+
+<h3>See it for yourself!</h3>
+<p><a href="https://content.akka.io/gartner-hype-cycle-for-cloud-platform-services-2025" rel="noopener">Download the Gartner Hype Cycle</a><br><a href="/blog/video-akka-overview" rel="noopener">Watch an Akka overview video</a><br><a href="/blog/demo-build-and-deploy-a-multi-agent-system-with-akka" rel="noopener">Watch an Akka&nbsp;recorded demo</a><br><a href="https://content.akka.io/spov-request" rel="noopener">Let us prove what we can do with your agentic use case</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Aug 8, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

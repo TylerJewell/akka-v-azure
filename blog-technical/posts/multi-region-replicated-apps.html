@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-region replicated apps — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">multi-region-replicated-apps</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">MULTI-REGION · ARCHITECT / CTO · OPERATIONS</div>
+  <h1 class="title">Multi-region replicated apps</h1>
+  <p class="standfirst">With Akka, applications are built locally and then operated simultaneously across many regions. We describe this behavior as ‘write once, deploy anywhere, replicate everything’.</p>
+  <div class="byline">
+    <div><span class='au'>Tyler Jewell</span> · CEO</div>
+    <div class="r"><time datetime="2025-02-01">Feb 1, 2025</time> · 7 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">With Akka, applications are built locally and then operated simultaneously across many regions. We describe this behavior as ‘write once, deploy anywhere, replicate everything’.</p>
+
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-1-bg.png" alt="multi-region-replicated-apps-flush-1" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>Akka applications act as their own in-memory, durable database that can support 100s of millions of concurrent users and terabytes of data. Multi-region stateful applications at gigantic user and data scale enables smoother latency, no downtime disaster recovery, no downtime upgrades, and cross-cloud migrations.</p>
+<p>A multi-region application is one where its logic and data are accessible in multiple locations, usually across a WAN where traditional clustering protocols are inefficient.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-2-bg.png" alt="multi-region-replicated-apps-flush-2" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>A region, in this context, is a location where the application has an exposed service endpoint and a unique URL (DNS entry) to access it. Akka enables operators to have their applications operate in three modes:</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-3-bg.png" alt="multi-region-replicated-apps-flush-3" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>Multi-region stateful applications that maintain their elasticity and resilience properties are not offered by your database or cloud native infrastructure. How did we do it?</p>
+<p>For stateless applications, each application can have many instances in different regions and can reasonably scale out elastically by adding compute and the number of application instances. Within a single region, Akka load balances the incoming request traffic to an available instance. End users to the API of the application take responsibility for determining which region they access and are likely to use a solution like <a href="https://aws.amazon.com/route53/" rel="noopener" target="_blank">Route53</a> from AWS.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-4-bg.png" alt="multi-region-replicated-apps-flush-4" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>For stateful applications that act as their own in-memory database, those applications must reliably replicate their state changes between regions and then ensure end-user traffic is routed to the correct region and instance that can read or write the data the client specified. There is no shortage of reliability, performance, and durability concerns that must be addressed.</p>
+<p>Stateful Akka applications scale horizontally by automating the sharding of the data across a cluster of instances running within a single region. Akka’s infrastructure determines how many instances should exist. Each instance acts as the system of record for the entity it represents, with each instance sharded to represent different slices of data for that type.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-5-bg.png" alt="multi-region-replicated-apps-flush-5" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>In this example, if an application had 60 unique pieces of data (think of them as 60 unique rows in a database), then Akka would split half of the data into the first instance and the other half of the data in a second instance. The Akka application shards from within, determining which data goes into each location. For performance reasons, it’s usually the case that data remains in the instance it was created within. If the amount of data the application represents is more than the memory allocated to the instances, then the least accessed data is passivated into persistence and reactivated if an end user request for that data is made. Akka also performs routing from within, so as end user traffic requests to read or write to a specific data item, Akka directs the traffic to the instance that houses the right data item.</p>
+<p>As demand and traffic increase, Akka increases the compute and memory available to serve the application. As nodes come online, Akka rebalances the shards over the nodes in a cluster. The opposite process occurs as nodes are taken offline as traffic reduces.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 6</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-6-bg.png" alt="multi-region-replicated-apps-flush-6" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>Within a single region, these capabilities are automated through the Akka runtime. The Akka runtime is also enabled from within the application, executing as an embedded kernel compiled into your application’s core to enable your application’s participation in a networked cluster. Akka clustering is, therefore, also enabled from within, allowing stateful applications within your service to discover, join, participate, and leave a cluster. This happens automatically and across a variety of networking boundaries without installing a service mesh or other connectivity backbone. Effectively, each Akka application has its own embedded cluster membership and service mesh backbone operating from within.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 7</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-7-bg.png" alt="multi-region-replicated-apps-7" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>The Akka runtime and its clustering are designed to operate across WAN networks, though in Akka’s operating environments, it’s deployed within a single LAN with cross-LAN communication handled by cross-cluster coordination. Akka creates a ring of nodes to operate your application instances. The data’s location within the cluster is gossiped throughout the cluster and held within more than one member node to offer routing redundancy and failover.</p>
+<p>Your application’s state is tracked on a networked (and persisted) event log where each event represents an incremental change to the application’s state. Services with data instances (entities) can be restored from a hardware or network failure by replaying the events of the entities, with the terminating event restoring the entity to its last state. As the event log grows in length and complexity, Akka periodically snapshots the state of an entity which can be used as a starting point to replay events more rapidly than replaying all events from their origination date.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 8</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-8-bg.png" alt="multi-region-replicated-apps-flush-8" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>Events that track the state changes for your entities are automatically persisted into append-only data stores within the same region. In a failure scenario where all nodes for a cluster are destroyed, the entire application and all of its data instances can be recovered by loading and replaying events from the persistence store.</p>
+<p>Fun fact: Akka not only shards the data within the memory of the nodes it runs in, but also can shard the persistence stores that data is stored into across (up to) 1,024 different data stores. By persisting sharded events across many stores, the overall system’s capacity and IOPS dramatically improves and this is an essential component to how we lower infrastructure fees (12 smaller databases are cheaper than 1 large one) while sustaining very high IOPS for a single application.</p>
+<p>The event log is both persisted and networked. Events are advertised across the network and can be subscribed to by other services or brokers. Your application’s data events can be streamed for real-time consumption or piped into a messaging broker, like Kafka, for durable consumption by third parties.</p>
+<p>Beyond dynamic scaling within a region, the Akka runtime is also responsible for managing the scheduling of your application instances, how data is sharded and rebalanced within the region, and end user traffic routing to the correct shard. It also streams events from your service instances to other services through service-to-service eventing.</p>
+<p>Service-to-service eventing is a special type of brokerless messaging embedded within Akka. Much like the way that Akka is clustered from within, Akka applications are also messaged-from-within and can provide reliable, asynchronous, sequenced, and guaranteed delivery of messages from one application to another. For applications built with the Akka SDK, service-to-service eventing is automatic and can be used for applications sending messages between each other … or … replicating an application’s event log to another location – such as a region!</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 9</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/multi-region-replicated-apps-9-bg.png" alt="multi-region-replicated-apps-flush-9" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>&nbsp;</p>
+<p>When your application is configured to replicate across different regions, each region receives a complete replication of the event log. Your application is running different Akka clusters within each region, and each cluster automatically persists the events that are received into their local persistence store. Users within a region are then able to read and write to the same data instance that was available in the originating region.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Routing</h2>
+
+
+<p>Akka offers two types of routing for read-replicated instances. In the static (default) configuration, you can designate a single region as the primary where all writable data instances reside and all other regions are merely holding read replicas. In the dynamic configuration, it’s expected that clients who will read data will likely be located in the same region that the data was created. With dynamic routing, the writable version of your data remains in the region it was created. This allows for each region to have some data that is writable, and then read replicas are sent to other regions. If a request from an end user to modify data is sent to the region that has a read-only copy, Akka handles the routing to forward the request to the region that holds the writable version of that data. In the replicated write scenario, each instance within each region is writable and additional routing is not required.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Federation</h2>
+
+
+<p>Federation is the coordination of multiple regions acting as a single substrate - discovery, registration, and connectivity that enables secure gRPC connections between multiple regions that your services treat as a single cloud. </p>
+<p>Federation is possible regardless of where the region runs, whether it’s at Akka.io Serverless, a region you set up with BYOC, or a Self-Hosted region. Once regions have been federated, your projects can then individually map to one or more regions. Regions can be added or removed dynamically, and there are emergency modes where a rapid regional shutdown can occur. A regional shutdown requires that end user traffic to that region is terminated, all replication events are completed, and then an orderly wind down can be completed.<br></p>
+
+</div>
+
+<div class="body col">
+
+<h2>Deployment</h2>
+<p>Akka applications are built into microservices that are packaged in Docker images and hosted within a registry. Akka provides an embedded registry for each region, and you can optionally configure an external registry to host your images. Each region gets its own Akka image registry. At deployment, Akka coordinates the availability of your application’s image becoming available within the registry operating within each region.</p>
+<p>Akka applications consist of one or more services, each of which is the individual packaging and deployment units. An application configured to use multiple regions is deployed separately and individually within each region, coordinated by Akka’s runtime. As applications are deployed within a single region, a cluster from within is created by the instances provisioned in containers running locally within that region. Each region then federates with the other regions to create the global control plane.</p>
+<p>Akka applications get their own hostnames and service entries for each region they are deployed into. Operators configure routes that specify how the outside world is mapped to your Akka application. Routes handle local DNS configuration and publish the URL for external consumption.<br></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Feb 1, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

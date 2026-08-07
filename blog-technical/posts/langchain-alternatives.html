@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>25 LangChain alternatives you must consider in 2025 — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">langchain-alternatives</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · DEVELOPER</div>
+  <h1 class="title">25 LangChain alternatives you must consider in 2025</h1>
+  <p class="standfirst">LangChain has become a popular framework for building LLM-powered applications, thanks to its flexible approach to chaining prompts, connecting tools, and managing memory. However, as GenAI projects become more complex and developer needs continue to evolve, LangChain is not always the most suitable option.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2025-04-30">Apr 30, 2025</time> · 18 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">LangChain has become a popular framework for building LLM-powered applications, thanks to its flexible approach to chaining prompts, connecting tools, and managing memory. However, as GenAI projects become more complex and developer needs continue to evolve, LangChain is not always the most suitable option.</p>
+
+<p>In this guide, you'll discover more than 20 LangChain alternatives designed for a wide range of use cases, including real-time agent frameworks, visual builders, and enterprise-level orchestration tools. Whether you're prototyping a chatbot or scaling a production system, this guide will help you find the right platform and understand when it makes sense to choose something other than LangChain.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What Is LangChain?</h2>
+
+
+<p><a href="https://www.langchain.com/">LangChain</a> is an open-source framework designed to help developers build powerful applications using <a href="https://akka.io/blog/demystifying-ai-llms-and-rag">LLMs</a> like OpenAI's GPT-4, Anthropic's Claude, Google's Gemini, Mistral, and Meta's Llama. While LLMs are incredibly capable on their own, most real-world applications require more than just prompting a model. They need access to company data, third-party tools, memory, and logic. That's where LangChain comes in.</p>
+<p><strong>LangChain provides a modular, programmable layer around LLMs that lets developers:</strong></p>
+<ul>
+<li>Connect to external data sources (e.g., SQL/NoSQL databases, PDFs, APIs)</li>
+<li>Chain together multiple steps of reasoning or tool usage</li>
+<li>Orchestrate actions between different models and tools</li>
+<li>Add memory, context, and agent-like behavior to applications</li>
+</ul>
+<p>While it's often described as a wrapper around LLMs, LangChain is more like an <strong>orchestration engine</strong>, allowing developers to turn static prompts into dynamic, multi-step workflows. It supports both <strong>Python</strong> and <strong>JavaScript</strong> offering flexibility to backend and frontend teams alike.</p>
+<p><strong>At the core of LangChain are building blocks like:</strong></p>
+<ul>
+<li><strong>Chains</strong>: Sequential steps for processing user inputs or tasks</li>
+<li><strong>Agents</strong>: LLM-powered decision-makers that choose which tools to call</li>
+<li><strong>Tools</strong>: External functions or APIs that an agent can interact with</li>
+<li><strong>Memory</strong>: Context storage across conversations or sessions</li>
+<li><strong>Retrievers</strong>: Interfaces for pulling relevant chunks from unstructured data</li>
+</ul>
+<p>With over <strong>600 integrations</strong> available, from vector databases and cloud platforms to CRMs and DevOps tools, LangChain makes it easier to build production-ready GenAI apps that are <strong>data-aware, tool-using, and context-sensitive</strong>.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>LangChain Use Cases</h2>
+
+
+<h3>Retrieval-Augmented Generation (RAG)</h3>
+
+
+<p>LangChain makes it easy to build apps where LLMs can access private or proprietary data stored in documents, databases, or knowledge bases. This is useful when the model alone doesn't "know" the answer.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Internal chatbots trained on company handbooks or policies</li>
+<li>Customer support agents that reference your help desk articles</li>
+</ul>
+
+<h3>Intelligent agents</h3>
+
+
+<p><a href="https://www.langchain.com/agents">LangChain's agent framework</a> allows LLMs to decide what actions to take, what tools to use, and in what sequence — making them useful for dynamic, open-ended tasks.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>AI travel planners that check flights, weather, and book hotels</li>
+<li>Financial research agents that summarize company earnings across sites</li>
+</ul>
+
+<h3>Multi-tool orchestration</h3>
+
+
+<p>Sometimes a single LLM isn't enough. LangChain can coordinate multiple tools, APIs, and even different models to complete a task, with logic that spans across steps.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>A meeting assistant that uses transcription, summarization, and scheduling tools</li>
+<li>A sales outreach bot that generates emails and sends them via a CRM API</li>
+</ul>
+
+<h3>Conversational AI with memory</h3>
+
+
+<p>LangChain enables memory and context retention across conversations, so your AI doesn't have to start from scratch every time.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Personalized tutoring apps that adapt to a learner's progress</li>
+<li>Virtual assistants that remember past tasks or preferences</li>
+</ul>
+
+<h3>LLM-powered data pipelines</h3>
+
+
+<p>LangChain can be used to extract, transform, and enrich data using LLMs, especially from unstructured sources.</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Parsing messy PDFs into structured JSON</li>
+<li>Generating insights or summaries from call transcripts</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>When To Consider A LangChain Alternative</h2>
+
+
+<p>LangChain is a great choice for prototyping and building data-aware, LLM-powered apps. But as your needs scale or shift toward enterprise, real-time, or mission-critical workloads, its limitations start to show.</p>
+<p><strong>Here's where LangChain can fall short — and why some developers are turning to frameworks like <a href="https://akka.io/">Akka</a> instead.</strong></p>
+
+<h3>1. Prototyping vs. production-grade reliability</h3>
+
+
+<p>LangChain is ideal for rapid experimentation. You can spin up a working demo quickly, and the ecosystem makes it easy to connect tools, models, and data sources.</p>
+<p><em>"The value they have is it's an easier experience — you follow a tutorial and boom, you already have durable execution, and boom, you already have memory. But the question is, at what point are you going to be like, 'Now I'm running this in production, and it doesn't work very well?' That's the question,"</em> says <a href="https://www.linkedin.com/in/richardli/">Richard Li</a>, thought leader and advisor on Agentic AI.</p>
+<p>LangChain's memory and workflow systems are simple and developer-friendly, <strong>but they lack the maturity and rigor needed for critical systems.</strong></p>
+<p>Akka, on the other hand, is built on an actor-based concurrency model with years of engineering behind it. It's been tested at scale, across industries, and is designed to be resilient under pressure.</p>
+
+<h3>2. Limited real-time processing capabilities</h3>
+
+
+<p>LangChain's architecture is not well-suited for applications that rely on continuous, high-volume data. It's designed around request-response patterns, which work well for static inputs but not for scenarios involving streaming media, telemetry, or sensor-driven environments.</p>
+<p><em>"If you're doing video or audio or real-time high-volume data — no way you can use any of these frameworks. You've got to use something like Akka."</em></p>
+<p>Akka's event-driven design enables it to handle live data and dynamic workloads efficiently, making it a better fit for systems that need constant responsiveness.</p>
+
+<h3>3. Durability and memory limitations</h3>
+
+
+<p>LangChain includes basic components for memory and workflow execution. These features are great for prototyping, but they offer few guarantees in terms of durability or consistency.</p>
+<p><em>"They're trying to compete with two categories: memory and durable workflow... but there are dedicated companies that have existed for a long time for a reason."</em></p>
+<p>LangGraph extends LangChain by offering a state-machine-like workflow model, but it may still struggle in scenarios requiring long-term session tracking, failover resilience, or compliance with enterprise-grade SLAs.</p>
+
+<h3>4. Language and ecosystem constraints</h3>
+
+
+<p>LangChain supports Python and JavaScript/TypeScript. These languages are accessible and widely used, but they may not meet the performance or security requirements of high-throughput or regulated applications.</p>
+<p><em>"You're just not going to build a streaming video platform in Python. You're just not."</em></p>
+<p>If your organization relies on JVM-based systems, or needs strict type safety and performance tuning, frameworks like Akka — built in Scala and Java — offer more control and efficiency.</p>
+
+<h3>5. It's a starting point, not the whole system</h3>
+
+
+<p>LangChain excels at helping teams experiment with <a href="https://akka.io/blog/what-is-agentic-ai">agentic AI</a> and build early-stage applications. However, it isn't a comprehensive system framework.</p>
+<p><em>"We're not the thing you toy with... we're more of a system when you've done the research and you're ready to get serious,"</em> says <a href="https://www.linkedin.com/in/darinbartik/">Darin Bartik</a>, CMO at Akka.</p>
+<p>Akka is built for teams that already know what they want to build and are ready to ensure it scales reliably. It's a better fit once you've moved beyond exploration and need a dependable system foundation for GenAI or other intelligent services.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>A Note On LangGraph: How Does It Compare To LangChain?</h2>
+
+
+<p><a href="https://www.langchain.com/langgraph">LangGraph</a> is a relatively new addition to the LangChain ecosystem that deserves special attention when considering LangChain alternatives. LangGraph is an orchestration framework built on top of LangChain, specifically designed for creating complex, stateful agent systems with more granular control than traditional LangChain agents.</p>
+
+<h3>Key differences</h3>
+
+
+</div>
+
+<div class="wide">
+<div class="table-scroll">
+<table>
+<tbody>
+<tr>
+<th>Feature</th>
+<th>LangChain</th>
+<th>LangGraph</th>
+</tr>
+<tr>
+<td><strong>Architecture</strong></td>
+<td>Sequential chains and basic agents</td>
+<td>Graph-based workflows with support for cycles</td>
+</tr>
+<tr>
+<td><strong>State Management</strong></td>
+<td>Basic memory mechanisms</td>
+<td>Enhanced state persistence with checkpoint capabilities</td>
+</tr>
+<tr>
+<td><strong>Workflow Design</strong></td>
+<td>Linear processes</td>
+<td>Complex conditional logic with feedback loops</td>
+</tr>
+<tr>
+<td><strong>Agent Structure</strong></td>
+<td>Predefined agent patterns</td>
+<td>Flexible multi-agent coordination with explicit transition control</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="body col">
+
+<h3>Choose LangChain when:</h3>
+
+
+<ul>
+<li>Prototyping simple applications</li>
+<li>Building basic RAG systems</li>
+<li>You need extensive external integrations</li>
+<li>Learning curve is a concern</li>
+</ul>
+
+<h3>Choose LangGraph when:</h3>
+
+
+<ul>
+<li>Building complex agent systems with decision-making workflows</li>
+<li>Applications require cyclical processes or feedback loops</li>
+<li>State persistence across sessions is critical</li>
+<li>Implementing multi-agent systems</li>
+<li>You need human-in-the-loop capabilities</li>
+</ul>
+<p>LangGraph represents an evolution in the LangChain ecosystem rather than a complete alternative. Many developers use both frameworks together, starting with LangChain for basic components and leveraging LangGraph for orchestration as their applications grow more complex.</p>
+<p><a href="https://blog.langchain.dev/how-to-think-about-agent-frameworks/">As this guide</a> from LangChain puts it, <em>"LangGraph is built on top of LangChain and completely interoperable with the LangChain ecosystem. It adds new value primarily through the introduction of an easy way to create cyclical graphs. This is often useful when creating agent runtimes."</em></p>
+
+</div>
+
+<div class="body col">
+
+<h2>The Top LangChain Alternatives — Organized By Category</h2>
+
+
+<p>Here are 25 LangChain alternatives you can use for your next GenAI application.</p>
+
+<h3>Agentic AI frameworks</h3>
+
+
+<p>Frameworks and platforms that enable building autonomous or multi-agent systems with planning, memory, and tool use.</p>
+<h4>Akka</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/akka.webp" loading="lazy" alt="akka"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://akka.io/">Akka</a> is a high-performance platform for building scalable, resilient agentic AI applications. Its actor-based architecture supports high-throughput, low-latency systems, making it ideal for cloud-native microservices, real-time data processing, and event-driven applications. Akka simplifies horizontal scaling, fault tolerance, and state recovery, with features like Akka Cluster, Sharding, and Persistence ensuring real-time performance and reliable data pipelines.</p>
+<p>Designed for cloud-native environments, Akka supports flexible deployments, from serverless to self-managed Kubernetes, allowing teams to build fault-tolerant systems without complex infrastructure management.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Built for scalability</li>
+<li>Works in Serverless, self-hosted, and BYOC environments</li>
+<li>Logic and Data packaged together for maximum performance and security</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p><a href="/pricing" rel="noopener">Pricing</a> is flexible based on your hosting requirements. Serverless plans start at $0.25 per hour. Bring your own cloud starts at $750/month + $0.15/Akka hour on major providers. Finally, self-hosted plans start at $5000/month and + $0.15/ Akka hour.</p>
+<p><strong>Akka Vs. LangChain</strong></p>
+
+</div>
+
+<div class="wide">
+<div class="table-scroll">
+<table>
+<tbody>
+<tr>
+<th>Feature / Capability</th>
+<th>LangChain</th>
+<th>LangGraph</th>
+<th>Akka</th>
+</tr>
+<tr>
+<td><strong>Primary Use Case</strong></td>
+<td>LLM app prototyping, RAG, tool orchestration</td>
+<td>Complex agent systems, stateful workflows, multi-agent coordination</td>
+<td>Real-time systems, distributed AI, enterprise backends</td>
+</tr>
+<tr>
+<td><strong>Programming Languages</strong></td>
+<td>Python, JavaScript/TypeScript</td>
+<td>Python, JavaScript</td>
+<td>Java, Scala (JVM ecosystem)</td>
+</tr>
+<tr>
+<td><strong>Durable Workflow Support</strong></td>
+<td>Lightweight, experimental (via LangGraph)</td>
+<td>Enhanced with state machine support and persistence</td>
+<td>Mature, production-grade (proven at scale)</td>
+</tr>
+<tr>
+<td><strong>Memory/State Management</strong></td>
+<td>In-memory or basic persistence</td>
+<td>Graph-based state management with persistent storage options</td>
+<td>Strong state management with supervision and fault tolerance</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Optimized for single-session LLM tasks</td>
+<td>Improved for complex agent workflows but still oriented toward LLM tasks</td>
+<td>Designed for high throughput and parallelism</td>
+</tr>
+<tr>
+<td><strong>Real-Time Capability</strong></td>
+<td>Limited (batch-oriented)</td>
+<td>Moderate (supports cycles and stateful applications)</td>
+<td>Excellent (suitable for streaming, IoT, video, etc.)</td>
+</tr>
+<tr>
+<td><strong>Security &amp; Type Safety</strong></td>
+<td>Dynamic typing, higher security risk</td>
+<td>Same as LangChain (built on top of it)</td>
+<td>Strong typing, better suited for regulated industries</td>
+</tr>
+<tr>
+<td><strong>Best For</strong></td>
+<td>Startups, prototypes, RAG chatbots</td>
+<td>Complex agent systems, multi-agent coordination, human-in-the-loop workflows</td>
+<td>Enterprises, real-time agents, mission-critical AI</td>
+</tr>
+<tr>
+<td><strong>Maturity Level</strong></td>
+<td>Fast-moving, evolving</td>
+<td>Newer than LangChain, still evolving</td>
+<td>Enterprise-ready, battle-tested</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="body col">
+
+<h4>AutoGen</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/autogen.webp" loading="lazy" alt="autogen"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://microsoft.github.io/autogen/stable//index.html">AutoGen</a> is a Microsoft framework for building scalable multi-agent AI systems using Python. What makes AutoGen special is that it's heavily integrated into the Microsoft ecosystem.</p>
+<p>It integrates with OpenAI models out of the box and is the ideal choice for people looking for a framework that easily scales and can work in multi-language environments. It even includes an extension to work with LangChain tools.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Azure integration out of the box</li>
+<li>Create AI agents that use multiple languages</li>
+<li>Available low-code integration through AutoGen Studio</li>
+<li>Boilerplate code for integrating LLMs other than Open AI models.</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>This is a free/open-source product designed to sell more <a href="https://azure.microsoft.com/en-us/solutions/">Azure services</a>.</p>
+<h4>AutoGPT</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/autogpt.webp" loading="lazy" alt="autogpt"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://agpt.co/">AutoGPT</a> platform focuses on helping users create AI agents that augment their abilities, enabling more productivity at work. The AutoGPT framework uses Python and Typescript, giving you flexibility when creating your advanced agents. You also get tools to make your agents reliable and predictable giving you peace of mind when you deploy them.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Built to augment your capabilities</li>
+<li>Low-code interface that makes it easy for non-technical people to create agents</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The actual code is free and open-source, but the cloud infrastructure is currently in beta with no pricing available.</p>
+<h4>CrewAI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/crewai.webp" loading="lazy" alt="crewai"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.crewai.com/">CrewAI</a> is a multi-agent platform for enterprise users. CrewAI creates low-code tools that help enterprises create advanced AI agents with any LLM backend. It also provides support for deploying to a variety of cloud providers. With over 1,200 integrations, CrewAI is a flexible option if you are looking for a way to create enterprise-scale AI agents with minimal to no code.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>6 LLM integrations</li>
+<li>No-code tools and templates</li>
+<li>Ability to autogenerate UI elements</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Free and open source edition with enterprise pricing based on individual needs and requirements.</p>
+<h4>Griptape</h4>
+<p><a href="https://www.griptape.ai/">Griptape</a> is a modular open-source Python framework to help developers build LLM-powered applications. It provides powerful primitives to help developers create conversational and event-driven AI applications.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Build secure AI agents using your own data</li>
+<li>Grows based on your workload requirements</li>
+<li>Scalable for enterprise users</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>While there is no charge for running the AI tools on your own machine, there is a cloud hosting service that charges $1 per GB for ETL, $0.01 per retrieval query for RAG, and $0.25 per hour to RUN. There is also custom enterprise pricing.</p>
+<h4>Haystack</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/haystack.webp" loading="lazy" alt="haystack"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://haystack.deepset.ai/">Haystack</a> is a comprehensive framework designed to build production-ready LLM applications, RAG pipelines, and sophisticated search systems, akin to IBM Watson. It allows you to experiment with current AI models through a modular architecture, offering the scalability needed for large applications.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Flexible components you can build on top of</li>
+<li>Built with production workloads in mind</li>
+<li>Over 70 integrations including, vector databases, model providers, and custom components</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The framework is free and open-source, but Deepset has a drag-and-drop program called Deepset Studio.</p>
+<h4>Langroid</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 6</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/langroid.webp" loading="lazy" alt="langroid"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://langroid.github.io/langroid/">Langroid</a> is a framework that simplifies the management of multiple underlying LLMs, enabling the creation of powerful AI agents. It emphasizes efficient task delegation across various agents and offers straightforward methods for interacting with vector stores and models.</p>
+<p>The framework is written in Python, providing a convenient solution for people looking to build agentic applications without complex backend programming.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Supports multiple backend LLMs</li>
+<li>Supports vector stores for long-term agent memory</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Langroid is a free and open-source framework for developers with Python programming experience.</p>
+
+<h3>LLM orchestration &amp; workflow tools</h3>
+
+
+<p>Built to structure LLM pipelines, function calling, and multi-step reasoning workflows.</p>
+<h4>GradientJ (Velos)</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 7</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/gradientj-velos.webp" loading="lazy" alt="gradientj (velos)"></div>
+  </div>
+  <figcaption>gradientj (velos)</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>GradientJ is an all-in-one platform for building and managing LLM applications. It supports data integration and makes it easy to compare prompt performance across models to find the best fit.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Turbocharge data extraction and transformation</li>
+<li>Built-in compliance tracking</li>
+<li>Works well for critical office functions</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Currently a free framework with more functionality coming in the future.</p>
+<h4>Outlines</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 8</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/outlines.webp" loading="lazy" alt="outlines"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://dottxt-ai.github.io/outlines/latest/welcome/">Outlines</a> is a Python library built with a focus on reliable text generation with LLMs. It mainly supports OpenAI, but there is also support for llama.cpp, exllama2, vllm, transformers, and other models. It provides robust prompting for various language models and is compatible with every auto-regressive model.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Focus on sound software engineering principles</li>
+<li>Excels at text generation</li>
+<li>Built by open-source veterans with VC backing</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>It is a free and open-source Python library that can be extended by any developer.</p>
+<h4>Langdock</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 9</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/langdock.webp" loading="lazy" alt="langdock"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.langdock.com/">Langdock</a> is an integrated platform for your developers and enterprise users. It contains all the tools developers need to build and deploy custom AI workflows. For enterprise users, it provides specific AI assistants, search tools, and AI chatbots to help users be more productive.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>An all-in-one platform</li>
+<li>Contains AI tools for enterprise users and developers</li>
+<li>Compatible with major Large Language Models</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The Langdock platform includes a free seven-day trial and a €25 per month business plan. There are also custom enterprise plans with customer-specific pricing.</p>
+<h4>Semantic Kernel</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 10</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/semantic-kernel.webp" loading="lazy" alt="semantic kernel"></div>
+  </div>
+  <figcaption>semantic kernel</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/">Semantic Kernel</a> is Microsoft's lightweight dev kit for creating AI agents using C#, Python, or Java. It's essentially a middleware layer on which you can build enterprise-grade AI agents with a variety of plugins. It is modular and extensible, making it easy to customize the framework to your specific requirements.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Supports the most common AI models</li>
+<li>Support for the C# programming language</li>
+<li>Azure integration</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>As with most open-source frameworks from Microsoft, the software is free and there to incentivize you to use the Azure Cloud platform.</p>
+<h4>Txtai</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 11</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/txtai-1.webp" loading="lazy" alt="txtai-1"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://neuml.github.io/txtai/">Txtai</a> is a <a href="https://akka.io/blog/the-database-is-the-bottleneck">database</a> for LLM orchestration, language model flows, and semantic search. You can think of it as a tool for turbocharging your autonomous agents. It is an Embeddings database that can work with audio, images, video, text, and documents. It has Python bindings and all the defaults necessary to get up and running quickly.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Embeddings database for semantic search</li>
+<li>Tuned for LLM orchestration</li>
+<li>Simplified agent creation</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>This is a free and open-source library with API bindings for other languages. The framework is free but you will pay for cloud hosting based on your chosen platform.</p>
+
+<h3>Visual &amp; Low-Code builders</h3>
+
+
+<p>No-code or low-code tools for visually building LLM apps, agents, or workflows.</p>
+<h4>AgentGPT</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 12</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/agentgpt.webp" loading="lazy" alt="agentgpt"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://agentgpt.reworkd.ai/">AgentGPT</a> is an interface wrapper in front of ChatGPT. It streamlines the process of creating AI agents by providing easy-to-understand templates for developers to create robust GenAI apps. AgentGPT makes the process as easy as entering a name and a goal.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Tools designed for scraping data on the web</li>
+<li>One-click creation of specialized AI agents</li>
+<li>Multiple templates to get started</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>There is a free trial with limited capabilities. The $40 pro plan gives you access to 30 agents per day and the latest ChatGPT model. There is also an enterprise plan with custom pricing.</p>
+<h4>Flowise</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 13</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/flowise-ai.webp" loading="lazy" alt="flowise-ai"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://flowiseai.com/">Flowise</a> is an LLM orchestration and AI agent creation tool for users who require a low-code solution. It provides all the functionality you need for LLM orchestration through over 100 integrations, even working with LangChain. There are API, SDK, and Embed options, providing flexibility for every type of developer.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Open-source low-code tools</li>
+<li>Over 100 integrations</li>
+<li>Ability to self-host on all three major cloud platforms</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Pricing starts at $35 per month and goes up to $65 per month for the pro package. There is an enterprise package with custom pricing.</p>
+<h4>Langflow</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 14</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/langflow.webp" loading="lazy" alt="langflow"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.langflow.org/">Langflow</a> provides a robust drag-and-drop interface over a Python framework that lets you create powerful agents that can connect to a variety of LLMs, APIs, and databases. It gives you the tools needed to focus on creativity instead of application architecture.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Available desktop application</li>
+<li>Drag and drop interface</li>
+<li>Expansive ecosystem</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The actual framework is free and open source, but you do need to pay for cloud hosting, which will depend on your usage.</p>
+<h4>N8n</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 15</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/n8n.webp" loading="lazy" alt="n8n"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://n8n.io/">N8n</a> platform focuses on giving you flexibility and control over how you create your AI agents. There is a drag-and-drop interface for people who want to create AI agents without using code. There is also a coding framework for developers who want maximum control.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Deploy on-premise to protect sensitive data</li>
+<li>Build powerful agentic systems that can integrate into any LLM</li>
+<li>Powerful drag-n-drop interface</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The starter plan is $20 per month when paid for annually and the Pro plan is $50 per month when paid for annually. There is also a custom enterprise plan with custom pricing.</p>
+<h4>Rivet</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 16</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/rivet.webp" loading="lazy" alt="rivet"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://rivet.ironcladapp.com/">Rivet</a> offers a visual programming environment for creating AI agents with LLMs. It provides a streamlined space for designing, debugging, and collaborating with other developers within your organization. This makes it an ideal solution for building sophisticated AI agents on LLMs, even without extensive software development experience.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Build AI agents without being a seasoned developer</li>
+<li>Desktop app supporting all 3 major platforms</li>
+<li>Built-in debugging support</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Free open-source desktop app with support for MacOS, Windows, and Linux.</p>
+<h4>SuperAGI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 17</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/superagi.webp" loading="lazy" alt="superagi"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://superagi.com/">SuperAGI</a> provides a flexible platform for users to create embedded AI agents for a variety of industries. It is a unified platform, providing all the associated integrations you need to automate sales, marketing, IT, and engineering tasks. It lets you create AI agents using a visual programming language, making the process faster and easier.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Modern agentic software for sales, marketing, automation, and customer support</li>
+<li>Use visual programming to create AI agents</li>
+<li>Grows continuously with reinforcement learning</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>SuperAGI has simplified pricing, coming in at $100/pack/month for 10,000 credits.</p>
+
+<h3>Retrieval-Augmented Generation (RAG) Stacks</h3>
+
+
+<p>Tools and platforms focused on building RAG pipelines with document indexing, chunking, and retrieval.</p>
+<h4>LlamaIndex</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 18</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/llamaindex.webp" loading="lazy" alt="llamaindex"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.llamaindex.ai/">LlamaIndex</a> focuses on providing tools to handle data on top of LLMs. This lets organizations extract, analyze, and act on complex data. LlamaIndex also provides an excellent cloud service for companies looking for an integrated solution that can do it all. It comes with a robust document parser to help you get more from your enterprise documents.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Easy manipulation of enterprise data</li>
+<li>Supports finance, manufacturing, IT, and other industries</li>
+<li>End-to-end tooling and cloud integration</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The framework is free, but there is a paid cloud service that charges $1.00 per 1,000 credits in North America and $1.50 per 1,000 credits in Europe.</p>
+
+<h3>Model &amp; ML foundations</h3>
+
+
+<p>Tools and platforms used to train, fine-tune, or deploy models (foundational infrastructure rather than orchestration).</p>
+<h4>Hugging Face</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 19</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/hugging-face.webp" loading="lazy" alt="hugging face"></div>
+  </div>
+  <figcaption>hugging face</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://huggingface.co/">Hugging Face</a> provides a central repository for models, datasets, and applications. There are available Spaces that allow you to share ML applications and demos with people around the world. Hugging Face is an entire ecosystem for developers and enterprises, offering the tools necessary to collaborate with others.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Over 1 million models are available to download and test</li>
+<li>Access major LLMs</li>
+<li>Support for major languages</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>There is an available Pro account for $9 per month that provides advanced features and Spaces Hardware where you can rent CPU and GPU time.</p>
+<h4>TensorFlow</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 20</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/tensorflow.webp" loading="lazy" alt="tensorflow"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.tensorflow.org/">TensorFlow</a> is Google's framework for creating machine learning models. TensorFlow makes it possible for experts and beginners to create a variety of ML models. It provides the functionality needed to load, process, and transform data to train your ML models.</p>
+<p><strong>Key features</strong></p>
+<ul>
+<li>Streamline model construction</li>
+<li>Massive support from Google</li>
+<li>Certification makes it easy to connect with experts</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>The TensorFlow framework is free to use but Google provides a variety of cloud hosting options for people looking to create and train ML models. <a href="https://colab.research.google.com/">Google Colab</a> is also a platform for people looking to run ML models.</p>
+
+<h3>Developer tools for prompting &amp; evaluation</h3>
+
+
+<p>Utilities and dev tools to help with prompt iteration, evals, and agent debugging.</p>
+<h4>Humanloop</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 21</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/humanloop.webp" loading="lazy" alt="humanloop"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://humanloop.com/">Humanloop</a> provides a platform that lets you develop, evaluate, and observe your AI applications for maximum performance. You get access to a platform for shipping AI products faster and with fewer problems. The Humanloop platform provides an intuitive UI for developing advanced AI products.</p>
+<p><strong>Key features</strong></p>
+<ul>
+<li>Compliance and security built-in</li>
+<li>Enterprise observability features</li>
+<li>Lets you ship and scale faster</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>Humanloop provides a free trial version with 50 eval runs and 10k logs/month. There is also an enterprise version with custom pricing and features built with the customer's needs in mind.</p>
+<h4>Mirascope</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 22</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/mirascope.webp" loading="lazy" alt="mirascope"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://mirascope.com/">Mirascope</a> provides LLM abstractions that are modular, reliable, and extensible. This library is an excellent option for developers looking for a simplified process of working with multiple LLMs. It is compatible with LLMs from providers like OpenAI, Antropic, Google, Groq, Mistral, and more.</p>
+<p><strong>Key features</strong></p>
+<ul>
+<li>Simple to use abstractions</li>
+<li>Integrates with most LLM providers</li>
+<li>OpenTelemetry integration out of the box</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>This tool is a free and open-source library with the only thing needed being Python programming experience.</p>
+<h4>Priompt</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 23</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/langchain-alternatives/priompt.webp" loading="lazy" alt="priompt"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://github.com/anysphere/priompt">Priompt</a> is a small open-source prompting library that uses priorities to set the context window. It emulates libraries like React, making it an excellent choice for seasoned JavaScript developers who want to get into creating AI agents. The creator advocates for treating prompt design the same way we design websites, which is why the library works the way it does.</p>
+<p><strong>Key features</strong></p>
+<ul>
+<li>Provides a new way of looking at prompt design</li>
+<li>Optimized prompts for each model</li>
+<li>JSX-based prompting</li>
+</ul>
+<p><strong>Pricing</strong></p>
+<p>This is a small, free, and open-source library.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>The next step after LangChain? Consider Akka</h2>
+<p>LangChain has played a key role in making LLM app development more accessible, but it's no longer the only option (or always the best one). As GenAI projects grow in complexity, developers now have access to a wide range of tools tailored for specific needs, from rapid prototyping to enterprise-scale deployments.</p>
+<p>For teams that need real-time responsiveness, strong memory handling, or distributed processing, <a href="https://akka.io/">Akka</a> offers a compelling alternative. Built on the JVM and designed for durability and performance, it's better suited for production environments where reliability is non-negotiable.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Apr 30, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

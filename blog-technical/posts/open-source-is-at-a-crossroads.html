@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open source is at a crossroads — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">open-source-is-at-a-crossroads</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · ARCHITECT / CTO · SECURITY</div>
+  <h1 class="title">Open source is at a crossroads</h1>
+  <p class="standfirst">SYNDICATED POST By Bill Doerrfeld. Originally posted at&nbsp; The New Stack .</p>
+  <div class="byline">
+    <div><span class='au'>Tyler Jewell</span> · CEO</div>
+    <div class="r"><time datetime="2024-05-07">May 7, 2024</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<div class="enote">
+<p class="lede"><strong>SYNDICATED POST</strong></p>
+<p>By Bill Doerrfeld. Originally posted at&nbsp;<a href="https://thenewstack.io/open-source-is-at-a-crossroads/" target="_blank" rel="noopener">The New Stack</a>.</p>
+</div>
+<p>The cracks are beginning to show in this global ecosystem, as many projects lack the basic funding to sustain the software that literally runs the world.</p>
+<p>Open source software is having a midlife crisis. Open source contributors are struggling to keep pace. Popular open source projects are making restrictive licensing changes. <a href="https://thenewstack.io/linux-xz-backdoor-damage-could-be-greater-than-feared/" target="_blank" rel="noopener">Backdoor threats</a> are placing the open source supply chain in jeopardy. And, no one seems to have a clear grasp on <a href="https://thenewstack.io/open-source-has-a-definition-lets-get-serious-about-defending-it/" target="_blank" rel="noopener">what “open” means in the context of artificial intelligence</a>.</p>
+<p>This whirlwind of challenges makes for a scary prospect if left to spiral. “The effect on our lives if open source software disappeared would be incalculable,” said <a href="https://www.linkedin.com/in/ruthsuehle/" target="_blank" rel="noopener">Ruth Suehle</a>, an executive vice president of the Apache Software Foundation. Yet, the cracks are beginning to show in this global ecosystem, as many projects lack the basic funding to sustain the software that quite literally <a href="https://hbr.org/2021/09/the-digital-economy-runs-on-open-source-heres-how-to-protect-it" target="_blank" rel="noopener">runs the world</a>.</p>
+<p>Like a brittle climate on the brink of collapse, there would be significant ripple effects if the life-giving waters of open source begin to dry up. “If one piece of the water cycle breaks, the well’s water won’t be replenished, and those who rely on it will suffer,” Suehle said.</p>
+<p>Yet, some open source maintainers already feel they have no choice but to reposition their software licenses to stay afloat. “Open source today is at a breaking point,” said <a href="https://www.linkedin.com/in/wmorgan/" target="_blank" rel="noopener">William Morgan</a>, CEO of Buoyant. According to Morgan, a significant inequality has emerged between open source contributors and the companies using these projects, necessitating a change to the fundamental dynamics of the open source value chain.</p>
+<p>Others view today’s inflection point as nothing new for an industry that has weathered macroeconomic uncertainties over the decades.</p>
+<p>“These tensions pale in comparison to some of the others open source has faced in the past,” said <a href="https://www.linkedin.com/in/danlorenc/" target="_blank" rel="noopener">Dan Lorenc</a>, founder and CEO of <a href="https://www.chainguard.dev/?utm_content=inline+mention" target="_blank" rel="noopener">Chainguard</a>. Yet, he acknowledges the industry is currently at a major crossroads in how it thinks about and consumes open source. In this climate, other <a href="https://thenewstack.io/whats-next-for-companies-built-on-open-source/" target="_blank" rel="noopener">tech leaders question</a> if the open source model is still a valid business strategy.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Sudden licensing changes</h2>
+
+
+<p>On top of mind for most open source users is the recent slew of restrictive licensing changes for heavily used projects, including HashiCorp’s <a href="https://thenewstack.io/hashicorp-abandons-open-source-for-business-source-license/" target="_blank" rel="noopener">Terraform</a>, <a href="https://www.theregister.com/2024/03/22/redis_changes_license/" target="_blank" rel="noopener">Redis</a>, <a href="https://www.itprotoday.com/hybrid-cloud/two-ways-interpreting-elastic-license-change" target="_blank" rel="noopener">Elasticsearch</a>&nbsp;and Bouyant’s <a href="https://thenewstack.io/buoyant-revises-release-model-for-the-linkerd-service-mesh/" target="_blank" rel="noopener">Linkerd</a>. “The changes of licenses in many of the large open source projects in the last year took the entire industry by surprise,” said <a href="https://www.linkedin.com/in/nirga/?originalSubdomain=il" target="_blank" rel="noopener">Nir Gazit</a>, CEO and co-founder of Traceloop.</p>
+<p>Sudden shifts toward more restrictive licenses have users questioning the longevity of open source as a whole. “As an open source maintainer of an Apache-2.0 repository, I often hear this concern from potential users,” he said.</p>
+<p>The move toward more restrictive source code not only affects individual developer users — it impacts businesses that build around <a href="https://thenewstack.io/how-free-riders-make-the-musl-open-source-project-grow/" target="_blank" rel="noopener">open source projects</a>.</p>
+<p>Liz Rice, who is the chief open source officer for Isovalent and a board member of the <a href="https://cncf.io/?utm_content=inline+mention" target="_blank" rel="noopener">Cloud Native Computing Foundation</a> and OpenUK, also considers the trend around relicensing to be a pressing challenge for open source.</p>
+<p>“While these companies have every right to protect their business interests, relicensing raises a number of questions and concerns across the ecosystem,” she said.</p>
+<p>Another ill-defined area for <a href="https://thenewstack.io/how-do-open-source-licenses-work-the-ultimate-guide/" target="_blank" rel="noopener">open source licensing</a> is determining what precisely constitutes open source in the realm of artificial intelligence. For instance, open language language models could be trained on proprietary assets, complicating ownership. “Open source licenses generally assume that software IP lies in source code,” said Neo4j’s CTO <a href="https://twitter.com/prathle" target="_blank" rel="noopener">Philip Rathle</a>. “AI shifts this upstream.”</p>
+
+</div>
+
+<div class="body col">
+
+<h2>No more free lunch</h2>
+
+
+<p>The donation jar isn’t working for open source. The big problem with the open source model is that the vast majority of organizations who freely use these projects <a href="https://cloudnativenow.com/features/why-cloud-native-companies-should-support-open-source/" target="_blank" rel="noopener">don’t actively contribute back</a> to them, either financially or through code commits. Instead, they are more likely to request bug fixes or extensions, putting undue pressure on maintainers to work without pay.</p>
+<p>As Morgan described, “Open source has become, as Bruce Perens puts it, a ‘<a href="https://www.itpro.com/software/open-source/bruce-perens-open-source-licenses-arent-working-but-we-can-fix-them" target="_blank" rel="noopener">great corporate welfare program</a>,’ where the beneficiaries are companies like <a href="https://cloud.google.com/?utm_content=inline+mention" target="_blank" rel="noopener">Google</a>, <a href="https://news.microsoft.com/?utm_content=inline+mention" target="_blank" rel="noopener">Microsoft</a>, <a href="https://aws.amazon.com/?utm_content=inline+mention" target="_blank" rel="noopener">Amazon</a>, and Apple, who get to build billion-dollar revenue streams on the backs of open source, and the charity workers are the maintainers and engineers developing the projects.”</p>
+<p>People also don’t often realize that community management for open source projects is a full-time job, said AsyncAPI Initiative founder <a href="https://www.linkedin.com/in/fmvilas/?originalSubdomain=es" target="_blank" rel="noopener">Fran Mendez</a>. This encompasses tasks beyond the code, like design, technical writing, marketing, responding to disputes and upkeeping a code of conduct. Money is required to support these initiatives, but the project stewards are rarely sustainably funded.</p>
+<blockquote>
+<p>Consider the case of Akka, one runtime for distributed applications, which recently altered its open source license. As <a href="https://www.linkedin.com/in/tylerjewell/" target="_blank" rel="noopener">Tyler Jewell</a>, CEO of Akka explained, after 13 years, the team could no longer maintain the software without equitable contributions from the nearly 100,000 commercial organizations using it. “We altered our license model to enable us to better sustain the maintenance and improvement of the project while still making it freely available to the vast majority of developers.”</p>
+</blockquote>
+
+</div>
+
+<div class="body col">
+
+<h2>Economic headwinds</h2>
+
+
+<p><a href="https://thenewstack.io/3-ways-to-help-struggling-open-source-communities/" target="_blank" rel="noopener">Struggles in open source communities</a> undoubtedly stem from the greater economic climate. The start of the current decade saw a low interest rate environment, which Lorenc credits as ushering in a massive boom in the number of open source companies and projects. But now, we are experiencing significant realignment. “Time and money are even more scarce, making it harder for contributors or companies to allocate resources,” he said.</p>
+<p>“Many, but not all, open source businesses are at a crossroads,” said <a href="https://www.fermyon.com/?utm_content=inline+mention" target="_blank" rel="noopener">Fermyon</a> CEO&nbsp;<a href="https://www.linkedin.com/in/mattbutcher/" target="_blank" rel="noopener">Matt Butcher</a>. For ages, the theory was that you built an open source tool, established a community and then figured out how to monetize it. But now, the companies in that final stage are under immense pressure to increase profit, he said. “For some, that means abandoning the open source model.”</p>
+<p>A lack of resources to justify open source may also stem from a “plethora of riches” problem, explains <a href="https://www.linkedin.com/in/caniszczyk/" target="_blank" rel="noopener">Chris Aniszczyk</a>, the chief technology officer of CNCF. With so many projects vying for attention, it’s easier than ever for innovative projects to lose out on the resources they require. “As an industry, we should consider focusing our efforts on identifying and sustaining the critical open-source projects out there,” he said.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Operational immaturity</h2>
+
+
+<p>It’s not just business sustainability qualms that threaten <a href="https://thenewstack.io/effective-strategies-for-open-source-supply-chain-management/" target="_blank" rel="noopener">open source — immature software supply chain management</a> practices do as well. “Wildly adopting projects without care or thought on how to maintain or secure them just delays the inevitable pain, and we’re facing that today,” explains Lorenc.</p>
+<p>For instance, cyberthreats are exposing the vulnerabilities inherent in modern software solutions, which <a href="https://www.linuxfoundation.org/blog/blog/a-summary-of-census-ii-open-source-software-application-libraries-the-world-depends-on" target="_blank" rel="noopener">the Linux Foundation</a> estimates are comprised of 70%-90% free and open source software. One recent damming exploit involved attackers contributing malicious commits to <a href="https://arstechnica.com/security/2024/04/what-we-know-about-the-xz-utils-backdoor-that-almost-infected-the-world/" target="_blank" rel="noopener">xz Utils</a>, a ubiquitous open source compression tool in Linux.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What open source needs to survive</h2>
+
+
+<h3>Open source foundations</h3>
+
+
+<p>First and foremost, experts agree that open source foundation bodies like The Linux Foundation and the Apache Software Foundation will play a pivotal role in stabilizing the future of open source. “The path we take from this crossroads is likely to involve more projects contributed to foundations,” said Rice. Such bodies can guide open governance and set rules to prohibit relicensing, giving developers more reassurance in integrating projects into their software.</p>
+
+<h3>More equitable ecosystems</h3>
+
+
+<p>Secondly, open source software maintainers will require more support in terms of funding and active contributions to sustain their projects. “Much of what we need now is not a technical solution, it’s collaboration,” Suehle said, “especially from organizations that rely on open source.”</p>
+<p>According to Aniszczyk, this collaboration must go beyond GitHub sponsors and donation platforms, which effectively turn maintainers into <a href="https://www.linkedin.com/pulse/troubles-open-source-gig-economy-sustainability-tip-jar-aniszczyk" target="_blank" rel="noopener">gig economy workers</a>. Mendez proposes a future model wherein Open Collective enables more of a Stripe-like checkout experience for certain add-on features.</p>
+
+<h3>Intentional business strategies</h3>
+
+
+<p>Not everything needs to be open sourced. As such, a more sustainable open source ecosystem will hinge on carefully determining what should be free and open and what deserves to be premium. For Butcher, a good rule of thumb is to open source the technologies individual developers need while gating premium features that are useful only for large deployments or organizations.</p>
+
+<h3>New frameworks</h3>
+
+
+<p>The traditional open source definition doesn’t mesh well with the rapidly evolving world of AI. “We need a new framework that accommodates all of these nuances,” said Rathle. He highlights the work of <a href="https://genaicommons.org/" target="_blank" rel="noopener">GenAI Commons</a> and the importance of new licenses that gauge the <a href="https://arxiv.org/abs/2403.13784" target="_blank" rel="noopener">openness of all components</a> within an AI model, such as the foundational datasets, preprocessing code, model architecture and model parameters.</p>
+
+<h3>Doubling down on security</h3>
+
+
+<p>“Security can’t be an afterthought anywhere in the industry, but this applies particularly strongly to open source, where fragmented communities of paid contributors and volunteers alike operate autonomously,” said Lorenc. Memory-safe languages and secure-by-default settings can go a long way toward eliminating the bulk of bugs and attack vectors, he said. Better inventory management using SBOMs and vulnerability scanners will also be key to safeguarding open source software.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Case study: AsyncAPI initiative</h2>
+
+
+<p>One example of a community-led and sustainable open source initiative is <a href="https://www.asyncapi.com/en" target="_blank" rel="noopener">AsyncAPI</a>. AsyncAPI was founded in 2016 to define an open standard specification for messaging APIs. As <a href="https://www.youtube.com/watch?v=28cKNSsFFU0&amp;ab_channel=AsyncAPI" target="_blank" rel="noopener">Mendez describes</a>, AsyncAPI became more than a side project when he realized Slack was actively implementing it in production. As adoption and community support for AsyncAPI grew, corporations tried to buy up the intellectual property.</p>
+<p>Yet, <a href="https://www.linuxfoundation.org/press/press-release/linux-foundation-will-host-asyncapi-to-support-growth-and-collaboration-for-industrys-fastest-growing-api-spec" target="_blank" rel="noopener">in 2021</a>, the community donated the project to the <a href="https://training.linuxfoundation.org/training/course-catalog/?utm_content=inline+mention" target="_blank" rel="noopener">Linux Foundation</a>, safeguarding the technology and its governance as a vendor-neutral initiative.</p>
+<p>Mendez then got a job at Postman, which has been funding his full-time work on AsyncAPI with no strings attached. “We are fricking lucky,” he said. Such a situation is rare, which is why he believes more <a href="https://thenewstack.io/non-contributing-developers-expect-companies-to-support-open-source/" target="_blank" rel="noopener">companies should invest in employing people to support open source</a> full time.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Case study: Linkerd</h2>
+
+
+<p>However, not all open source projects can source equitable funding this way, especially when a single company is at the helm of nearly all development. Consider <a href="https://www.sdxcentral.com/articles/news/linkerd-leaves-open-source-behind-to-fund-innovation/2024/02/" target="_blank" rel="noopener">the recent evolution</a> around <a href="https://linkerd.io/" target="_blank" rel="noopener">Linkerd</a>, the popular lightweight cloud native service mesh. “We made a decision earlier this year with Linkerd to stop building open source stable release artifacts, and to start charging money for proprietary stable release artifacts instead,” describes Bouyant’s Morgan.</p>
+<p>Interestingly, the move is in line with the <a href="https://www.tildee.com/understanding-the-implications-of-linkerds-new-licensing-model-and-the-role-of-cncf/" target="_blank" rel="noopener">rules for CNCF-graduated projects</a>, as they do not mandate stewards to issue new builds. Although the decision to gate stable releases for premium payers sparked outrage among some open source zealots, Morgan says it was necessary to strike a healthier balance. “As a result, Linkerd has been healthier and faster-growing than ever, and our ability to reinvest in the project has increased exponentially.”</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Times are a-changin’</h2>
+<p>Although budgetary struggles are a top challenge in the open source ecosystem, they are not exclusive to this area, as belt-tightening and <a href="https://www.npr.org/2024/01/28/1227326215/nearly-25-000-tech-workers-laid-off-in-the-first-weeks-of-2024-whats-going-on" target="_blank" rel="noopener">layoffs</a> have been playing out throughout the tech industry in recent years. Organizations are also facing rising <a href="https://leaddev.com/tech/ai-and-kubernetes-are-pushing-cloud-costs-out-control" target="_blank" rel="noopener">cloud native costs</a> and an urge to <a href="https://devops.com/can-improving-developer-experience-actually-reduce-costs/" target="_blank" rel="noopener">streamline developer productivity</a> to cut costs. “The overall software industry is facing a set of challenges I liken to a ‘hangover’ after years of carefree adoption,” added Lorenc.</p>
+<p>But, given how pervasive open source software is, fractures in this ecosystem are cause for concern. If more projects fall off the wayside, it could have detrimental effects across the board. As such, companies should be aware of the open source they are using and consider how they can give back. “Collaboration in open source across our projects, foundations, nationalities, and employers is critical to the entire world, whether it’s contributions of time, money, skills, or other resources,” Suehle said.</p>
+<p>The thing is, many maintainers have made calls for collaboration, yet they still lack an equitable exchange with consumers. This situation could stifle early-stage innovators, forcing many to rethink the open source software model entirely. As Rice said, “Startups may struggle to develop and protect their own intellectual property as a competitive edge in an environment where everyone looks less favorably on non-foundation open source projects.”</p>
+<p>That said, the open source software ecosystem is vast, and certain areas are experiencing positive growth. “Open source is thriving in both letter and spirit,” said Rathle, who points to the excitement around open source AI. Such excitement and development could inspire a new age of open source creators — hopefully, with the support they deserve.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · May 7, 2024
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

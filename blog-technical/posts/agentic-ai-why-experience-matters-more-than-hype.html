@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI: Why Experience Matters More Than Hype — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">agentic-ai-why-experience-matters-more-than-hype</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · ARCHITECT / CTO · RESOURCES</div>
+  <h1 class="title">Agentic AI: Why Experience Matters More Than Hype</h1>
+  <p class="standfirst">The artificial intelligence landscape is evolving at a breakneck pace, and nowhere is this more apparent than in the emerging field of agentic AI. As companies rush to build and deploy intelligent, distributed systems, the conversation is shifting from what’s possible to what’s reliable and trustworthy.</p>
+  <div class="byline">
+    <div><span class='au'>Tyler Jewell</span> · CEO</div>
+    <div class="r"><time datetime="2025-08-28">Aug 28, 2025</time> · 6 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">The artificial intelligence landscape is evolving at a breakneck pace, and nowhere is this more apparent than in the emerging field of agentic AI. As companies rush to build and deploy intelligent, distributed systems, the conversation is shifting from what’s possible to what’s reliable and trustworthy.</p>
+
+<p>But in the midst of this shift, we’re also seeing a familiar pattern of speculative frenzy—a “<a href="https://craigmccaskill.com/ai-bubble-history">bubble that knows it’s a bubble</a>,” as Craig McCaskill aptly puts it. Valuations are soaring far beyond the fundamentals of revenue or, more critically, proven longevity.</p>
+<p>Take LangChain. Experimentation with it for&nbsp;early projects has been significant. A <a href="https://techcrunch.com/2025/07/08/langchain-is-about-to-become-a-unicorn-sources-say/">recent report</a> suggests a $1B+ valuation—with annual recurring revenue (ARR) estimated at less than $15 million. A&nbsp;66x&nbsp;multiple?&nbsp;🤔 Based on the history of other tectonic technology shifts, this kind of disconnect between market hype and production results should give every enterprise leader pause.&nbsp;</p>
+<p>Recent community discussions about LangChain suggest many have already paused:</p>
+<ul>
+<li><a href="https://www.reddit.com/r/LangChain/comments/1my12yy/is_langchain_dead_already/">Is LangChain dead already?</a></li>
+<li><a href="https://www.reddit.com/r/LangChain/comments/1li88s3/why_is_langchain_so_difficult_to_use/">Why is LangChain so difficult to use?</a></li>
+<li><a href="https://www.reddit.com/r/LangChain/comments/1j1gb88/why_are_developers_moving_away_from_langchain/">Why are developers moving away from LangChain?</a></li>
+</ul>
+<p>Early data from the broader market shows a clear need to separate hype from results:</p>
+<ul>
+<li>A 2025 MIT study found that <a href="https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/">95% of AI attempts are failing</a> to deliver expected results.</li>
+<li>The Rand Corporation reports that AI-related projects <a href="https://www.rand.org/pubs/presentations/PTA2680-1.html">fail at a rate twice as high</a> as non-AI related projects.</li>
+<li>S&amp;P Global found that <a href="https://thisweekhealth.com/news_story/ai-project-failures-surge-to-42-as-companies-struggle-to-scale/#:~:text=A%20report%20from%20S%26P%20Global%20Market%20Intelligence%20indicates,initiatives%20in%202025%2C%20up%20from%2017%25%20in%202024.">AI projects are being abandoned at twice the rate in 2025</a> than they were in 2024.</li>
+</ul>
+<p>This isn’t failure of imagination—it’s failure of infrastructure engineering. These statistics don’t indicate that AI is dead. Not even close. They show that most agentic projects today are experiments, not hardened systems. That’s the real gap. The hype is meaningful. The deployments are not.</p>
+
+<h3>Agentic systems are distributed systems—with new classes&nbsp;of complexity</h3>
+
+
+<p>What makes agentic AI—systems that can plan and act autonomously—attractive, is also what makes it fundamentally complex to operate at scale. These systems are not just stateless function calls or chained APIs. They are stateful, long-running, concurrent processes that act autonomously in partially observable environments.</p>
+<p>That puts them squarely in the domain of distributed systems.&nbsp;</p>
+<p>And they introduce new layers of complexity that go beyond conventional cloud architectures:</p>
+<ul>
+<li><strong>Stochastic Components. </strong>LLMs are high-latency, non-deterministic functions. They introduce probabilistic behavior into the execution path, requiring new approaches to resilience, testing, and observability.</li>
+<li><strong>Specialized Infrastructure. </strong>&nbsp;LLM inference often runs on GPUs, with different scaling, scheduling, and failure modes than CPU-bound services. Coordinating between CPU-based agents and GPU-based reasoning steps adds new resource orchestration concerns.</li>
+<li><strong>Long-Lived Workflows. </strong>Agentic systems aren’t request/response. Tasks may span hours, days, or weeks. They require persistent memory, resumable execution, and consistent coordination across time.</li>
+<li><strong>Side-Effecting Actions. </strong>Unlike pure data pipelines, agentic systems routinely take actions with irreversible effects—sending emails, updating records, provisioning infrastructure. That raises the stakes for consistency, idempotency, and auditability.</li>
+</ul>
+<p>This isn’t just “microservices, but smarter.” It’s a fundamentally harder problem domain.</p>
+<p>Agentic systems require you to reason about durability, observability, backpressure, concurrency, state propagation, and scheduling, all while considering probabilities, predictions,&nbsp;and real-world side effects. You don’t get this for free from an LLM. And you certainly don’t get it from a new orchestration library.</p>
+<p><a href="https://akka.io/blog/agentic-systems-are-distributed-systems">Agentic systems are distributed systems</a>, but with failure modes and complexity classes most teams haven’t had to routinely deal with before.</p>
+
+<h3>We've seen this movie before</h3>
+
+
+<p>LangGraph, a LangChain product, is one of the frameworks in the agentic AI ecosystem. It allows developers to define agent workflows as graphs, combining memory, tools, branching logic, and control flow into a single execution model.</p>
+<p>But, it’s important to understand what LangGraph really is: a durable execution engine.</p>
+<p>That means it’s implicitly responsible for coordinating distributed state across time, machines, and failures. It must ensure that when a step is defined, it will eventually be executed, exactly once, in the right order, with the right context, even in the face of failure.</p>
+<p>This is a fundamentally hard class of system to build. Durable execution engines are not just function orchestrators. They are distributed systems that need to account for persistence, recovery, idempotency, retries, and external side effects.</p>
+<p>We’ve seen this exact challenge play out before:</p>
+<ul>
+<li><strong>Apache Storm</strong> delivered on low-latency processing, but failed under load due to missing backpressure controls and brittle fault recovery.</li>
+<li><strong>Netflix Conductor </strong>brought workflow orchestration to microservices, but struggled with retry safety, coordination semantics, and observability under scale.</li>
+<li>Even <strong>Apache Spark</strong>, now battle-hardened, took years of operational refinement to handle the realities of distributed memory management, fault recovery, and job scheduling.</li>
+</ul>
+<p>These systems didn’t fall short because they were poorly designed. They fell short because distributed systems are adversarial by nature. Edge cases happen constantly, and the only way to build confidence is by surviving them in production.</p>
+<p>LangGraph hasn’t gone through that phase yet. It’s early, evolving, and promising, but as with all systems in this category, the abstractions are only as trustworthy as the runtime beneath them.</p>
+<p>Durable execution is a commitment, not a feature or an add-on product. And in distributed systems, every commitment comes with a liability: to state, to failure handling, to correctness. You don’t get those guarantees by writing a YAML spec or wrapping a call in a try/except block. You get them by building infrastructure that has failed—and been fixed—at scale.</p>
+
+<h3>What we have learned at Akka</h3>
+
+
+<p>Over the past 15 years, Akka has helped <a href="/customer-stories" rel="noopener">companies</a> build distributed systems that operate reliably at scale. The systems powered by Akka don’t just serve dashboards or call APIs. They detect fraud, manage payments, route logistics, process petabytes of data, and keep global infrastructure running. Some of our customers have achieved more than a decade of uninterrupted uptime.</p>
+<p>That didn’t happen by chance. It came from solving real operational problems like:</p>
+<ul>
+<li><strong>Queue saturation</strong> → Prioritized, bounded mailboxes and backpressure-aware protocols</li>
+<li><strong>Node crashes during execution</strong> → Event-sourced actors that persist state and resume correctly</li>
+<li><strong>Cascading retries</strong> → Circuit breakers and supervisory hierarchies</li>
+<li><strong>Distributed debugging</strong> → Structured tracing, actor-based observability, and log correlation</li>
+<li><strong>Workflows that span time</strong> → Durable, resumable processes that maintain state across restarts and deployments</li>
+<li><strong>And much more…</strong></li>
+</ul>
+<p>This wasn’t theoretical. Each architectural choice came from a production incident or a scaling constraint. Real infrastructure evolves with <a href="https://trust.akka.io/customer-support" rel="noopener" target="_blank">postmortems</a>, not design documents.</p>
+
+<h3>The path forward: What enterprises actually care about</h3>
+<p>When we talk to executives and engineering teams building agentic systems, their goals aren’t philosophical, they’re operational. And across industries, the priorities are consistent:</p>
+<ol>
+<li><strong>Get into production, quickly. </strong>It’s not enough to spin up a demo or run a quick start. Organizations want to ship agentic capabilities into production, and continue shipping, week after week, release after release. That means architectural consistency, developer velocity, and tooling that doesn’t fall apart under real-world pressure.</li>
+<li><strong>Stay there, safely. </strong>&nbsp;Reliability is just the baseline. Teams need consistency, observability, evaluation, compliance, and security, especially when agents are acting on sensitive data or triggering real-world side effects. It all comes down to trust.</li>
+<li><strong>Scale, cost-effectively. </strong>Once agentic systems are live, efficiency matters. The ability to scale horizontally, contain compute costs, minimize token consumption, and avoid operational complexity is a gating factor for production success.</li>
+</ol>
+<p>These are the outcomes that define success for agentic systems in the enterprise. And they’re the reason most projects fail to cross the gap from prototype to production. Moreover, this is the basis for why experts in the trenches with enterprise customers claim, “Quite simply, Akka provides the <a href="https://akka.io/blog/news-akka-and-deloitte">industry’s best way to build agentic AI systems</a> that scale in the enterprise and ensure stability, performance, and outcomes.”&nbsp;</p>
+<p>The promise of agentic AI is real, but the technology to deliver it must be built on a foundation of stability, trust, and proven performance. In a hyped up market where a vendor's valuation can balloon (and evaporate) overnight, it is essential to choose a partner that has been building the future of distributed systems for more than a decade, not just riding the current wave.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Aug 28, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

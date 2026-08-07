@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka Memory — durable, in-memory, sharded — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#DCDCD6;--body:#B8B8B3;--mute:#7C7C79;--faint:#4E4E4C;--rule:rgba(255,255,255,0.08);--rule-hi:rgba(255,255,255,0.14);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.55;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+/* Inline body-prose links inherit body text color; a subtle gold underline
+   is the only link cue. Colored links (even at low weight) outweighed the
+   dim body text on the dark background. Hover reveals the accent color. */
+.body p a,.body li a{color:inherit;font-weight:inherit;border-bottom:1px solid rgba(233,180,38,0.5);padding-bottom:1px}
+.body p a:hover,.body li a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+/* When .wide is emitted inside .body.col (640px column), break it out so
+   tables and figures still land at the wider 940px measure the exemplar
+   expects. Higher specificity than the base .wide rule; no !important needed
+   now that HubSpot's overriding theme CSS is gone. */
+/* Wide/table breakouts still go 940px so tables and code samples aren't
+   cramped by the 640px reading column. Figures stay in the reading column
+   so their title + caption left-align with body prose; only the plate
+   inside the figure breaks out to a wider measure. */
+.body.col > .wide,.body.col > .table-scroll{width:min(940px,calc(100vw - 40px));max-width:min(940px,calc(100vw - 40px));margin-left:calc(320px - min(470px,50vw - 20px));margin-right:auto;padding-left:0;padding-right:0}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:600;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:20px;font-family:var(--text);font-size:18px;line-height:1.55;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 20px 24px;padding-left:16px}
+.body ul{list-style:disc outside}
+.body ol{list-style:decimal outside}
+.body li{margin-bottom:12px;padding-left:4px;font-family:var(--text);font-size:18px;line-height:1.45;color:var(--body)}
+/* When a list follows an introductory paragraph, pull it up so the list
+   reads as a continuation of the sentence rather than a distant block. */
+.body p + ul,.body p + ol{margin-top:-8px}
+.body li::marker{color:var(--accent)}
+/* Code blocks: wrap long lines rather than force a horizontal scroll. */
+.body pre[class*="language-"],pre[class*="language-"]{white-space:pre-wrap;word-break:normal;overflow-wrap:break-word}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. Source callouts
+   that need the left-rail "editor's note" look should use class="enote". */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.body blockquote:not(.pullquote):not(.enote) p{font-family:inherit;font-size:inherit;font-weight:400;margin:0}
+/* Callout with a small accent label — same top+bottom hairline framing as
+   .pullquote, no left rail. Left-aligned rather than centered so the label
+   + body reads as an aside rather than a display quote. */
+.enote{max-width:720px;margin:36px auto;padding:22px 0;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--text);font-size:17px;line-height:1.55;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:10px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+/* Figure lives inside .wide (940px, centered). Title (viz-title kicker + h4)
+   and caption (figcaption) are constrained to body-col width (640px) and
+   centered within .wide, so they line up with body prose no matter how
+   wide the graphic runs. The plot-wrap sizes to --fig-w (or full width). */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > figcaption,
+figure.tbl > .viz-title,
+figure.tbl > h4,
+figure.tbl > figcaption{max-width:640px;margin-left:auto;margin-right:auto;text-align:left}
+figure.viz > .plot-wrap{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title,figure.tbl .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4,figure.tbl h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:0}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:0}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:0;width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin-top:14px;letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%;border-collapse:collapse;font-family:var(--text);font-size:15px;line-height:1.5;color:var(--body)}
+.table-scroll caption{text-align:left;caption-side:top;font-family:var(--display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:10px}
+.table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+.table-scroll th{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);border-bottom-color:var(--ink)}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+/* figure.tbl mirrors figure.viz — same viz-title kicker + h4 header + caption
+   pattern. Title and caption align with body prose (640px column); the table
+   itself can widen to the full .wide breakout (940px). */
+figure.tbl{margin:52px 0}
+figure.tbl > figcaption{font-family:var(--text);font-size:13px;line-height:1.5;color:var(--mute);margin-top:12px;letter-spacing:0.01em}
+figure.tbl > figcaption b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+.rtbl{width:100%;margin:0;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Memory · State · Sharding</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Product · Akka Memory</div>
+  <h1 class="title">Akka Memory: durable, in-memory, and sharded data.</h1>
+  <p class="standfirst">
+    Every agent needs memory. The kind that survives a crash, moves with the shard, streams changes to whoever's listening, and lands in an audit trail. Akka Memory ships that as the default.
+  </p>
+  <div class="byline">
+    <div><span class="au">Alan Klikic</span> · Sr. Director, Architect &amp; AI Advocate</div>
+    <div class="r"><time datetime="2024-11-12">Nov 12, 2024</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Akka Memory provides durable, in-memory, and sharded data for AI agents. It gives agents the ability to recall and reason across both short-term and long-term sessions, supporting fast, low-latency decisions and maintaining continuity across sessions, users, and goals. That memory is required for context engineering — structuring what an agent knows so it can perform complex tasks reliably across multiple interactions.</p>
+
+<h2>Durable event-sourced memory</h2>
+<h3>Every state change is an immutable event.</h3>
+
+<p>One of the things I love about Akka Memory is its event-sourced backbone. If you're not familiar with event sourcing, it is an architecture pattern that tracks state changes sequentially as a series of events and persists those events transparently to an event journal. Think of it as an audit log: every time something transpires, we record it as an immutable historical event.</p>
+
+<p>For optimization we also provide snapshotting to capture the current state of an agent or entity. Then, on startup, we do not have to replay all events to reconstruct the current state — we only need to load the most recent snapshot and replay the events that happened after it.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:465px">
+  <p class="viz-title">Figure 1</p>
+  <h4>Recovery from an event journal.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--flush">
+      <img src="https://akka.io/hubfs/website/diagrams/png/empty-recovered-state-agent-bg.png" alt="Agent recovering state from event journal">
+    </div>
+  </div>
+  <figcaption><b>The recovery sequence.</b> ① The app starts with empty state. ② On instantiation it asks the event store to replay all historical events. ③ On the right, the app is fully hydrated. Snapshots collapse the middle step for large event histories.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Subscribe to memory changes</h2>
+<h3>Every stored event is also a stream event.</h3>
+
+<p>Whenever a piece of information is updated, Akka's event-driven memory tracks it as an immutable fact and instantly streams those changes to any interested agents or components. With Akka Streaming, setting up these subscriptions feels invisible: an agent declares what it cares about, and it starts receiving change notifications the moment they happen.</p>
+
+<p>This capability enables adaptive systems. Agents respond, coordinate, and update their behavior the moment something shifts in their environment. Multiple streams can be composed with Views to shape the information flow to fit whatever the downstream needs.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:401px">
+  <p class="viz-title">Figure 2</p>
+  <h4>Memory events flow outward as they happen.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--flush">
+      <img src="https://akka.io/hubfs/website/diagrams/png/subscribe-memory-alt-bg.png" alt="Memory change events streaming to subscribers">
+    </div>
+  </div>
+  <figcaption><b>Every update fans out.</b> Emitters on the left produce events; subscribers on the right consume them. Streams can be filtered, combined into Views, and consumed by other agents. Coordinated multi-agent behaviour uses this pattern.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Events as evaluation signal</h2>
+<h3>An LLM-judge pattern falls out for free.</h3>
+
+<p>Evaluation events give your agents a built-in feedback loop by emitting state-change notifications that other agents can consume and act on in real time. For example, a <code>PreferencesEntity</code> emits an event whenever user preferences are updated. You can hook an <code>EvaluatorAgent</code> to that event stream via a Consumer, and the evaluator scores the interaction against the new preferences the moment they change.</p>
+
+<p>I have found this "LLM as judge" pattern invaluable for enforcing business rules and maintaining high response quality without polling or manual triggers. Agents simply listen for events, evaluate, and adjust their behavior on the fly.</p>
+
+</div>
+
+<div class="wide">
+<pre><code class="language-java">@ComponentId("evaluator-agent")
+@AgentDescription(
+    name = "Evaluator Agent",
+    description = """
+      An agent that acts as an LLM judge to evaluate the quality of AI responses.
+      It assesses whether the final answer is appropriate for the original question
+      and checks for any deviations from user preferences.
+      """,
+    role = "worker")
+public class EvaluatorAgent extends Agent {
+
+  public Effect&lt;String&gt; evaluate(Interaction interaction, Preferences prefs) {
+    return effects()
+      .memory(MemoryProvider.session())
+      .systemMessage("You are an evaluator. Score the interaction against the preferences.")
+      .userMessage(interaction.summary() + "\n\nPreferences:\n" + prefs.asJson())
+      .thenReply();
+  }
+}
+</code></pre>
+</div>
+
+<div class="body col">
+
+<blockquote class="pullquote">
+  Every memory interaction — user inputs, tool calls, LLM exchanges — is recorded as an immutable event in a replayable stream.
+  <cite>Audit falls out of the event journal</cite>
+</blockquote>
+
+<h2>Sharded and in-memory</h2>
+<h3>State partitions across the cluster; the runtime hides it.</h3>
+
+<p>Akka Memory uses the SDK's stateful components — Agents (session memory), Event-sourced Entities, Key-Value Entities, and Workflows — which automatically distribute across your cluster via cluster sharding. Each component instance is bound to a single shard, and those shards rebalance transparently as nodes join or leave.</p>
+
+<p>When instances become idle or memory pressure builds, Akka passivates the least-recently used components, snapshotting or offloading their state to durable storage. Heap frees without any extra code. For geo-scale resilience, every write in the primary region propagates asynchronously to the read-replica regions.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:560px">
+  <p class="viz-title">Figure 3</p>
+  <h4>Sharding and rebalancing, side by side.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--flush pair">
+      <div>
+        <img src="https://akka.io/hs-fs/hubfs/website/diagrams/png/sharded-data.png?width=241&height=230&name=sharded-data.png" alt="Sharded data">
+        <div class="pair-label">Data sharding</div>
+      </div>
+      <div>
+        <img src="https://akka.io/hs-fs/hubfs/website/diagrams/png/data-rebalancing-1.png?width=300&height=230&name=data-rebalancing-1.png" alt="Data rebalancing">
+        <div class="pair-label">Data rebalancing</div>
+      </div>
+    </div>
+  </div>
+  <figcaption><b>Left.</b> App data is partitioned across in-memory, durable nodes; Akka routes user requests to the correct instance. <b>Right.</b> Shards rebalance automatically as the number of runtime nodes changes — no operator intervention.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Tracing and auditability</h2>
+<h3>Every interaction is a replayable event.</h3>
+
+<p>Tracing and auditability are non-negotiables in agentic AI, and Akka Memory addresses them thoroughly. Every memory interaction — user inputs, tool calls, LLM exchanges — is recorded as an immutable event in a replayable stream, with workflows logging each transition and call stack.</p>
+
+<p>This level of traceability accelerates incident response and root-cause analysis. Events are persisted in an encrypted, tamper-evident journal, ensuring immutability and non-repudiation for audit and compliance. Retention policies meet governance requirements, and downstream systems can subscribe to the same stream to feed a SIEM or a data warehouse.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:300px">
+  <p class="viz-title">Figure 4</p>
+  <h4>The event journal is the audit trail.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--flush">
+      <img src="https://akka.io/hubfs/website/diagrams/png/memory-event-journal-alt-bg.png" alt="Event journal for audit and tracing">
+    </div>
+  </div>
+  <figcaption><b>Events accumulate bottom-to-top over time.</b> A regulator asking "what did the agent know when it made decision X?" gets the answer by replaying the journal up to timestamp X — every input, every call, every response, in order.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Two memory horizons</h2>
+<h3>Short-term is invisible; long-term is queryable.</h3>
+
+<p>Short-term memory comes built into the Agent component as transparent "session memory." Every user message, agent decision, and tool invocation is recorded in sequence and persisted as an event-sourced entity tied to a session id. No extra code required.</p>
+
+<p>Long-term memory is powered by stateful components — Workflows, Event-Sourced Entities, Key-Value Entities — that persist semantic knowledge, skills, and retrieved data across users, sessions, agents, and systems. Compaction keeps session histories manageable: a <code>CompactionAgent</code> summarizes past interactions via an LLM, replacing verbose event streams with concise, context-rich snapshots that retain the detail later reasoning depends on.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 1</p>
+  <h4>Short-term vs long-term memory in Akka</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:24%"><col style="width:38%"><col style="width:38%"></colgroup>
+    <thead>
+      <tr><th>Dimension</th><th>Short-term (session)</th><th>Long-term (durable)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">Scope</td><td>one session, one user</td><td>across users, sessions, agents</td></tr>
+      <tr><td class="prop">Backing component</td><td>Agent session memory</td><td>Workflow / ES-Entity / KV-Entity</td></tr>
+      <tr><td class="prop">Persistence</td><td>event-sourced per session id</td><td>event-sourced per entity id</td></tr>
+      <tr><td class="prop">Compaction</td><td>automatic on session end</td><td>CompactionAgent on schedule</td></tr>
+      <tr><td class="prop">Retention</td><td>session TTL</td><td>policy-driven</td></tr>
+      <tr><td class="prop">Query surface</td><td>none (agent-internal)</td><td>Views (typed projections)</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Note.</b> Both horizons share the same event-journal foundation. They differ in what the events are keyed on and how long they persist. One system, two configurations.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Transparent memory</h2>
+<h3>The developer never wires it up.</h3>
+
+<p>With Akka Memory, you do not spend hours wiring up state stores or persistence layers — memory "shows up" for agents, workflows, and streams out of the box. A developer spins up an agentic service and immediately has a working memory layer underneath, without writing a single line of boilerplate. The framework provides it; you consume it.</p>
+
+<p>Custom memory types are supported too. If you need shared memory objects — cross-session counters, shared preferences, global configuration — you define them once and have them injected into your agent.</p>
+
+</div>
+
+<div class="wide">
+<pre><code class="language-java">public Effect&lt;String&gt; ask(String question) {
+  return effects()
+    .memory(MemoryProvider.custom())
+    .systemMessage("You are a helpful assistant.")
+    .userMessage(question)
+    .thenReply();
+}
+// MemoryProvider.custom() — plug your own implementation of the SessionMemory
+// interface to store session state anywhere: Redis, Postgres, a custom KV store.
+</code></pre>
+</div>
+
+<div class="body col">
+
+<div class="enote">
+  <b>Where this fits</b>
+  Akka Memory is one of four components of the Akka Agentic Platform, alongside Akka Agents, Akka Orchestration, and Akka Streaming. It delivers the recall layer that keeps agentic systems coherent, whether the workload is an adaptive workflow, a conversational assistant, or a real-time data pipeline.
+</div>
+
+</div>
+
+<div class="wide">
+<figure class="viz" data-size="wide" style="--fig-w:793px">
+  <p class="viz-title">Figure 5</p>
+  <h4>The Akka Agentic Platform. Memory sits alongside the other three components.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--flush">
+      <img src="https://akka.io/hubfs/website/diagrams/png/akka-agentic-platform-alt-bg.png" alt="Akka Agentic Platform components">
+    </div>
+  </div>
+  <figcaption><b>All four components on the same runtime.</b> Memory anchors the recall layer; Agents produce and consume; Orchestration coordinates long-running work; Streaming carries change downstream. All four share the same event journal.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Closing</h2>
+<h3>Recall belongs at the infrastructure layer.</h3>
+
+<p>The mix of instant session recall and durable persistence is a change of category. Session memory hooks directly into agents for micro-latency context, while Event-Sourced and Key-Value Entities journal every change for full replayability and audit trails. Cluster sharding and geo-replication carry all of that at infrastructure grade. The developer writes the agent; the runtime remembers.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li><a href="https://doc.akka.io/sdk/agents/memory.html">Agent memory docs</a> — session memory API, custom providers, and compaction.</li>
+    <li><a href="https://doc.akka.io/sdk/event-sourced-entities.html">Entity component docs</a> — event-sourced and key-value entities for long-term memory.</li>
+    <li><a href="https://doc.akka.io/sdk/views.html">Views docs</a> — typed projections over events for read-side queries.</li>
+    <li>Diagrams in this post are the same ones used in the Akka Memory product page; captions have been rewritten for the article context.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published Nov 12, 2024
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

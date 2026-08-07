@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Sourcing: The Backbone of Agentic AI — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">event-sourcing-the-backbone-of-agentic-ai</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · RESOURCES · DEVELOPER</div>
+  <h1 class="title">Event Sourcing: The Backbone of Agentic AI</h1>
+  <p class="standfirst">{} {} null {"flip_order_on_tablet":"boolean","grid_element":"group","custom_style":"group","debug_sizing":"boolean","custom_gaps":"group","use_topline_divider":"boolean","max_width":"text","two_row_flip_on_tablet":"boolean","background_image_icon":"group","style":"group","use_custom_gaps":"boolean","panel_padding":"choice","grid_repeater_data_context":"text"} [{"rich_text_repeater_tablet_base_columns":"tabgrid-cols-12","button_row_or_column":"flex-row","tab_col_spans":"tabcol-span-12","flip_rich_text_and_image_order":false,"image_repeater_base_columns":"grid-cols-12","image_height_full":false,"desk_col_spans":"col-span-12","rich_text_repeater_mobile_base_columns":"mobgrid-cols-12","richtext_field":"","image_prevent_expand":false,"youtube_position":"justify-content-start align-items-start","image_repeater_tablet_column_spans":"tabcol-span-12","desktop_medium_column_spans":"desk-md-col-span-6","rich_text_override_max_width":[],"youtube_border":true,"button_gap":"gap-1rem","button_column_align_items":"align-items-center","image_repeater_mobile_column_spans":"mobcol-span-12","mob_col_spans":"mobcol-span-12","rich_text_repeater_desktop_column_spans":"col-span-6","image_position":"justify-content-start align-items-start","hide_title_eyebrows":false,"image_remove_margins":false,"youtube_max_width":"100%","rich_text_repeater_tablet_column_spans":"tabcol-span-12","debug_youtube_layout":false,"rich_text_under_large_grey_header":"","rich_text_repeater_mobile_column_spans":"mobcol-span-12","button_repeater":[],"image_repeater_tablet_base_columns":"tabgrid-cols-12","button_alignment":"justify-content-start","image_field":{"alt":null,"loading":"lazy","size_type":"auto","src":""},"image_repeater_desktop_column_spans":"col-span-6","rich_text_repeater":[" Header \n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu nunc vitae orci blandit pharetra. "],"rich_text_repeater_base_columns":"grid-cols-12","youtube_id":"4qbVqlt-Pkk","rich_text_position":"justify-content-start align-items-start","image_repeater_grid":[{"alt":"aicpa-soc","height":480,"loading":"lazy","max_height":60,"max_width":60,"size_type":"auto_custom_max","src":"https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/icons/trust/aicpa-soc.png","width":480}],"image_repeater_mobile_base_columns":"mobgrid-cols-12","center_title_eyebrows":false,"desktop_small_column_spans":"desk-sm-col-span-6","rich_text_max_width":"100%","choice_field":"youtube","rt_youtube_gap":"gap-2rem","button_group_use_white_links":false,"rt_rt_repeater_gap":"gap-2rem","use_additional_desktop_breakpoints":false,"form_field":{"message":"Thanks for submitting the form.","response_type":"inline"}}] null 188046085655 "/AKKA-2024/modules/Lego - Grid Repeater" 2 null "NOT_SMART" {"section_spacing":{"desktop":{"dekstop_spacing":{"css":"padding-top: 0px;\npadding-bottom: 30px;\n","padding":{"bottom":{"units":"px","value":30},"left":{"units":null,"value":null},"right":{"units":null,"value":null},"top":{"units":"px","value":0}}}},"mb_spacing":{"mobile_spacing":{"css":"padding-top: 0px;\npadding-bottom: 10px;\n","padding":{"bottom":{"units":"px","value":10},"left":{"units":null,"value":null},"right":{"units":null,"value":null},"top":{"units":"px","value":0}}}},"tablet":{"tablet_spacing":{"css":"padding-top: 0px;\npadding-right: 0px;\npadding-bottom: 15px;\npadding-left: 0px;\n","padding":{"bottom":{"units":"px","value":15},"left":{"units":"px","value":0},"right":{"units":"px","value":0},"top":{"units":"px","value":0}}}}}} "module" "module" "div"</p>
+  <div class="byline">
+    <div><span class='au'>Kevin Hoffman</span> · Director of Product Management</div>
+    <div class="r"><time datetime="2025-08-08">Aug 8, 2025</time> · 8 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<h3>About the video</h3>
+<p class="lede">Agents can't exist in a vacuum. They need a supporting cast and there's no better foundation than Event Sourcing</p>
+
+Transcript
+<p>0:00: Hey everybody, my name is Kevin Hoffman, and in this video I'm gonna be talking about event sourcing and how this powerful pattern forms the backbone for building real world agentic AI applications.</p>
+<p>0:13: Before I get started, let me cover just a little bit about me and my background.</p>
+<p>0:18: I'm the author of Applied event Sourcing with ACA, Real World event sourcing.</p>
+<p>0:24: And programming web assembly with rust.</p>
+<p>0:27: I basically eat, sleep, and breathe event sourcing and distributed systems.</p>
+<p>0:31: In this video, I'm gonna give a quick overview and background on what agentic AI actually means.</p>
+<p>0:38: From there I'll talk about the pretty rigorous demands agentic AI puts on a system.</p>
+<p>0:44: And then I'll finish up with a discussion of how event sourcing and specifically event sourcing with ACA has everything we need.</p>
+<p>0:54: So let's talk about what agentic actually means.</p>
+<p>0:57: Something that is agentic, as the name implies, can act with agency.</p>
+<p>1:02: It can act independently to achieve outcomes or goals.</p>
+<p>1:06: Agentic is stateful and capable of making decisions.</p>
+<p>1:10: Agentic AI is a superset of agentic, and this means that AI is used in some way to achieve goals.</p>
+<p>1:18: If you only take away one idea from this video, it should be that prompt engineering is the most important aspect of building agentic systems.</p>
+<p>1:26: You may also have heard the term context engineering.</p>
+<p>1:30: They both refer to the idea that the precision you use when talking to an LLM will determine success or failure.</p>
+<p>1:38: The sections of this slide in yellow are what is called the system prompt.</p>
+<p>1:42: When you ask your favorite LLM if it thinks you should eat a burrito, the application you're using is going to wrap that question with context, instructions, and guidelines.</p>
+<p>1:52: Here you can see that we've supplied some context about how good burritos are.</p>
+<p>1:56: The LLM will take that into account for its reply.</p>
+<p>2:01: As easy as it is to believe that these large language models understand what we're saying.</p>
+<p>2:06: That isn't the case.</p>
+<p>2:08: Instead, when we supply a prompt to a model, the first thing we do is tokenize the text.</p>
+<p>2:13: This means breaking it up into chunks.</p>
+<p>2:15: These chunks are then converted into what's called a vocabulary.</p>
+<p>2:20: this vocabulary is a mapping between the human readable tokens and their numeric counterparts.</p>
+<p>2:26: It's important to remember that this vocabulary is specific to the algorithm or model that generated it.</p>
+<p>2:33: This means that you can't take a set of token IDs from one model and expect it to work on a different one.</p>
+<p>2:41: Finally, each of these token IDs is converted into a vector.</p>
+<p>2:45: You can think of this vector as a really large set of floating point numbers.</p>
+<p>2:51: They're kind of like instructions on a map, leading the model from a starting point to each of the tokens.</p>
+<p>2:59: As I mentioned, LLMs communicate via tokens.</p>
+<p>3:02: We stream tokens into them and we get streams of tokens out of them.</p>
+<p>3:07: The reason this is important is because for most of the models that are hosted or managed by other providers, we have to pay for tokens.</p>
+<p>3:15: When you're looking at the payment plans, it's easy to think it'll be cheap when you see buckets of millions of tokens.</p>
+<p>3:21: This is a dangerous assumption as tokens can build up rapidly.</p>
+<p>3:25: Remember that creating the vector embeddings uses up tokens, sending input uses tokens, and getting output uses tokens.</p>
+<p>3:35: At some point in your agentic journey, you'll have to weigh the trade-offs between paying for tokens or paying for the infrastructure required to host a model that doesn't charge by the token.</p>
+<p>3:48: So, let's get into a bit of detail on the components that make up the new buzzwords of agentic AI.</p>
+<p>3:56: The thing that makes agents so powerful is context.</p>
+<p>4:00: Agents receive context from the environment, things like users, sensors, events, data streams, and integrations.</p>
+<p>4:08: Agents are goal oriented.</p>
+<p>4:11: Usually you'll see agents with fairly narrow goals, and then some orchestrating supervisor is responsible for weaving multiple agents together to perform complex tasks.</p>
+<p>4:22: Agents can be autonomous, which is a double-edged sword.</p>
+<p>4:26: Sometimes this is powerful and helpful, but an agent given too much autonomy and privilege can wreak havoc.</p>
+<p>4:32: Agentic AI also implies learning.</p>
+<p>4:36: Whether the context for prompts gets more precise over time or whether models are being refined, we hope that our agentic systems get better the more they're used.</p>
+<p>4:45: Last but not least, we have the concept of adaptability.</p>
+<p>4:48: Agents, or more typically agent orchestrators can change their goals and strategies.</p>
+<p>4:54: They can dynamically choose the best models for a given task, and agents can even be used to plan out how other agents are going to be used to solve problems.</p>
+<p>5:05: Now that we've had a bit of background about what agentic AI is and how it works.</p>
+<p>5:10: Let's start talking about how this all relates to event sourcing in ACA.</p>
+<p>5:15: At their core, a agentic systems are distributed systems.</p>
+<p>5:18: Communication with LLMs is event-based and streaming.</p>
+<p>5:22: Agents have an event-driven architecture that can include human in the loop interaction, real-time data ingestion, resiliency tasks like failover and retry.</p>
+<p>5:33: These distributed systems also separate the read and write models, which is a perfect match for event sourcing.</p>
+<p>5:40: All right, now we get to talk about yet another buzzword, rag or retrieval augmented generation.</p>
+<p>5:48: LLMs only know what they were taught as of the cut-off date for their training.</p>
+<p>5:52: This means that anything that happened after this date will be a complete and total mystery to the model.</p>
+<p>5:59: To compensate for this, we can supply the additional knowledge that the model needs as context within the prompt itself.</p>
+<p>6:07: It's this context augmentation that gives the phrase its name.</p>
+<p>6:11: In addition to filling in the gaps in the LLM's general knowledge, retrieval augmentation can also be used to provide access to internal or private data.</p>
+<p>6:21: Such as a customer's purchase history or data that belongs only to one company and so on.</p>
+<p>6:29: Agents are very needy, high maintenance things.</p>
+<p>6:32: Agents need some way to store and retrieve memory or conversation history.</p>
+<p>6:36: They need to be able to make additional queries to augment the prompt context.</p>
+<p>6:40: They need to stream asynchronously both in and out of an LLM.</p>
+<p>6:44: Some agents can utilize tool call backs and so that needs to be supported as well.</p>
+<p>6:49: LLMs and by extension agents are nondeterministic.</p>
+<p>6:54: We can't predict from one call to the next how they're going to react, so we need a way to evaluate and judge the performance of the model.</p>
+<p>7:02: To measure our confidence or lack of it in the results.</p>
+<p>7:08: OK, so now that we've covered what agents need, we can talk about how event sourcing makes perfect sense as the core foundation of any agentic system.</p>
+<p>7:17: Event sourcing provides perfect recall.</p>
+<p>7:19: Since everything that took place in an event sourced system is captured as an immutable event, we can reliably reproduce the state of any agent at any given point in time.</p>
+<p>7:30: Not only do we know and have the ability to regenerate state, we also know why the state is that way.</p>
+<p>7:37: This means we can audit everything in the system, which is crucial when parts of the system are nondeterministic.</p>
+<p>7:45: By making the choice to embrace event sourcing, our agentic systems also get a ton of things included in the package.</p>
+<p>7:52: We can do fearless experimentation and run what if scenarios, as well as use event logs to feed and inform fine tuning and context engineering.</p>
+<p>8:03: Event sourcing means that autonomous agents can act in concert and communicate with each other through durable events.</p>
+<p>8:10: We can even deal with agent and event versioning through replay and regeneration.</p>
+<p>8:16: I want to finish up the main content of this video by showing this symbolic backbone.</p>
+<p>8:22: Event sourcing is the central supporting column for all of the key features of agentic systems like memory, rag, multi-agent, and multi-modal operation, tool integration, and vector embeddings.</p>
+<p>8:35: You might be wondering what you should do next to learn and keep up to date with all of these rapid AI innovations.</p>
+<p>8:41: From an ACCA standpoint, you can go to our website and follow the Getting Started tutorials and the guided tours through the documentation.</p>
+<p>8:49: There's no substitute for hands-on experience building, so go out there and tinker.</p>
+<p>8:54: Build and break things and learn from it and see how those lessons can be applied to your work.</p>
+<p>9:00: I mentioned earlier in the video that prompt and context engineering are absolutely critical to being successful building agentic systems.</p>
+<p>9:09: As such, any time invested in learning about those subjects is well worth it.</p>
+<p>9:15: Thanks for checking out this video and I hope you got inspired to go roll up your sleeves and start playing with all of this agentic AI stuff.</p>
+<p>9:24: Check out our other videos and documentation for more guides, walkthroughs, and fun demos.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Aug 8, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

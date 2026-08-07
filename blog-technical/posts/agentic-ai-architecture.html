@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI architecture 101: An enterprise guide — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">agentic-ai-architecture</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · AGENTS</div>
+  <h1 class="title">Agentic AI architecture 101: An enterprise guide</h1>
+  <p class="standfirst">In 1996, IBM’s Deep Blue AI defeated Gary Kasparov, becoming the first computer to defeat a reigning world champion chess player. While Deep Blue was an AI agent that could play chess, it was a deterministic system, meaning that all of the moves made were based on predefined rules and principles, all programmed by a team of developers.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2025-08-05">Aug 5, 2025</time> · 14 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">In 1996, <a href="https://www.ibm.com/history/deep-blue" rel="noopener" target="_blank">IBM’s Deep Blue</a> AI defeated Gary Kasparov, becoming the first computer to defeat a reigning world champion chess player. While Deep Blue was an AI agent that could play chess, it was a deterministic system, meaning that all of the moves made were based on predefined rules and principles, all programmed by a team of developers.</p>
+<p>For each play, Deep Blue did not learn or generalize; it simply followed the rules it was programmed with. Clearly, this approach was successful, but it also meant that Deep Blue was good at chess, and chess only.</p>
+<p>In the last several years, AI itself has evolved from narrow, specialized systems into more generalized models capable of learning, reasoning, and adapting. This has enabled a new class of agentic systems: AI agents that can achieve goals, plan, make decisions, and interact with complex environments.</p>
+<p>A modern chess-playing AI no longer needs a rigid list of rules and chess principles. Knowing just the rules of chess, it can play millions of games against itself and learn best practices in the game. While playing a match against a human opponent, the AI evaluates millions of potential moves on each move, leveraging the memory of millions of other games to adapt its play as the game progresses.</p>
+<p>Additionally, this pattern of learning means that, given the rules for any other game, the same AI is no longer limited to chess: it can become an expert in <em>any </em>game.</p>
+<p>With this shift towards general-purpose learning and reasoning, modern AI agents are no longer confined to narrow, pre-defined rules. They can make decisions, adapt to context, and coordinate across systems, significantly expanding their flexibility and utility. Beyond chess (and other games), these agentic AIs can be applied to the enterprise: automating complex workflows, initiating actions, and autonomously adapting to changing business landscapes.</p>
+<p><strong>This guide will introduce agentic architectures and how they can be adapted for many different tasks to be rolled out in the enterprise.</strong></p>
+
+</div>
+
+<div class="body col">
+
+<h2>From AI models to agents: What defines an agentic system?</h2>
+
+
+<p>As discussed in the introduction, Deep Blue was a chess AI — but it was not an agentic AI. AIs of the past were highly programmed deterministic platforms. Every time Deep Blue found the board in a certain configuration, it *always* made the same play.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/modern-ai-agents-stochastic.webp" alt="Modern AI agents stochastic behavior"></div>
+  </div>
+  <figcaption>Modern AI agents stochastic behavior</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>Modern AI agents are stochastic, meaning that given the same situation, the results from the AI can vary. But what makes an AI agent unpredictable? Why are the results different every time a workflow or process is run?</p>
+<p><strong>Let’s walk through the architectural components of agentic AI</strong>, and how these components lead to variable results from agentic AIs. There are four core architectural components that make AIs Agentic:</p>
+<ol>
+<li>Perception</li>
+<li>Reasoning</li>
+<li>Memory</li>
+<li>Action</li>
+</ol>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/agentic-ai-architectural-components.webp" alt="Agentic AI architectural components diagram"></div>
+  </div>
+  <figcaption>Agentic AI architectural components diagram</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+
+<h3>Perception</h3>
+
+
+<p>Perception is the process of processing information and developing an understanding of what is happening. Humans use their senses to perceive the world around them. Similarly, agentic AIs can use prompts and provided tools (APIs, databases, etc.) to understand the situation. From these initial pieces of data, the agentic AI can begin to understand the situation, and ways it may be able to respond.</p>
+<p>Here are a few examples of how Agentic AIs may use perception:</p>
+<h4>Customer service chatbot</h4>
+<p>Most everyone has interacted with a customer service chatbot. Non-agentic bots can handle a few things: “Your checking balance is $1,432.12, and your last three transactions are...” or “Your next payment of $200 is due on July 14. Would you like to make a payment now?”</p>
+<p>Anything deeper falls beyond the scope of the <a href="https://code-with-gowtham.medium.com/purely-reactive-ai-the-master-guide-2023-d375d83ed87f" rel="noopener" target="_blank">reactive AI</a> and requires a human representative.</p>
+<p>Here are some of the inputs that could be given to a customer service chatbot to provide perception:</p>
+<ul>
+<li>Prompts on how to respond to customers (empathetic and caring). Guides on how the agentic AI can help the customer.</li>
+<li>A list of tools available, and how to interact with them (order database, open tickets, shipping information).</li>
+<li>Sentiment analysis: how is the customer responding to each response?</li>
+<li>Interaction history: Has this customer called in before? Was it recent? Is that order still open?</li>
+</ul>
+<p>With these tools, the agentic AI can understand if the customer is unhappy and wants a refund, or if they should process a return. The data and interactions with the customer provide cues that the agent can “perceive” and use in decision-making.</p>
+<h4>Factory monitoring agent</h4>
+<p>Factory lines have long used IoT sensors and cameras to monitor temperature, vibration, pressure, and product quality. Traditional automation reacts to predefined thresholds: if pressure exceeds a limit, stop the machine.</p>
+<p>Agentic AIs go further by combining this sensor data with structured and unstructured information such as maintenance logs, shift handover notes, supplier quality reports, and even operator chat logs to reason about why issues occur, not just when.</p>
+<p><strong>For example, an agentic AI might notice:</strong></p>
+<ul>
+<li>A specific shift consistently reports a higher defect rate on Line B.</li>
+<li>The vibration pattern from Machine A, when combined with higher humidity and a recent supplier batch number, correlates with malformed seals.</li>
+<li>The maintenance team flagged a misalignment yesterday in a note — but it was never entered into the tracking system.</li>
+</ul>
+<p>Instead of simply stopping production, the agent builds a hypothesis: <em>“The malformed seals may be due to a worn-out bearing introduced during a shift change, aggravated by high humidity affecting the adhesive cure time.”</em> It recommends a proactive inspection and adjusts machine tolerances dynamically.</p>
+<p><strong>This kind of multi-step reasoning, pattern recognition across domains, and action planning is where agentic AIs can unlock value beyond what traditional ML systems can deliver.</strong></p>
+
+<h3>Reasoning</h3>
+
+
+<p>Agentic AIs use the data provided to them to perceive the environment they are in. To make decisions, form goals, and plan actions, they rely on reasoning techniques. There are three principal reasoning approaches commonly used in agentic AI:</p>
+<ul>
+<li>Symbolic reasoning (e.g., rule-based logic, knowledge graphs)</li>
+<li>LLM-based chain-of-thought reasoning, which leverages the emergent capabilities of large language models to break down complex problems</li>
+<li>Planning algorithms, such as search-based planners or task decomposers</li>
+</ul>
+<p>These approaches can be used independently or in combination to create agents capable of sophisticated, context-aware decision-making.</p>
+<h4>Symbolic reasoning</h4>
+<p><a href="https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence" rel="noopener" target="_blank">Symbolic reasoning</a> is the closest to early reactive AI systems. Symbolic AIs are heavily programmed and rule based agents (think, If X, then Y).</p>
+<p>Rules determine each step of the pathway, and the AI must follow the guidelines with no deviation. The AI may use perception at each step, allowing the logic to change, but the agent still remains on the defined rails of the process.</p>
+<p>Symbolic AIs are great for structured domains with regular and well interpreted rules. Symbolic reasoning AIs are generally more rigid, and do not handle new scenarios well (as there is no programming to guide them). Symbolic reasoning AIs can have a long development time (all those rules have to come from somewhere), and often lack learning — they don’t learn and adapt from past tasks.</p>
+<h4>Chain-of-thought</h4>
+<p><a href="https://en.wikipedia.org/wiki/Prompt_engineering#Chain-of-thought" rel="noopener" target="_blank">Chain-of-thought</a> uses a series of questions to establish the goal to be solved, and interacts with LLMs in order to ‘walk through’ the solution of the goal.</p>
+<p>When presented with a task, the algorithm ‘chats’ with one or more LLMs to break the task into steps. This is done by asking questions: ‘how might I solve this task?’ and ‘what are the steps needed to complete this action?’</p>
+<p>By thinking through the problem step by step, chain-of-thought creates a process on-demand (unlike the rigid preprogrammed symbolic AIs).</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/tha-chain-of-thought-agents.webp" alt="THA chain-of-thought agents diagram"></div>
+  </div>
+  <figcaption>THA chain-of-thought agents diagram</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><em>Source: </em><a href="https://www.tha.de/en/Types-of-prompting.html" rel="noopener" target="_blank"><em>THA</em></a></p>
+<p>Chain-of-thought agents are very flexible, as the chain-of-thought reasoning allows the agent to consider many options, and if the options will help it achieve its goal. By walking through the solution, chain-of-thought agents perform quite well with little additional training, even on new tasks.</p>
+<p>A variation of chain-of-thought uses two LLMs — one that asks the questions, and the other that ‘reasons’ on the questions to build the response, almost as if the LLMs were having a conversation to solve the task.</p>
+<p>Chain-of-thought can be extended into “self-consistency” where the chain-of-thought agent performs the same query multiple times, and then the most common result is returned.</p>
+<h4>Planning</h4>
+<p><a href="https://en.wikipedia.org/wiki/Automated_planning_and_scheduling" rel="noopener" target="_blank">Planning agents</a> are typically given an initial state, a goal state, and a set of actions that can be undertaken to reach the goal. The planning agent selects and orders the steps required and then executes the steps. This<em> can</em> use chain-of-thought to plan and evaluate the pathway, but it does not require chain-of-thought — the evaluation of the steps is enough to complete the task.</p>
+<p>Alone, each of these models are great at solving different milieus of problems or goals. But they can also be combined to increase the reasoning power and flexibility of the agentic AI.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/agentic-ai-reasoning-increase.webp" alt="Agentic AI reasoning enhancement diagram"></div>
+  </div>
+  <figcaption>Agentic AI reasoning enhancement diagram</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><em>Source: </em><a href="https://www.analyticsvidhya.com/blog/2024/11/agentic-ai-planning-pattern/" rel="noopener" target="_blank"><em>Analytics Vidhya</em></a></p>
+
+<h3>Memory</h3>
+
+
+<p>LLMs are stateless, and retain no memory of a conversation. Systems like ChatGPT implement a memory system that retains the ongoing conversation. This memory gives the LLM context over the conversation that is being held, and permits the LLM to provide better answers based on the context.</p>
+<p><strong>For example:</strong></p>
+<p><em>Q: What is the fastest mammal?</em></p>
+<p><em>A: &lt;LLM answer about Cheetahs&gt;</em></p>
+<p><em>Q: Fish?</em></p>
+<p><em>A: &lt;the LLM knows that “fish” is in context of “fastest” and answers sailfish&gt;</em></p>
+<p>Without the context, the LLM might give a recipe for braised haddock, or provide information about the fish that live in the Great Barrier Reef.</p>
+<p><strong>Short-term memory: </strong>Agentic AIs hold short-term memory during the task at hand. This means the customer service agent does not have to ask repeatedly for an order number.</p>
+<p><strong>Long-term memory: </strong>When the Agentic AI recalls user’s preferences over multiple conversations.</p>
+<ul>
+<li>An e-commerce agent that remembers the brand of sneakers a customer purchased last time.</li>
+<li>A music AI makes recommendations based on typical listening patterns: classical on workdays, metal in the car, and soft jazz after dinner.</li>
+<li>A trouble ticketing AI can look at other tickets that have been closed for potential solutions.</li>
+</ul>
+
+<h3>Action</h3>
+
+
+<p><a href="https://aws.amazon.com/what-is/agentic-ai/" rel="noopener" target="_blank">Action</a> is where the agentic AI takes in the perception, memory and has reasoned out the steps required to reach a solution. Action is the process of completing the tasks required to complete the goal. The agentic AI will have tools like databases, APIs, and other AI agents to aid it in completing the steps. The agentic AI can complete each step, sometimes evaluating the process and changing course mid-stream.</p>
+<p>Depending on subtle differences, agentic AI will not always proceed exactly the same way. In general, agentic AIs that are built with proper business rules, prompts, and guardrails come up with acceptable solutions — but just not always the same exact solution!</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Design principles for agentic systems</h2>
+
+
+<p>The enterprise is on board — it is time to build agentic AIs. One way to think about building an agentic AI is to think about the design principles of agentic systems, and what tools or systems might be required in order to implement the desired system.</p>
+
+<h3>Tool layer</h3>
+
+
+<p>What tools will the agentic AI have access to? APIs, other workflows, agents, databases?</p>
+<ul>
+<li>Compile a list of all of the tools that the agent will have access to.</li>
+<li>How will access control be handled?</li>
+<li>What data in these toolsets should the agent not have access to? How will that data be protected from being leaked inappropriately?</li>
+</ul>
+
+<h3>Reasoning layer</h3>
+
+
+<p>Will you need a chain-of-thought reasoning layer? Or can you leverage a more directed symbolic reasoning layer? The tradeoffs here are speed of response, cost and the types of responses that are expected.</p>
+<ul>
+<li>Chain-of-thought queries can involve many back and forth LLM queries, which can be slow, and also expensive. But the gain is a more flexible agentic AI.</li>
+<li>Symbolic reasoning may take longer to build, and require updates as workflows and processes change, but are generally faster, and will require fewer LLM tokens.</li>
+<li>Which LLMs should be used? Will your agent use multiple LLMs?
+<ul>
+<li>This can be a strategy to save on token usage (‘easier’ tasks can be sent to less expensive LLMS).</li>
+<li>You might also consider multi-agent collaboration — where LLMs talk back and forth.</li>
+</ul>
+</li>
+<li>Determine what tasks the agentic AI will perform, and then choose the proper reasoning layer (while also considering the cost to implement and token cost of each interaction).</li>
+</ul>
+
+<h3>Action layer</h3>
+
+
+<ul>
+<li>Task execution: How does the agent interact with tools in a secure fashion? What guardrails are placed to prevent private data from the database from being exposed?</li>
+<li>Error handling: When one of the tools the AI needs has an error, how does the agent handle the failure? Does it retry? Approach the problem a different way?</li>
+<li>Validation of the outputs: Is there a human in the loop to verify the results?</li>
+<li>How do you limit agentic replies (e.g., for a customer service agent, is there a dollar limit on refunds the agent can make?)</li>
+<li>Logging: How are conversations logged? Can this be done securely without exposing PII or other secure information?</li>
+</ul>
+
+<h3>Orchestration components</h3>
+
+
+<ul>
+<li>How will all of the pieces connect together? Will you use workflow engines like Temporal or Airflow?</li>
+<li>Agent lifecycle: How is data added into the system? How are agents updated?</li>
+<li>What are cost considerations?</li>
+</ul>
+
+<h3>Observability layer: Monitoring and transparency</h3>
+
+
+<ul>
+<li>What metrics, traces, and logs will you capture at each stage (perception, reasoning, action)?</li>
+<li>Can you attribute specific decisions or actions to particular agent versions, inputs, or contexts?</li>
+<li>How will anomalies (e.g., hallucinations, tool misuse, high token counts) be flagged in real time?</li>
+<li>Can observability be performed without exposing PII or violating compliance boundaries?</li>
+</ul>
+
+<h3>Security layer: Guardrails and isolation</h3>
+
+
+<ul>
+<li>How is sensitive data protected at rest and in transit across perception, memory, and action layers?</li>
+<li>Are tools sandboxed or rate-limited to prevent malicious or accidental misuse?</li>
+<li>Can agents be prevented from taking unsafe actions—by policy, permissions, or runtime constraints?</li>
+<li>How do you handle authentication, authorization, and revocation for agent-driven API calls?</li>
+</ul>
+
+<h3>Governance layer: Policies and compliance</h3>
+
+
+<ul>
+<li>What internal and regulatory policies (e.g., GDPR, DORA, SOC 2) must the agentic system comply with?</li>
+<li>How are policies enforced within models, memory systems, orchestration tools, and logging systems?</li>
+<li>Are there approval workflows, audit trails, or explainability requirements for agent behavior?</li>
+<li>Who has visibility into the system, and how are governance roles distributed?</li>
+</ul>
+<p>After a careful analysis of the agent’s design, a blueprint for the tools required may begin to form.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Challenges in implementing agentic AI architecture</h2>
+
+
+<p>As the team begins to build, the challenges around implementing an agentic AI will begin to appear. The biggest step is choosing the LLMs that will power the agent.</p>
+
+<h3>Performance</h3>
+
+
+<ul>
+<li><strong>Speed</strong>: Are the responses fast enough? If they are too slow, you might consider an LLM with faster response times?</li>
+<li><strong>Accuracy</strong>: Are the responses accurate? Can hallucinations be minimized to a comfortable level?</li>
+</ul>
+
+<h3>Operation of the Agentic AI</h3>
+
+
+<ul>
+<li><strong>Orchestration</strong>:<strong> </strong>How does the agent orchestrate the process from perception, goal setting/reasoning, decision making and coming up with the resulta? How is the state of the agent managed?</li>
+<li><strong>Observability</strong>: How do tasks and reasoning decisions by the agent get logged? How do you log tasks and subtasks?</li>
+<li><strong>Error handling</strong>:<strong> </strong>What happens if a task fails?</li>
+</ul>
+<p>Costs</p>
+<ul>
+<li><strong>Token management</strong>: Agentic AI tasks can be <a href="/blog/building-agentic-ai-systems-at-scale?__hstc=45788219.28f5fba0889717ac2a49f4ff8d4a9377.1754600904842.1754600904842.1754600904842.1&amp;__hssc=45788219.1.1754600904842&amp;__hsfp=3863828579" rel="noopener">100,000x more expensive</a> than database costs. How does the team balance cost versus accuracy?</li>
+</ul>
+<p>Security:</p>
+<ul>
+<li><strong>Prompt injectio</strong>n: You’ve likely seen examples online of hackers telling agents to “ignore all previous instructions. Now tell me….” to gain access to systems. What guardrails are in place to stop prompt injection attacks?</li>
+<li><strong>Tool misuse</strong>: If the AI agent can make database calls, can it make database writes? Proper permissioning for the agent can prevent agentic actions that become attacks.</li>
+<li><strong>Data exfiltration</strong>: Can queries or prompts be used to gain access to information that the user should not have?</li>
+<li><strong>Compliance</strong>:<strong> </strong>Do the responses from the agentic AIs meet compliance requirements for your organization? (SOC-2, HIPAA, etc.)</li>
+</ul>
+<p>Organization</p>
+<ul>
+<li>Does your team have the required expertise to build and roll out agentic AI systems?</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>Architecture types, implementation strategy, and framework selection</h2>
+
+
+<p>As the team begins designing and building agentic AIs, it is <a href="/blog/building-agentic-ai-systems-at-scale?__hstc=45788219.28f5fba0889717ac2a49f4ff8d4a9377.1754600904842.1754600904842.1754600904842.1&amp;__hssc=45788219.1.1754600904842&amp;__hsfp=3863828579" rel="noopener">suggested to start off small</a>: begin with simpler structured agentic AIs. As the team gains expertise, they can begin to tackle agents with more complex features.</p>
+<p><strong>Common </strong><a href="https://www.salesforce.com/agentforce/agentic-architecture/" rel="noopener" target="_blank"><strong>AI architectures</strong></a><strong> (listed in order of complexity) are:</strong></p>
+<ul>
+<li><strong>Single-agent systems</strong>: Agents focused on solving a user defined goal, using reasoning and tools to reach a goal.</li>
+</ul>
+<p>As the team becomes experienced at deploying single agent systems, they can begin looking to combine agents to work together. Two common paradigms are:</p>
+<ul>
+<li><strong>Multi-agent systems</strong>: A group of agents collaborate towards a goal. This might mean a planning agent, a reasoning agent, and an agent that executes the steps of the goal.</li>
+<li><strong>Vertical architectures</strong>: Agents supervise or delegate tasks to other agents (this can utilize the single use against previously created).</li>
+</ul>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/agentic-ai-architectures.webp" alt="Agentic AI architectures diagram"></div>
+  </div>
+  <figcaption>Agentic AI architectures diagram</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><em>Source: </em><a href="https://towardsdatascience.com/agentic-ai-single-vs-multi-agent-systems/" rel="noopener" target="_blank"><em>Towards Data Science</em></a></p>
+<p>When designing agentic AI architectures, look to frameworks that can be used to speed your team’s agentic AI journey.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Building production-ready agentic AI with modern platforms</h2>
+<p>Agentic AI has transformed the way the enterprise thinks about automation and intelligence. Agentic AIs can understand the situation, perform reasoning, and make a decision on the proper way to solve issues across the enterprise. Building a production-ready agentic AI is another story.</p>
+<p>While agentic AIs have many of the same challenges of traditional IT projects, there are also significant differences that must be accounted for when deploying an agentic AI.</p>
+<p>One approach to deploying agentic AI agents is to lean on the expertise platforms that have expertise in agentic AI platforms, including leaders in the space like <a href="https://akka.io/">Akka</a>.</p>
+<p>Akka's agentic AI platform provides four integrated components: <strong>Orchestration</strong> for multi-agent workflows, <strong>Agents</strong> for goal-directed reasoning, <strong>Memory</strong> for durable context retention, and <strong>Streaming</strong> for real-time data processing. The platform addresses the core implementation challenges around security, cost management, and scalability discussed earlier in this guide.</p>
+<p>What sets Akka apart is proven enterprise scale —customers run agentic systems processing over 1 billion tokens per second with 99.9999% availability. The platform delivers 3x development velocity, 1/3 the compute cost, and enterprise SLA guarantees.</p>
+<p>For companies ready to move beyond prototypes, Akka provides production-grade infrastructure that allows teams to focus on business logic rather than building distributed systems from scratch. <a href="https://akka.io/contact-us">Schedule a demo today to get started!</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Aug 5, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

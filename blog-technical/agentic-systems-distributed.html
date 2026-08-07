@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic systems are distributed systems — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+:root {
+  --paper:#0B0B0C; --paper-2:#141416; --plate:#1A1A1D;
+  --ink:#F5F5F1; --body:#E8E8E5; --mute:#9A9A97; --faint:#5A5A57;
+  --rule:rgba(255,255,255,0.10); --rule-hi:rgba(255,255,255,0.16);
+  --accent:#FFCE4A; --accent-2:#E9B426;
+  --teal:#6BC9CE; --good:#7FD9A0; --bad:#F09090;
+  --display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.byline time{color:var(--mute)}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent)}
+.body h3{font-family:var(--display);font-size:28px;line-height:1.22;font-weight:700;color:var(--ink);margin:0 0 22px;text-wrap:balance;letter-spacing:-0.012em;padding-bottom:14px;border-bottom:1px solid var(--rule);position:relative}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Pullquote — force override of HubSpot's default blockquote (rounded card
+   + left accent bar). Kill border-radius, background, box-shadow, border-left.
+   Render as hairlines top and bottom, centered indented text. */
+.pullquote,blockquote.pullquote{background:none!important;background-color:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+/* Editor's note — was a left-accent-bar card ("AI highlighting"). Rewritten
+   as an indented italic paragraph with a small-caps label prefix inline,
+   like a magazine sidebar note. No box, no accent bar, no background. */
+.enote{margin:36px 0 36px 32px;padding:0;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body-2);font-style:italic;text-indent:-32px;padding-left:32px}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);font-style:normal;display:inline;margin-right:14px}
+.enote b::after{content:'·';color:var(--mute);margin-left:14px;letter-spacing:0}
+figure.viz{margin:52px 0}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:0 0 8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin:0 0 16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.6;color:var(--mute);margin:14px 0 0;max-width:720px;letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+.rtbl{width:100%;margin:20px 0 6px;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl thead th.grp{font-size:9.5px;color:var(--accent);border-bottom:1px solid var(--rule-hi);text-align:center;padding-bottom:3px;letter-spacing:0.16em}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot,.rtbl tfoot tr,.rtbl tfoot td{background:transparent!important;border:0!important}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);margin:44px 0;padding:26px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat-row .stat{padding:8px 24px;text-align:center}
+.stat-row .stat + .stat{border-left:1px solid var(--rule)}
+.stat b{display:block;font-family:var(--display);font-variant-numeric:tabular-nums;font-size:42px;letter-spacing:-0.024em;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1}
+.stat .lbl{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+@media (max-width:640px){.stat-row{grid-template-columns:1fr;padding:0}.stat-row .stat{padding:22px 0;border-top:1px solid var(--rule)}.stat-row .stat + .stat{border-left:none}.stat-row .stat:first-child{border-top:0}}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Distributed systems</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Distributed systems · Agentic architecture</div>
+  <h1 class="title">Agentic systems are distributed systems.</h1>
+  <p class="standfirst">
+    Enterprise agentic systems at production scale need distributed-systems capabilities: durable memory, streaming I/O, per-agent orchestration, semantic retrieval, and region-aware clustering. Event sourcing supplies them directly.
+  </p>
+  <div class="byline">
+    <div><span class="au">Kevin Hoffman</span> · Director of Product Management</div>
+    <div class="r"><time datetime="2024-08-14">Aug 14, 2024</time> · 8 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">In our blog posts, videos, and conference talks, we've been spreading the word that event sourcing is the key foundational technology on which agentic systems should be built. This is because the built-in features you get with event sourcing are the same elements of the core foundation you need for the distributed-systems requirements of agentic AI. The demos on a laptop hide those requirements. Production forces them all back into view.</p>
+
+<aside class="enote">
+  <b>The claim</b>
+  Every enterprise agentic system that runs at scale needs to be a distributed system. Not because agents are inherently distributed, but because the five capabilities production requires — durable memory, streaming I/O, orchestration, retrieval, resilient clustering — are distributed-systems capabilities.
+</aside>
+
+<p>Looking at agentic AI demos and assuming they can be taken to production is a common early mistake. Any application with agentic AI components requires a capable set of frameworks and tools for distributed systems. The five capabilities below have to be in place before the demo and before the model choice.</p>
+
+<h2>Section I · Distributed memory</h2>
+<h3>Session state that survives process restarts.</h3>
+
+<p>If you have used AI assistants and agents, you have encountered memory in one form or another. The simplest form might be an agent that maintains conversation history for a specific session — short-term — or all conversations with a certain user, long-term.</p>
+
+<p>In a monolithic demo running on a laptop, memory is just a variable. It lives in the process. When the process dies, the memory goes with it. That is fine for a demo. It is not fine when a real user is halfway through a conversation, or when an agent has spent ten minutes building context for a complex task and the pod restarts.</p>
+
+<p>Distributed memory is durable, sharded across the cluster, and available to any replica that picks up the next request. It survives restarts, deploys, and region failovers. In event-sourced systems, memory is a natural artifact of the event journal — every conversation turn is an event, and rehydrating an agent's state is replaying its events.</p>
+
+<h2>Section II · Streaming I/O with LLMs</h2>
+<h3>Every non-trivial model interaction is a stream.</h3>
+
+<p>Most interactions with LLMs are streaming interactions. Agents submit token streams as input to the model and they receive token streams as output. This does not present much of a problem when we are working with "hello world" demo applications running on laptops. In production, streaming becomes a first-class distributed-systems concern.</p>
+
+<p>The stream needs backpressure so a fast model does not overwhelm a downstream consumer. It needs supervision so a stalled connection doesn't tie up an agent forever. It needs multiplexing so an agent can consume from one model while emitting to another. And it needs a story for what happens when the stream fails halfway through — which in production, it will.</p>
+
+<p>Anything short of proper stream-oriented infrastructure means an agent that stalls, loses tokens, or fails partway through a long response with no recovery. Users notice.</p>
+
+<h2>Section III · Stateful orchestration</h2>
+<h3>Micro-orchestration first. Macro-orchestration next.</h3>
+
+<p>We need to be able to do per-agent orchestration — sometimes called "micro-orchestration" — where we manage single-agent failures, network connectivity loss, retries, and exponential backoffs during failures. These are all basic features of reliable, distributed systems. In addition, once you have multiple agents cooperating, macro-orchestration coordinates the flow between them. That flow needs to be durable — a workflow that has completed steps 1 through 5 should not restart at step 1 when the coordinator restarts.</p>
+
+<p>Durable execution is the property that distinguishes a production workflow from a demo one. A demo workflow lives in memory; when the coordinator dies, the workflow is lost. A durable workflow persists its progress at every step. It resumes exactly where it left off.</p>
+
+<h2>Section IV · Semantic search and context generation</h2>
+<h3>The retrieval half of every real agent.</h3>
+
+<p>Semantic search is a crucial part of agentic workflows for tasks like Retrieval Augmented Generation and context generation and enrichment. Most agents do not have a stateless interaction with an LLM — they have enriched conversations. When users ask agents to reason about their data, the agent needs a way to find the right slice of that data quickly.</p>
+
+<p>In production, this means a vector store that scales with the corpus, an embeddings pipeline that keeps up with ingest, and a retrieval layer that responds within the latency budget of the agent's turn. All three are distributed-systems concerns. Building each of them from a database plus a bolt-on vector library and hoping for the best is the shape of most current attempts. It works until it doesn't.</p>
+
+<h2>Section V · Running resilient components in clusters and regions</h2>
+<h3>Component placement across clusters and regions.</h3>
+
+<p>There are many important reasons to want to control where services are running. In addition to wanting to shorten the distance between the customer and their services and data, there are also resilience and scale concerns. In the world of monoliths, one bad thing can take down the whole system. In a distributed agentic system, the failure of one agent should not affect the rest.</p>
+
+</div>
+
+<div class="wide">
+<table class="rtbl">
+  <caption>Table 1 · The five capabilities, demo vs. production</caption>
+  <colgroup>
+    <col style="width:32%">
+    <col style="width:32%">
+    <col style="width:36%">
+  </colgroup>
+  <thead>
+    <tr><th>Capability</th><th>What the demo does</th><th>What production needs</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="prop">Memory</td><td>in-process variable</td><td class="win">durable, sharded, replicated</td></tr>
+    <tr><td class="prop">Streaming I/O</td><td>synchronous request</td><td class="win">backpressured, supervised, multiplexed</td></tr>
+    <tr><td class="prop">Orchestration</td><td>ad-hoc coordinator</td><td class="win">durable workflow, resumable</td></tr>
+    <tr><td class="prop">Semantic search</td><td>vector-lib bolt-on</td><td class="win">scaled index + retrieval SLA</td></tr>
+    <tr><td class="prop">Runtime resilience</td><td>one process, one host</td><td class="win">cluster + region-aware failover</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="3"><b>Note.—</b>Event sourcing gives you the primitives for all five in the same runtime, which is why building agentic systems on top of it collapses five separate infrastructure decisions into one.</td></tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="body col">
+
+<blockquote class="pullquote">
+  The production readiness check for any agentic AI demo is which of the five capabilities it is faking.
+  <cite>The production readiness question</cite>
+</blockquote>
+
+<h2>Section VI · Closing</h2>
+<h3>Distributed-systems primitives every agentic framework requires.</h3>
+
+<p>Any application with agentic AI components needs a capable set of frameworks and tools for distributed systems. The production readiness check is which of the five capabilities above the demo is faking. If the answer is any of them, that gap becomes real when a user connects, a pod dies, a model stalls, or a region degrades.</p>
+
+<p>Event sourcing supplies the distributed-systems primitives agentic AI needs. Several of the five capabilities emerge from it directly. The Akka platform builds on it for that reason.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li>The <a href="https://doc.akka.io/sdk/index.html">Akka SDK</a> exposes each of the five capabilities as a first-class component: Agent, Workflow, Entity, View, and Endpoint.</li>
+    <li>For the memory + retrieval story specifically, the <a href="https://doc.akka.io/sdk/agents/memory.html">agent-memory docs</a> and the <a href="https://doc.akka.io/sdk/views.html">view component docs</a> cover the durable and query sides respectively.</li>
+    <li>The claim that "event sourcing gives you all five" is stronger than "event sourcing helps with all five" — for the argument in full, see the <a href="https://doc.akka.io/sdk/event-sourced-entities.html">event-sourced entities concept page</a>.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published Aug 14, 2024
+</div>
+
+<script>
+(function(){
+  var bar=document.getElementById('prog');
+  function update(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}
+  window.addEventListener('scroll',update,{passive:true});update();
+})();
+</script>
+
+</body>
+</html>

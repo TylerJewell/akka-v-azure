@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka Agents: Quickly create agents, MCP tools, and HTTP / gRPC APIs — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">akka-agents-quickly-create-agents-mcp-grpc-api</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · ARCHITECT / CTO · RESOURCES</div>
+  <h1 class="title">Akka Agents: Quickly create agents, MCP tools, and HTTP / gRPC APIs</h1>
+  <p class="standfirst">Introduction In today’s AI-driven landscape, building reliable, scalable, and maintainable services demands more than ad hoc calls to language models. The Akka Agentic Platform rises to this challenge by providing a suite of high-level components that seamlessly integrate LLMs into your reactive systems. A key component of the SDK, the Akka Agent, a purpose-built, stateful component designed to encapsulate a single AI task with built-in session memory, declarative model orchestration, and robust error handling. In this post, you’ll learn how agents transform complex AI workflows into concise, composable building blocks so you can focus on your domain logic instead of boilerplate plumbing.</p>
+  <div class="byline">
+    <div><span class='au'>Duncan Devore</span> · Sr Director, Architect and AI Advocate</div>
+    <div class="r"><time datetime="2025-07-09">Jul 9, 2025</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>Introduction</h2>
+
+
+<p class="lede">In today’s AI-driven landscape, building reliable, scalable, and maintainable services demands more than ad hoc calls to language models. The Akka Agentic Platform rises to this challenge by providing a suite of high-level components that seamlessly integrate LLMs into your reactive systems. A key component of the SDK, the Akka Agent, a purpose-built, stateful component designed to encapsulate a single AI task with built-in session memory, declarative model orchestration, and robust error handling. In this post, you’ll learn how agents transform complex AI workflows into concise, composable building blocks so you can focus on your domain logic instead of boilerplate plumbing.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What is an Akka Agent?</h2>
+
+
+<p>An Akka Agent, is a high-level, opinionated SDK component that uses a declarative Effects API to encapsulate a single AI-driven task: it automatically manages session memory, invokes one or more LLMs via pluggable ModelProviders, applies retry and back-off strategies, and emits standardized metrics—all without you wiring those concerns into your own <code>Agent</code> code.</p>
+<p>Agents in Akka are simple to build, type-safe and declarative. Here is an example of what an agent looks like in Akka:</p>
+<pre><code class="language-java">@ComponentId("hello-world-agent")
+public class HelloWorldAgent extends Agent {
+
+ private static final String SYSTEM_MESSAGE =
+     """
+     You are a cheerful AI assistant with a passion for teaching
+     greetings in a new language.
+
+     Guidelines for your responses:
+     - Start the response with a greeting in a specific language
+     - Always append the language you're using in parenthesis in
+       English. E.g. "Hola (Spanish)"
+     - The first greeting should be in English
+     - In subsequent interactions the greeting should be in a different
+       language than the ones used before
+     - After the greeting phrase, add one or a few sentences in English
+     - Try to relate the response to previous interactions to make
+       it a meaningful conversation
+     - Always respond with enthusiasm and warmth
+     - Add a touch of humor or wordplay when appropriate
+     - At the end, append a list of previous greetings
+     """.stripIndent();
+
+  public Effect greet(String userGreeting) {
+    if (System.getenv("OPENAI_API_KEY") == null || System.getenv(
+      "OPENAI_API_KEY").isEmpty()) {
+        return effects()
+          .reply("I have no idea how to respond, someone didn't
+                  give me an API key");
+      }
+
+    return effects()
+        .systemMessage(SYSTEM_MESSAGE)
+        .userMessage(userGreeting)
+        .thenReply();
+  }
+}</code></pre>
+<p>This example <code>HelloWorldAgent</code> agent interfaces with an LLM (in this case OpenAI but any LLM can be used) and responds to a greeting in a different language each time while keeping track of all previous greetings.</p>
+
+<h3>Agent vs actor: a&nbsp;quick clarification for the Akka-savvy architect</h3>
+
+
+<p>While both Agents and typed Actors are built on Akka’s actor model and benefit from its lightweight concurrency and supervision, an Actor is a low-level primitive you program directly, handling arbitrary messages, managing mutable or immutable state, and implementing custom behavior in prose.</p>
+<p>An Agent by contrast in the Akka SDK designed to interact with AI models, typically large language models (LLMs), to perform specific tasks. Agents can be either stateful (with durable memory) or stateless, and they can be invoked by other Akka components or run autonomously. Agents serve as focused AI components that perform a single, stateful task by maintaining session history and exposing callable functions—like local helper methods, external APIs, or MCP tools—that the LLM can invoke as needed.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Key capabilities of an Akka Agent</h2>
+
+
+<p>Now that you’ve seen an Akka Agent in code, it’s worth pausing to appreciate what they bring to the table. These components aren’t just thin wrappers around AI calls—they offer a full-featured, declarative API for managing session state, invoking models and tools, handling errors, and streaming results. With built-in support for pluggable model providers and seamless session continuity, Agents let you focus on your domain logic instead of boilerplate plumbing. What follows is a closer look at the key capabilities that make them so powerful.</p>
+
+<h3>Component identification</h3>
+
+
+<p>Each Agent class is annotated with <code>@ComponentId</code> as a way to identify the component class and distinguish it from others. With other components like <code>Entities</code> or <code>Workflows</code>, we also provide a unique Instance ID, but with agents, you don’t assign a unique ID to each instance. Instead, you provide a session identifier that the Agent binds to. This approach allows multiple components, each with its own <code>@ComponentId</code>, to operate concurrently within the same shared session context.</p>
+
+<h3>Declarative effects API</h3>
+
+
+<p>The Agents effects API provides command handlers that return an <code>Effect&lt;T&gt; (or StreamEffect&lt;T&gt;)</code>, letting you fluently specify model selection, system/user messages, tool invocations, and response transformations in a type-safe DSL. Following are some of the effects that agents can produce:</p>
+<ul>
+<li>declare which model will be used</li>
+<li>specify system messages, user messages and additional context (prompts)</li>
+<li>configure session memory</li>
+<li>define available tools</li>
+<li>fail a command by returning an error</li>
+<li>return an error message</li>
+<li>transform responses from a model and reply to incoming commands<br><br></li>
+</ul>
+
+<h3>Session memory management</h3>
+
+
+<p>Session Memory acts as a conversational log, allowing Agents to preserve context over successive exchanges. This capability is crucial for creating Agents that recall earlier interactions, grasp the evolving dialogue, and deliver consistent, context-aware responses.</p>
+<p>Whenever an Agent makes a call to an AI model, both the user’s input and the model’s reply are automatically recorded in the session memory. On future requests, these stored messages are passed back to the model as supplementary context, enabling it to build on prior parts of the conversation.</p>
+<pre><code class="language-text">akka.javasdk.agent.memory {
+  enabled = true
+  limited-window {
+    max-size = 156KiB # max history size before oldest message removed
+  }
+}</code></pre>
+<p>Above is an example of how you would configure session memory in the <code>application.conf</code>.</p>
+
+<h3>Pluggable model providers</h3>
+
+
+<p>You can define a default AI backend in application.conf and override it per call via the Effects API, choosing from built-in providers (OpenAI, Anthropic, Gemini, etc.) or your own custom implementations. Following is an example of how you could configure a model provider in the application.conf</p>
+<pre><code class="language-text">akka.javasdk {
+  agent {
+    model-provider = openai
+
+    openai {
+      model-name = "gpt-4o-mini"
+    }
+  }
+}</code></pre>
+<p>In this case we are using OpenAI’s gpt-4o-mini. You can also use <code>ModelProvider.fromConfig</code> to pull models from configuration and use different models in different agents.</p>
+
+<h3>Tool &amp; function invocation</h3>
+
+
+<p>Akka Agents make it easy to incorporate both local and external functionality into your AI workflows by exposing “tools” that the LLM can invoke as if they were native functions. Under the hood, you annotate your methods or register external service interfaces, and the Agent automatically enriches its prompt with tool definitions and descriptions—giving the model everything it needs to decide which operations to call, and with which parameters. Behind the scenes, the Agent handles instantiation, invocation, and failure management, so you can treat complex integrations as first-class citizen functions in your Effects pipeline.</p>
+<p>Some key aspects of tool and function invocation are listed below:</p>
+<ul>
+<li><strong>Contextual tool annotations</strong>: Use <code>@FunctionTool</code> and <code>@Description</code> on your methods (or on external service interfaces) to provide the LLM with rich metadata about what each tool does and what parameters it accepts</li>
+<li><strong>Dynamic tool registration</strong>: Call <code>.tools(MyService.class)</code> (or pass an instance) in your Effects builder to register external utilities at runtime—no manual wiring needed</li>
+<li><strong>Remote MCP integration</strong>: Include tools from other Akka services or third-party MCP servers via <code>.mcpTools(...)</code>, with support for custom headers, name filtering, and request/response interceptors</li>
+<li><strong>Shared function tools</strong>: Define common tools once (e.g., a WeatherService) and reuse them across multiple Agents, promoting consistency and reducing duplication</li>
+<li><strong>Configurable call limits</strong>: Control how many successive tool-call steps an LLM can request in a single session using the <code>akka.javasdk.agent.max-tool-call-steps</code> setting (default 100)</li>
+</ul>
+
+<h3>Built-in error handling</h3>
+
+
+<p>The <code>onFailure</code> hook in the Agent’s effects API offers extensive error-handling for any failures during model execution, enabling you to define resilient fallback behaviors and deliver informative responses when errors occur.&nbsp;</p><p>The onFailure method handles the following categories of exceptions:</p>
+<ul>
+<li>Model related exceptions</li>
+<li>Tool executions exceptions</li>
+<li>Response processing exceptions</li>
+<li>Unknown exceptions</li>
+</ul>
+<p>For more information, see the Akka documentation on <a href="https://doc.akka.io/java/agents.html#_handling_failures" rel="noopener" target="_blank">handling failures</a></p>
+
+<h3>Multi-agent collaboration</h3>
+
+
+<p>In real-world applications, a single Agent rarely works in isolation—complex tasks often demand the collaboration of several specialized Agents. As we saw in our previous blog, <a href="/blog/akka-orchestration-guide-moderate-and-control-agents" rel="noopener">Akka Orchestration: guide, moderate, and control long-running systems</a>, by using Akka’s Workflow component, we&nbsp;orchestrate these multi-agent interactions, invoking each Agent in turn (or in parallel), sharing the same session memory, and handling retries, timeouts, and state persistence automatically. Whether you define a static sequence of steps or build a dynamic plan at runtime, the Workflow API ensures that Agents cooperate seamlessly to achieve a common goal while freeing you from boilerplate coordination code.</p>
+<p>Key dimensions of multi-agent collaboration include:</p>
+<ul>
+<li><strong>Shared session context</strong>: All Agents bound to the same session ID read from and write to the same event-sourced memory, enabling them to build on each other’s outputs and maintain conversational continuity.&nbsp;</li>
+<li><strong>Predefined vs. dynamic orchestration</strong>: Use a predefined Workflow to hard-code step order when your process is predictable, or leverage dynamic planning within a Workflow to select and invoke Agents based on runtime criteria (e.g., user intent analysis).</li>
+<li><strong>Durable execution &amp; recovery</strong>: Workflows persist their state at each step, automatically retrying failed Agent calls up to your configured limits and failing over to dedicated error steps if needed—so no progress is ever lost.&nbsp;</li>
+<li><strong>Human-in-the-loop support</strong>: You can pause a Workflow to await human approval or additional input, then resume exactly where it left off, blending automated Agent collaboration with manual oversight.</li>
+</ul>
+
+<h3>Dynamic prompt templates</h3>
+
+
+<p>Rather than embedding prompts directly in your code, you can leverage the built-in prompt template entity. This lets you update prompts on the fly—no restart or redeploy needed—and because the template itself is an entity, every change is recorded, preserving a full history of revisions. Below is an example of prompt templating</p>
+<pre><code class="language-java">@ComponentId("activity-agent")
+public class ActivityAgentWithTemplate extends Agent {
+  public Effect&lt;String&gt; query(String message) {
+    return effects()
+      .systemMessageFromTemplate("activity-agent-prompt") (1)
+      .userMessage(message)//
+      .thenReply();
+  }
+}</code></pre>
+<p>In this example we see the system message (prompt) accessed via a prompt template key.</p>
+
+<h3>Agent access: endpoints</h3>
+
+
+<p>Endpoints are how your Agents communicate with external systems, users, or other services. Akka SDK includes endpoint components that enable structured access to your internal components, handling request routing, serialization, and basic observability features.</p>
+<h4>HTTP endpoints</h4>
+<p>Provide RESTful APIs using standard HTTP, handling automatic serialization, request routing, and error responses.</p>
+<h4>gRPC endpoints</h4>
+<p>Offer efficient, schema-driven APIs based on Protocol Buffers, including built-in streaming and strongly typed client/server stubs.</p>
+<h4>MCP endpoints</h4>
+<p>Expose Agent functions to remote LLMs via Model Context Protocol, enabling external models to directly invoke local tools or services.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Conclusion</h2>
+
+
+<h3>The Akka Agentic Platform</h3>
+
+
+<p>At Akka, we see Agents as a foundational piece in the broader landscape of agentic AI. Together with Akka Orchestration, Akka Memory, and Akka Streaming, Akka Agents form a complete toolkit for building, operating, and scaling intelligent systems. These systems can take many forms—autonomous (self-planning and self-acting), adaptive (able to adjust goals on the fly), ambient (quietly running in the background), multi-modal (processing audio, video, and sensor data), transactional, analytical, or even digital twins. Whatever the use case, Akka Agents offer a reliable, declarative way to bring stateful, model-driven logic into production.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://akka.io/hubfs/website/diagrams/png/akka-agentic-platform-alt-bg.png" alt="akka-agentic-platform-alt" loading="lazy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>For more information see <a href="https://doc.akka.io/concepts/concepts.html" rel="noopener" target="_blank">our docs.</a></p>
+
+<h3>Final thoughts</h3>
+<p>As you can see, Akka Agents elevate AI integrations from ad hoc scripts to first-class, production-ready components—packaging statefulness, tooling, error resilience, and observability into a concise, declarative API. By offloading session memory, model orchestration, tool invocation and endpoints to the SDK, you can focus on crafting your business logic while trusting Akka’s battle-tested runtime to handle scaling, persistence, and fault recovery.&nbsp;</p><p>Ready to unlock reliable, maintainable agentic AI systems? Give the <a href="/get-started" rel="noopener">Akka SDK</a> a try in your next AI service, and experience how they simplify complex AI patterns into reusable, composable building blocks.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Jul 9, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

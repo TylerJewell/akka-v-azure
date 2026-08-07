@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benchmarking database sharding in Akka — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent)}
+.body h3{font-family:var(--display);font-size:28px;line-height:1.22;font-weight:700;color:var(--ink);margin:0 0 22px;text-wrap:balance;letter-spacing:-0.012em;padding-bottom:14px;border-bottom:1px solid var(--rule);position:relative}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+.pullquote{max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+figure.viz{margin:52px 0}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:0 0 8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin:0 0 16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.6;color:var(--mute);margin:14px 0 0;max-width:720px;letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+.rtbl{width:100%;margin:20px 0 6px;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.num{text-align:right;padding-right:16px}
+.rtbl tbody td.win{color:var(--good);font-weight:600;text-align:right;padding-right:16px}
+.rtbl thead th.num{text-align:right;padding-right:16px}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+/* Data ledger — number right, prose left, hairlines between rows. No card. */
+.ledger{margin:36px 0;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);padding:2px 0}
+.ledger > div{display:grid;grid-template-columns:170px 1fr;gap:26px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule)}
+.ledger > div:last-child{border-bottom:0}
+.ledger dt{font-family:var(--display);font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);text-align:right;letter-spacing:-0.02em;line-height:1;margin:0;padding-top:2px}
+.ledger dt .u{font-size:0.62em;color:var(--accent);font-weight:500;margin-left:3px;letter-spacing:0}
+.ledger dd{font-family:var(--text);font-size:16px;line-height:1.4;color:var(--body);margin:0}
+.ledger dd em{color:var(--mute);font-style:normal;font-size:13px;font-family:var(--display);text-transform:uppercase;letter-spacing:0.12em;margin-left:6px}
+@media (max-width:520px){.ledger > div{grid-template-columns:1fr;gap:2px}.ledger dt{text-align:left}}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Benchmarks · Persistence</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Benchmark · Database sharding</div>
+  <h1 class="title">Benchmarking database sharding in Akka.</h1>
+  <p class="standfirst">
+    Akka 24.05 shards event storage across ordinary PostgreSQL instances. One database handles 27k writes per second. Eight of them, in parallel, cross a million. The cost per IOPS stays flat.
+  </p>
+  <div class="byline">
+    <div><span class="au">Andrzej Ludwikowski</span> · Principal Engineer</div>
+    <div class="r"><time datetime="2024-06-04">Jun 4, 2024</time> · 6 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Akka 24.05 introduced a significant feature: database sharding for event storage. This innovation allows developers to achieve unprecedented throughput with ordinary relational databases like PostgreSQL — throughput that normally requires high-priced databases. In this post we walk through a benchmark that scales from one Postgres instance up to eight, watch the throughput climb, and confirm that the cost per IOPS holds nearly flat.</p>
+
+<h2>Section I · Benchmark setup</h2>
+<h3>An IoT digital twin under load.</h3>
+
+<p>To evaluate the new database sharding feature, we built a small Akka application that emulates a digital-twin solution for IoT devices. Each device keeps track of the last ten updates, simulating some complex failure-detection logic when processing a new update and putting real pressure on the persistence layer.</p>
+
+<p>The load generator was Gatling. Each scenario tested a mixed load — 75% reads, 25% updates. Throughput was raised gradually until we hit the ceiling for a given setup, then held for 20 minutes.</p>
+
+</div>
+
+<div class="wide">
+<table class="rtbl">
+  <caption>Table 1 · Benchmark environment</caption>
+  <colgroup><col style="width:34%"><col style="width:66%"></colgroup>
+  <thead>
+    <tr><th>Component</th><th>Configuration</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="prop">Database (per instance)</td><td>AWS RDS db.r6g.2xlarge · 8 vCPU · 64 GB RAM · 100 GB io2 · 5000 IOPS</td></tr>
+    <tr><td class="prop">Akka cluster (1–4 DBs)</td><td>EC2 m5.4xlarge · 16 vCPU · 6 → 25 nodes as DBs scale</td></tr>
+    <tr><td class="prop">Akka cluster (8 DBs)</td><td>EC2 m5.8xlarge · 32 vCPU · 25 nodes · 800 vCPU total</td></tr>
+    <tr><td class="prop">Load generator</td><td>Gatling · 4 × c7i.4xlarge at peak</td></tr>
+    <tr><td class="prop">Workload mix</td><td>75% read · 25% write</td></tr>
+    <tr><td class="prop">Hold duration</td><td>20 minutes at peak throughput</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="body col">
+
+<div class="enote">
+  <b>Note on reads</b>
+  Thanks to the Actor Model, read requests do not touch the database — they're served from in-memory entity state. The benchmark measures how well writes and event persistence scale as you add databases.
+</div>
+
+<h2>Section II · Results across shard counts</h2>
+<h3>One database. Two. Four. Eight.</h3>
+
+<p>At one database, the cluster reached 27k writes per second — impressive for a single Postgres instance. Doubling to two databases pushed throughput further, at the cost of some latency. Four databases produced a nearly linear climb. Eight databases crossed a million requests per second in Grafana — a satisfying number to watch tick over.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <h4>Requests and responses under sustained load.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--paper">
+      <img src="https://akka.io/hs-fs/hubfs/AKKA-2024/Images/requests-responses%201.png?width=916&height=256&name=requests-responses%201.png" alt="Requests and responses over time">
+    </div>
+  </div>
+  <figcaption><b>Sustained throughput at the 8-database configuration.</b> Peak load is held for 20 minutes to distinguish steady-state performance from bursty peaks. Latency is measured at very high resource saturation — it improves with more Akka nodes.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Section III · The scaling shape</h2>
+<h3>Close to linear across four doublings.</h3>
+
+<p>The benchmark results reveal a compelling story of scalability. As we increase the number of database instances from one to eight, we observe near-linear throughput growth. The ability to distribute write operations across multiple databases while maintaining data consistency is the key factor in this performance boost. By alleviating pressure on any single database, Akka lets each instance operate more efficiently.</p>
+
+<p>Perfect linear scaling is rare in real-world scenarios — network latency, coordination overhead, and hotspots in data distribution introduce some deviation. But the shape holds.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <h4>Throughput scales close to linearly with database count.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--paper">
+      <img src="https://akka.io/hs-fs/hubfs/AKKA-2024/Images/scaling-characteristic%201.jpg?width=916&height=567&name=scaling-characteristic%201.jpg" alt="Throughput vs database instance count">
+    </div>
+  </div>
+  <figcaption><b>The core result.</b> Throughput doubles as the database count doubles — 27k → 54k → 500k → 1M requests per second across the four configurations tested. The Akka cluster scaled correspondingly (6 → 12 → 25 → 25 nodes at 2× vCPU).</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<dl class="ledger">
+  <div>
+    <dt>1,000,000<span class="u">+</span></dt>
+    <dd>requests per second at 8 databases <em>peak</em></dd>
+  </div>
+  <div>
+    <dt>~38<span class="u">×</span></dt>
+    <dd>throughput gain from 1 to 8 databases <em>near-linear</em></dd>
+  </div>
+  <div>
+    <dt>800</dt>
+    <dd>vCPUs at peak <em>Akka cluster only</em></dd>
+  </div>
+</dl>
+
+<h2>Section IV · Cost per IOPS</h2>
+<h3>The economic outcome is a flat line.</h3>
+
+<p>Throughput scales; cost does not scale up. Cost per 1000 IOPS per month varies from $24.32 to $28.78 across all four configurations — essentially flat. All calculations use one-year reserved instance pricing.</p>
+
+<p>Ordinary PostgreSQL instances now reach throughput levels that previously required specialized database systems. Organizations use their existing PostgreSQL expertise and infrastructure without paying for the higher licensing and operational overhead of a specialized store.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <h4>Cost per 1,000 IOPS holds roughly flat as you scale.</h4>
+  <div class="plot-wrap">
+    <div class="plate plate--paper">
+      <img src="https://akka.io/hs-fs/hubfs/AKKA-2024/Images/cost-per-1k-iops-per-month%201.jpg?width=916&height=557&name=cost-per-1k-iops-per-month%201.jpg" alt="Cost per 1000 IOPS per month vs database count">
+    </div>
+  </div>
+  <figcaption><b>Economic scaling matches technical scaling.</b> $24.32–$28.78 per 1,000 IOPS per month across the four configurations. Scaling up on Akka does not scale up the unit economics — the shape a CFO wants to see next to a throughput curve.</figcaption>
+</figure>
+</div>
+
+</div>
+
+<div class="wide">
+<table class="rtbl">
+  <caption>Table 2 · Throughput and cost across four configurations</caption>
+  <colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"></colgroup>
+  <thead>
+    <tr>
+      <th>Databases</th>
+      <th class="num">Peak req/s</th>
+      <th class="num">Akka nodes</th>
+      <th class="num">Total vCPU</th>
+      <th class="num">$/1k&nbsp;IOPS/mo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="prop">1</td><td class="num">27,000</td><td class="num">6 × m5.4xl</td><td class="num">96</td><td class="num">$24.32</td></tr>
+    <tr><td class="prop">2</td><td class="num">54,000</td><td class="num">12 × m5.4xl</td><td class="num">192</td><td class="num">$25.10</td></tr>
+    <tr><td class="prop">4</td><td class="num">500,000</td><td class="num">25 × m5.4xl</td><td class="num">400</td><td class="num">$27.02</td></tr>
+    <tr><td class="prop">8</td><td class="num win">1,000,000+</td><td class="num">25 × m5.8xl</td><td class="num">800</td><td class="num">$28.78</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="5"><b>Note.—</b>Instance families change between the 4→8 configurations (m5.4xl → m5.8xl) to give the runtime headroom for the coordination overhead at peak scale. All pricing uses AWS one-year reserved instance rates as of the benchmark date.</td></tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="body col">
+
+<blockquote class="pullquote">
+  A moderate Postgres instance today keeps every future scaling option open.
+  <cite>The architect's takeaway</cite>
+</blockquote>
+
+<h2>Section V · The takeaway</h2>
+<h3>Moderate hardware today keeps both scaling axes open.</h3>
+
+<p>For an architect, the specific throughput figures matter less than the property they demonstrate. A moderate Postgres instance today keeps the horizontal scaling option open for tomorrow. Both scaling axes are available, and the cost per unit of throughput stays constant across configurations.</p>
+
+<p>"Database sharding for event storage" delivers a growth curve that keeps its slope through every doubling — the shape a production planner actually needs.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li>Full write-up of Akka's sharding approach: Patrik Nordwall, <a href="https://akka.io/blog/the-database-is-the-bottleneck">"The database is the bottleneck!"</a> — the concept of slice ranges and how they map to databases.</li>
+    <li>Benchmark repository and reproduction instructions available on request; the digital-twin application follows the pattern in the Akka samples repo.</li>
+    <li>All AWS pricing based on one-year reserved instances as of June 2024.</li>
+    <li>Latency in these results is measured at near-100% resource saturation; it can be improved by switching to a less intensive load or by adding Akka nodes.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published Jun 4, 2024
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Announcing the Akka Agentic Platform — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FDFCF9;
+  --paper-2: #F5F2EA;
+  --ink:    #1A1A1A;
+  --body:   #2B2A28;
+  --body-2: #4A4844;
+  --mute:   #6E6B66;
+  --rule:   #E0DDD5;
+  --rule-heavy: #B8B4AA;
+  --accent: #8E6E00;
+  --accent-2: #6B5300;
+  --teal:   #2E7275;
+  --good:   #12894E;
+  --bad:    #A22A22;
+  --plate:  #FFFFFF;
+  --serif: 'Source Serif 4', 'Source Serif Pro', 'Charter', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  background: var(--paper); color: var(--body);
+  font-family: var(--serif); font-size: 19px; line-height: 1.65;
+  font-feature-settings: "kern", "liga", "onum";
+}
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--rule-heavy); }
+a:hover { text-decoration-color: var(--accent); }
+
+.colophon {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 28px;
+  display: flex; align-items: baseline; gap: 14px;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--mute); text-transform: uppercase; letter-spacing: 0.15em;
+}
+.colophon .brand { font-weight: 800; color: var(--ink); font-size: 14px; letter-spacing: 0; text-transform: none; }
+.colophon .sep { color: var(--rule-heavy); }
+.colophon .r { margin-left: auto; }
+
+.col  { max-width: 620px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 28px); }
+.wide { max-width: 920px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 28px); }
+
+.hero { padding: 72px 0 36px; }
+.kicker {
+  font-family: var(--sans); font-size: 12.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 24px;
+}
+h1.title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1.08; letter-spacing: -0.018em;
+  font-weight: 700; color: var(--ink);
+  margin-bottom: 22px; text-wrap: balance;
+}
+.standfirst {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1.42; color: var(--body-2);
+  font-weight: 400; font-style: italic;
+  margin-bottom: 36px; max-width: 620px; text-wrap: pretty;
+}
+.byline {
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 20px;
+  padding: 18px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-family: var(--sans); font-size: 13.5px; color: var(--mute);
+}
+.byline .au { color: var(--ink); font-weight: 600; letter-spacing: 0.02em; }
+.byline .r { text-align: right; }
+
+.body { padding: 40px 0 100px; }
+.body p {
+  margin-bottom: 24px;
+  font-family: var(--serif); font-size: 19px; line-height: 1.65;
+  color: var(--body); hanging-punctuation: first;
+}
+.body p.lede::first-letter {
+  font-family: var(--serif); font-weight: 700; color: var(--ink);
+  font-size: 5em; line-height: 0.86;
+  float: left; padding: 6px 12px 0 0; margin: 4px 0 0 -2px;
+}
+.body h2 {
+  font-family: var(--sans);
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--mute); margin: 52px 0 6px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+}
+.body h3 {
+  font-family: var(--serif);
+  font-size: 28px; line-height: 1.22; font-weight: 700;
+  color: var(--ink); margin: 12px 0 20px; text-wrap: balance;
+  letter-spacing: -0.008em;
+}
+.body strong { font-weight: 700; color: var(--ink); }
+.body em { font-style: italic; }
+.body code {
+  font-family: var(--mono); font-size: 0.86em; color: var(--ink);
+  background: var(--paper-2); padding: 1px 5px; border-radius: 2px;
+}
+.body ul, .body ol { margin: 0 0 24px 24px; }
+.body li { margin-bottom: 8px; font-family: var(--serif); font-size: 19px; line-height: 1.55; }
+
+.pullquote {
+  max-width: 720px; margin: 44px auto;
+  padding: 32px 0; text-align: center;
+  border-top: 1px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+  font-family: var(--serif); font-style: italic;
+  font-size: 26px; line-height: 1.38;
+  color: var(--ink); font-weight: 400; text-wrap: balance;
+}
+.pullquote cite {
+  display: block; margin-top: 18px;
+  font-family: var(--sans); font-style: normal;
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--mute);
+}
+
+.enote {
+  margin: 32px 0;
+  padding: 4px 0 4px 22px;
+  border-left: 3px solid var(--accent);
+  font-family: var(--serif); font-style: italic;
+  font-size: 18px; line-height: 1.55; color: var(--body-2);
+}
+.enote b { font-family: var(--sans); font-style: normal; font-weight: 700;
+  font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent-2); display: block; margin-bottom: 6px; }
+
+.sidenote {
+  float: right; clear: right;
+  width: 200px; margin: 4px -240px 20px 24px;
+  font-family: var(--sans); font-size: 13px; line-height: 1.5;
+  color: var(--mute); padding-left: 14px; border-left: 1px solid var(--rule-heavy);
+}
+.sidenote b { font-family: var(--sans); font-weight: 700; font-size: 10.5px;
+  color: var(--accent-2); display: block; margin-bottom: 4px;
+  letter-spacing: 0.14em; text-transform: uppercase; }
+@media (max-width: 1120px) {
+  .sidenote { float: none; width: auto; margin: 20px 0; padding: 14px 16px;
+    background: var(--paper-2); border-left: 2px solid var(--accent); }
+}
+
+figure.viz { margin: 48px 0; }
+figure.viz .viz-title {
+  font-family: var(--sans); font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent); margin: 0 0 8px;
+}
+figure.viz h4 {
+  font-family: var(--serif); font-size: 22px; line-height: 1.25; font-weight: 700;
+  color: var(--ink); margin: 0 0 14px; text-wrap: balance;
+}
+.plot-wrap { overflow-x: auto; }
+figure.viz .plate {
+  background: var(--plate); padding: 24px;
+  border: 1px solid var(--rule);
+}
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz figcaption {
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.55;
+  color: var(--mute); margin: 12px 0 0; max-width: 720px;
+}
+figure.viz figcaption b { color: var(--body); font-weight: 600; }
+
+/* Offering grid inside the intro figure */
+.off-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
+  font-family: var(--serif);
+}
+.off-tile {
+  padding: 22px 24px; background: var(--plate); border: 1px solid var(--rule);
+}
+.off-tile .kick {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent);
+  margin-bottom: 8px;
+}
+.off-tile .nm {
+  font-family: var(--serif); font-size: 22px; font-weight: 700;
+  color: var(--ink); margin-bottom: 8px; line-height: 1.2;
+}
+.off-tile .ds { font-family: var(--serif); font-size: 15.5px; color: var(--body); line-height: 1.5; }
+@media (max-width: 640px) { .off-grid { grid-template-columns: 1fr; } }
+
+/* Comparison rows — "Akka does" / "with others you" */
+.cmp2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  margin: 32px 0; border-top: 1px solid var(--ink);
+  font-family: var(--serif);
+}
+.cmp2 .hd {
+  padding: 14px 0 12px;
+  font-family: var(--sans); font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink); border-bottom: 1px solid var(--rule);
+}
+.cmp2 .hd:nth-child(2) { padding-left: 22px; color: var(--mute); }
+.cmp2 > div.cell {
+  padding: 16px 22px 16px 0; border-bottom: 1px solid var(--rule);
+  font-size: 16px; line-height: 1.5;
+}
+.cmp2 > div.cell.right {
+  padding: 16px 0 16px 22px; color: var(--body-2); font-style: italic;
+  border-left: 1px solid var(--rule);
+}
+
+/* Stat row */
+.stat-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin: 36px 0; padding: 22px 0;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.stat-row .stat { padding: 8px 24px; text-align: center; }
+.stat-row .stat + .stat { border-left: 1px solid var(--rule); }
+.stat b {
+  display: block; font-family: var(--serif);
+  font-variant-numeric: tabular-nums;
+  font-size: 40px; letter-spacing: -0.02em; font-weight: 700;
+  color: var(--ink); margin-bottom: 6px;
+}
+.stat .lbl {
+  font-family: var(--sans); font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--mute);
+}
+@media (max-width: 640px) {
+  .stat-row { grid-template-columns: 1fr; padding: 0; }
+  .stat-row .stat { padding: 20px 0; border-top: 1px solid var(--rule); }
+  .stat-row .stat + .stat { border-left: none; }
+  .stat-row .stat:first-child { border-top: 0; }
+}
+
+/* SLA table — 6 numeric commitments */
+.sla {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  margin: 32px 0; border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.sla .cell {
+  padding: 20px 22px; border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--serif);
+}
+.sla .cell:nth-child(3n) { border-right: 0; }
+.sla .cell:nth-last-child(-n+3) { border-bottom: 0; }
+.sla .k {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--mute);
+  margin-bottom: 6px;
+}
+.sla .v {
+  font-family: var(--serif); font-variant-numeric: tabular-nums;
+  font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em;
+}
+@media (max-width: 640px) { .sla { grid-template-columns: 1fr 1fr; } .sla .cell:nth-child(2n) { border-right: 0; } .sla .cell:nth-child(3n) { border-right: 1px solid var(--rule); } }
+
+/* Customer proof row */
+.proof {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  margin: 32px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.proof .cell {
+  padding: 22px; text-align: center; border-right: 1px solid var(--rule);
+}
+.proof .cell:last-child { border-right: 0; }
+.proof .who {
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent);
+  margin-bottom: 10px;
+}
+.proof .what {
+  font-family: var(--serif); font-size: 17px; font-style: italic;
+  color: var(--body); line-height: 1.4;
+}
+@media (max-width: 640px) {
+  .proof { grid-template-columns: 1fr; }
+  .proof .cell { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .proof .cell:last-child { border-bottom: 0; }
+}
+
+.footnotes {
+  margin: 72px 0 0; padding-top: 24px;
+  border-top: 1px solid var(--rule-heavy);
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.65; color: var(--mute);
+}
+.footnotes h4 {
+  font-family: var(--sans); font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink); font-weight: 700; margin-bottom: 14px;
+}
+.footnotes ol { margin: 0 0 0 22px; }
+.footnotes li { margin-bottom: 10px; }
+
+.foot {
+  border-top: 1px solid var(--rule); padding: 22px 28px;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--mute); text-transform: uppercase; letter-spacing: 0.14em;
+}
+</style>
+</head>
+<body>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Vol. 3 · No. 14</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Product · Release announcement</div>
+  <h1 class="title">Announcing the Akka Agentic Platform.</h1>
+  <p class="standfirst">
+    Four integrated offerings — Orchestration, Agents, Memory, and Streaming — for every shape of agentic system: autonomous, adaptive, real-time, transactional, or edge. Delivered on the same runtime that already carries more than a billion tokens a second in production.
+  </p>
+  <div class="byline">
+    <div><span class="au">Akka Product Team</span> · Release notes</div>
+    <div class="r"><time datetime="2024-07-10">July 10, 2024</time> · 8 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Years of customer collaboration have shaped this release. Akka has been running scalable agentic systems in production for those customers, with the top-scale customer now processing more than a billion tokens per second. The offerings introduced today are the pieces those systems asked for. All four are available immediately and are included in every existing Akka license.</p>
+
+<aside class="sidenote">
+  <b>What's new</b>
+  Four offerings, a native local console, an AI-assisted DevEx, a testkit, and a preview of the evaluation console (later this summer).
+</aside>
+
+<p>The four offerings compose. They are the runtime primitives a production agentic system needs, delivered as a single SDK, a single deployment target, and a single operations model. Each covers a job most teams currently assemble from three or four external services.</p>
+
+<h2>Section I · What's shipping</h2>
+<h3>All four offerings sit on the same runtime.</h3>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <h4>The four Akka agentic offerings.</h4>
+  <div class="off-grid">
+    <div class="off-tile">
+      <div class="kick">Akka Orchestration</div>
+      <div class="nm">Guide the work, survive the failures.</div>
+      <div class="ds">Long-running, multi-agent workflows that hold across crashes, delays, and infrastructure failures. Sequential, parallel, hierarchical, and human-in-the-loop shapes. Embedded registry for agent, tool, API, and resource governance.</div>
+    </div>
+    <div class="off-tile">
+      <div class="kick">Akka Agents</div>
+      <div class="nm">Goal-directed agents with a real API.</div>
+      <div class="ds">Agents that reason, act, and analyze, exposed as MCP tools and HTTP/gRPC APIs. Integrates any third-party broker, agent, or system.</div>
+    </div>
+    <div class="off-tile">
+      <div class="kick">Akka Memory</div>
+      <div class="nm">Durable memory at nanosecond writes.</div>
+      <div class="ds">Sharded, in-memory data for agent context, history retention, and personalized behavior. Nano-second writes and replication for failover. Short-term and long-term memory.</div>
+    </div>
+    <div class="off-tile">
+      <div class="kick">Akka Streaming</div>
+      <div class="nm">Streams for the ambient loop.</div>
+      <div class="ds">High-performance stream processing for ambient, adaptive, and real-time AI. Continuous processing, aggregation, and augmentation of live data, metrics, audio, and video. Ingests from any source; streams between agents, Akka services, and the outside world.</div>
+    </div>
+  </div>
+  <figcaption><b>Every agentic system needs the same infrastructure primitives.</b> Assembling them from separate SDKs produces distinct DevExes, runtimes, and deployment shapes; rolling updates become near-impossible to coordinate. Delivering them from a single runtime is the point of the release.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Section II · The developer experience</h2>
+<h3>A local console, an AI-assisted DevEx, and a testkit.</h3>
+
+<p>Alongside the four offerings, the SDK now ships a native binary local console for executing distributed services during development and tracing agentic interactions. Docker is no longer a console requirement. The console is available through the Akka CLI.</p>
+
+<p>The AI-assisted DevEx uses event-driven component composition, with support for Qodo, Windsurf, and Cursor. LLM-authored agents create, modify, test, and evaluate Akka services built with the SDK. The Agent Testkit builds unit, integration, and multi-agent system tests that run locally or inside CI/CD, mimicking the production environment. Custom evaluation strategies automate testing of non-deterministic LLM interactions.</p>
+
+<div class="enote">
+  <b>Coming later this summer</b>
+  An agentic evaluation console with separate flows for development, operations, and context engineering. Traces span networks and Akka components, even when components are separated by event-driven decoupling. Every trace carries performance, functional, and cost intelligence.
+</div>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <h4>The evaluation console preview.</h4>
+  <div class="plot-wrap">
+    <div class="plate">
+      <img src="https://akka.io/hs-fs/hubfs/website/screenshots/evaluation-console.png?width=1165&amp;height=1576&amp;name=evaluation-console.png" alt="Akka evaluation console preview" style="display:block; width:100%; height:auto;">
+    </div>
+  </div>
+  <figcaption><b>The evaluation console renders a single trace across an agent team.</b> Each node in the flow shows its latency, the model that produced it, and its token cost. The console ships in a follow-on release later this summer.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Section III · Design partners</h2>
+<h3>Built with the customers who already ran it in production.</h3>
+
+<p>Akka gets adopted when the SLA has to be guaranteed. The customers who shaped this release were already running scalable, reliable AI in production; the offerings that ship today are the ones those customers said they needed.</p>
+
+</div>
+
+<div class="wide">
+<div class="proof">
+  <div class="cell">
+    <div class="who">Swiggy</div>
+    <div class="what">Food-delivery scale — 2× latency improvement in the ML and AI platform.</div>
+  </div>
+  <div class="cell">
+    <div class="who">Llaama</div>
+    <div class="what">Biopharma — AI-driven treatment development on Akka Persistence.</div>
+  </div>
+  <div class="cell">
+    <div class="who">Verizon</div>
+    <div class="what">Telecom — 750% increase in order-processing capacity; response times 6s → 2.4s.</div>
+  </div>
+</div>
+</div>
+
+<div class="body col">
+
+<blockquote class="pullquote">
+  Enterprise agentic AI should create certainty in a world of uncertain LLMs.
+  <cite>The Akka design brief</cite>
+</blockquote>
+
+<h2>Section IV · Design goals</h2>
+<h3>Production-ready. Elastic. Batteries-included.</h3>
+
+<ol>
+  <li><strong>Production-ready.</strong> Agents work identically in development and production without code changes. The runtime targets 99.9999% uptime regardless of scale.</li>
+  <li><strong>Elastic.</strong> Agents process over a billion tokens per second with consistent latency, bounded only by the model itself.</li>
+  <li><strong>Batteries-included.</strong> One SDK and one runtime, with orchestration, agents, memory (short and long-term), and streaming already inside.</li>
+</ol>
+
+<h2>Section V · The value proposition</h2>
+<h3>Faster dev, lower cost, any scale.</h3>
+
+<p>Akka has been powering the world's most demanding systems for fifteen years. This release brings that runtime to bear on agentic AI. The promise:</p>
+
+</div>
+
+<div class="wide">
+<div class="stat-row">
+  <div class="stat"><b>3×</b><span class="lbl">development velocity</span></div>
+  <div class="stat"><b>⅓</b><span class="lbl">compute footprint</span></div>
+  <div class="stat"><b>Any</b><span class="lbl">SLA — guaranteed</span></div>
+</div>
+</div>
+
+<div class="body col">
+
+<h3>Three axes of comparison: velocity, compute, SLA.</h3>
+
+</div>
+
+<div class="wide">
+<div class="cmp2">
+  <div class="hd">With Akka</div>
+  <div class="hd">With others you…</div>
+
+  <div class="cell">One DevEx to build, test, integrate, and upgrade agentic systems. Composable components, rapid development, visual debuggers, no-downtime rolling updates.</div>
+  <div class="cell right">Cobble together four SDKs, each with its own DevEx. Add an integration testing system. Deploy four architectures (orchestration, memory, agents, streaming) where coordinated rolling updates become near-impossible.</div>
+
+  <div class="cell">Shared-compute execution model. The concurrency and non-blocking event architecture drive utilization toward 100%. Every core Akka consumes reduces total infrastructure spend.</div>
+  <div class="cell right">Separate compute allocation and utilization across four runtimes — orchestration, memory, agents, streaming — with multi-threading that blocks and locks. Waste compounds further on Python runtimes.</div>
+
+  <div class="cell">Services self-cluster to millions of nodes and adapt to hardware failures, network partitions, LLM hallucinations, or shifting environments. Services are their own system of record — data sharded, in-memory, and replicated, independent of a database.</div>
+  <div class="cell right">Delegate SLA achievement to cloud infrastructure, databases, or messaging brokers that have no visibility into the application's intent. No built-in data replication, failover, or DR — assurance requires full-stack duplication.</div>
+</div>
+</div>
+
+<div class="body col">
+
+<div class="enote">
+  <b>Case studies · what the axes look like in the field</b>
+  Verizon: 70% reduction in cloud-compute cost. Esdiac: 65% infrastructure-cost reduction. Sixteen agents, one petabyte, two months, two developers. One healthcare deployment supports a million providers with two engineers.
+</div>
+
+<h2>Section VI · The SLA specifics</h2>
+<h3>The measured SLA commitments.</h3>
+
+</div>
+
+<div class="wide">
+<div class="sla">
+  <div class="cell"><div class="k">Recovery-point objective</div><div class="v">0 bytes</div></div>
+  <div class="cell"><div class="k">Recovery-time objective</div><div class="v">180 ms</div></div>
+  <div class="cell"><div class="k">Availability</div><div class="v">99.9999%</div></div>
+  <div class="cell"><div class="k">Peak IOPS</div><div class="v">10 M</div></div>
+  <div class="cell"><div class="k">Read latency</div><div class="v">2 ms</div></div>
+  <div class="cell"><div class="k">Write latency</div><div class="v">9 ms</div></div>
+</div>
+</div>
+
+<div class="body col">
+
+<h2>Section VII · Where to start</h2>
+<h3>Install the CLI, run one of the samples.</h3>
+
+<p>The examples ship inside the SDK. Install the Akka CLI, then <code>akka code init</code> to scaffold any of the samples: multi-agent orchestration, planning and execution, travel planner, medical patient discharge, customer-service orchestration. Full component docs cover Orchestration workflows, the Agent component, memory (short and long-term), and the streaming consumer.</p>
+
+<p>A webinar walking through the release with live demos runs on July 17 at 11 am ET.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li>Full release page: <a href="https://akka.io/blog/announcing-akkas-agentic-ai-release">akka.io/blog/announcing-akkas-agentic-ai-release</a>.</li>
+    <li>Component documentation: <a href="https://doc.akka.io/sdk/index.html">Akka SDK</a> — Orchestration, Agents, Memory, Streaming.</li>
+    <li>Getting started: <a href="https://doc.akka.io/getting-started/samples.html">samples and blueprints</a>.</li>
+    <li>Customer stories cited: <a href="https://akka.io/customer-stories">Verizon, Swiggy, Llaama, and more</a>.</li>
+    <li>Figures and comparison rows adapted from the original release-page copy; numbers reflect public claims as of publication.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published July 10, 2024
+</div>
+
+</body>
+</html>

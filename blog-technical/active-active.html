@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active-active without a distributed database — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Paper — whiter warm cream, no blue */
+  --paper: #FDFCF9;
+  --paper-2: #F5F2EA;         /* subtle band for callouts */
+  --ink:    #1A1A1A;          /* headers */
+  --body:   #2B2A28;           /* body prose, warm dark */
+  --body-2: #4A4844;           /* secondary prose (standfirst) */
+  --mute:   #6E6B66;           /* metadata */
+  --rule:   #E0DDD5;           /* hairlines */
+  --rule-heavy: #B8B4AA;
+  --accent: #8E6E00;           /* single editorial accent — deep gold, used sparingly */
+  --accent-2: #6B5300;
+  --teal:   #2E7275;
+  --good:   #12894E;
+  --bad:    #A22A22;
+  --plate:  #FFFFFF;           /* white plate behind data figures */
+
+  --serif: 'Source Serif 4', 'Source Serif Pro', 'Charter', 'Iowan Old Style', Georgia, serif;
+  --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  background: var(--paper);
+  color: var(--body);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.65;
+  font-feature-settings: "kern", "liga", "onum";
+}
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-decoration-color: var(--rule-heavy); }
+a:hover { text-decoration-color: var(--accent); }
+
+/* ── Colophon ─────────────────────────────────────────── */
+.colophon {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 28px;
+  display: flex; align-items: baseline; gap: 14px;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--mute); text-transform: uppercase; letter-spacing: 0.15em;
+}
+.colophon .brand { font-weight: 800; color: var(--ink); font-size: 14px; letter-spacing: 0; text-transform: none; }
+.colophon .sep { color: var(--rule-heavy); }
+.colophon .r { margin-left: auto; }
+
+/* ── Measures ─────────────────────────────────────────── */
+.col  { max-width: 620px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 28px); }
+.wide { max-width: 920px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 28px); }
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero { padding: 72px 0 36px; }
+.kicker {
+  font-family: var(--sans); font-size: 12.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 24px;
+}
+h1.title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1.08; letter-spacing: -0.018em;
+  font-weight: 700; color: var(--ink);
+  margin-bottom: 22px; text-wrap: balance;
+}
+.standfirst {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1.42; color: var(--body-2);
+  font-weight: 400; font-style: italic;
+  margin-bottom: 36px; max-width: 580px; text-wrap: pretty;
+}
+.byline {
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 20px;
+  padding: 18px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-family: var(--sans); font-size: 13.5px; color: var(--mute);
+}
+.byline .au { color: var(--ink); font-weight: 600; letter-spacing: 0.02em; }
+.byline .r { text-align: right; }
+
+/* ── Body prose ───────────────────────────────────────── */
+.body { padding: 40px 0 100px; }
+.body p {
+  margin-bottom: 24px;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--body);
+  hanging-punctuation: first;
+}
+/* Drop cap — serif, no wrapping issues */
+.body p.lede::first-letter {
+  font-family: var(--serif);
+  font-weight: 700; color: var(--ink);
+  font-size: 5em; line-height: 0.86;
+  float: left; padding: 6px 12px 0 0; margin: 4px 0 0 -2px;
+}
+.body h2 {
+  font-family: var(--sans);
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--mute); margin: 52px 0 6px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+}
+.body h3 {
+  font-family: var(--serif);
+  font-size: 28px; line-height: 1.22; font-weight: 700;
+  color: var(--ink); margin: 12px 0 20px; text-wrap: balance;
+  letter-spacing: -0.008em;
+}
+.body strong { font-weight: 700; color: var(--ink); }
+.body em { font-style: italic; }
+.body code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--ink);
+  background: var(--paper-2);
+  padding: 1px 5px; border-radius: 2px;
+}
+.body ul, .body ol { margin: 0 0 24px 24px; }
+.body li { margin-bottom: 8px; font-family: var(--serif); font-size: 19px; line-height: 1.55; }
+
+/* ── Pull quote — the classic breakout ───────────────── */
+.pullquote {
+  max-width: 720px; margin: 44px auto;
+  padding: 32px 0; text-align: center;
+  border-top: 1px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+  font-family: var(--serif); font-style: italic;
+  font-size: 26px; line-height: 1.38;
+  color: var(--ink); font-weight: 400;
+  text-wrap: balance;
+}
+.pullquote::before, .pullquote::after {
+  color: var(--accent); font-style: normal;
+}
+.pullquote cite {
+  display: block; margin-top: 18px;
+  font-family: var(--sans); font-style: normal;
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--mute);
+}
+
+/* ── Editor's-note callout (no card chrome) ──────────── */
+.enote {
+  margin: 32px 0;
+  padding: 4px 0 4px 22px;
+  border-left: 3px solid var(--accent);
+  font-family: var(--serif); font-style: italic;
+  font-size: 18px; line-height: 1.55; color: var(--body-2);
+}
+.enote b { font-family: var(--sans); font-style: normal; font-weight: 700;
+  font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent-2); display: block; margin-bottom: 6px; }
+
+/* ── Sidenote — desktop margin, mobile inline ────────── */
+.sidenote {
+  float: right; clear: right;
+  width: 200px; margin: 4px -240px 20px 24px;
+  font-family: var(--sans); font-size: 13px; line-height: 1.5;
+  color: var(--mute); padding-left: 14px; border-left: 1px solid var(--rule-heavy);
+}
+.sidenote b { font-family: var(--sans); font-weight: 700; font-size: 10.5px;
+  color: var(--accent-2); display: block; margin-bottom: 4px; letter-spacing: 0.14em; text-transform: uppercase; }
+@media (max-width: 1120px) {
+  .sidenote { float: none; width: auto; margin: 20px 0; padding: 14px 16px;
+    background: var(--paper-2); border-left: 2px solid var(--accent); }
+}
+
+/* ── Figures — the Fermi pattern, editorialized ──────── */
+figure.viz { margin: 48px 0; }
+figure.viz .viz-title {
+  font-family: var(--sans);
+  font-size: 12.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--accent); margin: 0 0 8px;
+}
+figure.viz h4 {
+  font-family: var(--serif);
+  font-size: 22px; line-height: 1.25; font-weight: 700;
+  color: var(--ink); margin: 0 0 14px; text-wrap: balance;
+}
+.legend {
+  display: flex; flex-wrap: wrap; gap: 8px 22px;
+  font-family: var(--sans); font-size: 12.5px; color: var(--mute);
+  margin: 0 0 16px;
+}
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.legend .l-usw i { background: var(--teal); }
+.legend .l-eu  i { background: var(--accent); }
+.legend .l-apac i { background: var(--good); }
+.legend .l-repl i { background: transparent; border: 2px dashed var(--mute); }
+.plot-wrap { overflow-x: auto; }
+figure.viz .plate {
+  background: var(--plate);
+  padding: 20px;
+  border: 1px solid var(--rule);
+}
+figure.viz svg { display: block; width: 100%; height: auto; }
+figure.viz figcaption {
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.55;
+  color: var(--mute); margin: 12px 0 0;
+  max-width: 720px;
+}
+figure.viz figcaption b { color: var(--body); font-weight: 600; }
+
+/* ── Comparison table — grid, hairlines only ─────────── */
+.cmp {
+  display: grid; grid-template-columns: 1.4fr repeat(3, 100px) 1.4fr;
+  margin: 32px 0; border-top: 1px solid var(--ink);
+  font-family: var(--sans); font-size: 14px;
+}
+.cmp .cmp-hd {
+  padding: 14px 12px 12px 0;
+  font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--mute); border-bottom: 1px solid var(--rule);
+  text-align: center;
+}
+.cmp .cmp-hd.left  { text-align: left;  color: var(--ink); }
+.cmp .cmp-hd.right { text-align: left;  color: var(--ink); padding-left: 14px; }
+.cmp .lc {
+  padding: 12px 12px 12px 0; border-bottom: 1px solid var(--rule);
+  color: var(--body); font-family: var(--serif); font-size: 15.5px;
+}
+.cmp .rc {
+  padding: 12px; border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  text-align: center; color: var(--body); font-size: 13.5px;
+}
+.cmp .rr {
+  padding: 12px 12px 12px 14px; border-bottom: 1px solid var(--rule);
+  color: var(--body); font-family: var(--serif); font-size: 15px; font-style: italic;
+}
+.cmp .rr.win { color: var(--good); font-style: normal; font-weight: 600; }
+.cmp .rr.bad { color: var(--bad); }
+.cmp .rc.accent-cell { color: var(--accent); font-weight: 600; }
+
+/* ── Stat row — three tabular figures ────────────────── */
+.stat-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin: 36px 0; padding: 22px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.stat-row .stat { padding: 8px 24px; text-align: center; }
+.stat-row .stat + .stat { border-left: 1px solid var(--rule); }
+.stat b {
+  display: block; font-family: var(--serif);
+  font-variant-numeric: tabular-nums;
+  font-size: 40px; letter-spacing: -0.02em; font-weight: 700;
+  color: var(--ink); margin-bottom: 6px;
+}
+.stat .lbl {
+  font-family: var(--sans); font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--mute);
+}
+@media (max-width: 640px) {
+  .stat-row { grid-template-columns: 1fr; padding: 0; }
+  .stat-row .stat { padding: 20px 0; border-top: 1px solid var(--rule); }
+  .stat-row .stat + .stat { border-left: none; }
+  .stat-row .stat:first-child { border-top: 0; }
+}
+
+/* ── Code blocks — quiet, no heavy accent ─────────────── */
+pre.code {
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.6;
+  background: var(--paper-2); color: var(--ink);
+  padding: 22px 26px; margin: 28px 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+pre.code .k { color: var(--teal); font-weight: 600; }
+pre.code .s { color: var(--good); }
+pre.code .c { color: var(--mute); font-style: italic; }
+pre.code .n { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* ── Footnotes ────────────────────────────────────────── */
+.footnotes {
+  margin: 72px 0 0; padding-top: 24px;
+  border-top: 1px solid var(--rule-heavy);
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.65; color: var(--mute);
+}
+.footnotes h4 {
+  font-family: var(--sans); font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink); font-weight: 700; margin-bottom: 14px;
+}
+.footnotes ol { margin: 0 0 0 22px; }
+.footnotes li { margin-bottom: 10px; }
+
+/* ── Foot stamp ───────────────────────────────────────── */
+.foot {
+  border-top: 1px solid var(--rule); padding: 22px 28px;
+  font-family: var(--sans); font-size: 11.5px;
+  color: var(--mute); text-transform: uppercase; letter-spacing: 0.14em;
+}
+</style>
+</head>
+<body>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Vol. 3 · No. 12</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Distributed systems · Replicated event sourcing</div>
+  <h1 class="title">Active-active without a distributed database.</h1>
+  <p class="standfirst">
+    Two customers book the same seat, in two regions, at the same instant. Database last-writer-wins drops one reservation without a rebook. Replicated Event Sourcing pushes the decision into the entity, where the domain knows the answer.
+  </p>
+  <div class="byline">
+    <div><span class="au">Johan Andrén</span> · Akka Persistence team</div>
+    <div class="r"><time datetime="2023-05-24">May 24, 2023</time> · 9 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">For many types of services it is important to provide low latency <em>and</em> high availability for business-domain entities. Achieving both requires being able to read and update state for the same entity in multiple physical locations — data centers or cloud regions. Traffic for a user can then be directed to the closest region for low latency, and fail over to another region if an outage takes the primary offline. Active-active also distributes load across regions rather than concentrating everything on one.</p>
+
+<aside class="sidenote">
+  <b>Terms</b>
+  A <em>replica</em> is a full copy of the entity in a specific region. Every replica accepts writes locally. Events are replicated between replicas, not directly between databases.
+</aside>
+
+<p>A complex aspect of active-active is conflict resolution, especially at the business level, when two conflicting updates happen in two different locations, or when a change happens just before an outage and does not replicate before the failure. Database replication tools usually resolve conflicts by time and let the last writer win. That is not always a satisfactory answer.</p>
+
+<p>Two flight customers book the same seat on the same flight. Let the timing of a database write decide which passenger keeps the seat, and drop the other reservation on the floor — no rebook, no notification. The tool defaults to that behaviour when no one supplies business logic.</p>
+
+<h2>Section I · The shape of the problem</h2>
+<h3>Reads and writes in every region, without a shared database.</h3>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <h4>Active-active topology, three regions.</h4>
+  <div class="legend">
+    <span class="l-usw"><i></i>us-west</span>
+    <span class="l-eu"><i></i>eu-central</span>
+    <span class="l-apac"><i></i>apac-east</span>
+    <span class="l-repl"><i></i>event replication (gRPC)</span>
+  </div>
+  <div class="plot-wrap">
+    <div class="plate">
+      <svg viewBox="0 0 900 340" preserveAspectRatio="xMinYMin meet" aria-label="Three-region active-active topology">
+        <g font-family="'Inter',sans-serif" font-size="12">
+          <rect x="40" y="60" width="200" height="220" rx="6" fill="none" stroke="#2E7275" stroke-width="1.5"/>
+          <text x="140" y="52" text-anchor="middle" font-weight="700" fill="#2E7275">us-west</text>
+          <rect x="60" y="90" width="160" height="40" rx="3" fill="#FDFCF9" stroke="#1A1A1A"/>
+          <text x="140" y="115" text-anchor="middle" fill="#1A1A1A">Client traffic</text>
+          <rect x="60" y="150" width="160" height="52" rx="3" fill="#2E7275"/>
+          <text x="140" y="172" text-anchor="middle" fill="#FFFFFF" font-weight="600">Cart entity</text>
+          <text x="140" y="188" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono',monospace" font-size="10.5">replica: us-west</text>
+          <rect x="60" y="220" width="160" height="40" rx="3" fill="none" stroke="#1A1A1A"/>
+          <text x="140" y="245" text-anchor="middle" fill="#1A1A1A" font-family="'JetBrains Mono',monospace" font-size="11">event journal</text>
+
+          <rect x="350" y="60" width="200" height="220" rx="6" fill="none" stroke="#8E6E00" stroke-width="1.5"/>
+          <text x="450" y="52" text-anchor="middle" font-weight="700" fill="#8E6E00">eu-central</text>
+          <rect x="370" y="90" width="160" height="40" rx="3" fill="#FDFCF9" stroke="#1A1A1A"/>
+          <text x="450" y="115" text-anchor="middle" fill="#1A1A1A">Client traffic</text>
+          <rect x="370" y="150" width="160" height="52" rx="3" fill="#8E6E00"/>
+          <text x="450" y="172" text-anchor="middle" fill="#FFFFFF" font-weight="600">Cart entity</text>
+          <text x="450" y="188" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono',monospace" font-size="10.5">replica: eu-central</text>
+          <rect x="370" y="220" width="160" height="40" rx="3" fill="none" stroke="#1A1A1A"/>
+          <text x="450" y="245" text-anchor="middle" fill="#1A1A1A" font-family="'JetBrains Mono',monospace" font-size="11">event journal</text>
+
+          <rect x="660" y="60" width="200" height="220" rx="6" fill="none" stroke="#12894E" stroke-width="1.5"/>
+          <text x="760" y="52" text-anchor="middle" font-weight="700" fill="#12894E">apac-east</text>
+          <rect x="680" y="90" width="160" height="40" rx="3" fill="#FDFCF9" stroke="#1A1A1A"/>
+          <text x="760" y="115" text-anchor="middle" fill="#1A1A1A">Client traffic</text>
+          <rect x="680" y="150" width="160" height="52" rx="3" fill="#12894E"/>
+          <text x="760" y="172" text-anchor="middle" fill="#FFFFFF" font-weight="600">Cart entity</text>
+          <text x="760" y="188" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono',monospace" font-size="10.5">replica: apac-east</text>
+          <rect x="680" y="220" width="160" height="40" rx="3" fill="none" stroke="#1A1A1A"/>
+          <text x="760" y="245" text-anchor="middle" fill="#1A1A1A" font-family="'JetBrains Mono',monospace" font-size="11">event journal</text>
+
+          <path d="M220 176 L370 176" stroke="#6E6B66" stroke-width="1.5" stroke-dasharray="6 4" fill="none"/>
+          <polygon points="370,176 362,172 362,180" fill="#6E6B66"/>
+          <polygon points="220,176 228,172 228,180" fill="#6E6B66"/>
+
+          <path d="M530 176 L680 176" stroke="#6E6B66" stroke-width="1.5" stroke-dasharray="6 4" fill="none"/>
+          <polygon points="680,176 672,172 672,180" fill="#6E6B66"/>
+          <polygon points="530,176 538,172 538,180" fill="#6E6B66"/>
+
+          <path d="M220 200 Q450 300 680 200" stroke="#6E6B66" stroke-width="1.5" stroke-dasharray="6 4" fill="none"/>
+          <polygon points="220,200 226,196 218,196" fill="#6E6B66"/>
+        </g>
+        <text x="450" y="310" text-anchor="middle" font-family="'Inter',sans-serif" font-size="12" fill="#6E6B66">no shared database — each replica writes to its own journal, replicates events peer-to-peer</text>
+      </svg>
+    </div>
+  </div>
+  <figcaption><b>Each region owns a full entity replica and its own event journal.</b> Writes never cross regions synchronously. Events flow between replicas over an Akka Projection gRPC channel, so the database itself has no cross-region responsibility.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h2>Section II · The mechanism</h2>
+<h3>Replicated Event Sourcing = event sourcing + CRDTs.</h3>
+
+<p>Replicated Event Sourcing in Akka combines Event Sourcing with Conflict-Free Replicated Data Types. Each replica persists events to its own local database instance. The database has no replication responsibility. Events cross regions over an efficient gRPC channel. The APIs are the same as for Akka Event Sourced Behaviors, with small additions for the replica identity.</p>
+
+<blockquote class="pullquote">
+  Every ordering of events over a given item lands on the same quantity. That is the CRDT property, expressed at the domain layer rather than the storage layer.
+  <cite>Why the signed-quantity trick works</cite>
+</blockquote>
+
+<p>The core requirement dictates every downstream choice: <strong>applying all events, in any order, must arrive at the same state</strong>. That is what makes conflicts resolve without a coordinator. It is also what dictates the shape of the events an author is allowed to write.</p>
+
+<h3>The shopping-cart example.</h3>
+
+<p>The cart accepts four commands — <code>AddItem</code>, <code>RemoveItem</code>, <code>Checkout</code>, <code>Get</code>. It stores two events during normal life, <code>ItemUpdated</code> and <code>Closed</code>, and a third, <code>CheckedOut</code>, on final settlement. The state is a map from item id to quantity, plus a set of replica ids that have observed the close.</p>
+
+</div>
+
+<div class="wide">
+<pre class="code"><span class="c">// A single event type covers both add and remove, distinguished by sign.</span>
+<span class="k">public static final class</span> ItemUpdated <span class="k">implements</span> Event {
+  <span class="k">final</span> String itemId;
+  <span class="k">final</span> <span class="k">int</span> quantity;   <span class="c">// positive = add, negative = remove</span>
+}
+
+<span class="c">// The command handler for the OPEN state — cart is still accepting changes.</span>
+<span class="k">private</span> ReplyEffect&lt;Event, State&gt; openOnAddItem(State state, AddItem cmd) {
+  <span class="k">return</span> Effect()
+    .persist(<span class="k">new</span> ItemUpdated(cmd.itemId, cmd.quantity))
+    .thenReply(cmd.replyTo, updated -&gt; StatusReply.success(updated.toSummary()));
+}
+<span class="k">private</span> ReplyEffect&lt;Event, State&gt; openOnRemoveItem(State state, RemoveItem cmd) {
+  <span class="k">return</span> Effect()
+    .persist(<span class="k">new</span> ItemUpdated(cmd.itemId, -cmd.quantity))
+    .thenReply(cmd.replyTo, updated -&gt; StatusReply.success(updated.toSummary()));
+}
+</pre>
+</div>
+
+<div class="body col">
+
+<p>Turning both commands into one signed-quantity event is what makes the state eventually consistent. Every ordering of events over a given item lands on the same quantity. That is the CRDT property, expressed at the domain layer rather than the storage layer.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <h4>Every event ordering converges to the same final state.</h4>
+  <div class="plot-wrap">
+    <div class="plate">
+      <svg viewBox="0 0 900 300" preserveAspectRatio="xMinYMin meet" aria-label="Convergence table">
+        <g font-family="'JetBrains Mono',monospace" font-size="12.5" fill="#1A1A1A">
+          <text x="130" y="30" text-anchor="middle" font-weight="700" fill="#2E7275" font-family="'Inter',sans-serif" font-size="13">us-west sees events in order</text>
+          <text x="450" y="30" text-anchor="middle" font-weight="700" fill="#8E6E00" font-family="'Inter',sans-serif" font-size="13">eu-central sees events in order</text>
+          <text x="770" y="30" text-anchor="middle" font-weight="700" fill="#12894E" font-family="'Inter',sans-serif" font-size="13">apac-east sees events in order</text>
+
+          <text x="20"  y="70" fill="#6E6B66">t1</text><text x="60" y="70">ItemUpdated(shirt, +3)</text>  <text x="255" y="70" text-anchor="end">→ {shirt:3}</text>
+          <text x="20"  y="96" fill="#6E6B66">t2</text><text x="60" y="96">ItemUpdated(shirt, +2)</text>  <text x="255" y="96" text-anchor="end">→ {shirt:5}</text>
+          <text x="20"  y="122" fill="#6E6B66">t3</text><text x="60" y="122">ItemUpdated(shirt, -2)</text> <text x="255" y="122" text-anchor="end">→ {shirt:3}</text>
+
+          <text x="340" y="70"  fill="#6E6B66">t1</text><text x="380" y="70">ItemUpdated(shirt, +2)</text>  <text x="575" y="70" text-anchor="end">→ {shirt:2}</text>
+          <text x="340" y="96"  fill="#6E6B66">t2</text><text x="380" y="96">ItemUpdated(shirt, -2)</text>  <text x="575" y="96" text-anchor="end">→ {shirt:0}</text>
+          <text x="340" y="122" fill="#6E6B66">t3</text><text x="380" y="122">ItemUpdated(shirt, +3)</text>  <text x="575" y="122" text-anchor="end">→ {shirt:3}</text>
+
+          <text x="660" y="70"  fill="#6E6B66">t1</text><text x="700" y="70">ItemUpdated(shirt, -2)</text>  <text x="895" y="70" text-anchor="end">→ {shirt:-2}</text>
+          <text x="660" y="96"  fill="#6E6B66">t2</text><text x="700" y="96">ItemUpdated(shirt, +3)</text>  <text x="895" y="96" text-anchor="end">→ {shirt:1}</text>
+          <text x="660" y="122" fill="#6E6B66">t3</text><text x="700" y="122">ItemUpdated(shirt, +2)</text>  <text x="895" y="122" text-anchor="end">→ {shirt:3}</text>
+
+          <line x1="20" y1="150" x2="880" y2="150" stroke="#E0DDD5" stroke-width="1"/>
+
+          <text x="450" y="200" text-anchor="middle" font-family="Source Serif 4,serif" font-size="17" fill="#1A1A1A" font-style="italic">All three replicas arrive at the same final state.</text>
+          <rect x="380" y="220" width="140" height="50" rx="3" fill="#8E6E00"/>
+          <text x="450" y="252" text-anchor="middle" fill="#FFFFFF" font-family="'JetBrains Mono',monospace" font-size="15" font-weight="700">{shirt: 3}</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><b>Three replicas apply an identical event set in three different orders.</b> Because each event carries a signed delta and the state is a summation, ordering does not matter. This is the eventual-consistency contract Replicated Event Sourcing depends on.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<div class="enote">
+  <b>The dividend</b>
+  No global coordinator. No last-writer-wins. No seat dropped on the floor. Every replica converges on the same state as long as every event eventually arrives. Latency stays local; conflict resolution stays in the domain.
+</div>
+
+<h2>Section III · The global sync point</h2>
+<h3>Checkout requires every replica to agree.</h3>
+
+<p>Some transitions cannot be eventually consistent. Once a cart checks out we want to hand it to an order service, take payment, and ship. If we saw a local <code>Closed</code> event we cannot yet assume other replicas did not accept an <code>ItemUpdated</code> a moment earlier — we have not seen those events yet. So the entity needs a global synchronization point.</p>
+
+<p>The trick is to model it in the event stream. The state carries a set of replica ids that have observed the close. When the local replica sees a <code>Closed</code> from any other replica, it triggers a <code>CloseForCheckout</code> command against itself, which persists a <code>Closed</code> event stamped with its own replica id. Eventually every replica has emitted its own Closed event, and every replica has observed all of them.</p>
+
+<p>One replica — deterministically elected — waits until the observed-closes set equals the full replica set, then persists the final <code>CheckedOut</code> event. That event carries a wall-clock timestamp and is the signal downstream services consume.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <h4>Checkout swim-lane across three replicas.</h4>
+  <div class="plot-wrap">
+    <div class="plate">
+      <svg viewBox="0 0 900 340" preserveAspectRatio="xMinYMin meet" aria-label="Checkout swim-lane">
+        <g font-family="'Inter',sans-serif" font-size="12">
+          <line x1="130" y1="40" x2="130" y2="310" stroke="#E0DDD5"/>
+          <line x1="130" y1="40" x2="880" y2="40" stroke="#E0DDD5"/>
+          <line x1="130" y1="130" x2="880" y2="130" stroke="#E0DDD5"/>
+          <line x1="130" y1="220" x2="880" y2="220" stroke="#E0DDD5"/>
+          <line x1="130" y1="310" x2="880" y2="310" stroke="#E0DDD5"/>
+
+          <text x="20" y="90"  font-weight="700" fill="#2E7275">us-west</text>
+          <text x="20" y="180" font-weight="700" fill="#8E6E00">eu-central</text>
+          <text x="20" y="270" font-weight="700" fill="#12894E">apac-east <tspan font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">(leader)</tspan></text>
+
+          <text x="200" y="30" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">t1</text>
+          <text x="350" y="30" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">t2</text>
+          <text x="500" y="30" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">t3</text>
+          <text x="650" y="30" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">t4</text>
+          <text x="800" y="30" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10.5" fill="#6E6B66">t5</text>
+
+          <rect x="185" y="70" width="90" height="30" rx="3" fill="#2E7275"/>
+          <text x="230" y="90" text-anchor="middle" fill="#FFFFFF" font-weight="600">Checkout</text>
+          <rect x="185" y="105" width="90" height="16" rx="2" fill="none" stroke="#2E7275"/>
+          <text x="230" y="117" text-anchor="middle" fill="#2E7275" font-family="'JetBrains Mono',monospace" font-size="10">Closed[usw]</text>
+
+          <line x1="275" y1="90" x2="330" y2="160" stroke="#6E6B66" stroke-width="1" stroke-dasharray="4 3"/>
+          <polygon points="330,160 322,158 326,152" fill="#6E6B66"/>
+          <line x1="275" y1="90" x2="330" y2="250" stroke="#6E6B66" stroke-width="1" stroke-dasharray="4 3"/>
+          <polygon points="330,250 322,246 326,241" fill="#6E6B66"/>
+
+          <rect x="335" y="160" width="130" height="30" rx="3" fill="#8E6E00"/>
+          <text x="400" y="180" text-anchor="middle" fill="#FFFFFF" font-weight="600" font-size="11">CloseForCheckout</text>
+          <rect x="335" y="195" width="130" height="16" rx="2" fill="none" stroke="#8E6E00"/>
+          <text x="400" y="207" text-anchor="middle" fill="#8E6E00" font-family="'JetBrains Mono',monospace" font-size="10">Closed[eu]</text>
+
+          <line x1="465" y1="180" x2="510" y2="250" stroke="#6E6B66" stroke-width="1" stroke-dasharray="4 3"/>
+          <polygon points="510,250 502,246 506,241" fill="#6E6B66"/>
+
+          <rect x="335" y="250" width="130" height="30" rx="3" fill="#12894E"/>
+          <text x="400" y="270" text-anchor="middle" fill="#FFFFFF" font-weight="600" font-size="11">CloseForCheckout</text>
+          <rect x="335" y="285" width="130" height="16" rx="2" fill="none" stroke="#12894E"/>
+          <text x="400" y="297" text-anchor="middle" fill="#12894E" font-family="'JetBrains Mono',monospace" font-size="10">Closed[apac]</text>
+
+          <rect x="520" y="250" width="150" height="30" rx="3" fill="none" stroke="#12894E" stroke-width="2"/>
+          <text x="595" y="270" text-anchor="middle" fill="#12894E" font-weight="600" font-size="11">observed = {all}</text>
+
+          <rect x="700" y="250" width="150" height="30" rx="3" fill="#12894E"/>
+          <text x="775" y="270" text-anchor="middle" fill="#FFFFFF" font-weight="600" font-size="11">CheckedOut(ts)</text>
+
+          <line x1="775" y1="250" x2="750" y2="185" stroke="#6E6B66" stroke-width="1" stroke-dasharray="4 3"/>
+          <polygon points="750,185 758,188 754,193" fill="#6E6B66"/>
+          <line x1="775" y1="250" x2="750" y2="95" stroke="#6E6B66" stroke-width="1" stroke-dasharray="4 3"/>
+          <polygon points="750,95 758,98 754,103" fill="#6E6B66"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><b>The cart is checked out from us-west at <code>t1</code>.</b> Eu-central and apac-east each observe the incoming <code>Closed</code> and emit their own. The elected leader — apac-east for this cart — waits until every replica id appears in the observed set, then persists the terminal <code>CheckedOut</code> event.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<h3>Leader derivation from the entity id.</h3>
+<p>The leader is derived — no election protocol, no ZooKeeper, no lease. Every replica computes the same function over the entity id: sort the replica ids, hash the entity id, index into the sorted list. Same input, same answer, every replica agrees without talking.</p>
+
+</div>
+
+<div class="wide">
+<pre class="code"><span class="k">private static boolean</span> isShoppingCartLeader(ReplicationContext ctx) {
+  List&lt;ReplicaId&gt; ordered = ctx.getAllReplicas().stream()
+      .sorted(<span class="k">Comparator</span>.comparing(ReplicaId::id))
+      .collect(Collectors.toList());
+  <span class="k">int</span> idx = <span class="k">Math</span>.abs(ctx.entityId().hashCode() % ordered.size());
+  <span class="k">return</span> ordered.get(idx) == ctx.replicaId();
+}
+</pre>
+</div>
+
+<div class="body col">
+
+<div class="enote">
+  <b>The trade</b>
+  Waiting for every replica to observe the close means every replica must be reachable before checkout can complete. The pattern fits a cart, where checkout is a rare, transactional event and the customer will accept a moment's wait for consistency. For a hot counter, use eventual convergence and skip the sync.
+</div>
+
+<h2>Section IV · How it compares</h2>
+<h3>Three approaches to multi-region write.</h3>
+
+</div>
+
+<div class="wide">
+<div class="cmp" role="table" aria-label="Comparison of multi-region write strategies">
+  <div class="cmp-hd left">Property</div>
+  <div class="cmp-hd">Single primary</div>
+  <div class="cmp-hd">DB active-active (LWW)</div>
+  <div class="cmp-hd">Replicated Event Sourcing</div>
+  <div class="cmp-hd right">What it buys you</div>
+
+  <div class="lc">Local-region write latency</div>
+  <div class="rc">cross-region</div>
+  <div class="rc">local</div>
+  <div class="rc">local</div>
+  <div class="rr win">Users see their own writes fast</div>
+
+  <div class="lc">Survives region loss</div>
+  <div class="rc">promote</div>
+  <div class="rc">yes</div>
+  <div class="rc">yes</div>
+  <div class="rr win">No manual failover step</div>
+
+  <div class="lc">Conflict policy authored in</div>
+  <div class="rc">n/a</div>
+  <div class="rc">DB defaults</div>
+  <div class="rc">domain code</div>
+  <div class="rr win">Business rules, not clock skew</div>
+
+  <div class="lc">Requires shared database</div>
+  <div class="rc">yes</div>
+  <div class="rc">yes</div>
+  <div class="rc">no</div>
+  <div class="rr win">Any journal-shaped store works</div>
+
+  <div class="lc">Cross-region protocol</div>
+  <div class="rc">DB replication</div>
+  <div class="rc">DB replication</div>
+  <div class="rc">gRPC events</div>
+  <div class="rr win">Runs on standard networking</div>
+
+  <div class="lc">Global sync when needed</div>
+  <div class="rc">primary decides</div>
+  <div class="rc">—</div>
+  <div class="rc">leader + closed-set</div>
+  <div class="rr win">Rare transactions still safe</div>
+</div>
+</div>
+
+<div class="body col">
+
+<div class="stat-row">
+  <div class="stat"><b>3</b><span class="lbl">event types</span></div>
+  <div class="stat"><b>0</b><span class="lbl">shared databases</span></div>
+  <div class="stat"><b>1</b><span class="lbl">gRPC channel between replicas</span></div>
+</div>
+
+<h2>Section V · When to reach for it</h2>
+<h3>Anything with a per-entity conflict story.</h3>
+
+<p>Replicated Event Sourcing fits when the domain has an opinion about how conflicts should resolve. Carts, reservations, wallets, inventory, matchmaking — anywhere a bare last-writer-wins would produce results the business would not accept. For write-once ledger data or append-only telemetry, plain event sourcing is enough. For read-heavy caches, a read-replica pattern is simpler.</p>
+
+<p>The rule of thumb: if you have ever had to explain to a business owner why two updates arriving within a second produced the wrong outcome, this is the pattern that lets you write the right one in code.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li>Full <a href="https://doc.akka.io/libraries/akka/current/typed/replicated-eventsourcing.html">Replicated Event Sourcing documentation</a> — API reference, replica topology setup, and the gRPC transport details.</li>
+    <li>Runnable samples: <a href="https://github.com/akka/akka-samples/tree/main/akka-sample-persistence-replicated-shopping-cart-java">Java Replicated Shopping Cart</a>, <a href="https://github.com/akka/akka-samples/tree/main/akka-sample-persistence-replicated-shopping-cart-scala">Scala variant</a>.</li>
+    <li>Background on the conflict-free replicated data type primitives underneath: Shapiro et al., <em>Conflict-Free Replicated Data Types</em>, INRIA (2011).</li>
+    <li>Diagrams are illustrative reproductions of the topology and message flow described in the post; timings are not measured.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published May 24, 2023
+</div>
+
+</body>
+</html>

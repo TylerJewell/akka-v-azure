@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active-Active — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">active-active</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">MULTI-REGION · ARCHITECT / CTO · OPERATIONS</div>
+  <h1 class="title">Active-Active</h1>
+  <p class="standfirst">For many types of services and systems it is important to provide low latency as well as high availability for business domain entities. Achieving this requires being able to both read and update state for the same entity in multiple physical locations, data centers or cloud regions.</p>
+  <div class="byline">
+    <div><span class='au'>Johan Andrén</span> · Principal Engineer</div>
+    <div class="r"><time datetime="2023-05-30">May 30, 2023</time> · 9 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">For many types of services and systems it is important to provide low latency as well as high availability for business domain entities. Achieving this requires being able to both read and update state for the same entity in multiple physical locations, data centers or cloud regions.</p>
+
+<p>Interactions for a user can be directed to the closest geographic location to get low latency, and fail over to another location if that becomes unavailable because of for example an outage.</p>
+<p>Active Active also allows distributing load across multiple geographic locations rather than directing all traffic to a single location.</p>
+<p>A complex aspect of active-active is conflict resolution, especially at a business level, in case two conflicting updates were done in two different locations, or if a change happened just before an outage and was not yet replicated to the other location.</p>
+<p>Database capabilities for this usually rely on time and allowing the last writer to win, which is not always a satisfactory solution. On the other hand, resolving a conflict in a good way often requires business domain specific logic.</p>
+<p>As an example: two flight customers book the same seat on the same flight, letting the timing of the database replica write decide which customer gets the seat and completely drop the seat reservation for the other customer is unlikely to be satisfactory - more business specific logic for handling the scenario is required.</p>
+<p><a href="https://doc.akka.io/libraries/akka/current/typed/replicated-eventsourcing.html" target="_blank" rel="noopener">Replicated Event Sourcing in Akka</a> is a combination of <a href="https://doc.akka.io/libraries/akka/current/typed/persistence.html" target="_blank" rel="noopener">Event Sourcing</a> and <a href="https://doc.akka.io/libraries/akka/current/typed/distributed-data.html" target="_blank" rel="noopener">Conflict Free Replicated Data Types (CRDT)</a>. Each location, or replica, persists events to its own database instance, with no requirements for the database itself to provide replication capabilities. Events are instead replicated over an efficient cross replica channel based on gRPC (using <a href="https://doc.akka.io/libraries/akka-projection/current/grpc.html" target="_blank" rel="noopener">Akka Projection gRPC</a>).</p>
+<p>Replicated Event Sourcing allows for both automatic merge of changes from different replicas and more explicit detection and handling of conflicting updates according to business rules. The APIs are the same as for Akka <a href="https://doc.akka.io/libraries/akka/current/typed/persistence.html" target="_blank" rel="noopener"> Event Sourced Behaviors</a> with some small additions.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Replicated shopping cart example</h2>
+<p>To get a more concrete idea of how a replicated entity implementation looks, let’s implement a shopping cart, keeping track of items selected for purchase.</p>
+<p>Since the Replicated Event Sourcing API is the same as for Akka Persistence, the first step is to define a set of commands that a shopping cart will accept, events that it will store and a state.</p>
+<p>The commands are:</p>
+<ul>
+<li><strong>AddItem</strong> - increase the quantity of a specific product in the cart</li>
+<li><strong>RemoveItem</strong> - decrease the quantity of a product in the cart</li>
+<li><strong>Checkout</strong> - turn the cart into an order of the current set of items</li>
+<li><strong>Get</strong> - return a summary of the current state of the cart</li>
+</ul>
+<p>Each command also includes a <code>replyTo</code> actor to send an acknowledgement back to once the change is persisted in the database.</p>
+<pre><code class="language-java">/** This interface defines all the commands (messages) that the ShoppingCart actor supports. */
+interface Command extends CborSerializable {}
+
+public static final class AddItem implements Command {
+  final String itemId;
+  final int quantity;
+  final ActorRef&lt;StatusReply&lt;Summary&gt;&gt; replyTo;
+  …constructor omitted…
+}
+
+public static final class RemoveItem implements Command {
+  final String itemId;
+  final int quantity;
+  final ActorRef&lt;StatusReply&lt;Summary&gt;&gt; replyTo;
+  …constructor omitted…
+}
+
+public static final class Checkout implements Command {
+  final ActorRef&lt;StatusReply&lt;Summary&gt;&gt; replyTo;
+  …constructor omitted…
+}
+
+public static final class Get implements Command {
+  final ActorRef&lt;Summary&gt; replyTo;
+  …constructor omitted…
+}</code></pre>
+<p>The cart has two states which should behave differently:</p>
+<ul>
+<li><strong>open</strong> - accepting changes</li>
+<li><strong>closed</strong> - after it has been checked out it should not accept any changes anymore</li>
+</ul>
+<p>When the shopping cart receives one of the commands a command handler is selected based on the state and then invoked. The command handler contains logic to validate the command against the current state and can reply immediately or turn the command into an event that is persisted.</p>
+<p>Composing the open and closed command handlers looks like this:</p>
+<pre><code class="language-java">public CommandHandlerWithReply&lt;Command, Event, State&gt; commandHandler() {
+  return openShoppingCart().orElse(closedShoppingCart()).orElse(getCommandHandler()).build();
+}</code></pre>
+<p>This is the command handler for an open cart, note the initial <code>forState</code> which means that the following <code>onCommand</code>s it will only be applied if the predicate <code>!state.isClosed()</code> returns true, in other words only for open carts:</p>
+<pre><code class="language-java">private CommandHandlerWithReplyBuilderByState&lt;Command, Event, State, State&gt; openShoppingCart() {
+  return newCommandHandlerWithReplyBuilder()
+    .forState(state -&gt; !state.isClosed())
+    .onCommand(AddItem.class, this::openOnAddItem)
+    .onCommand(RemoveItem.class, this::openOnRemoveItem)
+    .onCommand(Checkout.class, this::openOnCheckout);
+}</code></pre>
+<p>The commands are matched by type, and delegated to a method on the class. The <code>openOnAdd</code> handler logic looks like this, turning the <code>AddItem</code> command to a corresponding <code>ItemUpdated</code> event which is persisted and once that completes successfully a reply is sent back to the actor asking for the update:</p>
+<pre><code class="language-java">private ReplyEffect&lt;Event, State&gt; openOnAddItem(State state, AddItem cmd) {
+    return Effect()
+      .persist(new ItemUpdated(cmd.itemId, cmd.quantity))
+      .thenReply(cmd.replyTo, updatedCart -&gt; StatusReply.success(updatedCart.toSummary()));
+}</code></pre>
+<p>The <code>RemoveItem</code> handler method is similar, but turns the command into a ItemUpdated with a negative quantity change:</p>
+<pre><code class="language-java">private ReplyEffect&lt;Event, State&gt; openOnRemoveItem(State state, RemoveItem cmd) {
+  return Effect()
+    .persist(new ItemUpdated(cmd.itemId, -cmd.quantity))
+    .thenReply(cmd.replyTo, updatedCart -&gt; StatusReply.success(updatedCart.toSummary()));
+}</code></pre>
+<p>Turning both the add and remove commands into a single type of event with negative or positive quantities makes it possible to make the state eventually consistent, this is a key requirement for Replicated Event Sourcing: applying all the events to the state, in any order, should lead to the same state.</p>
+<p>This is important because updates could happen to different replicas and take time to be replicated, so an add to one replica and a subsequent removal to another, could lead to a replica seeing the removal first and then the addition, the time in between seeing both events it will have a negative quantity and finally arrive at 0 when both events are seen, representing that the item was removed when checking out the cart.</p>
+<p>The <code>Checkout</code> command handler is a bit different, it creates a <code>Closed</code> event which includes the unique replica id of the replica where it was closed (we will come back to why this is needed later):</p>
+<pre><code class="language-java">private ReplyEffect&lt;Event, State&gt; openOnCheckout(State state, Checkout cmd) {
+  return Effect()
+    .persist(new Closed(replicationContext.replicaId()))
+    .thenReply(cmd.replyTo, updatedCart -&gt; StatusReply.success(updatedCart.toSummary()));
+}</code></pre>
+<p>Once an event has been successfully stored, or arrives from another replica, it is applied to the current state to create a new or updated state, which will be the state used for subsequent commands and events. This is implemented in the event handler:</p>
+<pre><code class="language-java">public EventHandler&lt;State, Event&gt; eventHandler() {
+  return newEventHandlerBuilder()
+    .forAnyState()
+    .onEvent(
+      ItemUpdated.class, (state, event) -&gt; state.updateItem(event.itemId, event.quantity))
+    .onEvent(
+      Closed.class,
+      (state, event) -&gt; {
+        State newState = state.close(event.replica);
+        eventTriggers(newState);
+        return newState;
+      })
+    .onEvent(CheckedOut.class, (state, event) -&gt; state.checkout(event.eventTime))
+    .build();
+}</code></pre>
+<p>Here we use the same set of event handlers regardless of the current state. The <code>ItemUpdated</code> event is delegated to the method <code>updateItem</code> on <code>State</code> which keeps a map with quantity for each item id in the cart. The negative or positive quantity, starting from 0 if there was no previous entry, is added to that map, and returns itself as the updated state:</p>
+<pre><code class="language-java">static final class State implements CborSerializable {
+  final Map&lt;String, Integer&gt; items;
+  …
+
+  public State updateItem(String itemId, int quantity) {
+    items.put(itemId, items.getOrDefault(itemId, 0) + quantity);
+    return this;
+}</code></pre>
+<p>Did you notice that there was an additional event <code>CheckedOut</code> in the event handler that we have not yet talked about?</p>
+<p>Once a shopping cart has been checked out, we want to pass it on to another service for actually preparing an order, making sure it was paid for and eventually sending it to the customer. However, since the cart is eventually consistent, we cannot know that there were no additional <code>ItemUpdated</code> events for the cart from other replicas just because we saw a <code>Closed</code> event.</p>
+<p>Note that this is a problem that is specific to a use case that needs something like a global synchronization point before continuing, not all replicated entities will require this kind of logic.</p>
+<p>We need to make sure that all replicas have seen the <code>Closed</code> event, and will deny further changes, before we can actually close the cart.</p>
+<p>In the state, we keep track of which replicas we have seen close events from, when the <code>close</code> method is called from the event handler we add which replica that closed to the set:</p>
+<pre><code class="language-java">static final class State implements CborSerializable {
+  final Set&lt;ReplicaId&gt; closed;
+  …
+
+  public State close(ReplicaId replica) {
+    closed.add(replica);
+    return this;
+}</code></pre>
+<p>The event handler then calls <code>eventTriggers</code> with the new state. This logic is probably the trickiest so far so let’s go through it step by step.</p>
+<p>It will only run if the entity is not recovering (restarting or cold starting by replaying all its events to arrive at the latest state).</p>
+<p>If it is called and the replica itself is not closed - in other words we saw another replica close it and that event was replicated here, we trigger an internal <code>CloseForCheckout</code> command to this replica of the cart. When that command is received the entity will persist a <code>Closed</code> event with its own replica id. This means that eventually all replicas will either have saved the initial <code>Closed</code> event or have seen a <code>Closed</code> event from another replica and had that trigger created one for its own replica id.</p>
+<p>As all these <code>Closed</code> events will be replicated across all replicas, once all replicas have seen them, all states will eventually contain the set of all replica ids in their set of closed replicas.</p>
+<p>Once all replicas have seen the checkout we want to store a single event, from one replica to signal that the cart is checked out, we’ll call this replica the “leader” (let’s look at how we determine which replica is the leader a bit later).</p>
+<p>On that leader replica, if all cart replicas are closed, we send a <code>CompleteCheckout</code> command to ourselves.</p>
+<pre><code class="language-java">private void eventTriggers(State state) {
+  if (!replicationContext.recoveryRunning()) {
+    if (!state.closed.contains(replicationContext.replicaId())) {
+    context.getSelf().tell(CloseForCheckout.INSTANCE);
+    } else if (isLeader) {
+    boolean allClosed = replicationContext.getAllReplicas().equals(state.closed);
+    if (allClosed) context.getSelf().tell(CompleteCheckout.INSTANCE);
+    }
+  }
+}</code></pre>
+<p>The handling of the <code>CompleteCheckout</code> command is done in the closed command handler, as the checkout of the cart can only ever be after it has been closed:</p>
+<pre><code class="language-java">private CommandHandlerWithReplyBuilderByState&lt;Command, Event, State, State&gt; closedShoppingCart() {
+  return newCommandHandlerWithReplyBuilder()
+    .forState(State::isClosed)
+    .onCommand(AddItem.class, this::closedOnAddItem)
+    .onCommand(RemoveItem.class, this::closedOnRemoveItem)
+    .onCommand(Checkout.class, this::closedOnCheckout)
+    .onCommand(CloseForCheckout.class, this::closedOnCloseForCheckout)
+    .onCommand(CompleteCheckout.class, this::closedOnCompleteCheckout);
+  }</code></pre>
+<p>The command is delegated to <code>closedOnCompleteCheckout</code>, this command handler could also include side effects that we only want to happen once per entity, for example passing it on to the order system, using <code>thenRun</code>, not shown here, however such operations are not guaranteed to run, and it is often better to rely on the at least once guarantees in a projection for side effects that must happen.</p>
+<p>The handler creates a <code>CheckedOut</code> event with a timestamp and persists that:</p>
+<pre><code class="language-java">private ReplyEffect&lt;Event, State&gt; closedOnCompleteCheckout(State state, CompleteCheckout cmd) {
+  return Effect().persist(new CheckedOut(Instant.now())).thenNoReply();
+}</code></pre>
+<p>At last let’s circle back to the selection of a leader replica, and the consequences of that. The logic to decide if an entity is on a replica sorts all replica ids, selects one of them based on the hash of the entity id. This means that the leader will be the same for all replicas of the same cart but can differ for different carts.</p>
+<pre><code class="language-java">private static boolean isShoppingCartLeader(ReplicationContext replicationContext) {
+  List&lt;ReplicaId&gt; orderedReplicas =
+    replicationContext.getAllReplicas().stream()
+      .sorted(Comparator.comparing(ReplicaId::id))
+      .collect(Collectors.toList());
+  int leaderIndex = Math.abs(replicationContext.entityId().hashCode() % orderedReplicas.size());
+  return orderedReplicas.get(leaderIndex) == replicationContext.replicaId();
+}</code></pre>
+<p>Having a leader like this and requiring all replicas to have seen a change before moving on means that all replicas must be available before progress can be made, this is not a good idea for all scenarios and somewhat limits the fail-over capability of this example, carts can still be changed in face of replicas being unavailable because of an outage, but they can not be checked out until all replicas are available again.</p>
+<p>This was an overview of the shopping cart sample, more details around setting up the gRPC transport can be found in the <a href="https://doc.akka.io/libraries/akka-projection/current/grpc-replicated-event-sourcing-transport.html" target="_blank" rel="noopener">Akka Projection gRPC documentation</a> and in the complete, runnable, sample projects:</p>
+<ul>
+<li><a href="https://github.com/akka/akka-projection/tree/main/samples/replicated/shopping-cart-service-java" target="_blank" rel="noopener">Java Replicated Shopping Cart</a></li>
+<li><a href="https://github.com/akka/akka-projection/tree/main/samples/replicated/shopping-cart-service-scala" target="_blank" rel="noopener">Scala Replicated Shopping Cart</a></li>
+</ul>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · May 30, 2023
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fast, lean, and unbreakable: building cloud apps with Akka and Kubernetes — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#DCDCD6;--body:#B8B8B3;--mute:#7C7C79;--faint:#4E4E4C;--rule:rgba(255,255,255,0.08);--rule-hi:rgba(255,255,255,0.14);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.55;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+/* Inline body-prose links inherit body text color; a subtle gold underline
+   is the only link cue. Colored links (even at low weight) outweighed the
+   dim body text on the dark background. Hover reveals the accent color. */
+.body p a,.body li a{color:inherit;font-weight:inherit;border-bottom:1px solid rgba(233,180,38,0.5);padding-bottom:1px}
+.body p a:hover,.body li a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+/* When .wide is emitted inside .body.col (640px column), break it out so
+   tables and figures still land at the wider 940px measure the exemplar
+   expects. Higher specificity than the base .wide rule; no !important needed
+   now that HubSpot's overriding theme CSS is gone. */
+/* Wide/table breakouts still go 940px so tables and code samples aren't
+   cramped by the 640px reading column. Figures stay in the reading column
+   so their title + caption left-align with body prose; only the plate
+   inside the figure breaks out to a wider measure. */
+.body.col > .wide,.body.col > .table-scroll{width:min(940px,calc(100vw - 40px));max-width:min(940px,calc(100vw - 40px));margin-left:calc(320px - min(470px,50vw - 20px));margin-right:auto;padding-left:0;padding-right:0}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:600;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:20px;font-family:var(--text);font-size:18px;line-height:1.55;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 20px 24px;padding-left:16px}
+.body ul{list-style:disc outside}
+.body ol{list-style:decimal outside}
+.body li{margin-bottom:12px;padding-left:4px;font-family:var(--text);font-size:18px;line-height:1.45;color:var(--body)}
+/* When a list follows an introductory paragraph, pull it up so the list
+   reads as a continuation of the sentence rather than a distant block. */
+.body p + ul,.body p + ol{margin-top:-8px}
+.body li::marker{color:var(--accent)}
+/* Code blocks: wrap long lines rather than force a horizontal scroll. */
+.body pre[class*="language-"],pre[class*="language-"]{white-space:pre-wrap;word-break:normal;overflow-wrap:break-word}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. Source callouts
+   that need the left-rail "editor's note" look should use class="enote". */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.body blockquote:not(.pullquote):not(.enote) p{font-family:inherit;font-size:inherit;font-weight:400;margin:0}
+/* Callout with a small accent label — same top+bottom hairline framing as
+   .pullquote, no left rail. Left-aligned rather than centered so the label
+   + body reads as an aside rather than a display quote. */
+.enote{max-width:720px;margin:36px auto;padding:22px 0;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--text);font-size:17px;line-height:1.55;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:10px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+/* Figure lives inside .wide (940px, centered). Title (viz-title kicker + h4)
+   and caption (figcaption) are constrained to body-col width (640px) and
+   centered within .wide, so they line up with body prose no matter how
+   wide the graphic runs. The plot-wrap sizes to --fig-w (or full width). */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > figcaption,
+figure.tbl > .viz-title,
+figure.tbl > h4,
+figure.tbl > figcaption{max-width:640px;margin-left:auto;margin-right:auto;text-align:left}
+figure.viz > .plot-wrap{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title,figure.tbl .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4,figure.tbl h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:0}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:0}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:0;width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin-top:14px;letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%;border-collapse:collapse;font-family:var(--text);font-size:15px;line-height:1.5;color:var(--body)}
+.table-scroll caption{text-align:left;caption-side:top;font-family:var(--display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:10px}
+.table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+.table-scroll th{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);border-bottom-color:var(--ink)}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+/* figure.tbl mirrors figure.viz — same viz-title kicker + h4 header + caption
+   pattern. Title and caption align with body prose (640px column); the table
+   itself can widen to the full .wide breakout (940px). */
+figure.tbl{margin:52px 0}
+figure.tbl > figcaption{font-family:var(--text);font-size:13px;line-height:1.5;color:var(--mute);margin-top:12px;letter-spacing:0.01em}
+figure.tbl > figcaption b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+.rtbl{width:100%;margin:0;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">building-cloud-apps-with-akka-and-kubernetes</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">ARCHITECT / CTO · OPERATIONS · RESOURCES</div>
+  <h1 class="title">Fast, lean, and unbreakable: building cloud apps with Akka and Kubernetes</h1>
+  <p class="standfirst">Everything you need to know in 150 words (TL;DR) If you’re short on time, and would like to digest the core points of this white paper quickly, then this page is for you.</p>
+  <div class="byline">
+    <div><span class='au'>Jonas Bonér</span> · Founder, CTO, and Chairman of the Board</div>
+    <div class="r"><time datetime="2023-10-21">Oct 21, 2023</time> · 21 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>Everything you need to know in 150 words (TL;DR)</h2>
+
+
+<p class="lede">If you’re short on time, and would like to digest the core points of this white paper quickly, then this page is for you.</p>
+
+<ul>
+<li>The use of containers and container orchestration—in particular, Docker and Kubernetes—have become ubiquitous and indispensable tools for deploying and managing distributed systems at scale.</li>
+<li>The need to manage ever-increasing volumes of data, reliably, in close to real-time, calls for Reactive datadriven services and streaming pipelines—forcing us to move:
+<ul>
+<li>from traditional stateless behavior-driven services and high-latency batch-oriented data processing,</li>
+<li>to stateful data-driven services and low-latency stream-oriented data processing.</li>
+</ul>
+</li>
+<li>Kubernetes is great for managing stateless services, but developing and operating stateful data-driven services on Kubernetes is challenging.</li>
+<li>End-to-end correctness requires that the infrastructure and application work together in maintaining data consistency and correctness guarantees.</li>
+<li>Akka—an open source programming model and fabric for the cloud—can do the heavy lifting of managing distributed state and communication, maintaining application consistency and delivery guarantees.</li>
+<li>Akka lets you run <em>stateful services</em> on Kubernetes <em>as if they are stateless</em>.</li>
+</ul>
+<p>If you have time to read more, then our next section starts with examining the rise of containers and the prominence of Docker, especially. If you are familiar with containers and orchestration tools, however, then you can skip the upcoming two sections—covering the rise of containers and how to manage them at scale—and go directly to “Towards A Holistic View On System Design”.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Executive summary</h2>
+
+
+<h3>Why stateful services for cloud native applications?</h3>
+
+
+<blockquote>
+<p><em>"The next frontier of competitive advantage is the speed with which you can extract value from data."</em> — Mike Gualtieri, VP, Principal Analyst Forrester Research, Inc.</p>
+</blockquote>
+<p>Tools like Docker and Kubernetes have emerged as front-runners in the container and container orchestration space, used by many enterprises as the best way to simplify running distributed systems at scale. These enterprises are now focusing on the new gold—data—to differentiate their customer experience.</p>
+<p>Here, speed counts: managing a firehose of never-ending data streams requires Reactive, data-driven services that can operate in near-real-time. This forces us to shift from a traditional <em>stateless</em> approach to data—where a database somewhere is constantly being hit with requests each time information is needed—to a <em>stateful</em> datadriven approach, where data is owned and accessed locally, with low latency and high-availability.</p>
+<p>Kubernetes is a strong choice for managing distributed, and in particular stateless, services. But it has—given its low-level and foundational role in the infrastructure stack—little influence on the underlying business logic and operational semantics of your application. The next generation of cloud-native, stateful, data-centric services requires a complementary application architecture designed to serve high scalability, cloud-native environments.</p>
+<p>In this blog, we will show how Akka—an open source programming model and fabric for the cloud—can complement Kubernetes and do the heavy lifting of managing distributed state and communication, maintaining application consistency and delivery guarantees, while Kubernetes manages the underlying infrastructure. Akka lets you efficiently<em> run stateful services</em> on Kubernetes <em>as if they are stateless</em>, with minimal infrastructure requirements.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>The rise of containers</h2>
+
+
+<p>If you are familiar with containers and orchestration tools then you can skip the upcoming two sections which talks about the rise of containers and how to manage them at scale.</p>
+<p>The concept of computer virtualization is quite old and has been used in different forms for decades. The previous generation tools were based on VM hypervisors—like Xen, KVM, and Hyper-V—and were emulating the hardware, running a full OS in each instance, which made them quite heavyweight in terms of resources. Containers address this by instead of virtualizing hardware they run on a shared Linux instance, which makes them a lot more lightweight and allows you to run many more of them on the same underlying hardware while still providing the same isolation and control.</p>
+<p>The recent trends of DevOps, <a href="https://martinfowler.com/bliki/ContinuousDelivery.html" rel="noopener" target="_blank">continuous integration and delivery</a> of software (CI/CD), and the move to Cloud Computing—where you pay for the resources you use rather than making capital expenditures on hardware that isn’t 100% utilized at all times—have driven the need for more lightweight and easily managed containers and have helped popularize containers in the industry at large.</p>
+<p>Containers can be dated back to the year 2000 and FreeBSD Jails. Since then we have seen many different projects—such as <a href="https://linuxcontainers.org/" rel="noopener" target="_blank">LXC</a> (Linux Containers) and <a href="https://openvz.org/" rel="noopener" target="_blank">OpenVZ</a>—pushing the technology forward.</p>
+<p><a href="https://www.docker.com/" rel="noopener" target="_blank">Docker</a> is an open source container platform built on LXC, first released in 2013, that has grown to become immensely popular the last 4-5 years and is now considered the de facto standard in containers. It has a whole suite of developer and management tools around it that helps packaging services or applications in a straightforward and standardized way.</p>
+<p>Some of the things that Docker can help you with include:</p>
+<ul>
+<li>Uniformity of infrastructure and application instance management.</li>
+<li>Allowing for polyglot programming, building services in different languages and platforms.</li>
+<li>Adding and removing resources as needed, on demand.</li>
+<li>Rapid deployments and continuous integration through the management of deployment pipelines.</li>
+</ul>
+<p>Some of the things that Docker cannot help you with:</p>
+<ul>
+<li>Managing container life-cycle in a uniform fashion.</li>
+<li>Automating application work scheduling, scalability, resilience, and self-healing.</li>
+<li>Consolidated management of configuration, load-balancing, security and authentication/authorization.</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>Managing containers at scale</h2>
+
+
+<p>While running and managing a handful of containers using CLI tools and shell scripts can work reasonably well, as soon as you need to scale the system of containers it quickly becomes overwhelming.</p>
+<p>Now you need a better way to manage all these containers—starting, stopping, upgrading, and replicating them, manage security and authentication/authorization, in a holistic fashion. This is the job for the container orchestrator.&nbsp;</p>
+<p>There are several out there on the market with the most popular ones being <a href="https://mesos.apache.org/" rel="noopener" target="_blank">Mesos</a>, <a href="https://aws.amazon.com/ecs/" rel="noopener" target="_blank">AWS ECS</a>, <a href="https://docs.docker.com/engine/swarm/" rel="noopener" target="_blank">Docker Swarm</a>, <a href="https://www.nomadproject.io/" rel="noopener" target="_blank">Nomad</a>, and <a href="https://kubernetes.io/" rel="noopener" target="_blank">Kubernetes</a>. The last couple of years Kubernetes has risen in popularity and use to become the de facto standard in container orchestration and is what we will focus on in this article.&nbsp;</p>
+<p>Kubernetes was created by Google, influenced by its internal system <a href="https://research.google/pubs/large-scale-cluster-management-at-google-with-borg/" rel="noopener" target="_blank">Borg</a>, and was released to the public as an open source project in mid-2014. Since then the list of contributing companies has grown extensively which has helped to turn it into a vibrant ecosystem.</p>
+<p>Kubernetes and its ecosystem of tools make it easier to manage large numbers of Docker containers in a standardized and uniformed way and can help you with:</p>
+<ul>
+<li>Managing container life-cycle—through the grouping of containers, so-called pods, including starting, stopping, upgrading, and replicating pods.</li>
+<li>Automation of scheduling, scaling, and recovery of container pods.</li>
+<li>Automation of deployment pipelines for CI/CD.</li>
+<li>Consolidated management of configuration management, routing, load-balancing, security, authentication/ authorization, and more.</li>
+</ul>
+<p>While we believe that Kubernetes is the best way to manage and orchestrate containers in the cloud, it’s not a cureall for programming challenges at the application level, such as:</p>
+<ul>
+<li>The underlying business logic and operational semantics of the application.</li>
+<li>Data consistency and integrity.</li>
+<li>Distributed and local workflow and communication.</li>
+<li>Integration with other systems.</li>
+</ul>
+<p>Kubernetes has been central in the recent cloud-native application development trend and is one of the projects in the <a href="https://www.cncf.io/" rel="noopener" target="_blank">CNCF</a> (Cloud Native Computing Foundation), alongside gRPC, Prometheus, Envoy, and many others.</p>
+<p>But what does “cloud-native” mean? CNCF <a href="https://github.com/cncf/toc/blob/main/DEFINITION.md" rel="noopener" target="_blank">defines it</a> as:</p>
+<blockquote>
+<p><em>“Cloud native technologies empower organizations to build and run scalable applications in modern, dynamic environments such as public, private, and hybrid clouds. Containers, service meshes, microservices, immutable infrastructure, and declarative APIs exemplify this approach.</em></p>
+<p><em>These techniques enable loosely coupled systems that are resilient, manageable, and observable. Combined with robust automation, they allow engineers to make high-impact changes frequently and predictably with minimal toil.”</em></p>
+</blockquote>
+<p>As we will see, there is more to cloud-native—the art of building scalable, resilient, and observable distributed systems—than orchestration of containers.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Towards a holistic view on system design &nbsp; &nbsp;</h2>
+
+
+<p>One question that we frequently hear is: “Now that my application is containerized, do I still need to worry about all that hard distributed systems stuff? Will Kubernetes solve all my problems around cloud resilience, scalability, stability, and safety?” Unfortunately, no—it is not that simple.</p>
+<p>In the now classic paper “<a href="https://web.mit.edu/Saltzer/www/publications/endtoend/endtoend.pdf" rel="noopener" target="_blank">End-To-End Arguments In System Design</a>” from 1984, Saltzer, Reed, and Clark discusses the problem that many functions in the underlying infrastructure (the paper talks about communication systems) can only be completely and correctly implemented with the help of the application at the endpoints.</p>
+<p>Here is an excerpt:</p>
+<blockquote>
+<p><em>“This paper presents a design principle that helps guide placement of functions among the modules of a distributed computer system. The principle, called the end-to-end argument, suggests that functions placed at low levels of a system may be redundant or of little value when compared with the cost of providing them at that low level. [...]</em></p>
+<p><em>Therefore, providing that questioned function as a feature of the communication system itself is not possible (sometimes an incomplete version may be useful as a performance enhancement). [...]</em></p>
+<p><em>We call this line of reasoning against low-level function implementation the end-to-end argument.”</em></p>
+</blockquote>
+<p>This is not an argument against the use of low-level infrastructure tools like Kubernetes and Istio—they clearly bring a ton of value—but a call for closer collaboration between the infrastructure and application layers in maintaining holistic correctness and safety guarantees.</p>
+<p>End-to-end correctness, consistency, and safety mean different things for different services. It’s totally dependent on the use-case, and can’t be outsourced completely to the infrastructure. To quote<a href="#notes" rel="noopener"><sup>1</sup></a> Pat Helland: “The management of uncertainty must be implemented in the business logic.”</p>
+<p>In other words, a holistically stable system is still the responsibility of the application, not the infrastructure tooling used. Some examples of this include:</p>
+<ul>
+<li>What constitutes a successful message delivery? When the message makes it across the network and arrives in the receive buffer on the destination host’s NIC? When it is relayed through the network stack up to the application’s networking library? When it is application’s processing callback is invoked? When the callback has completed successfully? When the ACK has been sent and gone through the reversed path as the message and consumed by the sender? The list goes on, and as you can see, it all depends on the expected semantics and requirements defined by the use-case: application-level semantics.</li>
+<li>Flow control—where fast producers can’t overload slow consumers—is all about maintaining end-to-end guarantees, and requires that all components in the workflow participate to ensure a steady and stable flow of data across the system. This means that business logic, application-level libraries, and infrastructure all collaborate in maintaining end-to-end guarantees.</li>
+</ul>
+<p>What we need is a programming model for the cloud, paired with a runtime that can do the heavy lifting that allows us to focus on building business value instead of messing around with the intricacies of network programming and failure modes—we believe that Akka paired with Kubernetes can be that solution.</p>
+<p>We will discuss this in more depth soon but let’s first look at a—somehow unfortunate—trend in the cloud-native world of application development: the strong reliance on stateless protocols.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>The unfortunate trend of stateless protocols in cloud-native apps</h2>
+
+
+<p>Most of the developers building applications on top of Kubernetes are still mainly relying on <a href="https://en.wikipedia.org/wiki/Stateless_protocol" rel="noopener" target="_blank">stateless protocols</a> and design. They embrace containers but too often hold on to old architecture, design, habits, patterns, practices, and tools—made for a world of monolithic single node systems running on top of the almighty RDBMS.</p>
+<p>The problem is that focusing exclusively on a stateless design ignores the hardest part in distributed systems: literally, managing the <em>state</em> of your data.</p>
+<p>It might sound like a good idea to ignore the hardest part and push its responsibility out of the application layer— and sometimes it is. But as applications today are becoming increasingly data-centric and data-driven, taking ownership of your data by having an efficient, performant, and reliable way of managing, processing, transforming, and enriching data close to the application itself, is becoming more important than ever.</p>
+<p>Many applications can’t afford the round-trip to the database for each data access or storage but need to continuously process data in close to real-time, mining knowledge from never-ending streams of data. This data also often needs to be processed in a distributed way—for scalability and throughput—before it is ready to be stored by the persistence layer.</p>
+<p>This requires a different way of looking at the problem, a different design, one that puts data at the center, not on the sidelines.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Finding success with data-driven stateful services</h2>
+
+
+<p>Data is the new gold, becoming more and more valuable every year. Companies are trying to capture “everything”— aggregating and storing away ever-increasing volumes of data in huge data lakes with the hope of gaining unique insights that will lead to a competitive advantage in the race to attract more customers. But running nightly jobs processing all this data through traditional batch processing (using Hadoop) often turns out to be too slow.</p>
+<p>Nowadays we need to be able to extract knowledge from the data as it flies by, in close to real time, processing never-ending streams of data, from thousands of users, at faster and faster speeds—using low-latency data streaming tools like <a href="https://doc.akka.io/libraries/akka/current/stream/index.html?language=java" rel="noopener" target="_blank">Akka Streams</a>, <a href="https://spark.apache.org/" rel="noopener" target="_blank">Apache Spark</a>, and <a href="https://flink.apache.org/" rel="noopener" target="_blank">Apache Flink</a>.</p>
+<p>In order to do this efficiently, we need to take back the ownership of our data, model our systems with data at the center<a href="#notes"><sup>2</sup></a>. We need to move from high-latency, Big Data, and traditional stateless behavior-driven services, to lowlatency, <a href="https://www.oreilly.com/content/from-big-data-to-fast-data/" rel="noopener" target="_blank">Fast Data</a>, and stateful data-driven services.</p>
+<p>Some of the benefits we will get are:</p>
+<ul>
+<li><em>Data locality</em>—having the data close to the context where it’s being used leads to lower latency, less bandwidth consumption, and higher throughput.</li>
+<li>More models for <em>highly available data consistency</em>—stateful sticky sessions open up for new consistency models previously only available to centralized systems.<a href="#notes"><sup>3</sup></a></li>
+</ul>
+<p>A core infrastructure piece in this architecture is the <em>event log</em>, functioning as:</p>
+<ul>
+<li>The data distribution, coordination, and communication backbone—helping the application to maintain order, data consistency, reliable communication, and data replication.</li>
+<li>The <em>service of record</em> and <em>source of truth</em> for the events in the application—often using a pattern called <a href="https://martinfowler.com/eaaDev/EventSourcing.html" rel="noopener" target="_blank"><em>event sourcing</em></a>, which means that every state change is materialized as an event/fact and stored in the event log, on disk, in order. Here, the state is persisted in-memory (so-called <a href="https://martinfowler.com/bliki/MemoryImage.html" rel="noopener" target="_blank">memory image</a>) and rehydrated from disk on failure recovery, replication, and migration.</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>The challenges of orchestrating stateful services</h2>
+
+
+<p>Container orchestration is built around the idea that containers are cheap and disposable. It allows you to deploy tens or hundreds of identical replicas on-demand for elasticity, and if one of them fails it simply redirects traffic to another replica, resuming business with very little downtime.</p>
+<p>This pattern works really well for stateless services but is the opposite of how you want to manage distributed stateful services and databases. First, stateful instances are not trivially replaceable since each one has a unique state that needs to be taken into account. Second, deployment of stateful replicas often requires coordination among replicas— things like bootstrap dependency order, version upgrades, schema changes, and more. Third, replication takes time, and the machines which the replication is done from will be under a heavier load than usual, so if you spin up a new replica under load, you may actually bring down the entire database or service.</p>
+<p>One way around this problem—which has its own problems—is to delegate the state management to a cloud service or database outside of your Kubernetes cluster. But if we want to manage all of your infrastructure in a uniform fashion using Kubernetes then what do we do?</p>
+<p>At this time, Kubernetes answer to the problem of running stateful services that are not cloud-native is the concept of a <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/" rel="noopener" target="_blank">StatefulSet</a>, which ensures that each pod is given a stable identity and dedicated disk<a href="#notes"><sup>4</sup></a> that is maintained across restarts (even after it’s been rescheduled to another physical machine). As a result, it is now possible—but still quite challenging<a href="#notes"><sup>5</sup></a>—to deploy distributed databases, streaming data pipelines, and other stateful services on Kubernetes.</p>
+<p>What is needed is a new generation of tools that allow developers to build truly cloud-native stateful services that only have the infrastructure requirements of what Kubernetes gives to stateless services.</p>
+<p>Let’s take a look at one of these tools: Akka.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>In need of a programming model for the cloud</h2>
+
+
+<p>A single service is not that useful—services come in systems, and are only useful when they can collaborate, as systems. As soon as they start collaborating, we need ways to coordinate across a distributed system, across a network that is inherently unreliable.</p>
+<p>The hard part is not designing and implementing the services themselves, but in managing the <em>space in between</em> the services. Here is where all the hard things enter the picture: data consistency guarantees, reliable communication, data replication and failover, component failure detection and recovery, sharding, routing, consensus algorithms, and much more. Stitching all that together yourself is very very hard.</p>
+<p>Akka—an open source project created in 2009—was built to address these challenges from the start, designed to be a fabric and programming model for distributed systems, for the cloud. Akka is cloud-native in the truest sense, it was built to run natively in the cloud before the term “cloud-native” was coined.</p>
+<p>Akka is based on the <a href="https://en.wikipedia.org/wiki/Actor_model" rel="noopener" target="_blank">Actor Model</a> and built on the principles outlined in the <a href="https://www.reactivemanifesto.org/" rel="noopener" target="_blank">Reactive Manifesto</a>, which defines Reactive Systems<a href="#notes"><sup>6</sup></a> as a set of architectural design principles that are geared toward meeting the demands that systems face—today and tomorrow.</p>
+
+<h3>Leverage reactive design principles</h3>
+
+
+<p>These principles are most definitely not new; they can be traced back to the ’70s and ’80s and the seminal work by Jim Gray and Pat Helland on the Tandem System, as well as Joe Armstrong and Robert Virding on Erlang. However, these pioneers were ahead of their time, and it was not until the past 5-10 years that the technology industry was forced to rethink current best practices for enterprise system development and learned to apply the hard-won knowledge of the Reactive principles to today’s world of multicore architectures, Cloud Computing, and the Internet of Things.</p>
+<p>We believe that these principles for building distributed applications are not only highly complementary with the cloud-native philosophy and the Kubernetes ecosystem of tools, but essential for making the most out of it. Akka—being a programming model used to build the application in, as well as the runtime to maintain its guarantees and semantics—complements Kubernetes very well in the pursuit of end-to-end correctness and safety in cloud-native applications.</p>
+
+<h3>Let Akka do the heavy lifting</h3>
+
+
+<p>In Akka, the unit of work and state is called an actor and can be seen as a stateful, fault-tolerant, isolated, and autonomous, component or entity. These actors/entities are extremely lightweight in terms of resources—you can easily run millions of them concurrently on a single machine—and communicate using asynchronous messaging. They have built-in mechanisms for automatic self-healing and are distributable and location transparent by default. This means that they can be scaled, replicated, and moved around in the cluster on-demand—reacting to how the application is being used—in a way that is transparent to the user of the actor/entity.</p>
+<p>What Akka provides:</p>
+<ul>
+<li><strong>Guaranteed message delivery</strong>—through durable journaling, at-least-once message delivery, and deduplication.</li>
+<li><strong>Persistent state</strong>—state persisted in memory using <a href="https://martinfowler.com/eaaDev/EventSourcing.html" rel="noopener" target="_blank">event sourcing</a>, which is rehydrated from disk when the entity is created, recovered from the failure, or migrated (even replicated across data-centers, if needed), avoiding the object-relational impedance mismatch.</li>
+<li><strong>Highly fault-tolerant stateful service managemen</strong>t—using decentralized peer-to-peer masterless clustering (through gossip and consensus protocols) and failure detectors, allowing for self-healing services with no single point of failure.</li>
+<li><strong>The Actor Model</strong>—which gives you a unified model for high-performance <a href="https://doc.akka.io/libraries/akka-core/current/remoting-artery.html" rel="noopener" target="_blank">distributed and local communication</a>, that is location transparent (maintaining consistent semantics for both local and distributed), supporting uni- and bi-directional messaging, publish-subscribe, and streaming semantics.</li>
+<li><a href="https://doc.akka.io/libraries/akka-core/current/index-cluster.html" rel="noopener" target="_blank">Cluster sharding</a> <strong>of entities</strong>—automatic state replication, dynamic rebalancing, re-partitioning of entities, and location transparent routing (using consistent hashing and other algorithms).</li>
+<li><a href="https://doc.akka.io/libraries/akka-core/current/distributed-data.html" rel="noopener" target="_blank"><strong>Strong eventual consistency</strong></a>—highly scalable and resilient management of global cluster state through automatic replication (and merging) of <a href="https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type" rel="noopener" target="_blank">CRDTs</a>.</li>
+<li><strong>Ultra low-latency</strong>—including ingestion, transformation, enrichment, merging, and splitting of data streams using <a href="https://doc.akka.io/libraries/akka-core/current/stream/stream-introduction.html" rel="noopener" target="_blank">stream processing</a>.</li>
+<li><strong>Back-pressure and flow contro</strong>l—through <a href="https://www.reactive-streams.org/" rel="noopener" target="_blank">Reactive Streams</a>-compliant libraries.</li>
+<li><strong>A wide range of supported protocols for client communication</strong>—such as <a href="https://doc.akka.io/libraries/akka-http/current/" rel="noopener" target="_blank">HTTP</a> and <a href="https://doc.akka.io/libraries/akka-grpc/current/" rel="noopener" target="_blank">gRPC</a>—and system integration—through the <a href="https://doc.akka.io/libraries/alpakka/current/" rel="noopener" target="_blank">Alpakka project</a>.</li>
+</ul>
+<p>Examples of where Akka Cluster can be very helpful are when your application is complicated enough that simple load balancer rules can’t distribute the work across computing resources in an efficient and sensible manner, or there is more coordination required than going to a central data store per request.</p>
+<p>Let’s now take a look at how Akka and Kubernetes can complement each other, compose, and operate in concert, at different levels in the software stack.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Getting the best of both worlds: Kubernetes with Akka</h2>
+
+
+<p>As discussed above, Kubernetes alone is not capable in maintaining holistic end-to-end <em>application</em> correctness and safety, but need a way to work efficiently in concert with the application—especially when it comes to stateful applications and services. Akka—with its distributed programming model and runtime for cluster and state management—has proven to be an ideal bridge, mediator, and maintainer of these guarantees and semantics. But how should one think about these two models for distributed systems and how can they be composed?</p>
+
+<h3>Composing Kubernetes with Akka</h3>
+
+
+<p>One way to look at it is that Kubernetes is great in managing and orchestrating “boxes” of software—containers— but managing these boxes only gets you halfway there, equally important is what you<em> put inside</em> the boxes, this is what Akka can help with.</p>
+<p>Looking at it this way, Kubernetes and Akka compose very well, each being responsible for a different layer and function in the application stack:</p>
+<ul>
+<li>Akka is the <em>programming model</em> to write the application in, and its supporting <em>runtime</em>—helps to manage business logic; data consistency and integrity; operational semantics; distributed and local workflow and communication; integration with other systems, etc.</li>
+<li>Kubernetes the <em>tool for operations</em> to manage large numbers of container instances in a uniform fashion— helps managing container life-cycle; versioning and grouping of containers; routing communication between containers; managing security, authentication, and authorization between containers, etc.</li>
+</ul>
+<p>Here is an illustration of the overall architecture of a composed Akka and Kubernetes stack, each tool working its distinct layer, maintaining either application or infrastructure-level concerns, but also in concert, maintaining the application’s end-to-end guarantees:</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/blog/images/figure1_2020.png" loading="lazy" alt="figure1_2020"></div>
+  </div>
+  <figcaption>Figure1 2020.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>Here, the <a href="https://buoyant.io/what-is-a-service-mesh" rel="noopener" target="_blank">service mesh</a> composes nicely with Akka, managing all RPC communication such as Akka gRPC or Akka HTTP endpoints, while Akka is used for other communication patterns, like pub-sub event-based messaging and point-to-point messaging.</p>
+
+<h3>Fine-grained vs. coarse-grained scalability and resilience</h3>
+
+
+<p>What about scalability and resilience, why would I need two ways of managing that? It’s true that both Kubernetes and Akka helps to manage resilience and scalability, but at distinct granularity levels in the application stack. The end-to-end argument applies again and we have a lot to gain by composing the two models:</p>
+<ul>
+<li>Akka allows for <em>fine-grained</em> entity-level management of resilience and scalability—working closely with the application—where each service in itself is a cluster of entity replicas that are replicated, restarted, and scaled up and down as needed.</li>
+<li>Kubernetes allows for <em>coarse-grained</em> container-level management of resilience and scalability, where the container is replicated, restarted, or scaled out/in as a whole.</li>
+</ul>
+<p>In essence: Kubernetes’ job is to give your application enough compute resources, getting external traffic to a node in your application, and manage things like access control—while Akka’s job is deciding how to distribute that work across all the computing resource that has been given to it.</p>
+<p>Here—as seen in the illustration below—the logical concept of a “service” is made up of a set of Akka entities (actors), managed in a decentralized peer-to-peer fashion, as one single Akka cluster. This cluster of entities spans multiple Kubernetes pods<a href="#notes"><sup>7</sup></a> and is usually a mix of replicas of different entity types—most often with persisted state—all working together, growing and shrinking on demand, and covering up for each other’s failures. The Akka cluster is deployed to Kubernetes as a <a href="https://kubernetes.io/docs/concepts/services-networking/service/#headless-services" rel="noopener" target="_blank">Headless Service</a> and is utilizing <a href="https://doc.akka.io/libraries/akka-management/current/bootstrap/index.html" rel="noopener" target="_blank">Akka Cluster Bootstrap</a><a href="#notes"><sup>8</sup></a><a href="https://doc.akka.io/docs/akka-management/current/bootstrap/index.html" rel="noopener" target="_blank"></a>&nbsp;to coordinate cluster formation.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/blog/images/figure2_2020.png" loading="lazy" alt="figure2_2020"></div>
+  </div>
+  <figcaption>Figure2 2020.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>Maintaining these guarantees in a software layer above the containers themselves can be very efficient in terms of minimizing resources and allows for the service to self-heal without external intervention by the underlying infrastructure.</p>
+<p>Also, if you try to let the infrastructure alone provide your guarantees, then your infrastructure is a part of your application—leading to a lack of separation and in essence infrastructure lock-in.</p>
+
+<h3>Looking at a concrete example</h3>
+
+
+<p>To make things a bit more concrete, let’s take a look at an example: migration and recovery of a persisted stateful entity on container failure.</p>
+<p>If we implement the stateful entity<a href="#notes"><sup>9</sup></a> using Akka then we make the entity a <a href="https://doc.akka.io/libraries/akka-core/current/typed/index-persistence.html" rel="noopener" target="_blank">persistent actor</a>. Being persistent means that it is backed by a durable replicated event log<a href="#notes"><sup>10</sup></a>—using the event sourcing pattern (as discussed above). Once this is implemented, the entity will run <a href="https://doc.akka.io/libraries/akka-core/current/typed/cluster-sharding.html" rel="noopener" target="_blank">sharded</a> on a highly-available decentralized Akka cluster of nodes.</p>
+<p>This allows Akka to ensure that in the event of node failure:</p>
+<ol>
+<li>The failure detector will trigger and the cluster decides the best course of action.</li>
+<li>The entity will be restarted on another—healthy—node.</li>
+<li>The event log will be replayed—from the latest snapshot and forward—bringing the entity fully up to speed, to the state it was in just before the failure.</li>
+<li>The clustered entities will be rebalanced on the remaining nodes in the cluster.</li>
+<li>Client communication is seamlessly and automatically resumed.</li>
+</ol>
+<p>Kubernetes’ job is to eventually reboot the failed node or bring up a new one in its place—and when that is done,<br>Akka cluster will automatically make use of the new node and rebalance the entities as needed.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>In conclusion</h2>
+<p>To sum things up: <em>Akka lets you run stateful services on Kubernetes as if they are stateless</em>. No fuzz, no StatefulSets, no Operators, no messing around with remotely mounted disks, just using the infrastructure—and guarantees—that Kubernetes gives stateless services.</p>
+<p>This allows us to leverage Kubernetes for what it is great at while relying on Akka for the management of state and application-level guarantees.</p>
+<a></a>
+<p><sup>1</sup> This quote is from Pat Helland’s highly influential paper “<a href="https://ics.uci.edu/~cs223/papers/cidr07p15" rel="noopener" target="_blank">Life Beyond Distributed Transactions</a>”, which is essential reading. <a href="#note-1">↩</a></p>
+<p><sup>2 </sup>By for example leveraging design techniques like <a href="https://blog.redelastic.com/corporate-arts-crafts-modelling-reactive-systems-with-event-storming-73c6236f5dd7" rel="noopener" target="_blank">Event Storming</a> and Events-first Domain Driven Design.&nbsp;<a href="#note-2">↩</a></p>
+<p><sup>3 These models include ‘causal’, ‘read-your-writes’, and ‘pipelines random access memory’. See Caitie McCaffrey great talk Building Scalable Stateful Services more details, and other benefits of being stateful.</sup>&nbsp;<a href="#note-3">↩</a></p>
+<p><sup>4 </sup>A limitation has been that disks need to be remote and therefore managed by external services. The good news for latency sensitive services is that support for <a href="https://kubernetes.io/docs/concepts/storage/volumes/#local" rel="noopener" target="_blank">local disks</a> is coming soon (currently in beta)—but keep in mind that this model can reduce availability.&nbsp;<a href="#note-4">↩</a></p>
+<p><sup>5</sup> StatefulSets don’t solve all of the challenges of distributed stateful applications. Stateful use-cases can be quite different, which makes it hard to solve in a generic fashion, and is why a custom controller—so-called <a href="https://www.redhat.com/en/technologies/cloud-computing/openshift" rel="noopener" target="_blank">Operator</a>—is usually necessary to actually manage the application, as <a href="https://akomljen.com/stateful-applications-on-kubernetes/" rel="noopener" target="_blank">described in this article</a>. <a href="#note-5">↩</a></p>
+<p><sup>6</sup> For a good primer on Reactive Systems vs Reactive Programming see <a href="/blog/reactive-programming-versus-reactive-systems" rel="noopener">this article</a>. <a href="#note-6">↩</a></p>
+<p><sup>7</sup> They can, if needed, even span multiple data centers while retaining the strong consistency of the entity and its underlying durable event log. <a href="#note-7">↩</a></p>
+<p><sup>8</sup> Akka Cluster Bootstrap implementations include DNS, Kubernetes, Marathon, AWS EC2 or ECS, and HashiCorp Consul.&nbsp;<a href="#note-8" rel="noopener">↩</a></p>
+<p><sup>9</sup> In Akka you would normally have one microservice consist of 1-N number of persistent entities, all backed by a single Akka cluster.&nbsp;<a href="#note-9" rel="noopener">↩</a></p>
+<p><sup>10</sup> The storage medium for the event log in <a href="https://doc.akka.io/libraries/akka-core/current/persistence.html" rel="noopener" target="_blank">Akka Persistence</a> is pluggable, with a long <a href="https://index.scala-lang.org/search?topics=akka-persistence" rel="noopener" target="_blank">list of storage backends</a> ranging from SQL to distributed NOSQL databases—the default being Cassandra.&nbsp;<a href="#note-10" rel="noopener">↩</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Oct 21, 2023
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

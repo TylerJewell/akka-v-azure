@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>35+ Agentic AI tools to watch in 2025 — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+/* When .wide is emitted inside .body.col (640px column), break it out so
+   tables and figures still land at the wider 940px measure the exemplar
+   expects. Higher specificity than the base .wide rule; no !important needed
+   now that HubSpot's overriding theme CSS is gone. */
+.body.col > .wide,.body.col > figure.viz,.body.col > .table-scroll{width:min(940px,calc(100vw - 40px));max-width:min(940px,calc(100vw - 40px));margin-left:calc(320px - min(470px,50vw - 20px));margin-right:auto;padding-left:0;padding-right:0}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px;padding-left:16px}
+.body ul{list-style:disc outside}
+.body ol{list-style:decimal outside}
+.body li{margin-bottom:10px;padding-left:4px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+.body li::marker{color:var(--accent)}
+/* Code blocks: wrap long lines rather than force a horizontal scroll. */
+.body pre[class*="language-"],pre[class*="language-"]{white-space:pre-wrap;word-break:normal;overflow-wrap:break-word}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. Source callouts
+   that need the left-rail "editor's note" look should use class="enote". */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.body blockquote:not(.pullquote):not(.enote) p{font-family:inherit;font-size:inherit;font-weight:400;margin:0}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%;border-collapse:collapse;font-family:var(--text);font-size:15px;line-height:1.5;color:var(--body)}
+.table-scroll caption{text-align:left;caption-side:top;font-family:var(--display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:10px}
+.table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+.table-scroll th{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);border-bottom-color:var(--ink)}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%;margin:20px 0 6px;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">agentic-ai-tools</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI</div>
+  <h1 class="title">35+ Agentic AI tools to watch in 2025</h1>
+  <p class="standfirst">Artificial intelligence has evolved beyond just responding to queries or handling basic automation. The future of AI lies in agency, systems that go beyond support roles to actively take initiative.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2025-04-30">Apr 30, 2025</time> · 21 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Artificial intelligence has evolved beyond just responding to queries or handling basic automation. The future of AI lies in agency, systems that go beyond support roles to actively take initiative.</p>
+
+<p>These next-gen tools don't sit idle waiting for instructions; they observe, evaluate, and act independently, functioning more like autonomous digital coworkers than passive assistants.</p>
+<p>Companies today want more than just automation; they're seeking AI that can think, decide, and take action for them. That's the promise of agentic AI. This article will cover some of the top agentic AI tools and platforms driving this shift forward.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What Is Agentic AI?</h2>
+
+
+<p><a href="https://akka.io/blog/what-is-agentic-ai">Agentic AI</a> serves as the ground floor technology for autonomous AI agents, allowing them to function independently without ongoing human assistance. Serving as a strong base, this method facilitates seamless cooperation between humans and AI agents, fostering an environment where they can operate alongside one another.</p>
+<p>With a diverse set of tools and functions, agentic AI enables agents to learn from experiences, adjust to evolving circumstances, and tackle intricate challenges with little resistance.</p>
+<p>What distinguishes agentic AI is its capacity to simplify the development and implementation of autonomous agents, thereby making the incorporation of AI into business processes easier and requiring fewer resources.</p>
+<p>This enables organizations to customize agents to achieve particular objectives, whether managing daily tasks, enhancing customer interaction, or aiding in advanced decision-making.</p>
+<p>In contrast to traditional AI systems that frequently find it difficult to handle complex, multi-step tasks, agentic AI offers adaptability and robustness. Its adaptable characteristics render it a flexible option, suitable for a broad array of industries and applications.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Agentic AI Use Cases</h2>
+
+
+<h3>IT &amp; Service Management</h3>
+
+
+<ul>
+<li>Automates routine IT tasks like password resets and software provisioning with minimal human input.</li>
+<li>Integrates data across systems to resolve tickets dynamically and adaptively.</li>
+</ul>
+
+<h3>Human Resources</h3>
+
+
+<ul>
+<li>Streamlines onboarding, benefits inquiries, and policy questions with conversational AI agents.</li>
+<li>Analyzes resumes, schedules interviews, and answers candidate questions autonomously.</li>
+</ul>
+
+<h3>Finance &amp; Banking</h3>
+
+
+<ul>
+<li>Automates expense reports, compliance checks, and financial analysis.</li>
+<li>Quickly processes large volumes of financial data for audit-ready reporting.</li>
+</ul>
+
+<h3>Cybersecurity</h3>
+
+
+<ul>
+<li>Monitors network traffic continuously to detect and respond to cyber threats in real time.</li>
+<li>Uses machine learning to identify anomalies and isolate threats before damage occurs.</li>
+</ul>
+
+<h3>Customer Service</h3>
+
+
+<ul>
+<li>Handles routine inquiries instantly through AI-powered chatbots.</li>
+<li>Equips human agents with quick data access for faster issue resolution.</li>
+<li>Triages requests to route complex issues to the right team seamlessly.</li>
+<li>Reduces customer wait times and boosts overall satisfaction.</li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>The Best Agentic AI Tools 2025</h2>
+
+
+<ul>
+<li><a href="#agent-frameworks-platforms">Agentic AI frameworks &amp; platforms</a></li>
+<li><a href="#agent-orchestration">Agent orchestration</a></li>
+<li><a href="#integration-protocols" rel="noopener">Integration protocols</a></li>
+<li><a href="#ai-development-infrastructure">AI development &amp; infrastructure</a></li>
+<li><a href="#workflow-automation-robotic-process-automation-rpa">Workflow automation &amp; Robotic Process Automation (RPA)</a></li>
+<li><a href="#ai-powered-assistants-interaction">AI-powered assistants &amp; interaction</a></li>
+<li><a href="#vision-perception-based-ai">Vision &amp; perception-based AI</a></li>
+</ul>
+
+<h3>Agent frameworks &amp; platforms</h3>
+
+
+<p>Libraries, SDKs, and development platforms for creating AI agents with memory, reasoning, tool use, and autonomous behavior. These tools offer the foundational components needed to build intelligent, adaptive agents (often integrating LLMs, APIs, and custom workflows).</p>
+<h4>Akka</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/akka.webp" loading="lazy" alt="akka"></div>
+  </div>
+  <figcaption>Akka.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://akka.io/">Akka</a> is a high-performance platform that enables developers to build highly efficient agentic AI applications that are elastic, agile, and resilient. Akka's architecture is built to handle high-throughput, low-latency systems, making it a natural choice for developers working on cloud-native microservices, streaming pipelines, and event-driven applications that require real-time responsiveness and fault tolerance.</p>
+<p><strong>Developers should consider Akka when they're building:</strong></p>
+<ul>
+<li>Large-scale distributed systems that span multiple regions and require seamless horizontal scaling.</li>
+<li>Event-driven microservices that communicate asynchronously and need to maintain strong responsiveness and elasticity.</li>
+<li>Real-time data processing platforms such as streaming analytics, recommendation engines, or financial trading systems.</li>
+<li>Stateful applications that must maintain and recover state across crashes, nodes, or reboots, such as chat apps, IoT platforms, and gaming backends.</li>
+<li>High-availability systems where failure tolerance, message delivery guarantees, and self-healing are critical.</li>
+</ul>
+<p>Akka offers a powerful set of benefits for developers building modern, distributed applications. Its actor-based architecture promotes resilience by design, allowing systems to automatically recover from failures through supervision and fault isolation.</p>
+<p>With Akka Cluster and Akka Sharding, applications can scale seamlessly across nodes and regions, dynamically redistributing load and state as needed. Akka's non-blocking, asynchronous messaging enables real-time performance with low latency and high throughput. Additionally, features like Akka Streams and Akka Persistence make it easy to build reliable, backpressure-aware data pipelines and manage state effectively.</p>
+<p>Designed with cloud-native flexibility in mind, <a href="https://akka.io/">Akka</a> supports various deployment models, from serverless in Akka's cloud to BYOC or self-managed Kubernetes, making it a robust solution for teams aiming to build scalable, fault-tolerant systems without the complexity of managing infrastructure.</p>
+<p><strong>Pricing:</strong> Akka provides <a href="https://akka.io/pricing">three pricing plans</a>: Serverless at $0.25 hourly for completely managed applications in Akka's cloud, BYOC at $750/month plus $0.15/hour for applications hosted on your own cloud (AWS, Azure, GCP), and Self-Hosted at $5,000/month plus $0.15/hour for total control in your Kubernetes setup.</p>
+<p><strong>Use case:</strong> Perfect for developers creating large-scale, multi-region applications that need low-latency performance, fault tolerance, and effortless scalability without the hassle of managing complex infrastructure.</p>
+<p>&nbsp;</p>
+<h4>Agno</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/agno.webp" loading="lazy" alt="agno"></div>
+  </div>
+  <figcaption>Agno.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://github.com/agno-agi/agno">Agno</a> is a lightweight library for building agents with memory, knowledge, tools, and reasoning. Developers use Agno to build Reasoning Agents, Multimodal Agents, Teams of Agents, and Agentic Workflows. It's designed to be model-agnostic, connecting to 23+ model providers without lock-in.</p>
+<p><strong>Pricing:</strong> Specific pricing details aren't publicly disclosed. Contact their team for detailed pricing information.</p>
+<p><strong>Use case:</strong> Developers building sophisticated AI applications that require reasoning capabilities, multi-agent collaboration, and real-time information retrieval across various knowledge sources.</p>
+<h4>CrewAI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/crewai.webp" loading="lazy" alt="crewai"></div>
+  </div>
+  <figcaption>Crewai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.crewai.com/">CrewAI</a> is a multi-agent platform that enables users to build and deploy automated workflows using any Large Language Model (LLM) and cloud platform. It streamlines workflows across various industries by orchestrating AI agents to perform complex tasks collaboratively.</p>
+<p><strong>Pricing:</strong> CrewAI offers an open-source framework that is freely available for developers to use and customize. For enterprise solutions, CrewAI provides tailored services and support; pricing details for these enterprise offerings are not publicly disclosed and can be obtained by contacting CrewAI directly.</p>
+<p><strong>Use case:</strong> Organizations and developers seeking to automate complex workflows by deploying collaborative AI agents across various platforms and industries.</p>
+<h4>DSPy</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/dspy.webp" loading="lazy" alt="dspy"></div>
+  </div>
+  <figcaption>Dspy.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+<a href="https://github.com/stanfordnlp/dspy">DSPy</a> is a programming framework developed by Stanford NLP that streamlines the creation of LLM-powered applications. It provides abstractions for prompt engineering, fine-tuning, and composition of language models, enabling more reliable and systematic development of AI systems.</p>
+<p><strong>Pricing:</strong> DSPy is available for free as an open-source framework under the Apache 2.0 license.</p>
+<p><strong>Use case:</strong> Researchers and developers seeking to build more predictable and optimizable language model applications with rigorous evaluation capabilities.</p>
+<h4>Google Agent Development Kit (ADK)</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/google-adk.webp" loading="lazy" alt="google-adk"></div>
+  </div>
+  <figcaption>Google adk.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://google.github.io/adk-docs/">Google ADK</a> is a flexible and modular framework for developing and deploying AI agents. It works seamlessly with popular LLMs and open-source generative AI tools, while featuring tight integration with the Google ecosystem and Gemini models</p>
+<p><strong>Pricing:</strong> The Google ADK is currently in its experimental phase. Developers can apply for access to the preview, with pricing details to be announced as the product nears general availability.</p>
+<p><strong>Use case:</strong> Developers seeking to build production-ready AI agents that can interact with systems, applications, and services while maintaining natural conversation capabilities.</p>
+<h4>LangChain</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 6</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/langchain.webp" loading="lazy" alt="langchain"></div>
+  </div>
+  <figcaption>Langchain.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.langchain.com/">LangChain</a> is a free-to-use framework that streamlines the creation of applications driven by LLMs. It provides modular parts and integrations, allowing developers to create context-aware and reasoning applications by linking LLMs with different data sources and APIs.</p>
+<p><strong>Pricing:</strong> The essential framework of LangChain is available for free under the MIT License. To improve features, LangChain provides offerings such as LangGraph Platform and LangSmith, both with tailored pricing options. LangSmith provides a complimentary Developer plan for single users, a $39/user monthly Plus plan for teams, and an Enterprise plan with tailored pricing.</p>
+<p><strong>Use case:</strong> Developers and companies looking to build advanced AI applications that combine LLMs with their own data and APIs, enabling functions like chatbots, document analysis, and code creation.</p>
+<h4>LangGraph</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 7</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/langgraph.webp" loading="lazy" alt="langgraph"></div>
+  </div>
+  <figcaption>Langgraph.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.langchain.com/langgraph">LangGraph</a> is an orchestration framework developed by LangChain for building controllable agentic workflows. It enables developers to design and deploy sophisticated AI agents capable of handling complex tasks with precision and reliability.</p>
+<p><strong>Pricing:</strong> <a href="https://www.langchain.com/pricing-langgraph-platform">The Developer plan provides</a> a self-hosted Lite deployment, designed for startups and hobbyists, including up to 1 million nodes executed. The Plus plan offers a Cloud SaaS deployment, free during its beta phase, with the first 10,000 traces included and subsequent traces starting at $0.50 per 1,000 base traces.</p>
+<p><strong>Use case:</strong> Developers and organizations aiming to create and scale AI agents with complex, controllable workflows, ensuring reliability and precision in tasks such as conversational AI, process automation, and decision support systems.</p>
+<h4>Letta</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:534px">
+  <p class="viz-title">Figure 8</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/letta.webp" loading="lazy" alt="letta"></div>
+  </div>
+  <figcaption>Letta.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.letta.com/">Letta</a> is an agent orchestration platform that enables businesses to build and deploy autonomous AI agents capable of executing complex tasks across multiple systems. It provides tools for agent monitoring, collaboration, and continuous improvement through feedback loops.</p>
+<p><strong>Pricing:</strong> Specific pricing details aren't publicly disclosed. Contact their team for detailed pricing information.</p>
+<p><strong>Use case:</strong> Organizations looking to deploy multiple coordinated AI agents that can handle end-to-end business processes requiring access to various tools and data sources.</p>
+<h4>LlamaIndex</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 9</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/llamaindex.webp" loading="lazy" alt="llamaindex"></div>
+  </div>
+  <figcaption>Llamaindex.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.llamaindex.ai/">LlamaIndex</a> is a data framework designed to connect custom data sources with large language models. It provides tools for data ingestion, structuring, retrieval, and query, enabling developers to build LLM applications like chatbots, agents, and RAG systems with seamless data integration.</p>
+<p><strong>Pricing:</strong> LlamaIndex is open-source and available for free under the MIT license. The company also offers LlamaIndex Enterprise, which provides additional features, support, and security capabilities for businesses; pricing for Enterprise plans is available upon request.</p>
+<p><strong>Use case:</strong> Developers and organizations looking to build sophisticated AI applications that require contextual awareness from proprietary or specialized data sources.</p>
+<h4>Mastra</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 10</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/mastra.webp" loading="lazy" alt="mastra"></div>
+  </div>
+  <figcaption>Mastra.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://mastra.ai/">Mastra</a> is a TypeScript agent framework from the team that created Gatsby, designed for prototyping and productionizing AI features with a modern JavaScript stack. It offers a unified API for building intelligent agents with memory persistence, workflow orchestration based on XState, RAG capabilities for connecting to knowledge bases, and comprehensive monitoring and evaluation tools.</p>
+<p><strong>Pricing:</strong> Specific pricing details aren't publicly disclosed. Contact their team for detailed pricing information.</p>
+<p><strong>Use case:</strong> Developers and organizations building sophisticated AI applications with TypeScript who need durable workflows, agent orchestration, and production-ready features like tracing, performance metrics, and evaluation tools.</p>
+<h4>Microsoft AutoGen</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 11</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/autogen.webp" loading="lazy" alt="autogen"></div>
+  </div>
+  <figcaption>Autogen.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://microsoft.github.io/autogen/stable//index.html">AutoGen</a> is an open-source platform created by Microsoft for constructing AI agents and enabling cooperation between various agents to tackle intricate tasks. It provides a non-linear, event-based framework that facilitates adaptable workflows and strong visibility, allowing developers to build scalable and effective AI applications.</p>
+<p><strong>Pricing:</strong> AutoGen is available at no charge under the MIT License. Nonetheless, using it with LLMs such as OpenAI's GPT-4 might result in expenses linked to the respective LLM supplier. For example, users have noted different costs when incorporating AutoGen with GPT-4, influenced by usage habits and model interactions.</p>
+<p><strong>Use case:</strong> Developers and researchers looking to create and manage multi-agent AI systems that need advanced task-solving abilities and smooth integration with LLMs</p>
+<h4>Pydantic AI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 12</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/pydanticai.webp" loading="lazy" alt="pydanticai"></div>
+  </div>
+  <figcaption>Pydanticai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://github.com/pydantic/pydantic-ai">Pydantic AI</a> extends the popular Pydantic validation library to facilitate structured interactions with LLMs. It enables developers to build type-safe AI applications by automatically generating prompts and parsing responses into validated Python objects.</p>
+<p><strong>Pricing:</strong> Pydantic AI is free to use as an open-source library under the MIT license.</p>
+<p><strong>Use case:</strong> Developers building production AI applications who need reliable data validation, type safety, and structured outputs from language models.</p>
+<h4>Smol Agents</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 13</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/smolagents.webp" loading="lazy" alt="smolagents"></div>
+  </div>
+  <figcaption>Smolagents.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://github.com/huggingface/smolagents">Smol Agents</a> is a lightweight, open-source framework for building AI agents that operate with minimal resources. It allows developers to create efficient agents that can run on edge devices or in resource-constrained environments while maintaining reliable performance.</p>
+<p><strong>Pricing:</strong> Smol Agents is completely free as an open-source project under the MIT license.</p>
+<p><strong>Use case:</strong> Developers working on applications with limited computational resources or those seeking to build cost-effective agent systems that can operate efficiently at scale.</p>
+
+<h3>Integration Protocols</h3>
+
+
+<p>As AI agents become more capable, they also become more dependent on external context—retrieving the right information, invoking the right tools, and collaborating with other agents or systems. Integration protocols provide standardized ways to connect agents to their broader environment, enabling richer behavior and interoperability.&nbsp;</p>
+<h4>Agent2Agent (A2A) Protocol</h4>
+<p><a href="https://github.com/google/A2A"></a>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 14</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/agent2agent-protocol.webp" loading="lazy" alt="agent2agent protocol"></div>
+  </div>
+  <figcaption>agent2agent protocol</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://github.com/google/A2A">Agent2Agent Protocol</a> is an open protocol launched by Google Cloud that enables AI agents to communicate, securely exchange information, and coordinate actions across various enterprise platforms and applications. Built on existing standards like HTTP, SSE, and JSON-RPC, A2A facilitates agent interoperability regardless of the underlying framework or vendor.</p>
+<p><strong>Pricing:</strong> A2A is an open-source protocol available at no cost. While the protocol itself is free, implementing it with specific AI models or services may involve costs associated with those platforms.</p>
+<p><strong>Use case:</strong> Organizations looking to build interconnected agent ecosystems where AI agents can collaborate across siloed data systems and applications, enhancing autonomy while lowering long-term costs in complex enterprise environments.</p>
+<h4>Model Context Protocol (MCP)</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 15</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/model-context-protocol.webp" loading="lazy" alt="model-context-protocol"></div>
+  </div>
+  <figcaption>Model context protocol.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.anthropic.com/news/model-context-protocol">MCP</a> is an open standard developed by Anthropic that enables AI assistants to securely connect with various data sources, such as content repositories and business tools, facilitating two-way communication to enhance AI responses.</p>
+<p><strong>Pricing:</strong> MCP is open-source and freely available for developers. However, integrating it with certain AI models or services may involve costs associated with those specific platforms.</p>
+<p><strong>Use case:</strong> Developers seeking to integrate AI assistants with existing data systems to provide more contextually relevant and accurate responses.</p>
+
+<h3>AI Development &amp; Infrastructure</h3>
+
+
+<p>Foundational services and toolkits that support agentic AI development—from background job handling and step functions to prompt engineering, LLM integration, and API connectivity. These tools help teams build scalable, reliable systems that power intelligent agents and AI-enhanced workflows.</p>
+<h4>Adept</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 16</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/adept-ai.webp" loading="lazy" alt="adept-ai"></div>
+  </div>
+  <figcaption>Adept ai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.adept.ai/">Adept</a> is an autonomous AI platform aimed at revolutionizing business workflows via smart automation. It merges exclusive training data, multimodal models, and tailored actuation software to consistently convert user intentions into tangible actions across web and software platforms.</p>
+<p><strong>Pricing:</strong> Enterprise packages start at $2,500/month for a maximum of 10 users, with elevated tiers available at $5,000 and $10,000/month for bigger teams. Each extra user costs approximately $100 monthly, and there's a one-time installation charge of $5,000.</p>
+<p><strong>Use case:</strong> Businesses aiming to automate intricate, cross-platform workflows, such as supply chain verifications, document handling, or system upgrades, with no requirement for continuous upkeep.</p>
+<h4>Beam AI</h4>
+<p>&nbsp;</p>
+<p><a href="https://beam.ai/">
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 17</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/beam-ai.webp" loading="lazy" alt="beam-ai"></div>
+  </div>
+  <figcaption>Beam ai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+Beam AI</a> is an enterprise-grade agentic AI platform that enables the deployment of self-learning, autonomous AI agents to automate and optimize complex workflows. It delivers scalable, human-level task performance, reduces operational costs, and dynamically adapts to evolving business needs.</p>
+<p><strong>Pricing:</strong> Beam AI offers a platform subscription starting at $499 per month, which supports around 2,000 orders, ideal for businesses looking to automate with AI agents. For more customized solutions, Beam also provides custom AI agent development services starting at $10,000. For exact pricing and tailored plans, contact their sales team directly.</p>
+<p><strong>Use case:</strong> Growing companies and large enterprises aiming to streamline operations, reduce manual workloads, and scale processes quickly using intelligent, collaborative AI agents.</p>
+<h4>Inngest</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:596px">
+  <p class="viz-title">Figure 18</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/inngest.webp" loading="lazy" alt="inngest"></div>
+  </div>
+  <figcaption>Inngest.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.inngest.com/">Inngest</a> is a durable execution platform that enables developers to build reliable, AI-ready step functions without managing infrastructure. It combines event streams, queues, and scheduling into a single reliability layer, facilitating the creation of complex workflows with built-in flow control mechanisms like concurrency, throttling, and prioritization.</p>
+<p><strong>Pricing:</strong> Inngest offers a Free plan with up to 50,000 function runs per month and 5 concurrent steps. The Basic plan starts at $50/month, including 100,000 runs and 25 concurrent steps. The Pro plan begins at $350/month, offering 5 million runs and 200 concurrent steps. For organizations with higher demands, custom Enterprise plans are available.</p>
+<p><strong>Use case:</strong> Developers and organizations seeking to automate complex workflows, manage background jobs, and orchestrate AI agents with reliability and scalability, all while minimizing infrastructure overhead.</p>
+<h4>Microsoft Semantic Kernel</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 19</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/semantic-kernel.webp" loading="lazy" alt="semantic-kernel"></div>
+  </div>
+  <figcaption>Semantic kernel.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://learn.microsoft.com/en-us/semantic-kernel/overview/">Semantic Kernel</a> is a publicly available development toolkit intended to ease the incorporation of sophisticated AI models into applications created with C#, Python, or Java. It allows developers to build AI agents that can independently execute tasks by merging prompts with current APIs, simplifying the creation of smart, reactive solutions.</p>
+<p><strong>Pricing:</strong> Being an open-source initiative, it is available for free use.</p>
+<p><strong>Use case:</strong> Developers looking to integrate AI-powered features into their applications, like streamlining business operations or improving user engagement with smart agents.</p>
+<h4>Spring AI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 20</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/spring-ai.webp" loading="lazy" alt="spring-ai"></div>
+  </div>
+  <figcaption>Spring ai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://spring.io/projects/spring-ai">Spring AI</a> is an open-source framework that incorporates AI features into Java applications by leveraging Spring's design principles, including portability and modularity. It accommodates multiple AI model providers, such as OpenAI, Anthropic, and Microsoft, allowing for effortless integration of AI features like chat completion and text-to-image generation.</p>
+<p><strong>Pricing:</strong> Spring AI is available for free under the Apache 2.0 license. Nevertheless, combining it with outside AI services might lead to expenses tied to those particular suppliers.</p>
+<p><strong>Use case:</strong> Java developers looking to improve applications with AI functionalities, like chatbots or image recognition, while utilizing the well-known Spring ecosystem.</p>
+<h4>Temporal</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 21</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/temporal.webp" loading="lazy" alt="temporal"></div>
+  </div>
+  <figcaption>Temporal.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://temporal.io/">Temporal</a> is an open-source framework that assists developers in creating dependable, scalable, and resilient applications. It streamlines the development of extended workflows by automatically managing retries, failures, and state control, establishing a solid basis for reliable business process execution.</p>
+<p><strong>Pricing:</strong> Temporal provides a free self-hosted edition, whereas its managed service, Temporal Cloud, begins at $100/month for the Essentials tier and $500/month for the Business tier. Custom pricing is offered for higher-tier Enterprise and Mission Critical plans. Extra usage exceeding the included limits is charged according to consumption.</p>
+<p><strong>Use case:</strong> Developers and teams creating distributed applications requiring robust workflows and firm assurances of reliability and availability.</p>
+<h4>Trigger.dev</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 22</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/triggerdev.webp" loading="lazy" alt="triggerdev"></div>
+  </div>
+  <figcaption>Triggerdev.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://trigger.dev/">Trigger.dev</a> is an open-source platform that allows developers to build and manage background jobs directly within their codebase. It supports features like scheduling, retries, and out-of-the-box monitoring, making it easier to run long-running or delayed tasks without managing complex infrastructure.</p>
+<p><strong>Pricing:</strong> Trigger.dev offers a free tier with 10 concurrent runs, unlimited tasks, and 1-day log retention. The Hobby plan costs $10/month and expands limits to 25 concurrent runs and 7-day log retention. The Pro plan is priced at $50/month and includes over 100 concurrent runs, extended log retention, and priority support. Usage beyond plan limits is billed based on consumption.</p>
+<p><strong>Use case:</strong> Developers who want to seamlessly integrate scalable background job handling, such as AI tasks, scheduled workflows, or third-party API operations, into their applications with minimal setup</p>
+<h4>AutoGPT</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 23</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/autogpt.webp" loading="lazy" alt="autogpt"></div>
+  </div>
+  <figcaption>Autogpt.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://agpt.co/">AutoGPT</a> is an open-source tool enabling users to develop, implement, and oversee autonomous AI agents that can carry out intricate tasks by dividing them into smaller tasks and performing them in sequence. The tool utilizes OpenAI's GPT-4 or GPT-3.5 APIs to allow agents to function with little human involvement, positioning it as a robust solution for automating and enhancing digital workflows.</p>
+<p><strong>Pricing:</strong> AutoGPT is offered at no charge as an open-source initiative. Nonetheless, using it necessitates an OpenAI API key, which could lead to expenses according to OpenAI's pricing. Moreover, AutoGPT provides a cloud-hosted beta version for individuals seeking a managed option. Pricing information can be acquired by signing up for their waitlist.</p>
+<p><strong>Use case:</strong> Developers and companies aiming to streamline intricate workflows and tasks with AI agents, which boosts efficiency and minimizes the requirement for manual involvement.</p>
+
+<h3>Agent orchestration</h3>
+
+
+<p>Tools for coordinating and managing multi-agent systems. These platforms handle agent communication, role delegation, state sharing, observability, and workflow execution at scale. They enable agents to collaborate, self-improve, and function in complex environments.</p>
+<h4>AgentOps</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:469px">
+  <p class="viz-title">Figure 24</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/agentops-ai.webp" loading="lazy" alt="agentops-ai"></div>
+  </div>
+  <figcaption>Agentops ai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.agentops.ai/">AgentOps</a> is a developer platform designed to test, debug, and deploy reliable AI agents and LLM applications. It offers features like visualizing events, time-travel debugging, and cost tracking across multiple agents, integrating seamlessly with frameworks such as OpenAI Agents SDK, CrewAI, and AutoGen.</p>
+<p><strong>Pricing:</strong> AgentOps offers a Free plan that permits up to 1,000 events monthly. The Pro plan begins at $40 monthly, accommodating up to 10,000 events and offering unlimited log retention and specialized support. For more extensive requirements, the Enterprise plan provides tailored pricing along with extra features like SLA, personalized SSO, and on-site deployment.</p>
+<p><strong>Use case:</strong> Developers and organizations looking for an all-encompassing solution to create, oversee, and improve AI agents and LLM applications with increased reliability and efficiency.</p>
+<h4>Orby AI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 25</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/orby.webp" loading="lazy" alt="orby"></div>
+  </div>
+  <figcaption>Orby.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.orby.ai/">Orby AI</a> is a business automation platform that employs unique Large Action Models (LAMs) to streamline intricate business operations. By watching and understanding user workflows, Orby AI agents can independently perform tasks in different applications without requiring set rules or programming.</p>
+<p><strong>Pricing:</strong> Orby AI provides tailored pricing according to a business's unique requirements and size.</p>
+<p><strong>Use case:</strong> Organizations aiming to boost operational efficiency through the automation of complex workflows, allowing employees to concentrate on strategic objectives.</p>
+<h4>Project Astra</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 26</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/project-astra.webp" loading="lazy" alt="project astra"></div>
+  </div>
+  <figcaption>project astra</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://deepmind.google/technologies/project-astra/">Project Astra</a> is a research model created by Google DeepMind. It is designed to build a universal AI assistant that can comprehend and engage with the world using natural language and visual cues. It combines real-time dialogue, memory, and tool utilization to offer smooth support across devices such as smartphones and prototype eyewear.</p>
+<p><strong>Pricing:</strong> Project Astra is presently in the research and testing stage, with no pricing details accessible to the public.</p>
+<p><strong>Use case:</strong> Individuals wanting an AI assistant that can analyze and react to real-world inputs instantly, aiding in tasks like object identification, navigation, and information access through seamless interactions</p>
+<h4>Sema4.ai</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 27</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/sema4-ai.webp" loading="lazy" alt="sema4 ai"></div>
+  </div>
+  <figcaption>sema4 ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="http://sema4.ai">Sema4.ai</a> is a business AI agent platform that allows companies to create, manage, and expand AI agents that can independently carry out intricate tasks with precision and effectiveness. These agents blend effortlessly with current enterprise systems, improving productivity and decision-making processes.</p>
+<p><strong>Pricing:</strong> Sema4.ai employs a consumption-based pricing structure, billing clients according to how frequently they utilize their product.</p>
+<p><strong>Use case:</strong> Companies aiming to automate intricate workflows, boost operational efficiency, and improve decision-making by implementing intelligent AI agents in their organizational ecosystem.</p>
+
+<h3>Workflow automation &amp; Robotic Process Automation (RPA)</h3>
+
+
+<p>Platforms focused on automating cross-tool business workflows, document processing, and operations. These tools simplify integration between systems and enable AI agents or rule-based bots to execute repetitive, structured tasks with minimal human intervention.</p>
+<h4>Arcee AI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:442px">
+  <p class="viz-title">Figure 28</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/arcee.webp" loading="lazy" alt="arcee ai"></div>
+  </div>
+  <figcaption>arcee ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.arcee.ai/">Arcee AI</a> offers a suite of AI tools designed to simplify enterprise AI deployment, including Arcee Conductor for intelligent model routing, Arcee Orchestra for building and scaling AI workflows, and Arcee MergeKit for merging pre-trained models into efficient small language models (SLMs).</p>
+<p><strong>Pricing:</strong> Arcee AI provides flexible pricing plans tailored to different organizational needs.</p>
+<p><strong>Use case:</strong> Enterprises seeking to integrate AI into their operations efficiently, enabling tasks such as automating workflows, optimizing model usage, and enhancing AI performance while controlling costs.</p>
+<h4>Automaited</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 29</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/automaited.webp" loading="lazy" alt="automaited"></div>
+  </div>
+  <figcaption>Automaited.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.automaited.com/">Automaited</a> is an AI-driven platform streamlining document-focused business processes by acquiring, verifying, and incorporating document data directly into pre-existing workflows. This improves efficiency, decreases mistakes, and boosts productivity.</p>
+<p><strong>Pricing:</strong> Automaited provides adaptable pricing plans designed for distinct business requirements. For comprehensive pricing details, set up an introductory call with their team.</p>
+<p><strong>Use case:</strong> Organizations seeking to enhance efficiency by automating processes like order management, invoice processing, and various document-centric workflows.</p>
+<h4>Composio</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 30</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/composio.webp" loading="lazy" alt="composio"></div>
+  </div>
+  <figcaption>Composio.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://composio.dev/">Composio</a> is a developer-first integration platform that connects AI agents and LLMs to 250+ tools, streamlining authentication, execution, and interaction across APIs and services. It supports popular agentic frameworks and simplifies function calling, boosting reliability and speed of deployment.</p>
+<p><strong>Pricing:</strong> Composio offers four pricing plans. The Hobby plan is free and includes 100 user accounts and 10,000 API calls per month. Starter plans costs $29/month and includes 500 user accounts with 100,000 API calls. The Growth plan is $229/month and supports 3,000 user accounts and 600,000 API calls. Enterprise plan offers custom pricing with tailored limits and VPC-hosted deployment.</p>
+<p><strong>Use case:</strong> Ideal for engineering teams and AI developers looking to quickly integrate LLMs and agents with SaaS apps, system tools, and custom workflows without managing complex auth or building custom connectors.</p>
+<h4>Orq.ai</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:534px">
+  <p class="viz-title">Figure 31</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/orq-ai.webp" loading="lazy" alt="orq ai"></div>
+  </div>
+  <figcaption>orq ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="http://orq.ai">Orq.ai</a> is a Generative AI Collaboration Platform that enables cross-functional teams to build, deploy, and optimize LLM applications at scale. The platform offers features like prompt management, experimentation, controlled deployments, and real-time observability, streamlining the LLMOps workflow within a single platform.</p>
+<p><strong>Pricing:</strong> Orq.ai offers new users a 7-day free trial. For detailed pricing information, contact Orq.ai directly through its official website.</p>
+<p><strong>Use case:</strong> Product and development teams aiming to collaboratively develop, test, and deploy reliable AI applications, ensuring efficient management and optimization of LLM-powered products throughout their lifecycle.</p>
+<h4>UiPath</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 32</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/uipath.webp" loading="lazy" alt="uipath"></div>
+  </div>
+  <figcaption>Uipath.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.uipath.com/product">UiPath Business Automation Platform</a> is an AI-driven solution that integrates RPA with tools to identify, automate, and oversee end-to-end business workflows. The platform allows organizations to improve efficiency and speed up digital transformation through the integration of AI agents and automation features.</p>
+<p><strong>Pricing:</strong> UiPath provides several plans to meet different business requirements. The Free plan offers personal development and attended automation features without any charges. The Pro plan begins at $420 monthly, which includes one Automation Developer License, ideal for smaller teams or companies starting their automation path.</p>
+<p><strong>Use case:</strong> Companies looking to optimize operations, minimize manual activities, and incorporate AI-based automation throughout different divisions to enhance productivity and operational efficiency.</p>
+
+<h3>AI-powered assistants &amp; interaction</h3>
+
+
+<p>Conversational agents, copilots, and assistants that engage directly with users via chat interfaces or natural language commands. These tools specialize in front-end interaction, personal productivity, and customer-facing use cases.</p>
+<h4>Botpress</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 33</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/botpress.webp" loading="lazy" alt="botpress"></div>
+  </div>
+  <figcaption>Botpress.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://botpress.com/">Botpress</a> is a comprehensive AI agent platform that allows users to create, launch, and oversee AI-driven chatbots across multiple channels. It provides a visual development interface, integration options with top LLMs, and is compatible with various messaging platforms.</p>
+<p><strong>Pricing:</strong> Botpress offers a Pay-as-you-go option starting at $0 monthly, with extra charges for additional bots and features. The Plus plan costs $79 monthly, while the Team plan is $445 monthly, both providing enhanced features and assistance. A customizable pricing Enterprise plan is offered for organizations with unique needs.</p>
+<p><strong>Use case:</strong> Developers and companies wanting to build flexible, expandable AI chatbots to streamline customer support, sales, or internal operations through various communication platforms</p>
+<h4>OpenAI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 34</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/openai.webp" loading="lazy" alt="openai"></div>
+  </div>
+  <figcaption>Openai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://openai.com/">OpenAI</a> is a company focused on AI research and implementation aimed at guaranteeing artificial general intelligence serves the interests of all people. They create sophisticated AI models like GPT-4 and provide products including ChatGPT, an AI-driven chat assistant that can comprehend and produce text resembling human communication.</p>
+<p><strong>Pricing:</strong> OpenAI offers multiple pricing tiers, featuring free access to fundamental functionalities and subscription choices such as ChatGPT Plus for $20/month for upgraded features.</p>
+<p><strong>Use case:</strong> OpenAI's tools are perfect for people and companies looking for sophisticated AI solutions for activities such as content creation, coding help, and conversational AI functions.</p>
+<h4>ScreenMate AI</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:516px">
+  <p class="viz-title">Figure 35</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/screenmate-ai.webp" loading="lazy" alt="screenmate-ai"></div>
+  </div>
+  <figcaption>Screenmate ai.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://screenmate.ai/">ScreenMate AI</a> enables users to automate web-based tasks through simple text instructions. By interpreting natural language commands, it performs actions such as clicking buttons, filling forms, and collecting data, streamlining workflows without complex coding.</p>
+<p><strong>Pricing:</strong> Specific pricing details are not publicly disclosed.</p>
+<p><strong>Use case:</strong> Individuals and businesses seeking to automate repetitive web tasks, enhance productivity, and simplify online interactions without extensive programming knowledge.</p>
+
+<h3>Vision &amp; perception-based AI</h3>
+
+
+<p>AI systems that interpret and act on visual input. These tools focus on UI automation via computer vision, image inspection, and real-time perception to enable agents to 'see' and interact with their environment or screen content.</p>
+<h4>AskUI Vision Agents</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:400px">
+  <p class="viz-title">Figure 36</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/ask-ui.webp" loading="lazy" alt="askui"></div>
+  </div>
+  <figcaption>Askui.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://www.askui.com/blog-posts/getting-started-vision-agents">AskUI Vision Agents</a> is an AI-powered tool that enables automation of computer interactions through visual inputs, allowing tasks to be performed based on screen content. It facilitates cross-platform automation by simulating human-like perception and actions.</p>
+<p><strong>Pricing:</strong> Specific pricing details are not provided.</p>
+<p><strong>Use case:</strong> Software quality assurance professionals seeking to automate testing processes across various operating systems by interacting with visual elements.</p>
+<h4>LandingLens</h4>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:640px">
+  <p class="viz-title">Figure 37</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-tools/landing-lens.webp" loading="lazy" alt="landinglens"></div>
+  </div>
+  <figcaption>Landinglens.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><a href="https://landing.ai/landinglens">LandingLens</a> is a deep-learning computer vision platform that simplifies the creation, testing, and deployment of AI models. Designed for users without prior AI expertise, it offers intuitive tools for image labeling and model training, facilitating rapid development of computer vision applications.</p>
+<p><strong>Pricing:</strong> <a href="https://landing.ai/pricing">Free plan available</a>; paid plans start at $50/month.</p>
+<p><strong>Use case:</strong> Businesses and individuals seeking an accessible solution to develop and deploy computer vision models without requiring deep AI or programming knowledge.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Final Thoughts</h2>
+<p>Agentic AI is swiftly changing sectors by moving artificial intelligence from a supportive role to an active partnership. The tools presented in this article demonstrate how autonomous agents can optimize intricate workflows, improve operational efficiency, and reveal new possibilities across various sectors.</p>
+<p>As companies progressively adopt these sophisticated AI technologies, agentic platforms will be essential in influencing the upcoming wave of digital innovation.</p>
+<p>For teams building intelligent, scalable systems that need to operate in real time and across regions, <a href="https://akka.io/">Akka</a> provides a proven foundation. Its actor-based model and built-in support for distributed computing, resilience, and streaming make it an ideal platform for powering agentic AI architectures.</p>
+<p>Whether deployed in a serverless environment, on your own cloud, or in a self-managed Kubernetes cluster, Akka enables developers to focus on innovation, not infrastructure, while ensuring performance, reliability, and seamless scalability.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Apr 30, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

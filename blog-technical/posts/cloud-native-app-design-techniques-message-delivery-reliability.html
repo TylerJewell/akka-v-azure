@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design techniques for building stateful, cloud-native applications: Part 4 – message delivery & reliability — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">cloud-native-app-design-techniques-message-delivery-reliability</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">ARCHITECT / CTO · RESOURCES · DISTRIBUTED SYSTEMS</div>
+  <h1 class="title">Design techniques for building stateful, cloud-native applications: Part 4 – message delivery & reliability</h1>
+  <p class="standfirst">At least once, at most once, and exactly once in reactive systems In our continuing series on&nbsp; Design&nbsp;Techniques For Building Stateful Cloud-Native Applications &nbsp;(see&nbsp; Part 1 ,&nbsp; Part 2 . and Part 3 ), we now take a look at message delivery, including some basic review of RPC, REST, Actors and more, as well as deliver mechanisms that make the most sense for reliability and how this applies to cloud-native design with Akka technologies to help you do it right the first time.</p>
+  <div class="byline">
+    <div><span class='au'>Hugh McKee</span> · Developer Advocate</div>
+    <div class="r"><time datetime="2019-04-30">Apr 30, 2019</time> · 9 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>At least once, at most once, and exactly once in reactive systems</h2>
+
+
+<p class="lede">In our continuing series on&nbsp;<strong>Design&nbsp;Techniques For Building Stateful Cloud-Native Applications</strong>&nbsp;(see&nbsp;<a href="/blog/design-techniques-stateful-cloud-native-applications-resilience-recoverability-scalability" rel="noopener">Part 1</a>,&nbsp;<a href="/blog/cloud-native-app-design-techniques-distributed-state" rel="noopener">Part 2</a>. and <a href="/blog/cloud-native-app-design-techniques-cqrs-event-sourcing-messaging" rel="noopener">Part 3</a>), we now take a look at message delivery, including some basic review of RPC, REST, Actors and more, as well as deliver mechanisms that make the most sense for reliability and how this applies to cloud-native design with Akka technologies to help you do it right the first time.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Message delivery basics</h2>
+
+
+<p>As software developers, we use our selected programming languages to run inline snippets of code that perform a series of computational steps that are interspersed with invocations of other modules. In object-oriented languages, objects invoke other methods in other objects. In functional languages, functions invoke other functions. In a way, this is a form of messaging: invoke a function, pass&nbsp;it a message via parameters, the function processes the request, and it returns a response message via the return values.</p>
+<p>When we develop software for distributed systems, it would be desirable to continue to use method or function calls that reach across the network divide as simply as we make local calls. However, after decades of experience and numerous attempts to implement <a href="https://en.wikipedia.org/wiki/Remote_procedure_call" target="_blank" rel="noopener">remote procedure calls</a> we have learned that <strong>the dynamics of RPCs are considerably different from in-process method calls</strong>.</p>
+<p>There is a massive difference between in-process procedure calls and remote procedure calls. With in-process method calls, everything happens within a single process on a single machine. An&nbsp;individual process is running, or it is not running.&nbsp;The procedure caller and the callee live together in an atomic processing universe. On the other hand, everything changes when the caller and the callee live in different processes connected across a distributed network.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/hugh-message-delivery-01.png" loading="lazy" alt="hugh-message-delivery-01"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<figure>
+<figcaption>Figure 1 - Request/response flow</figcaption>
+</figure>
+<p>Looking at Figure 1 above, let's walk through an example to illustrate the distributed process. Starting with the process on the left,&nbsp;in Step 1 we&nbsp;need&nbsp;to ask the process on the right to perform an action. Next, in step 2, the left process sends a network request to the process in the right. In step 3,&nbsp;the process on the right receives the request, and it performs the requested action. Upon completing the requested action in step 4, the right side process returns a response. Finally, in step 5, the left side process receives the response.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/hugh-message-delivery-02.png" loading="lazy" alt="hugh-message-delivery-02"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<figure>
+<figcaption>Figure 2 - Request/response failure scenarios</figcaption>
+</figure>
+<p>While this may look like a method call, the difference is there are a lot of more things that will break (see Figure 2 above) when the caller and the callee are split across a network connection that can fail. The first problem is in step 2. Network issues may prevent the caller from sending requests to the callee. Next, the callee may be offline. Another failure scenario is that the callee received a request, processed it, but the callee is unable to return a response due to a network issue. Or in step 5 the request was sent, processed, but the caller is offline, which prevents the callee from returning a response.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Message delivery reliability</h2>
+
+
+<p>So how do we get around these reliability challenges that are ever-present in distributed networks?&nbsp;When you implement various forms of messaging, it helps to categorize your implementation into one of three categories. The following category definitions are copies from the Akka <a href="https://doc.akka.io/libraries/akka-core/current/general/message-delivery-reliability.html" target="_blank" rel="noopener">Message Delivery Reliability</a> documentation.</p>
+<ul>
+<li><strong>at-most-once</strong> <strong><em>(maybe once)</em></strong> delivery means that for each message handed to the mechanism, that message is delivered once or not at all; in more casual terms it means that <em>messages may be los</em>t.</li>
+<li><strong>at-least-once</strong> <strong><em>(once or duplicates)</em></strong> delivery means that for each message handed to the mechanism potentially multiple attempts are made at delivering it, such that at least one succeeds; again, in more casual terms this means that <em>messages may be duplicated, but not lost</em>.</li>
+<li><strong>exactly-once</strong> <strong><em>(essentially once)</em></strong> delivery means that for each message handed to the mechanism exactly one delivery is made to the recipient;&nbsp;<em>messages can neither be lost nor duplicated</em>. *Note: This approach is complicated, but&nbsp;under certain circumstances it is possible to implement.</li>
+</ul>
+<p>With these 3 categories you can identify if the messaging approach you are considering meets your requirements. Let's look at an example scenario to see how this works.</p>
+<p>Say you are building a system of microservices. You have two services that interact with each other. In this case when service A processes a request, that triggers the need to notify service B that this has happened. For example, let's say that service A is an order service and service B is a shipping service.</p>
+<p><strong>What about using REST?</strong> Service A makes RESTful requests to service B. Which of the three categories is this? The RESTful approach is at-most-once, which means sometimes some messages will not be delivered. In this scenario, an at-most-once messaging implementation is not acceptable.</p>
+<p><strong>What about using a service bus?</strong> With a service bus, such as <a href="https://kafka.apache.org/" target="_blank" rel="noopener">Apache Kafka</a> or <a href="https://pulsar.apache.org/" target="_blank" rel="noopener">Apache Pulsar</a>, now service A is a message publisher, and service B is a consumer. What category does this fall into? It looks like it provides at-least-once delivery,&nbsp;as once a message is published it will be delivered to the consumers;&nbsp;however, you need to look for&nbsp;any cracks in the implementation that message may fall through. For example, say service A receives a request, processes it and commits the order to a database, and then it makes a call to publish a message to the bus. Do you see the crack in this process? The crack is in between the completion of the DB transaction and the call to publish. Messages will be lost when failures occur in between these two steps.</p>
+<p>These are solvable problems, but you need to be aware of the consequences of your implementation choices. In the next section, we look at methods for eliminating cracks in message flows.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Circuit Breakers, Retry Loops, and Event Sourcing &amp; CQRS</h2>
+
+
+<p>Let's look&nbsp;at some of the techniques for eliminating failures&nbsp;and some&nbsp;approaches for gracefully handling broken message flows.</p>
+
+<h3>Circuit Breakers</h3>
+
+
+<p>When messages cannot be delivered due to failures, the message sender may hang for a relatively long time until the request times out, or&nbsp;in some cases&nbsp;the caller may hang indefinitely. <strong>This type of problem often causes a log jam on hung requests.</strong> Worse, these log jams may overwhelm the calling process; for example, the calling process fails due to an out-of-memory error. The Circuit Breaker pattern is the most common solution used for handling this type of problem.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/hugh-circuit-breaker-states.png" loading="lazy" alt="hugh-circuit-breaker-states"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<figure>
+<figcaption>Figure 3 - Circuit Breaker States</figcaption>
+</figure>
+<p>The general idea is a circuit breaker sits in <strong>between the message sender and the network interface</strong>. When a specified number of failures occur, the circuit breaker will move to an open state. In keeping with the taxonomy of actual&nbsp;circuit breakers, an open circuit breaker means that it's closed to incoming messages, ironically.&nbsp;So when a circuit breaker is open,&nbsp;all attempts to send more messages are immediately rejected. Also while in the open state, the circuit breaker attempts&nbsp;to&nbsp;occasionally&nbsp;to send a message;&nbsp;this is known as "half-open" state. If the message fails, the circuit breaker goes back into an open state. If the message is successfully delivered the circuit breaker goes back into a closed state, allowing&nbsp;regular message traffic once again.</p>
+<p>For more details on this, see the <a href="https://doc.akka.io/libraries/akka-core/current/common/circuitbreaker.html" target="_blank" rel="noopener">Akka documentation</a> or <a href="https://martinfowler.com/bliki/CircuitBreaker.html" target="_blank" rel="noopener">Martin Fowler</a>, or take a look at the many other sources available on this topic.</p>
+
+<h3>Retry Loops</h3>
+
+
+<p>When the requirement is that for a given message sender all messages must be delivered to a message receiver, it is necessary that the message delivery process uses either an <em>at-least-once</em> or <em>exactly-once</em> approach. The challenge is that for the message sender the process of sending a message is at least a two-step operation. The first step is to complete a requested action, such as a database transaction. The second step is to attempt to send a message. The fun part is when the second step, delivering the message, cannot be completed.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/hugh-retry-loop.png" loading="lazy" alt="hugh-retry-loop"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<figure>
+<figcaption>Figure 4 - Retry Loop</figcaption>
+</figure>
+<p>One approach that is used to ensure that all messages are delivered at-least-once is to use a retry loop (Figure 4 above). <strong>With the retry loop, the message sender will no give up until each message is delivered</strong>. When a message delivery attempt fails, the sender will try again. The sender will keep trying for a limited time and then give up, or it will keep trying indefinitely.</p>
+<p>The fun part is that the retry process needs to be durable. That is, the retry process needs to be able to recover from a failure of the sending process. When the sending process fails and is restarted, to satisfy the at-least-once requirement the sending process needs to be able to recover the pending messages when the process is restarted after a failure.</p>
+
+<h3>Event Sourcing &amp; CQRS</h3>
+
+
+<p><a href="https://www.martinfowler.com/eaaDev/EventSourcing.html" target="_blank" rel="noopener">Event Sourcing</a>&nbsp;(ES) and <a href="https://martinfowler.com/bliki/CQRS.html" target="_blank" rel="noopener">Command Query Responsibility Segregation</a>&nbsp;(CQRS)&nbsp;is a big topic. Here we are only going to focus on how ES &amp; CQRS is used to facilitate <em>at-least-once</em> message delivery.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/hugh-es-and-cqrs.png" loading="lazy" alt="hugh-es-and-cqrs"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<figure>
+<figcaption>Figure 5 - ES &amp; CQRS</figcaption>
+</figure>
+<p>Event Sourcing uses&nbsp;an event store,&nbsp;which is an ideal persistent store for pending messages. One approach used is the message sending process is watching the event store (Figure 5 above). As events are written to the event store, the sending process reads these events and attempts to send the associated message. As messages are successfully sent, the sending process advances to the next event. The sending process needs to persist the current offset to the next event to be sent. <strong>With the persisted offset, the sending process is failure resistant</strong>.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Message delivery with Akka</h2>
+
+
+<p>Message-driven systems is one of the fundamental characteristics of Reactive Systems as defined in the <a href="https://www.reactivemanifesto.org/" target="_blank" rel="noopener">Reactive Manifesto</a>. The evolution of Reactive concepts were influenced by the evolution and the development of the Akka.</p>
+<p>One of the many features of Akka is that it provides an implementation of the actor model. Actors are powerful building blocks based on a simple asynchronous messaging protocol. The only way to interact with an actor is to send it an asynchronous message. See the <a href="https://en.wikipedia.org/wiki/Actor_model" target="_blank" rel="noopener">actor model Wikipedia</a> page for a definition. And. of course, see the <a href="https://doc.akka.io/libraries/index.html" target="_blank" rel="noopener">Akka documentation</a> as well.</p>
+<p>In Akka, actor messaging falls into the <u>at-most-once</u> category, which is similar to the previously discussed RESTful messaging. In some scenarios, at-most-once messaging is perfectly acceptable. However, there is a solution provided that supports <em>at-least-once</em> message delivery, see <a href="https://doc.akka.io/docs/akka/current/persistence.html#at-least-once-delivery" target="_blank" rel="noopener">Akka Persistence</a> for more details on how this is done. Akka also provides an implementation&nbsp;of <a href="https://doc.akka.io/libraries/akka-core/current/common/circuitbreaker.html" target="_blank" rel="noopener">circuit breakers</a>.&nbsp;</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Summary</h2>
+<p>Implementing the right message delivery is fun. It is easy to build a leaky and brittle message delivery process, but fortunately, it is not that difficult to harden the process. The key concept is to think first about what your requirements are and identify how they fit into the three message delivery categories: at-most-once, at- least-once, or exactly-once. Another way to think of this is this, <strong>is it ok to occasionally drop messages or not?</strong></p>
+<p>It is relatively easy to implement a leaky message delivery process that sometimes drops messages, and this is perfectly acceptable in many applications. However, when your requirements demand that all messages must be delivered, you need to scrutinize closely every stage of the message journey to make sure that no messages can fall through a crack.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Apr 30, 2019
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

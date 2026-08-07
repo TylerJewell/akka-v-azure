@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>21 Agentic AI use cases & examples shaping the future of AI — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">agentic-ai-use-cases</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI</div>
+  <h1 class="title">21 Agentic AI use cases & examples shaping the future of AI</h1>
+  <p class="standfirst">Agentic AI is reshaping how tasks are performed across industries, evolving beyond passive generation to autonomous action. Unlike traditional AI that waits for user input and delivers static outputs, agentic AI can act, plan, reason, and operate independently, making decisions, initiating workflows, and adapting over time.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2025-04-30">Apr 30, 2025</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Agentic AI is reshaping how tasks are performed across industries, evolving beyond passive generation to autonomous action. Unlike traditional AI that waits for user input and delivers static outputs, <a href="https://akka.io/blog/what-is-agentic-ai">agentic AI</a> can act, plan, reason, and operate independently, making decisions, initiating workflows, and adapting over time.</p>
+
+<p>The transition to agentic systems reflects a broader trend toward intelligent autonomy. These systems are not limited to generating outputs; they are capable of executing full processes, selecting tools, and making decisions in real-time. In enterprise settings, this evolution is particularly powerful: it changes how work is distributed, what gets automated, and which tasks still require human oversight.</p>
+<p>From streamlining enterprise operations to managing IT infrastructure, improving patient care, transforming legal review, and generating cross-channel marketing campaigns, agentic AI is stepping into roles traditionally reserved for humans.</p>
+<p><strong>This guide will cover 21 Agentic AI use cases and discuss how this technology is likely to be utilized in the future.</strong></p>
+<div>
+<figure class="viz">
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><iframe title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" src="https://www.youtube-nocookie.com/embed/X-SPM3MfRt8?si=qpcHVMyrHqcTsoaO" width="560" height="315" frameborder="0" allowfullscreen></iframe></div>
+  </div>
+</figure>
+</div>
+
+</div>
+
+<div class="body col">
+
+<h2>Agentic AI vs. generative AI</h2>
+
+
+<p>To understand the evolution, we need to distinguish agentic AI from <a href="https://research.ibm.com/blog/what-is-generative-AI">generative AI</a>. Generative AI focuses on producing content, text, code, images, or audio, based on user prompts. It excels at creating but doesn't inherently act unless guided step-by-step.</p>
+<p>Agentic AI, on the other hand, is designed to act. These systems can set goals, reason over multiple steps, choose tools to use, call APIs, and take real-world actions without continuous human direction.</p>
+<p>They often include memory, autonomy, tool integration, and planning modules. Unlike their generative counterparts, agentic systems are equipped to engage with dynamic environments, learn from outcomes, and pivot based on new information.</p>
+<p>Where generative AI is like a talented writer waiting for instructions, agentic AI is a proactive executive assistant, one that books meetings, sends follow-ups, and updates calendars without needing you to click a button.</p>
+<div>
+<figure class="viz">
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><iframe width="774" height="435" src="https://www.youtube.com/embed/hfIUstzHs9A?si=xpSTfToPuOCoFqim" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+  </div>
+</figure>
+</div>
+<p>This distinction is essential because the shift from passive to active intelligence reshapes how organizations think about automation. It's no longer about saving time through faster content generation. It's about designing workflows that operate themselves, where human supervision is a backup, not a necessity.</p>
+<p><strong>Key capabilities that define agentic systems include:</strong></p>
+<ul>
+<li>Goal setting and prioritization</li>
+<li>Autonomous execution of multi-step plans</li>
+<li>Integration with APIs and tools</li>
+<li>Learning and memory for continuous improvement</li>
+<li>Adaptation to changing contexts</li>
+</ul>
+<p>These systems can persist over time, revisit earlier decisions, and revise strategies based on new inputs. For example, an agent monitoring customer churn might not just identify at-risk users but initiate retention workflows and experiment with multiple outreach strategies, choosing the most effective over time.</p>
+<p><strong>Let's now explore real-world use cases, organized by industry, and highlight the trailblazing companies behind them.</strong></p>
+
+</div>
+
+<div class="body col">
+
+<h2>Operations</h2>
+
+
+<h3>Legal and compliance agents</h3>
+
+
+<p>These agents streamline legal workflows by reviewing contracts, identifying risk clauses, generating summaries, and drafting policies aligned with regulations. They also monitor regulatory changes and suggest updates to legal frameworks, policies, or templates accordingly. Some systems can even benchmark contracts against past agreements to flag unusual terms.</p>
+<p><strong>Featured company:</strong> <a href="https://www.spellbook.legal/">Spellbook</a> - Embeds in Microsoft Word to suggest clauses and summarize risks.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/spellbook.webp" loading="lazy" alt="spellbook"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.harvey.ai/">Harvey</a></li>
+<li><a href="https://www.paxton.ai/">Paxton AI</a></li>
+<li><a href="https://www.lexion.ai/">Lexion</a></li>
+</ul>
+<p>These tools reduce delays in legal operations and help firms respond rapidly to regulatory shifts. They empower legal departments to operate with the agility of product teams, without compromising compliance.</p>
+
+<h3>Procurement and vendor management agents</h3>
+
+
+<p>Procurement is often hindered by manual comparisons, negotiations, and invoice handling. Agentic procurement systems compare supplier quotes, track historical performance, conduct negotiations, and automate purchasing.</p>
+<p><strong>Featured Concept:</strong> RPA + Agent Frameworks -- Combining robotic process automation with intelligent reasoning and market awareness.</p>
+<p>Emerging systems integrate with supply chain analytics tools to detect market trends and re-optimize contracts on the fly. Think of AI that not only processes purchase orders but also rewrites clauses when prices fluctuate due to macroeconomic conditions.</p>
+
+<h3>Workflow and business process automation</h3>
+
+
+<p>Modern enterprises depend on dozens of disconnected SaaS platforms. Agentic systems automate cross-platform tasks like onboarding employees, updating records, reconciling invoices, and coordinating project milestones.</p>
+<p><strong>Featured company:</strong> <a href="https://www.lindy.ai/">Lindy</a> -- AI agents in minutes to automate workflows.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/lindy.webp" loading="lazy" alt="lindy"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://zapier.com/agents">Zapier Agents</a></li>
+<li><a href="https://relevanceai.com/">Relevance AI</a></li>
+<li><a href="https://dust.tt/">Dust</a></li>
+</ul>
+<p>These agents don't follow static rules. They adapt workflows based on performance, adjusting priorities or rerouting tasks. Businesses achieve not just automation but agility.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Engineering</h2>
+
+
+<h3>AI DevOps and autonomous infrastructure management</h3>
+
+
+<p>AI agents manage infrastructure health by monitoring logs, resource utilization, and service availability. They can auto-remediate issues, spin up new containers, or shut down underused clusters to optimize cost.</p>
+<p>The impact? Less downtime, faster response to outages, and reduced need for 24/7 NOC staffing.</p>
+<p><strong>Featured company:</strong> <a href="https://www.ibm.com/aiops">IBM AIOps</a> -- Uses machine learning to detect and fix anomalies.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/ibm-ai.webp" loading="lazy" alt="ibm aiops"></div>
+  </div>
+  <figcaption>ibm aiops</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://github.com/AI-App/OpenDevin.OpenDevin">OpenDevin</a></li>
+<li><a href="https://azure.microsoft.com/en-us/products/copilot">Azure Copilot for Azure Management</a></li>
+</ul>
+
+<h3>AI product managers and feature planners</h3>
+
+
+<p>Product teams can use agentic tools to monitor usage trends, synthesize feedback, and propose or prioritize roadmap features. Some setups simulate A/B test results or customer behavior based on historical usage data.</p>
+<p><strong>Featured company:</strong> <a href="https://metabob.com/">Metabob</a> -- Recommends features based on engineering behavior.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/metabob.webp" loading="lazy" alt="metabob"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p>Teams using Claude or GPT-powered agents to build simulated customer journeys are finding ways to plan features with greater predictive accuracy.</p>
+
+<h3>Autonomous coding and debugging</h3>
+
+
+<p>Agentic developers can take requirements from a task board (like Jira), write code, test it, and open a GitHub PR. They can even write documentation, propose refactors, and respond to review feedback.</p>
+<p><strong>Featured company:</strong> <a href="https://www.cursor.com/en">Cursor AI</a> -- AI code editor that helps predict your next edit</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/cursor-ai-editor.webp" loading="lazy" alt="cursor ai editor"></div>
+  </div>
+  <figcaption>cursor ai editor</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://cognition.ai/">Cognition (Devin)</a></li>
+<li><a href="https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview">Claude Code</a></li>
+<li><a href="https://github.com/SWE-agent/SWE-agent">SWE-agent</a></li>
+<li><a href="https://github.com/stitionai/devika">OpenDevis, Devika</a></li>
+<li><a href="https://github.com/AntonOsika/gpt-engineer">GPT Engineer</a></li>
+</ul>
+<p>This will fundamentally change how teams work, from pair programming to pair planning.</p>
+
+<h3>DevOps monitoring and observability</h3>
+
+
+<p>Observability tools increasingly include agents that perform auto-triage. They examine telemetry data and logs, correlate alerts, and suppress false positives.</p>
+<p><strong>Featured company:</strong> <a href="https://www.dynatrace.com/platform/artificial-intelligence/">Dynatrace Davis AI</a></p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 6</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/dynatrace.webp" loading="lazy" alt="dynatrace"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://newrelic.com/">New Relic</a></li>
+<li><a href="https://www.datadoghq.com/">DataDog</a></li>
+<li><a href="https://azure.microsoft.com/en-us/products/azure-automanage">Azure Automanage</a></li>
+<li><a href="https://www.logicmonitor.com/">LogicMonitor</a></li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>Finance</h2>
+
+
+<p>Agentic AI is redefining financial operations by automating the tasks of a virtual CFO. These systems don't just passively report numbers; they actively monitor company spending, identify irregularities, detect trends, and recommend strategic budget shifts.</p>
+<p><strong>Featured company:</strong> <a href="https://ramp.com/">Ramp</a> -- Known for its intelligent spend management tools, Ramp uses AI to offer real-time, autonomous financial insights that help companies cut unnecessary costs and optimize cash flow.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 7</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/ramp.webp" loading="lazy" alt="ramp"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li>LangChain-powered FP&amp;A bots in mid-size firms</li>
+<li>Early-stage startups using AutoGen for monthly forecasting</li>
+</ul>
+<p>Imagine a finance agent that notices burn rate acceleration, identifies the root cause in specific departments, and drafts a new monthly forecast before your team even realizes there's an issue. Agentic <a href="https://www.cloudzero.com/blog/fpa-software/">FP&amp;A tools</a> shift finance from historical reporting to continuous strategic planning.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Sales, marketing, &amp; customer Experience</h2>
+
+
+<h3>AI sales reps and SDR automation</h3>
+
+
+<p>In sales, speed and personalization win deals. Agentic AI excels at both by handling outreach, qualifying leads, and nurturing prospects across channels.</p>
+<p><strong>Featured company:</strong> <a href="http://regie.ai">Regie.ai</a> -- Automates outreach creation, sequencing, and personalized follow-ups based on previous interactions.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 8</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/regie-ai.webp" loading="lazy" alt="regie ai"></div>
+  </div>
+  <figcaption>regie ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://magicsalesbot.com/">MagicSalesBot</a></li>
+<li><a href="https://www.sybill.ai/">Sybill</a></li>
+<li><a href="http://lyne.ai">Lyne.ai</a></li>
+</ul>
+<p>Modern sales reps are no longer restricted by bandwidth. These agents never forget to follow up, test subject lines in real time, and pivot messaging based on prospect behavior. Expect sales velocity and conversion rates to rise without increasing headcount.</p>
+
+<h3>Creative content orchestration</h3>
+
+
+<p>Creative campaigns that once took weeks of coordination across teams can now be ideated, built, and shipped in hours. Agentic creative systems work like fully staffed marketing departments, producing blogs, video scripts, visuals, and even posting them across social platforms.</p>
+<p><strong>Featured company:</strong> Jasper -- AI platform for marketers that generates on-brand content across various formats.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 9</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/jasper-ai.webp" loading="lazy" alt="jasper ai"></div>
+  </div>
+  <figcaption>jasper ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="http://quso.ai">Quso.ai</a></li>
+<li><a href="https://claude.ai">Claude</a> + AutoGen multi-agent orchestration</li>
+<li><a href="https://openai.com/sora/">Sora</a></li>
+</ul>
+<p>These tools shift marketing from calendar-based campaigns to responsive, demand-driven output, where new content is spun up in response to real-time trends and consumer signals.</p>
+
+<h3>Customer service automation</h3>
+
+
+<p>Traditional chatbots answer FAQs. Agentic service agents resolve real problems. They escalate only when necessary, synthesize knowledge base data, and learn from every interaction to improve over time.</p>
+<p><strong>Featured company:</strong> <a href="https://decagon.ai/">Decagon</a> -- Intelligent customer support agents that resolve issues and take actions while continuously learning from interactions.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 10</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/decagon.webp" loading="lazy" alt="decagon"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://sierra.ai/">Sierra</a></li>
+<li><a href="https://forethought.ai/platform/">Forethought</a></li>
+<li><a href="http://ultimate.ai">Ultimate.ai</a></li>
+<li><a href="https://www.mindverse.ai/">Mindverse</a></li>
+</ul>
+<p>The ROI here is huge: lower ticket volume, faster resolution, better CSAT, and global 24/7 coverage. These agents aren't replacing human agents; they're scaling them.</p>
+
+<h3>Knowledge management and IT agents</h3>
+
+
+<p>Imagine an internal assistant that finds the exact company policy or IT resolution article you need, and then executes the fix if you allow it.</p>
+<p><strong>Featured company:</strong> <a href="https://www.glean.com/">Glean AI</a> -- Uses contextual awareness to retrieve and act on company-wide knowledge.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 11</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/glean-ai.webp" loading="lazy" alt="glean ai"></div>
+  </div>
+  <figcaption>glean ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.dashworks.ai/">Dashworks</a></li>
+<li><a href="https://appsource.microsoft.com/en-us/product/office/wa200006783?tab=overview">EnterpriseGPT</a></li>
+</ul>
+<p>IT teams no longer spend time on repetitive support or triaging tickets. These agents enhance productivity and eliminate knowledge silos.</p>
+
+<h3>Personalized content DJ and stream curator</h3>
+
+
+<p>Agentic systems use continuous feedback loops to learn your preferences and adjust media playlists or content queues dynamically.</p>
+<p><strong>Featured company:</strong> Spotify AI DJ -- Blends real-time taste modeling with mood tracking.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 12</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/spotify-dj.webp" loading="lazy" alt="spotify ai dj"></div>
+  </div>
+  <figcaption>spotify ai dj</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://endel.io/">Endel</a></li>
+</ul>
+<p>Media consumption becomes more intuitive, automatically evolving based on the time of day, your mood, or even your calendar.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Security</h2>
+
+
+<h3>Managed detection and response (MDR) agents</h3>
+
+
+<p>The stakes in cybersecurity are high, and agentic AI can now detect and stop threats in real time, without waiting for human instruction.</p>
+<p><strong>Featured company:</strong> <a href="https://www.crowdstrike.com/platform/">CrowdStrike Falcon</a> -- Offers real-time agentic threat response across endpoints.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 13</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/crowdstrike.webp" loading="lazy" alt="crowdstrike"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.sentinelone.com/">SentinelOne</a></li>
+<li><a href="https://www.microsoft.com/en-us/microsoft-365/microsoft-defender-for-individuals">Microsoft Defender</a></li>
+<li><a href="https://www.deepinstinct.com/">Deep Instinct</a></li>
+</ul>
+<p>These systems not only flag suspicious activity but also take immediate action, isolating devices, killing processes, and preventing lateral movement in milliseconds. What used to be SOC-level workflows can now be automated, scalable, and faster than any human reaction.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Healthcare</h2>
+
+
+<h3>Autonomous healthcare agents</h3>
+
+
+<p>The healthcare industry is ripe for agentic AI. These systems don't just schedule patients, they help triage symptoms, recommend treatment pathways, and ensure follow-through on care plans.</p>
+<p><strong>Featured company:</strong> <a href="https://www.hippocraticai.com/">Hippocratic AI</a> -- Specifically trained for empathetic, regulatory-compliant conversations in healthcare.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 14</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/hippocratic.webp" loading="lazy" alt="hippocratic"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://glass.health/">Glass Health</a></li>
+<li><a href="https://www.nabla.com/">Nabla</a></li>
+</ul>
+<p>These agents increase access to care while preserving quality. In the future, your first consultation may not be with a person, but will feel like it is.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Education</h2>
+
+
+<h3>Education and tutoring agents</h3>
+
+
+<p>Agentic tutors offer highly personalized learning paths, adapting not just to a student's pace, but their preferred learning style and knowledge gaps.</p>
+<p><strong>Featured company:</strong> <a href="https://www.khanmigo.ai/">Khanmigo (Khan Academy)</a> -- Uses GPT-based tutoring to simulate 1:1 learning.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 15</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/khanmigo.webp" loading="lazy" alt="khanmigo"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://web.szl.ai/">Sizzle AI</a></li>
+<li>Early-stage classroom agents using AutoGen setups.</li>
+</ul>
+<p>They transform any device into a personalized, always-on tutor, and are particularly effective in underserved or resource-limited learning environments.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Knowledge work &amp; personal productivity</h2>
+
+
+<h3>Multi-step research agents</h3>
+
+
+<p>Instead of googling and summarizing yourself, these agents can complete research tasks, return cited insights, and even draft whitepapers or reports.</p>
+<p><strong>Featured company:</strong> <a href="https://www.perplexity.ai/help-center/en">Perplexity Pro</a> - An AI search engine that acts like a research analyst.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 16</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/perplexity.webp" loading="lazy" alt="perplexity"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://openai.com/">OpenAI</a> (<a href="https://openai.com/index/chatgpt/">ChatGPT</a>)</li>
+<li><a href="https://github.com/Shivanandroy/ResearchAgent">ResearchAgent</a></li>
+<li><a href="https://www.humata.ai/">Humata</a></li>
+</ul>
+<p>They are ideal for knowledge workers, analysts, writers, and consultants who need to process large volumes of information quickly and accurately.</p>
+
+<h3>Personal assistants and life automation</h3>
+
+
+<p>These agents manage your schedule, emails, and goals, and begin to understand your work habits, preferences, and limitations.</p>
+<p><strong>Featured company:</strong> <a href="https://www.rabbit.tech/">Rabbit R1</a> - A hardware-based agent for daily life automation.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 17</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/rabbit-os.webp" loading="lazy" alt="rabbit-os"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.rewind.ai/">Rewind AI</a></li>
+<li><a href="https://www.personal.ai/">Personal AI</a></li>
+<li><a href="https://earkick.com/">Earkick</a></li>
+</ul>
+
+</div>
+
+<div class="body col">
+
+<h2>Logistics &amp; supply chain</h2>
+
+
+<h3>Autonomous supply chain monitoring agents</h3>
+
+
+<p>These systems monitor global logistics, reroute shipments, and communicate with vendors to resolve delays before they escalate.</p>
+<p><strong>Featured company:</strong> <a href="https://www.fourkites.com/">FourKites</a> - Offers real-time supply chain visibility and coordination.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 18</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/fourkites.webp" loading="lazy" alt="fourkites"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.project44.com/">Project44</a></li>
+<li><a href="https://elementum.ai/">Elementum</a></li>
+<li><a href="https://www.kinaxis.com/en">Kinaxis</a></li>
+</ul>
+<p>They help companies move from reactive to proactive logistics, enabling just-in-time delivery and real-time adjustments.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Entertainment &amp; media</h2>
+
+
+<h3>AI talent and VTuber agents</h3>
+
+
+<p>Agentic personalities now perform, interact with fans, and even evolve their character arcs over time, autonomously.</p>
+<p><strong>Featured company:</strong> Neuro-sama - A VTuber that plays games, chats with fans, and adapts through reinforcement learning.</p>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://waifuai.ai/">WaifuAI</a></li>
+<li>GPT-integrated VTube Studio agents</li>
+</ul>
+<p>These aren't just gimmicks, they're the future of creator economies, where AI personalities generate revenue and cultivate audiences.</p>
+
+<h3>Simulation and NPC agents</h3>
+
+
+<p>Games are becoming deeply immersive thanks to NPCs that remember, adapt, and drive storylines forward independently.</p>
+<p><strong>Featured company:</strong> <a href="https://inworld.ai/">Inworld AI</a> - Creates persistent, memory-based NPCs with emotional intelligence.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 19</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/inworld.webp" loading="lazy" alt="inworld"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://www.convai.com/">Convai</a></li>
+<li><a href="https://www.fable-studio.com/">Fable Studio</a></li>
+</ul>
+<p>Training simulations, military strategy platforms, and open-world RPGs will soon be populated by agentic entities indistinguishable from human players.</p>
+
+<h3>Real-time multilingual interpretation and dubbing agents</h3>
+
+
+<p>These agents can now translate and dub video content in real-time, matching tone, lip movement, and emotion.</p>
+<p><strong>Featured company:</strong> <a href="https://www.heygen.com/">HeyGen</a> - Enables fast multilingual dubbing for creators and brands.</p>
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 20</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/posts/agentic-ai-use-cases/heygen-ai.webp" loading="lazy" alt="heygen ai"></div>
+  </div>
+  <figcaption>heygen ai</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p><strong>Other examples:</strong></p>
+<ul>
+<li><a href="https://elevenlabs.io/">ElevenLabs</a></li>
+<li><a href="https://www.interprefy.com/">Interprefy</a></li>
+<li><a href="https://kudo.ai/">KUDO AI</a></li>
+</ul>
+<p>For media, this means global distribution with no friction. Subtitles? Optional. Localized avatars? On the way.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Conclusion</h2>
+<p>Agentic AI is not just an evolution of generative tools; it's a full leap toward intelligent, autonomous systems that can act in the world without step-by-step human guidance.</p>
+<p>From infrastructure management to supply chains, education, sales, and entertainment, these AI agents are already in the wild, learning, acting, and adapting. The organizations and tools listed here are just the tip of the spear.</p>
+<p>What comes next is a world where autonomous agents collaborate with us, not just for efficiency, but for innovation. Expect to see entire startups built from teams of AI agents. Expect internal business units run by autonomous systems. Expect agent marketplaces where AI workers are contracted just like freelancers.</p>
+<p><strong>If you're ready to build what comes next, now's the time to explore frameworks purpose-built for autonomy.</strong></p>
+<p><a href="https://akka.io/">Akka</a>, with its Actor-based concurrency model and resilience-first architecture, gives developers the tools to design agentic systems that are scalable, responsive, and capable of operating independently across distributed environments. <a href="https://akka.io/request-a-demo">Schedule a demo today to get started!</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Apr 30, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

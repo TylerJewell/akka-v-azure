@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saga patterns in Akka (part 3) - exactly-once delivery with deduplication — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">saga-patterns-in-akka-part-3-exactly-once-delivery-with-deduplication</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">ARCHITECT / CTO · OPERATIONS · RESOURCES</div>
+  <h1 class="title">Saga patterns in Akka (part 3) - exactly-once delivery with deduplication</h1>
+  <p class="standfirst">In part 2 , we explored how read models support CQRS in Akka by separating write and read concerns, enabling more scalable and efficient data access. But distributed systems come with other fundamental challenges beyond just organizing data access—especially when it comes to handling duplicate messages. Let’s dive into this challenge and explore how Akka helps address it.</p>
+  <div class="byline">
+    <div><span class='au'>Andrzej Ludwikowski</span> · Principal Engineer</div>
+    <div class="r"><time datetime="2025-01-13">Jan 13, 2025</time> · 7 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">In <a href="/blog/saga-patterns-in-akka-part-2-read-models" rel="noopener" target="_blank">part 2</a>, we explored how read models support CQRS in Akka by separating write and read concerns, enabling more scalable and efficient data access. But distributed systems come with other fundamental challenges beyond just organizing data access—especially when it comes to handling duplicate messages. Let’s dive into this challenge and explore how Akka helps address it.</p>
+<p>A good metaphor is worth a thousand words—better yet if it's funny. This famous <a href="https://twitter.com/mathiasverraes/status/632260618599403520" rel="noopener" target="_blank">tweet</a> by Mathias Verraes is one of my favorites:<a href="https://x.com/mathiasverraes/status/632260618599403520" rel="noopener" target="_blank">
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/website/blog/images/saga-patterns-in-akka-part-3-exactly-once-delivery.png" loading="lazy" alt="saga-patterns-in-akka-part-3-exactly-once-delivery"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</a></p>
+<p>It's hard to find a better phrase to describe the fundamental challenges in a world of distributed systems.</p>
+<p>The good news is that Akka solves one of those challenges—namely, the order of messages. As long as the source of your consumer is an Akka component like an Event Sourced Entity or a Key Value Entity, the order of events or state changes is preserved (similar to Apache Kafka partitions).</p>
+<p>The second challenge—exactly-once delivery—cannot, in most cases, be generalized and solved by a one-size-fits-all implementation. The solution is usually a mix of business requirements and possible technical tricks in a given context. In practice, what we aim for is "effectively-once-delivery"—a pragmatic approach that ensures the end result is as if the operation happened only once, even if messages are retried or duplicated.</p>
+<p>Where should I apply this solution? Anywhere there is a chance of duplication that could lead to an incorrect state—for example, an HTTP endpoint, an events/messages subscription, etc. Each situation is different, and each time, you can use a different strategy.</p>
+<p>Let’s continue with the third part of this blog series and examine how we can achieve effectively-once delivery in our Akka demo application.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Idempotent updates</h2>
+
+
+<p>The easiest way to achieve exactly-once delivery semantics is to have idempotent updates. We already did this when we worked on <code>ReservationEntity</code>&nbsp;(acting as a read model):</p>
+<pre><code class="language-java">public class ReservationEntity extends KeyValueEntity {
+
+  public Effect create(String showId) {
+    String reservationId = commandContext().entityId();
+    return effects().updateState(new Reservation(reservationId, showId)).thenReply(done());
+  }
+
+  public Effect delete() {
+    return effects().deleteEntity().thenReply(done());
+  }
+}</code></pre>
+<p>Running the same request more than once will not change anything. The outcome will be exactly the same. There's nothing to do here, so you can move on to the next case.</p>
+<p>To achieve idempotent updates in the alternative read model approach, based on a View component (mentioned in <a href="/blog/saga-patterns-in-akka-part-2-read-models" rel="noopener" target="_blank">part 2 - read models</a>), could be improved by a simple change from a <code>List</code> collection to a <code>Set</code>:</p>
+<pre><code class="language-java">public record ShowByReservation(String showId, Set reservationIds) {
+
+  public ShowByReservation(String showId) {
+    this(showId, new HashSet&lt;&gt;());
+  }
+
+  public ShowByReservation add(String reservationId) {
+    reservationIds.add(reservationId);
+    return this;
+  }
+
+  public ShowByReservation remove(String reservationId) {
+    reservationIds.remove(reservationId);
+    return this;
+  }
+}</code></pre>
+<p>After that, updates are idempotent. Since the release of <a href="https://github.com/akka/akka-sdk/releases/tag/v3.2.2" rel="noopener" target="_blank">SDK 3.2.2</a>, this fix is not mandatory because Akka Views have a built-in deduplication <a href="https://doc.akka.io/java/dev-best-practices.html#_idempotent_updates" rel="noopener" target="_blank">mechanism</a>.&nbsp;</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Show Entity deduplication</h2>
+
+
+<p>We need to protect <code>ShowEntity</code> endpoints against duplicated requests. The thing is, for some duplicated requests, you may want to return an error (e.g., creating the same <code>Show</code>), but for others, like reservation cancellation or confirmation, you may prefer to accept the request and make it idempotent. This way, the Consumer will continue to work in case of redeliveries or restarts.</p>
+<p>To take it a step further, let’s assume you need to distinguish the situation where the record <code>CancelSeatReservation(String reservationId)</code> is a duplicate and where it's an invalid command with a wrong <code>reservationId</code>. For this, you need an additional <code>finishedReservations</code> collection in the <code>Show</code> domain class, which is the state of the <code>ShowEntity</code>. It keeps not only all historical reservation IDs but also a reservation status (confirmed or canceled).&nbsp;</p>
+<pre><code class="language-java">private Or&lt;ShowCommandError, ShowEvent&gt; handleCancellation(CancelSeatReservation cancelSeatReservation) {
+    String reservationId = cancelSeatReservation.reservationId();
+    return pendingReservations.get(reservationId).fold(
+      /*no reservation*/
+      () -&gt; {
+        if (finishedReservations.get(reservationId).exists(FinishedReservation::isCancelled)) {
+          return left(DUPLICATED_COMMAND);
+        } else {
+          return left(RESERVATION_NOT_FOUND);
+        }
+      },
+      /*matching reservation*/
+      seatNumber -&gt; //processed as before
+  }</code></pre>
+<p>The <code>handleConfirmation</code>&nbsp;requires very similar modifications. I’m skipping this part, but you can examine the code yourself <a href="https://github.com/akka/akka-saga-patterns/blob/part3/src/main/java/com/example/cinema/domain/Show.java#L47" rel="noopener" target="_blank">here</a>.</p>
+<p>Reusing an existing business field for deduplication requires extra caution. You need to block a reservation of different seats with the same <code>reservationId</code>. Thus, we also need to check for duplicates in the <code>handleReservation</code> by scanning two collections:&nbsp;<code>pendingReservations</code> and <code>finishedReservations</code>.</p>
+<pre><code class="language-java">private boolean isDuplicate(String reservationId) {
+    return pendingReservations.containsKey(reservationId) ||
+      finishedReservations.get(reservationId).isDefined();
+  }
+
+private Or&lt;ShowCommandError, ShowEvent&gt; handleReservation(ReserveSeat reserveSeat) {
+    int seatNumber = reserveSeat.seatNumber();
+    if (isDuplicate(reserveSeat.reservationId())) {
+      return left(DUPLICATED_COMMAND);
+    } else {
+      //continue with the reservation
+    }
+  }</code></pre>
+<p>From the domain perspective, duplication is like any other <code>ShowCommandError</code>, while from the <code>ShowEntity</code> layer, this could be translated into a positive response.</p>
+<pre><code class="language-java">public class ShowEntity extends EventSourcedEntity&lt;Show, ShowEvent&gt; {
+
+  private Effect errorEffect(ShowCommandError error, ShowCommand showCommand){
+    if (error == DUPLICATED_COMMAND) {
+      return effects().reply(done());
+    } else {
+      return effects().error(error.name());
+    }
+  }
+
+  public Effect cancelReservation(CancelSeatReservation cancelSeatReservation) {
+    if (currentState() == null) {
+      return effects().error("show not exists");
+    } else {
+      return switch (currentState().process(cancelSeatReservation)) {
+        case Or.Left(var error) -&gt; errorEffect(error, cancelSeatReservation);
+        case Or.Right(var event) -&gt; persistEffect(event);
+      };
+    }
+  }
+}</code></pre>
+
+</div>
+
+<div class="body col">
+
+<h2>Wallet Entity deduplication</h2>
+
+
+<p>In the previous approach, we reused existing data (<code>reservationId</code>) for deduplication. Even for this simple example, it's easy to forget about some scenarios and introduce a bug. Extending the commands/events model with a dedicated field, just for the purpose of deduplication, is (in most cases) a better option. This way we can apply a more generic deduplication mechanism and you are more resistant to domain changes.</p>
+<p>For example, any wallet command that requires deduplication could extend the <code>RequiresDeduplicationCommand</code>&nbsp;interface with an additional <code>commandId</code>&nbsp;field.</p>
+<pre><code class="language-java">public sealed interface WalletCommand {
+
+  sealed interface RequiresDeduplicationCommand extends WalletCommand {
+    String commandId();
+  }
+
+  record CreateWallet(String walletId, BigDecimal initialBalance) implements WalletCommand {
+  }
+
+  record ChargeWallet(BigDecimal amount, String reservationId,
+                      String commandId) implements RequiresDeduplicationCommand {
+  }
+
+  record DepositFunds(BigDecimal amount, String commandId) implements RequiresDeduplicationCommand {
+  }
+}</code></pre>
+<p>Based on this field, you can deduplicate the command before it hits the domain logic:</p>
+<pre><code class="language-java">public Or&lt;WalletCommandError, WalletEvent&gt; process(WalletCommand command) {
+    if (isDuplicate(command)) {
+      return left(WalletCommandError.DUPLICATED_COMMAND);
+    } else {
+      return switch (command) {
+        case CreateWallet create -&gt; handleCreate(create);
+        case ChargeWallet charge -&gt; ifExists(() -&gt; handleCharge(charge));
+        case DepositFunds deposit -&gt; ifExists(() -&gt; handleDeposit(deposit));
+      };
+    }
+  }</code></pre>
+<p>Proper deduplication requires persisting the state update with the deduplication data in one transaction. For an Event Sourced entity like <code>WalletEntity</code>, this means that you need to store this information in the event payload. The recovered state (from events) must contain all used <code>commandIds</code>. This brings us to a very specific problem: for long-lived entities with many potential commands, you can’t deduplicate all of them without running into time and/or space constraints. Based on the expected load, you can calculate how many command IDs you can keep in memory (per entity). Next, you might use more sophisticated logic and data structures than just a <code>List</code> to keep space (e.g., last 1000 ids) and/or time (e.g., last 2 hours) boundaries.</p>
+<p>Although a separate field for deduplication is a much cleaner solution, it has a drawback: What should its value be? The most common choice is some sort of UUID implementation. In most cases, this is fine, but if you want to fine-tune the solution, you could use a hash function that produces a shorter hash (less space). The most important aspect is that this value must be the same for the same payload. For HTTP requests, you can’t control this, but for our Saga stages, we are in charge of the payloads.</p>
+<p>The UUID is generated from a combination of the event subject and sequence number will be unique and consistent. This way we get the same <code>commandId</code> each time.</p>
+<pre><code class="language-java">@Consume.FromEventSourcedEntity(value = ShowEntity.class, ignoreUnknown = true)
+public class ChargeForReservation extends Consumer {
+
+  public Effect charge(SeatReserved seatReserved) {
+    String expenseId = seatReserved.reservationId();
+    String entityId = messageContext().eventSubject().get();
+    Long sequenceNum = messageContext().metadata().asCloudEvent().sequence().get();
+
+    String commandId = UUID.nameUUIDFromBytes((entityId + sequenceNum).getBytes()).toString();
+    var chargeWallet = new ChargeWallet(seatReserved.price(), expenseId, commandId);
+
+    var walletId = seatReserved.walletId();
+
+    return effects().asyncDone(componentClient.forEventSourcedEntity(walletId)
+      .method(WalletEntity::charge)
+      .invokeAsync(chargeWallet)
+      .thenApply(Response::toDone));
+
+  }
+</code></pre>
+<p>More about the <a href="https://doc.akka.io/java/dev-best-practices.html#_deterministic_hashing" rel="noopener" target="_blank">deterministic hashing</a> technique (and others) can be found in the official documentation.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Summary</h2>
+<p>I hope this part clarifies how to achieve exactly-once delivery semantics in Akka. Technically speaking, it’s not possible in a distributed world, but with at-least-once delivery and proper deduplication strategy, we can achieve effectively-once delivery. The main takeaway is that there is no silver bullet; each situation is different. However, having a rich toolbox helps a lot because you can tailor the solution to a given context.</p>
+<p>In the next part of this series, we will focus on error handling—specifically, how to make our Saga process bulletproof. We will also talk about one of the biggest challenges of the Saga pattern: error handling and compensation. Check out the <a href="https://github.com/akka/akka-saga-patterns/tree/part3" rel="noopener" target="_blank">part3</a> tag from the source code.</p>
+<p><a href="/blog/saga-patterns-in-akka-part-4-error-handling-dlq" rel="noopener">Read part 4 - error handling, DLQ</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Jan 13, 2025
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

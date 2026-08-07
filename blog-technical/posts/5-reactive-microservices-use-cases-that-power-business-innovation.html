@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 reactive microservices use cases that power business innovation — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">5-reactive-microservices-use-cases-that-power-business-innovation</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · ARCHITECT / CTO · EDGE / IOT</div>
+  <h1 class="title">5 reactive microservices use cases that power business innovation</h1>
+  <p class="standfirst">Introduction No matter what industry you’re in, business innovation now depends on your company’s ability to build digital services and software more quickly and at higher quality—and to deliver those applications and services reliably at scale. However, simply “lifting and shifting” your software to cloud native infrastructure (i.e., Kubernetes and its ecosystems of tools) is not enough. This approach will not deliver new applications fast enough or achieve the necessary cadence of new features and improvements without negatively impacting your organization’s KPIs.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2023-10-21">Oct 21, 2023</time> · 9 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>Introduction</h2>
+
+
+<p class="lede">No matter what industry you’re in, business innovation now depends on your company’s ability to build digital services and software more quickly and at higher quality—and to deliver those applications and services reliably at scale. However, simply “lifting and shifting” your software to cloud native infrastructure (i.e., Kubernetes and its ecosystems of tools) is not enough. This approach will not deliver new applications fast enough or achieve the necessary cadence of new features and improvements without negatively impacting your organization’s KPIs.</p>
+
+<p>Reactive microservices are an innovative and resource-efficient way to design software systems. Built on <a href="https://www.reactiveprinciples.org/" rel="noopener" target="_blank">Reactive Principles</a>, they take the complexity out of developing cloud native applications while unleashing the full power of microservices in the cloud. Reactive microservices handle the application layer of cloud native applications by implementing an enterprise-grade microservices architecture—or an architecture that meets the challenges of demanding distributed workloads.</p>
+<p>Transformation takes thoughtful strategy with specific business impact in mind. Knowing what business use cases other companies are putting into best practice is a great way to start envisioning—and enabling—your own shift to Reactive microservices.</p>
+<p>Read on to discover five of the top use cases Akka has witnessed, with real-world customer examples and insights into how your organization can make the leap.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>1. Real-time financial processes</h2>
+
+
+<p>Batch-oriented, big data solutions — such as Hadoop — are effective at processing a lot of data using popular machine learning algorithms. However, the results are usually stale by hours or even days. These solutions lack an ability to harness big data and process it at high speeds as the data is being generated or entering an ecosystem — what is referred to as streaming data.</p>
+<p>Streaming data applications often run forever and process a never-ending amount of data. As a result, they require even higher levels of resilience, elasticity, and availability that only reactive microservices can provide. Reactive microservices play an important role in laying a strong foundation for real-time financial processes. And even better, this system architecture allows Financial Services companies to retain current customers, attract the next generation of clients, maximize the retained value of relationships, and effectively manage risk.</p>
+
+<h3>A large bank optimizes the best auto loans for customers in record time</h3>
+
+
+<p>As a major provider of auto loans in the United States, Capital One wanted to upgrade their auto loan system to provide accurate decisions in real-time while improving the overall car shopping experience for customers. Another major goal for the company was to simplify the car shopping process by allowing customers to find, finance, and fulfill their next car purchase with ease, convenience, and confidence.</p>
+<p>Driving Capital One’s new auto loan system are Reactive microservices powered by Akka. The results?</p>
+<ul>
+<li>The architecture can now run complex applications supporting up to 16 simultaneous users at 180 to 200 millisecond response times, delivering new features more quickly with fewer failures</li>
+<li>With Reactive microservices as the foundation, the architecture can process 486 applications a minute compared to at most 100 on a cluster of servers before</li>
+<li>This new system can handle a computing task that normally takes 55 hours in just under one second— with 24/7 availability at massive scale</li>
+</ul>
+<blockquote>
+<p>"No one likes waiting, especially for loan approvals. So when my team needed to upgrade our auto financing loan origination systems for real-time decision making at high scale, we brought in Akka to create a brand new customer experience."</p>
+<p>— <em>Fred Crable, Senior Director of Software Development, Capital One</em></p>
+</blockquote>
+<p><a href="/customer-stories/capital-one-scales-real-time-auto-loan-decisioning-with-akka" rel="noopener">Read the full case study</a></p>
+
+</div>
+
+<div class="body col">
+
+<h2>2. Modern eCommerce</h2>
+
+
+<p>Consumers demand to seamlessly transact anywhere, anytime, on any client. Every sale is the culmination of potentially dozens of interactions with a consumer. Today, smartphones alone influence 84% of millennials’ purchases. Digital touchpoints impact 56% of all purchases. Selling something to an end consumer is far more complicated than it used to be, even just 10 years ago. Consumers are firmly in charge and expect to make purchases on their terms.</p>
+<p>Reactive microservices can deliver the highperformance, scalability, and resilience required to meet today’s demanding eCommerce platforms head-on. This system architecture allows companies to:</p>
+<ul>
+<li>Deliver new features to market faster</li>
+<li>Scale a platform up and down predictably and elastically on-demand, across cores, nodes, and clusters</li>
+<li>Create entire systems of microservices that are responsive and message-driven</li>
+</ul>
+
+<h3>A major telco doubles overall business and performance results using half the hardware</h3>
+
+
+<p>For more than a decade, Verizon had to recreate their entire eCommerce site in parallel with a special light code base that disabled logging, removed all complex transaction requirements, and was subjected to massive load testing. This bespoke web site only ran in production for a few days each year, even though it took more than six months to create. </p>
+<p>Verizon decided to revamp this legacy site to meet growing customer demand after experiencing regular outages during high-load events, such as iPhone launches and Black Friday sales promotions. Using Akka, the company built Reactive microservices that achieved results twice as fast as their original platform by:</p>
+<ul>
+<li>Increasing developer productivity so that build times used 50% less developer effort</li>
+<li>Decreasing infrastructure resources so that total hardware use was cut in half</li>
+<li>Accelerating time to value which led to a 235% increase in sales, while customer conversion rates jumped up 197%, reducing customer response times by half</li>
+</ul>
+<blockquote>
+<p>“Akka is absolutely phenomenal. The performance and user experience benefits generated by the implementation of Reactive systems was so impressive that it’s now being considered for adoption by other business units within Verizon."</p>
+<p>— <em>Neeraj Garg, Director of Billing &amp; Ordering Systems, Verizon</em></p>
+</blockquote>
+<p><a href="/customer-stories/verizon-wireless-deploys-akka-doubles-business-performance-results" rel="noopener">Read the full case study</a></p>
+
+</div>
+
+<div class="body col">
+
+<h2>3. Infrastructure optimization</h2>
+
+
+<p>Cloud applications require a different software architecture from what companies have been running on for the past couple decades. Traditional monolithic and batch types of applications are not designed to take advantage of the cloud and are extremely inefficient, resulting in high cloud costs. The same is true for poorly-designed microservices applications.</p>
+<p>The long-term impact of running legacy and lift-and-shift applications in cloud environments is cost prohibitive. While it is essential any cloud applications are secure, reliable, and scalable, it is critical these applications are highly efficient to keep costs from running over budget. The only way to ensure business workloads realize cost savings while taking full advantage of a new cloud infrastructure is to design an application architecture containing Reactive microservices, coupled with a flexible orchestration capability using containers and Kubernetes.</p>
+
+<h3>An online fantasy sports platform reduces costs to serve fast growing market</h3>
+
+
+<p>Known to amplify fans’ engagement with sports, Dream11 has experienced tremendous growth, from 1 million users in 2014 to over 80 million at the close of 2019. With the majority of user traffic spiking the hour leading up to a real-world event, their original application architecture could no longer process the tens of thousands of users per second requesting to join contests associated with a single event, let alone overlapping events.</p>
+<p>After extensive analysis and research, Dream11 decided that Reactive microservices powered by Akka could fulfill all their requirements. Since implementing this architecture, the company has experienced:</p>
+<ul>
+<li>Faster time to value by delivering its new Contest Join application one full month ahead of schedule</li>
+<li>An increase in performance levels to more than 30,000 user joins per second at 150ms latency less than one week after launch—well exceeding original goals</li>
+<li>A 30% reduction in infrastructure costs</li>
+<li>The scalability to grow at any rate of adoption for years to come, while delivering the uninterrupted experience customers expect to receive</li>
+</ul>
+<blockquote>
+<p>“Akka provides a reduction of infrastructure and associated cost savings that enable our teams to place focus on building features that attract new customers and enhance user experiences.”</p>
+<p>— <em>Mahesh Jadhav, Software Architect, Dream11</em></p>
+</blockquote>
+<p><a href="/customer-stories/scaling-handles-massive-traffic-spikes-with-ease" rel="noopener">Read the full case study</a></p>
+
+</div>
+
+<div class="body col">
+
+<h2>4. Application modernization</h2>
+
+
+<p>Much of the discussion about application modernization is focused on monolithic, on-premises applications—typically updated and maintained using waterfall development processes—and how those applications can be brought into cloud architecture and release patterns, namely microservices.</p>
+<p>The key to success with application modernization, like most things, comes down to strategy and picking application modernization projects where the benefits of cloud, speed, performance, scale, and new feature development are ones that offer the given application a clear path to improved customer experience and ROI. Reactive microservices meet these requirements while offering more independence between services, making development cycles more rapid and cost effective.</p>
+
+<h3>Hyper-personalized user experiences for a streaming service and its viewers</h3>
+
+
+<p>Partnering with over 250 media companies, Tubi has more than 30,000 movies and TV shows globally. However, as Tubi’s popularity grew, the development team was working around the clock trying to scale the existing systems with more hardware. Simultaneously, the development team was trying to improve the user experience by adding layers of machine learning-driven recommendations to further individualize the customer experience.</p>
+<p>Tubi was in search of a single platform that could keep up with the company’s fast pace of innovation and be implemented quickly to keep pace with business goals. They selected Akka to build Reactive microservices that take full advantage of the distributed nature of the cloud, are resilient to failure, automatically scale up and down, and are highly responsive. Outcomes included:</p>
+<ul>
+<li>An increase in development velocity while attaining the expertise, and confidence, to quickly solve complex issues that arise during development</li>
+<li>A better monitoring of services in production and a rich set of metrics used for smart alerting in production systems</li>
+<li>A quick debugging of complex interdependencies in the rare cases that issues do arise</li>
+</ul>
+<blockquote>
+<p>“With Akka, Tubi is now able to deliver a unique level of hyper-personalization that resonates with our viewers’ individual tastes and advertiser solutions needed by the world’s leading brands.</p>
+</blockquote>
+<p>— <em>Mario Assistis, CTO, Tubi</em></p>
+<p><a href="/customer-stories/personalized-user-experiences-drive-increased-advertising-revenue-at-tubi" rel="noopener">Read the full case study</a></p>
+
+</div>
+
+<div class="body col">
+
+<h2>5. Internet of Things (IoT) platforms</h2>
+
+
+<p>For developers, an IoT platform provides a set of ready-to-use features that greatly speed up development of applications for connected devices as well as handle scalability and crossdevice compatibility. Modern IoT platforms go one step further and introduce a variety of valuable features into the hardware and application layers such as real-time analytics, on-device data processing, and cloud-based deployment.</p>
+<p>Digital twins — or a comprehensive digital representation of real-world devices and systems — improve state monitoring and enable faster responses to external and internal events. Implementation requires IoT platforms to provide highly-flexible device management capabilities that can cope with any level of sophistication depending on the use case. Digital twins built with Reactive microservices are becoming a key ingredient of every efficient IoT ecosystem.</p>
+
+<h3>A storied enterprise IT company delivers customer value faster with real-time insights</h3>
+
+
+<p>Hewlett Packard Enterprise (HPE) has sensors deployed in data centers all around the globe sending trillions of metrics each day to InfoSight, an industry-leading predictive analytics platform providing analytics on petabytes of telemetry data. However, to deliver value faster, InfoSight needed to evolve from its classic batch mode, big data architecture to streaming data. </p>
+<p>HPE turned to Akka and Reactive microservices for the elasticity and resilient self healing required to deliver streaming data. The business benefits the company has experienced since implementing the platform include:</p>
+<ul>
+<li>Delivering near real-time insights to customers using data gathered from over 20 billion sensors sending trillions of metrics each day</li>
+<li>Transforming customers’ experience by monitoring infrastructure, predicting possible problems, and recommending ways to enhance performance</li>
+<li>Increasing developer productivity with frameworks for processing continuous application logic</li>
+</ul>
+<blockquote>
+<p>“Akka delivers on the elasticity and resilience we require. When Akka was packaged into a de facto streaming data distribution, it made good business sense to use their platform for the next generation of InfoSight.”</p>
+<p>— <em>Jeff Dutton, Data Platform Architect, Hewlett Packard</em></p>
+</blockquote>
+<p><a href="/customer-stories/hewlett-packard-enterprise-transforms-customer-experience-near-real-time-insights" rel="noopener">Read the full case study</a></p>
+
+</div>
+
+<div class="body col">
+
+<h2>How reactive microservices drive business value overall</h2>
+<p>Beyond the specific use cases in this ebook, Reactive microservices offer significant advantages for your IT and development efforts in the cloud, contributing directly to the success of your business.</p>
+<p>Reactive microservices unlock new use cases and benefits specific to just about every industry, but a few of the most common are:</p>
+<ul>
+<li>Reducing business risk, accelerating faster time to value, and lowering infrastructure costs</li>
+<li>Giving companies back control over developing business features instead of spending precious time and money writing boilerplate code and building frameworks</li>
+<li>Encouraging reusability and eliminating business function redundancy</li>
+</ul>
+<p>Many companies have invested in microservices, but true transformation at hyper scale does not happen without Reactive Principles being core to the way software systems operate, driving strategic initiatives from a centralized architecture.</p>
+<p>For more on the journey to Reactive microservices, read: <a href="/blog/microservices-unleashed-evolving-mission-critical-applications-in-the-cloud" rel="noopener">Microservices unleashed: evolving mission-critical applications in the cloud at lower cost, risk, and complexity</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Oct 21, 2023
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

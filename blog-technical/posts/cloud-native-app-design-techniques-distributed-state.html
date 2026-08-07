@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design techniques for building stateful cloud-native applications: Part 2 – distributed state — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. This overrides
+   HubSpot's default blockquote (which paints a left rail, background, and
+   quote glyphs) via !important. Source callouts that need a distinct
+   left-rail "editor's note" look should use class="enote" instead. */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px!important;margin:52px auto!important;padding:36px 0!important;text-align:center!important;border-top:1px solid var(--rule-hi)!important;border-bottom:1px solid var(--rule-hi)!important;border-left:0!important;border-right:0!important;font-family:var(--display)!important;font-size:28px!important;line-height:1.32!important;color:var(--ink)!important;font-weight:400!important;letter-spacing:-0.014em!important;text-wrap:balance;background:transparent!important;border-radius:0!important;box-shadow:none!important;quotes:none!important}
+.pullquote::before,.pullquote::after,.body blockquote:not(.pullquote):not(.enote)::before,.body blockquote:not(.pullquote):not(.enote)::after{content:none!important}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block!important;margin-top:20px!important;font-family:var(--display)!important;font-style:normal!important;font-size:11.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.18em!important;color:var(--mute)!important}
+/* Kill inline styles inside blockquote paragraphs (source often sets
+   font-weight:bold, custom colors) so the quote reads with the display font. */
+.body blockquote:not(.pullquote):not(.enote) p{background:transparent!important;color:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:400!important;text-align:inherit!important;margin:0!important}
+.body blockquote:not(.pullquote):not(.enote) a{color:var(--accent)!important;border-bottom-color:rgba(255,206,74,0.35)!important}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%!important;border-collapse:collapse!important;font-family:var(--text)!important;font-size:15px!important;line-height:1.5!important;color:var(--body)!important;background:transparent!important;table-layout:auto!important}
+.table-scroll caption{text-align:left!important;caption-side:top!important;font-family:var(--display)!important;font-size:11px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.16em!important;color:var(--accent)!important;margin-bottom:10px!important}
+.table-scroll th,.table-scroll td{padding:12px 16px!important;border:0!important;border-bottom:1px solid var(--rule)!important;vertical-align:top!important;text-align:left!important;background:transparent!important;color:var(--body)!important}
+.table-scroll th{font-family:var(--display)!important;font-size:12px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;border-bottom-color:var(--ink)!important}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%!important;margin:20px 0 6px!important;border-collapse:collapse!important;table-layout:fixed!important;font-family:var(--text)!important;font-size:13px!important;line-height:1.35!important;background:transparent!important}
+.rtbl caption,.rtbl thead th,.rtbl tbody td,.rtbl tfoot td{background:transparent!important}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px!important;font-family:var(--display)!important;font-size:10.5px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:0.12em!important;color:var(--mute)!important;text-align:left!important;border:0!important;border-bottom:1px solid var(--ink)!important;vertical-align:bottom!important;line-height:1.25!important;background:transparent!important}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px!important;border:0!important;border-bottom:1px solid var(--rule)!important;color:var(--body)!important;vertical-align:baseline!important;font-family:var(--mono)!important;font-variant-numeric:tabular-nums;font-size:11.5px!important;text-align:left!important;white-space:nowrap;background:transparent!important}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0!important;font-family:var(--text)!important;font-style:normal!important;font-size:12px!important;line-height:1.5!important;color:var(--mute)!important;border:0!important;text-align:left!important;letter-spacing:0.01em!important;background:transparent!important}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">cloud-native-app-design-techniques-distributed-state</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">ARCHITECT / CTO · RESOURCES · DISTRIBUTED SYSTEMS</div>
+  <h1 class="title">Design techniques for building stateful cloud-native applications: Part 2 – distributed state</h1>
+  <p class="standfirst">An introduction to distributed state In Part 1 of our series on design techniques for building stateful, cloud-native applications , we looked at the topics of resiliency , recoverability , and scalability for cloud-native applications like Reactive Microservices and real-time streaming systems. In this part, we take a look at&nbsp; application state , and why we should distribute it. Let’s start with defining the word state.</p>
+  <div class="byline">
+    <div><span class='au'>Sean Walsh</span> · Cloud Product Evangelist</div>
+    <div class="r"><time datetime="2019-03-25">Mar 25, 2019</time> · 10 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>An introduction to distributed state</h2>
+
+
+<p class="lede">In <a href="/blog/design-techniques-stateful-cloud-native-applications-resilience-recoverability-scalability" rel="noopener">Part 1 of our series on design techniques for building stateful, cloud-native applications</a>, we looked at the topics of <em>resiliency</em>, <em>recoverability</em>, and <em>scalability </em>for cloud-native applications like Reactive Microservices and real-time streaming systems. In this part, we take a look at&nbsp;<em>application state</em>, and why we should distribute it. Let’s start with defining the word state.</p>
+
+<p>Merriam-Webster defines it as <em>“a condition or stage in the physical being of something”</em>. Using the insect kingdom as an example, there would be an egg, larva, pupa, and adult. Virtually all things have state, and that is also true of computing. State is useful in order to make decisions or take actions. An insect in the egg state would have very different behavior than one in the adult state; in the egg state, the insect can either die or metamorphosize into a larva, while the adult can only die. This is just one example of what I’ll call <em>contextual-state</em>, where application state, as with beauty, is also in the eye of the beholder. What is application state?</p>
+<p>Just as in the insect example, objects in your application also have current state and behavior over time. For example, the accumulated movements of an electric car might result in a geographic position of 40.712776 latitude and -74.005974 longitude at 12 PM, on Monday, March 11, 2019. That snapshot of the object’s state at this point is very important when it is desired to move the car in a certain direction; yet once that decision is made, it is then reflected in a new state of the vehicle.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What is subjective state?</h2>
+
+
+<p>State needs to exist within a certain context, for example within a <em>bounded-context&nbsp;</em>if we are to consider <a href="https://en.wikipedia.org/wiki/Domain-driven_design" target="_blank" rel="noopener">domain-driven-design</a> (DDD).</p>
+<p>Let’s take for example an airport model and look at two bounded-contexts: ground control and departures. Both of these contexts have very different interests, ground control moves planes and other vehicles around the tarmac, while departures are interested in getting a plane flown safely out of the local airspace.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Service-oriented_architecture" target="_blank" rel="noopener">SOA</a> architect might see the aircraft as the common item and attempt to model it centrally to be shared among these two contexts; however, as you can imagine, this just leads to a functional bottleneck for no good reason. In fact, with these two example contexts, most likely the only shared attribute would be the aircraft’s identity or callsign. <strong>All the other attributes would be of unique interest to the given context</strong>. For example, ground control would not care about altitude, destination or passenger manifest, while departures probably would.</p>
+<p>We can introduce the term <em>subjective-state&nbsp;</em>for cases when you have a view on something that is specific to your own needs, or even at a certain time granularity or summarization. Any attempt to share state across bounded contexts flies in the face of DDD. State should be kept private and both <strong>highly available</strong> and <strong>highly accurate</strong> in order for the domain to make quick and accurate decisions. We’ll explain how to accomplish the lofty goals of availability and accuracy a bit later.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>What about events?</h2>
+
+
+<p>Any discussion of application state will likely include the topic of events and <a href="https://en.wikipedia.org/wiki/Event-driven_architecture" target="_blank" rel="noopener">event-driven architecture</a> (EDA). Now that we’ve established that–in most cases–the proper use of state makes it meaningless to share with the outside world, what do we do?</p>
+<p>Events just happen to already exist in your business, whether you are capitalizing on them or not. The world is made up of events and so are our systems. If you know enough about your business you can lock yourself in a room and capture all of your business events on sticky notes, this is called <em>event storming</em>.</p>
+<p>Once you capture all of the events it is a matter of grouping them according to the bounded context in which they belong and directing your development teams to have at it, roughly translating a bound context to an individual set of microservices to be developed.</p>
+<p>This is where <em>event-sourcing</em>, an alternative to the <em>CRUD</em> (create/read/update/delete) model of storing current state, comes into play. <a href="/microservices/reactive-microservices-data-persistence-from-crud-to-event-sourcing" rel="noopener">Event sourcing</a> makes use of immutable facts that are stored, in order, in a durable event log, representing the history of the state of the domain over time. State is then relegated to any observer of “order” in the system, each having its own unique pivot on the data. For example, <em>OrderCreated</em>, <em>OrderShipped</em> or <em>OrderBilled</em> are different event states previously visible with CRUD only as a snapshot; with event sourcing, this is now derived by taking into account all of the events in the order they occurred that lead to that state.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>CRUD vs event sourcing</h2>
+
+
+<p>Event sourcing is a mature concept and has been around for decades for the likes of banking and telemetry-based applications, such as within the energy or manufacturing industries. Martin Fowler was writing about it as early as 2005 <a href="https://martinfowler.com/eaaDev/EventSourcing.html" target="_blank" rel="noopener">here</a>. Event sourcing just so happens to map perfectly into our “sharing stuff” challenge. The world is moving to event sourcing more now than ever, due to the growth of streaming analytics and systems of microservices.</p>
+<p>The following example shows event sourcing in use in an orders system and what it looks like compared to the <em>CRUD</em> (create/read/update/delete) current state model we are so used to building.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/design-cloud-native-sean-1.png" loading="lazy" alt="design-cloud-native-sean-1"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>You’ll notice in the example above that the event-sourced domain storage is made up of things that have occurred upon that piece of the domain, the order, rather than just the current state of the order. In one fell swoop, we have gained insight into behavior over time and utilize concrete events, understood by the business to be our system of record.</p>
+<p>This is rather an arbitrary use of a current state model. The domain storage is also vastly simplified and uniform across domains since all events look the same, some id, event-type, JSON or other payload and a timestamp. No compound keys, or guesswork, and there is another great benefit too: these arbitrary event IDs can be used to uniformly shard the data across clustered storage, or uniformly shard your domain across your application cluster! Much more on this later.</p>
+<p>So behavior determines state, but state also affects behavior. An injured soccer player is not someone who kicks a ball or throws it, but an injured soccer (football for our non-US readers) player is really a patient. When the soccer player is no longer injured he can become available for play and join a game and so it goes. Going back to the aircraft example, behavior determining state would be an airplane with its doors open and still available for booking. When the doors close, no further bookings are available and the airliners take on the states of leaving the gate, entering the air, etc. While in those different states, the airliner has different characteristics, such as in the example of the injured soccer player.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>On distributed state, or better yet, distributed domain</h2>
+
+
+<p>The term <em>distributed state</em> really addresses what I’d consider the old way of dealing with scale on an N-tier <em>stateless architecture</em>. Why did I just type that? Didn’t I already mention that pretty much all applications have state?</p>
+<p>What happens in a stateless architecture is that the design is bound by the lack of a properly clustered application (or business) tier. In the absence of a clustered application tier, we’re forced to distributed our state, using the only thing available to us and capable of such things–our database. Now we’ve removed the ability of the domain to make real-time decisions. Since the state is not private, nor held by the domain model the application nodes are forced to query the state from the database before making a decision, and finally writing the new state back to the database.</p>
+<p>While this is happening you squint your eyes real tight and look away, hoping that another “stateless” node isn’t making the same sort of decision at the same point in time, duplicating the data writes and polluting your data. We see this happen all the time, and even to people who understand the problem well enough to fix it will soon learn that the only answer is to utilize multiple-keyed collections in your database to make it impossible to write the same thing twice.</p>
+<p>This however now leaks domain behavior back into your data store, just like the old days of triggers and stored procedures.</p>
+<p>So what do we do? Luckily we no longer live in the old days and distributed, clustered, cloud-native application software does exist in the form of <a href="https://akka.io/">Akka</a>. <strong>Akka harnesses your entire cloud and presents it as a single, virtual supercomputer–and a very resilient one at that</strong>.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/design-cloud-native-sean-2.png" loading="lazy" alt="design-cloud-native-sean-2"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>For the first time, our entire application can fit in memory as needed. We no longer need to be “request bound”. A single request can trigger any number of asynchronous behaviors across your microservices, which lets developers avoid thinking about doing a chunk of work and then offloading to a message bus so another node can help do the work.</p>
+<p>Akka uses the tried and true <a href="https://en.wikipedia.org/wiki/Actor_model" target="_blank" rel="noopener">actor model</a> for addressable application components across your cloud. Akka also provides an <em>illusion of now</em>, due to the actor interface being a mailbox. While the actor is processing a message from its mailbox, it will not be interrupted until that message has been fully processed, and its internal state has been changed as a result.</p>
+<p>This illusion of now also exists in domain-driven design in the form of an <em>aggregate root</em>. An aggregate root represents an encapsulation of behavior with strongly consistent data within. This maps neatly into Akka actors, so much so that Akka has the concept of the <em>persistent entity</em>. The persistent entity maintains its state privately and makes decisions upon that state. These decisions take the form of events, which are written to the event store database of your choice. Since the events fully tell the story of that piece of the domain, such as an order, it is a simple matter of instantiating the persistent entity actor on a healthy node of the cluster and replaying the events and derive current state and then being ready to do business.</p>
+<p>Akka Actors are resilient in that they may be kept in memory indefinitely or set to time-out after periods of nonuse. They are uniformly sharded across your application cluster and moved to different nodes as needed. These persistent, sharded actors are singletons, meaning there will ever only be one instantiated somewhere. This even goes for a failed network where a network partition (aka split brain scenario) occurs. Akka will use a chosen strategy to decide which side of the partitions cluster is the “good side” and which nodes to shut down, guarding against data contamination that would result in multiple singletons existing at the same time.</p>
+<p>This singleton safety also applies to clustering and persistence across multiple data centers as the events happen to be a convenient thing to share for the purposes of failover, redundancy or geo-servicing of your users.</p>
+<p>The same guarantee exists to enforce the single writer principle, where, though hot replicas exist across the data centers, only a single persistent actor is ever effectively doing business at any given time, achieved by applying conflicting update resolution. Read more about that&nbsp;here.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Availability and accuracy</h2>
+
+
+<p>Now that we have an idea of how distributed, persistent entities work, it’s not a stretch to figure out how we accomplish availability and accuracy. Entities in a well-tuned cluster will have the utmost availability since they are already in memory (this is tunable), and are self-sufficient in that they do not need to rely on real-time database reads to make decisions.</p>
+<p>Typical latency for communications between actors in the cluster is in microseconds (µs). In addition to this awesome availability, we also have unparalleled accuracy, since the entities are the keepers of their own state there is only one single place where decisions are being made and events being issued for any particular piece of the domain, such as an order.</p>
+<p>As a byproduct of all this, we end up with a cloud-native architecture with significantly less noise; and by that I really mean data flying around between all tiers, all the time, and usually in real time. The following images show what I mean by noise, the first one is a typical “stateless” architecture, the second is a Reactive architecture, utilizing distributed state.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/design-cloud-native-sean-3.png" loading="lazy" alt="design-cloud-native-sean-3"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>In a typical 3-tier architecture (above), we are forced to traverse all tiers at least once for every request. In most cases, there are also lateral callouts to other services as well to further add “noise”.</p>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/design-cloud-native-sean-4.png" loading="lazy" alt="design-cloud-native-sean-4"></div>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>In a Reactive architecture (above), state is the only thing you need to adequately do your job. Here it is properly distributed across your application tier, meaning that the load and behavior are also naturally distributed across your application cluster.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>To sum up</h2>
+<p>Hopefully, we’ve explained the value of having an event-driven, distributed domain with internal state. We saw how state could mean very different things to different observers and how events are the things we should be sharing. We have shown how it is not possible to design your systems using actors to model the world without regard to limited resources, state contention or any sacrifices. We’ve also seen how noisy a traditional 3-tier architecture is compared to a reactive architecture, and that the traditional way is no longer a good fit. With everything described in this article already available to you in <a href="https://akka.io/">Akka</a>, you can leave the heavy lifting to us!</p>
+<p><a href="/blog/cloud-native-app-design-techniques-cqrs-event-sourcing-messaging" rel="noopener">READ PART 3: MESSAGING, ES, &amp; CQRS</a></p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Mar 25, 2019
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

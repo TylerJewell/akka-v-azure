@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get productive with Akka Streams — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<style>
+
+:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#F5F5F1;--body:#E8E8E5;--mute:#9A9A97;--faint:#5A5A57;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.16);--accent:#FFCE4A;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+/* When .wide is emitted inside .body.col (640px column), break it out so
+   tables and figures still land at the wider 940px measure the exemplar
+   expects. Higher specificity than the base .wide rule; no !important needed
+   now that HubSpot's overriding theme CSS is gone. */
+.body.col > .wide,.body.col > figure.viz,.body.col > .table-scroll{width:min(940px,calc(100vw - 40px));max-width:min(940px,calc(100vw - 40px));margin-left:calc(320px - min(470px,50vw - 20px));margin-right:auto;padding-left:0;padding-right:0}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+article{counter-reset:section}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px;counter-increment:section}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent);order:-2}
+.body h2::after{content:'Section ' counter(section, upper-roman) ' · ';color:var(--accent);order:-1}
+/* h3 sits between h2 (small gold eyebrow) and body prose. Sized so multiple
+   h3s per section read as sub-headings, not chapter titles. */
+.body h3{font-family:var(--display);font-size:20px;line-height:1.25;font-weight:700;color:var(--ink);margin:32px 0 12px;text-wrap:balance;letter-spacing:-0.008em;padding-bottom:0;border-bottom:0;position:relative}
+/* When h3 is the FIRST child of a section (immediately after h2), it still
+   plays the role of the section's thesis statement — keep it larger. */
+.body h2 + h3{font-size:28px;margin-top:0;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule);letter-spacing:-0.012em}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px;padding-left:16px}
+.body ul{list-style:disc outside}
+.body ol{list-style:decimal outside}
+.body li{margin-bottom:10px;padding-left:4px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+.body li::marker{color:var(--accent)}
+/* Code blocks: wrap long lines rather than force a horizontal scroll. */
+.body pre[class*="language-"],pre[class*="language-"]{white-space:pre-wrap;word-break:normal;overflow-wrap:break-word}
+/* Both the hand-authored .pullquote AND any bare source <blockquote> get the
+   same top+bottom hairline, centered, big-quote treatment. Source callouts
+   that need the left-rail "editor's note" look should use class="enote". */
+.pullquote,.body blockquote:not(.pullquote):not(.enote){max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite,.body blockquote:not(.pullquote):not(.enote) cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.body blockquote:not(.pullquote):not(.enote) p{font-family:inherit;font-size:inherit;font-weight:400;margin:0}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+/* Figure block: --fig-w (set inline per figure) is the target graphic width.
+   viz-title, h4, plate, and figcaption all cap at --fig-w and center as a
+   block, so the caption's left edge aligns with the plate's left edge. */
+figure.viz{margin:52px 0}
+figure.viz > .viz-title,
+figure.viz > h4,
+figure.viz > .plot-wrap,
+figure.viz > figcaption{max-width:var(--fig-w,100%);margin-left:auto;margin-right:auto}
+figure.viz .viz-title{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin-top:0;margin-bottom:8px}
+figure.viz h4{font-family:var(--display);font-size:22px;line-height:1.25;font-weight:700;color:var(--ink);margin-top:0;margin-bottom:16px;text-wrap:balance;letter-spacing:-0.008em}
+.plot-wrap{overflow-x:auto}
+figure.viz .plate{background:var(--plate);padding:24px;border:1px solid var(--rule)}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--paper img{display:block;margin:0 auto;max-width:100%;height:auto}
+/* Flush plate — hairline border only, no padding. For images that already
+   carry a dark background. Plate shrinks to the image's natural width so
+   small diagrams stay their intended size instead of being stretched to
+   the full breakout. mix-blend-mode:lighten silently replaces any pixel
+   darker than the page paper with the page color. */
+figure.viz .plate--flush{background:var(--paper);padding:0;border:1px solid var(--rule);width:100%;max-width:100%;margin:0 auto}
+figure.viz .plate--flush img{display:block;max-width:100%;height:auto;mix-blend-mode:lighten}
+figure.viz .plate.pair{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px}
+figure.viz .plate--flush.pair{width:100%;padding:24px}
+figure.viz .plate.pair .pair-label{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--mute);margin-top:12px;text-align:center}
+figure.viz .plate.pair img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure.viz svg{display:block;width:100%;height:auto}
+figure.viz figcaption{font-family:var(--display);font-size:13px;line-height:1.45;color:var(--mute);margin:14px auto 0;max-width:var(--fig-w,720px);letter-spacing:0.01em}
+figure.viz figcaption b{color:var(--body);font-weight:600}
+/* Source prose tables (auto-wrapped by the scaffolder) — inherit body
+   typography, horizontal-scroll if wider than the container. Distinct from
+   .rtbl which is a hand-authored compact-data table style. */
+.table-scroll{overflow-x:auto;margin:36px 0}
+.table-scroll table{width:100%;border-collapse:collapse;font-family:var(--text);font-size:15px;line-height:1.5;color:var(--body)}
+.table-scroll caption{text-align:left;caption-side:top;font-family:var(--display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:10px}
+.table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+.table-scroll th{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);border-bottom-color:var(--ink)}
+.table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
+.table-scroll td p:last-child{margin-bottom:0}
+.table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
+.table-scroll td li{font-size:14px;line-height:1.5;margin-bottom:4px}
+.rtbl{width:100%;margin:20px 0 6px;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+/* Akka-styled scrollbar for code blocks and any overflow container */
+pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover,.plot-wrap::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+pre[class*="language-"]::-webkit-scrollbar-track,.plot-wrap::-webkit-scrollbar-track{background:transparent}
+code[class*="language-"]{font-family:var(--mono)!important;color:var(--body)!important;text-shadow:none!important;background:none!important}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--mute);font-style:italic}
+.token.punctuation{color:var(--body)}
+.token.string,.token.char,.token.attr-value{color:var(--good)}
+.token.number,.token.boolean{color:var(--accent);font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:var(--teal);font-weight:500}
+.token.class-name,.token.namespace{color:#E8C989}
+.token.function,.token.method{color:#C7E0F0}
+.token.annotation{color:var(--accent);font-style:italic}
+.token.operator{color:var(--body)}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">get-productive-with-akka-streams</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">RESOURCES · DEVELOPER · DEVEX</div>
+  <h1 class="title">Get productive with Akka Streams</h1>
+  <p class="standfirst">Intro Akka Streams is a powerful and flexible toolkit for building highly concurrent, distributed and fault-tolerant event-driven applications. It provides a high-level API geared towards efficient processing. This article is directed to developers that have attended the Akka Streams Course from the Akkademy or finished the Quickstart Guide . It is designed to be a follow-up read where you can learn the concepts and the best practices for production-ready Streaming applications. I hope you enjoy this guide and that it will get you up to speed quickly.</p>
+  <div class="byline">
+    <div><span class='au'>Janik Dotzel</span> · Professional Services</div>
+    <div class="r"><time datetime="2023-07-07">Jul 7, 2023</time> · 22 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+</div>
+
+<div class="body col">
+
+<h2>Intro</h2>
+
+
+<p class="lede">Akka Streams is a powerful and flexible toolkit for building highly concurrent, distributed and fault-tolerant event-driven applications. It provides a high-level API geared towards efficient processing. This article is directed to developers that have attended the <a href="https://akkademy.akka.io" target="_blank" rel="noopener">Akka Streams Course</a> from the Akkademy or finished the <a href="https://doc.akka.io/libraries/akka-core/current/stream/stream-quickstart.html" target="_blank" rel="noopener">Quickstart Guide</a>. It is designed to be a follow-up read where you can learn the concepts and the best practices for production-ready Streaming applications. I hope you enjoy this guide and that it will get you up to speed quickly.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Tips and tricks</h2>
+
+
+<h3>Operators</h3>
+
+
+<p>In Akka Streams, operators are the functional components that perform specific data processing tasks within your streaming pipeline. They enable you to transform, filter, aggregate, or manipulate the data as it flows through an Akka stream. Operators are combined with Sources, Flows and Sinks to create a comprehensive data processing pipeline.</p>
+<ul>
+<li><strong>Source</strong>: An operator emitting data elements to exactly one output.</li>
+<li><strong>Flow</strong>: An operator transforming data elements with exactly one input and output.</li>
+<li><strong>Sink</strong>: An operator receiving data elements from exactly one input.</li>
+</ul>
+<p>
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:501px">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/Imported%20sitepage%20images/get-productive-with-akka-streams.png" loading="lazy" alt="get-productive-with-akka-streams"></div>
+  </div>
+  <figcaption>Get productive with akka streams.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</p>
+<p>For a complete overview of the built-in processing operators, you can look at the <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/index.html" target="_blank" rel="noopener">operator index</a> (This page provides you with examples and is a resource I use a lot.)</p>
+<p>There are a lot of operators that have valuable functions and some operators that you are going to need more often. I want to explain some and show you when you should use them.</p>
+<ul>
+<li>Logging with <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/log.html" target="_blank" rel="noopener"><code>Log</code></a></li>
+<li>Transforming elements with <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/map.html" target="_blank" rel="noopener"><code>Map</code></a></li>
+<li>Transforming elements with <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/mapConcat.html" target="_blank" rel="noopener"><code>MapConcat</code></a></li>
+<li>Emitting multiple elements from one element with <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/flatMapConcat.html" target="_blank" rel="noopener"><code>FlatMapConcat</code></a></li>
+<li>Stream enrichment with <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/zipWith.html" target="_blank" rel="noopener"><code>ZipWith</code></a></li>
+</ul>
+
+<h3>Logging with log</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/log.html" target="_blank" rel="noopener"><code>log</code></a> operator enables the logging of elements passing through the stream, making it easier to monitor and debug data flow.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">List&lt;Integer&gt; elements = Arrays.asList(1, 2, 3);
+Source&lt;Integer, NotUsed&gt; source = Source.from(elements);
+source
+    .map(e -&gt; {
+        if (e == 3) {
+            throw new RuntimeException();
+        } else {
+            return e;
+        }
+    })
+    .log("ClassName.MethodName")
+    .withAttributes(
+        Attributes.createLogLevels(
+            Attributes.logLevelOff(),
+            Attributes.logLevelInfo(),
+            Attributes.logLevelError()))
+    .runForeach(System.out::println, system);
+
+/* Prints:
+1
+2
+[ERROR] [example] Upstream failed.
+java.lang.RuntimeException ...
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">val source = Source(List(1, 2, 3))
+
+source
+    .map(e =&gt; if (e == 3) throw new RuntimeException() else e)
+    .log("ClassName.MethodName")
+    .addAttributes(
+    Attributes.logLevels(
+        onElement = Attributes.LogLevels.Off,
+        onFinish = Attributes.LogLevels.Info,
+        onFailure = Attributes.LogLevels.Error))
+    .runForeach(println)
+
+/* Prints:
+1
+2
+[ERROR] [example] Upstream failed.
+java.lang.RuntimeException ...
+*/
+</code></pre>
+<p>The log operator is applied to a Source stream containing integers. It logs elements with the prefix "ClassName.MethodName" as they pass through the stream. The stream is then processed using runForeach, which prints each element to the console. The default log levels do not log each element. There is only one info message after the stream is completed or in case of failures. The addAttributes configuration is only needed if you want to implement a different behavior.</p>
+<p>The log operator is particularly useful during the development and debugging phase of an Akka Streams application. It allows developers to track the flow of data through the stream, helping to identify unexpected behavior, which in turn, facilitates quick resolution of issues in the streaming pipeline.</p>
+
+<h3>Transforming elements with map</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/map.html" target="_blank" rel="noopener"><code>map</code></a> operator is a transformation operator in the reactive programming world. It's used to transform the items emitted into other elements. The map operator takes each item emitted by the source and applies a function to it. It always transforms one element into one element.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">Source.range(1,4)
+    .map(i -&gt; Arrays.asList(i * 2))
+    .runForeach(System.out::println, system);
+
+/* Prints:
+2
+4
+6
+8
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">val source = Source(1 to 4)
+def double(i: Int): Int = i * 2
+source.map(i =&gt; double(i).toString).runForeach(println)
+
+/* Prints:
+2
+4
+6
+8
+*/
+</code></pre>
+
+<h3>Transforming elements with mapConcat</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/mapConcat.html" target="_blank" rel="noopener"><code>mapConcat</code></a> operator is a transformation operator as well. It’s very similar to the map operator. Except for the fact that the mapConcat operator transforms each element into zero or more elements.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">Source.range(1,3)
+    .mapConcat(num -&gt; Arrays.asList(num, num * 2))
+    .runForeach(System.out::println, system);
+
+/* Prints:
+1
+2
+2
+4
+3
+6
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">
+Source(1 to 3).
+    .mapConcat(num =&gt; List(num, num * 2))
+    .runForeach(println)
+
+/* Prints:
+1
+2
+2
+4
+3
+6
+*/
+</code></pre>
+<p>In this example, the source emits the numbers 1, 2, and 3. The <code>mapConcat</code> operator creates a new <code>List</code> with the value and the value times two. That would result in a <code>List(List(1,2), (List(2,4), List(3,6))</code>. Then those Sub-Lists get flattened and concatenated. The resulting stream emits the numbers 1, 2, 2, 4, 3, and 6.</p>
+<p>Understanding the <code>mapConcat</code> operator is a stepping stone toward understanding the <code>flatMapConcat</code> operator. Instead of mapping elements to a <code>List</code> of elements, it transforms elements into <code>Sources</code> of elements. The <code>Sources</code> get flattened in the same way the <code>List</code> got flattened in the previous example.</p>
+
+<h3>Emitting multiple elements from one element with flatMapConcat</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/flatMapConcat.html" target="_blank" rel="noopener"><code>flatMapConcat</code></a> operator in Akka Streams transforms and flattens elements from the input stream into new nested streams, and concatenates them sequentially into a single output stream.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">
+Source.range(1,3)
+    .flatMapConcat(num -&gt; Source.from(Arrays.asList(num, num * 2)))
+    .runForeach(System.out::println, system);
+
+/* Prints:
+1
+2
+2
+4
+3
+6
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">
+Source(1 to 3)
+    .flatMapConcat(num =&gt; Source(List(num, num * 2)))
+    .runForeach(println)
+
+/* Prints:
+1
+2
+2
+4
+3
+6
+*/
+</code></pre>
+<p>The <code>flatMapConcat</code> operator is applied to a <code>Source</code> stream containing integers. It maps each input element to a new <code>Source</code> containing the original element and its double. These nested streams are then concatenated into a single output stream. Using <code>runForeach</code>, the resulting stream is processed and each element is printed to the console.</p>
+<p>The <code>flatMapConcat</code> operator is particularly useful if you need to perform a transformation on elements in a stream that results in multiple output elements per input element. In addition, you want to maintain a strict sequential order of the output elements. For example, this could be useful when expanding a stream of events into multiple related sub-events while preserving their original order for processing or analysis.</p>
+
+<h3>Stream enrichment with zipWith</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/operators/Source-or-Flow/zipWith.html" target="_blank" rel="noopener"><code>zipWith</code></a> operator combines elements from multiple sources, applying a user-defined combine function to each pair of elements from the input streams and passing the returned value downstream.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    final ActorSystem system = ActorSystem.create("system");
+    List sourceTemperature = Arrays.asList(31.1, 31.4, 31.5);
+    List sourceHumidity = Arrays.asList(44, 48, 51);
+
+    Source&lt;double, notused=""&gt; temperatureSource = Source.from(sourceTemperature);
+    Source&lt;integer, notused=""&gt; humiditySource = Source.from(sourceHumidity);
+
+    temperatureSource
+        .zipWith(humiditySource, (temperature, humidity) -&gt; new WeatherData(temperature, humidity.toString()))
+        .runForeach(System.out::println, system);
+}
+
+private static class WeatherData {
+    private final Double temperature;
+    private final String humidity;
+
+    private WeatherData(Double temperature, String humidity) {
+        this.temperature = temperature;
+        this.humidity = humidity;
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherData{temperature=" + temperature + ", humidity='" + humidity + '}';
+    }
+}
+
+/* Prints:
+WeatherData(31.1,44)
+WeatherData(31.4,48)
+WeatherData(31.5,51)
+*/
+            &lt;/integer,&gt;&lt;/double,&gt;</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">
+case class WeatherData(temperature: Double, fruit: String)
+
+val sourceTemperature = Source(List(31.1, 31.4, 31.5))
+val sourceHumidity = Source(List(44, 48, 51))
+
+sourceTemperature
+    .zipWith(sourceHumidity) { (temperature, humidity) =&gt; WeatherData(temperature, humidity.toString) }
+    .runForeach(println)
+
+/* Prints:
+WeatherData(31.1,44)
+WeatherData(31.4,48)
+WeatherData(31.5,51)
+*/
+</code></pre>
+<p>The <code>zipWith</code> operator is used to combine two <code>Source</code> streams, <code>sourceTemperature</code> and <code>sourceHumidity</code>. The operator applies a function that creates a <code>WeatherData</code> case class instance for each pair of temperature and humidity values. The resulting stream contains WeatherData instances, which are then printed to the console using runForeach.</p>
+<p>The <code>zipWith</code> operator is particularly useful if you need to merge two streams of correlated data. You can merge the elements into one data object and continue further processing.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Actor integration</h2>
+
+
+<p>Akka Streams and Akka Actors are two powerful tools within the Akka toolkit, each with its unique strengths. While Akka Streams excel in handling back-pressure and building complex data processing pipelines, Akka Actors shine in managing state and handling concurrent, distributed, and fault-tolerant computing.</p>
+<p>In this part, we will explore how to <a href="https://doc.akka.io/libraries/akka-core/current/stream/actor-interop.html" target="_blank" rel="noopener">integrate actors into Akka Streams</a>, combining their capabilities to create robust and flexible applications. Integrating actors into Akka Streams can be achieved through built-in operators that facilitate communication between streams and actors. The three primary operators for this purpose are <code>ActorFlow.ask</code>, <code>Source.queue</code> and <code>Sink.actorRefWithBackpressure</code>.</p>
+<p><code><strong>ActorFlow.ask Operator</strong>: The ask operator allows you to send messages from a stream to an actor, and expect a response </code> from the actor. The operator takes a function that maps elements in the stream to messages for the actor, and an implicit Timeout parameter to specify the maximum wait time for a response. The ask operator returns a new stream containing the actor's responses.</p>
+<p>Here's a simple example:</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+    ActorSystem&lt;Void&gt; system = ActorSystem.create(PrinterMain.create(), "system");
+}
+
+record Print(String msg, ActorRef&lt;Printed&gt; replyTo) {}
+record Printed(String msg, ActorRef&lt;Print&gt; from) {}
+
+static class Printer {
+    static Behavior&lt;Print&gt; create() {
+        return Behaviors.setup(
+            context -&gt;
+            Behaviors.receiveMessage(print -&gt; {
+                System.out.println(print.msg);
+                print.replyTo.tell(new Printed(print.msg(), context.getSelf()));
+                return Behaviors.same();
+            })
+        );
+    }
+}
+
+static class PrinterMain {
+    static Behavior&lt;Void&gt; create() {
+        return Behaviors.setup(context -&gt; {
+            ActorRef&lt;Print&gt; printerRef = context.spawn(Printer.create(), "printer");
+
+            Flow&lt;String, Printed, NotUsed&gt; askFlow = ActorFlow.ask(
+                printerRef,
+                Duration.ofSeconds(1),
+                Print::new);
+
+            var numbers = IntStream.rangeClosed(1, 50).boxed();
+            CompletionStage&lt;Printed&gt; done = Source.fromJavaStream(() -&gt; numbers)
+                .map(Object::toString)
+                .via(askFlow)
+                .runWith(Sink.last(), context.getSystem());
+
+            done.thenRun(context.getSystem()::terminate);
+            return Behaviors.same();
+        });
+    }
+}
+
+/* Prints:
+1
+2
+...
+49
+50
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">object Printer {
+    final case class Print(msg: String, replyTo: ActorRef[Printed])
+    final case class Printed(msg: String, from: ActorRef[Print])
+
+    def apply(): Behavior[Print] = Behaviors.receive { (context, print) =&gt;
+        println(print.msg)
+        print.replyTo ! Printed(print.msg, context.self)
+        Behaviors.same
+    }
+}
+
+object PrinterMain {
+    def apply(): Behavior[Void] =
+        Behaviors.setup { context =&gt;
+        val greeterRef = context.spawn(Printer(), "printer")
+
+        implicit val timeout: Timeout = 1.second
+        val askFlow: Flow[String, Printed, NotUsed] = ActorFlow.ask(greeterRef)(Print.apply)
+
+        implicit val system = context.system
+        val done = Source(1 to 50)
+            .map(_.toString)
+            .via(askFlow)
+            .map(_.msg)
+            .runWith(Sink.seq)
+
+        implicit val ex = context.executionContext
+        done.onComplete(done =&gt; system.terminate())
+        Behaviors.same
+    }
+}
+
+object Main extends App {
+    val system = ActorSystem(PrinterMain(), "system")
+}
+
+/* Prints:
+1
+2
+...
+49
+50
+*/
+</code></pre>
+<p>In this example, we create an actor <code>Printer</code> Actor that receives a <code>Print</code> message, logs the data, and returns a <code>Printed</code> message. The ask operator is used to send messages to this actor and receive responses. The resulting stream contains the processed elements, which are then printed to the console.</p>
+<p><strong>Source.queue Operator</strong>: This queue operator is useful when you want to start a stream and send elements at a later point in time. You can offer elements to the queue and they will be emitted to the stream if there is demand from downstream, otherwise, they will be buffered until the request for demand is received.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">public static void main(String[] args) {
+ActorSystem system = ActorSystem.create(Behaviors.empty(), "system");
+
+int bufferSize = 20;
+int elementsToProcess = 5;
+
+SourceQueueWithComplete queue = Source.queue(bufferSize, OverflowStrategy.backpressure())
+    .throttle(elementsToProcess, Duration.ofSeconds(3))
+    .map(x -&gt; x * x)
+    .toMat(Sink.foreach(x -&gt; System.out.println("completed " + x)), Keep.left())
+    .run(system);
+
+Source.fromJavaStream(() -&gt; IntStream.rangeClosed(1, 10).boxed())
+    .mapAsync(1, x -&gt; queue.offer(x)
+        .thenApply(result -&gt; {
+            if (result instanceof QueueOfferResult.Enqueued$) {
+                System.out.println("enqueued " + x);
+            } else if (result instanceof QueueOfferResult.Dropped$) {
+                System.out.println("dropped " + x);
+            } else if (result instanceof QueueOfferResult.Failure) {
+                System.out.println("Offer failed " + ((QueueOfferResult.Failure) result).cause().getMessage());
+            } else if (result instanceof QueueOfferResult.QueueClosed$) {
+                System.out.println("Source Queue closed");
+            }
+            return NotUsed.getInstance();
+        }))
+    .runWith(Sink.ignore(), system);
+}
+
+/* Prints:
+enqueued 1
+enqueued 2
+enqueued 3
+enqueued 4
+enqueued 5
+enqueued 6
+enqueued 7
+enqueued 8
+enqueued 9
+enqueued 10
+completed 1
+completed 4
+completed 9
+completed 16
+completed 25
+completed 36
+completed 49
+completed 64
+completed 81
+completed 100
+*/
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">object Main extends App {
+
+    implicit val system = ActorSystem(Behaviors.empty, "system")
+    implicit val executionContext = system.executionContext
+
+    val bufferSize = 20
+    val elementsToProcess = 5
+
+    val queue = Source
+    .queue[Int](bufferSize)
+    .throttle(elementsToProcess, 3.second)
+    .map(x =&gt; x * x)
+    .toMat(Sink.foreach(x =&gt; println(s"completed $x")))(Keep.left)
+    .run()
+
+    val source = Source(1 to 10)
+
+    source.map(x =&gt; {
+        queue.offer(x) match {
+        case QueueOfferResult.Enqueued    =&gt; println(s"enqueued $x")
+        case QueueOfferResult.Dropped     =&gt; println(s"dropped $x")
+        case QueueOfferResult.Failure(ex) =&gt; println(s"Offer failed ${ex.getMessage}")
+        case QueueOfferResult.QueueClosed =&gt; println("Source Queue closed")
+        }
+    })
+    .runWith(Sink.ignore)
+}
+
+/* Prints:
+enqueued 1
+enqueued 2
+enqueued 3
+enqueued 4
+enqueued 5
+enqueued 6
+enqueued 7
+enqueued 8
+enqueued 9
+enqueued 10
+completed 1
+completed 4
+completed 9
+completed 16
+completed 25
+completed 36
+completed 49
+completed 64
+completed 81
+completed 100
+*/
+</code></pre>
+<p>A Source queue of Integers is created with a buffer size of 20. The throttle operator is used to control the rate of the stream. It allows the processing of 5 elements every 3 seconds.</p>
+<p>Each element is offered to the queue and the result of the offer is handled accordingly:</p>
+<ul>
+<li><strong>Enqueued</strong>: The element was successfully added to the queue</li>
+<li><strong>Dropped</strong>: The element could not be added because the queue was full</li>
+<li><strong>Failure</strong>: An error occurred when trying to add the element</li>
+<li><strong>QueueClosed</strong>: The queue was closed when trying to add the element</li>
+</ul>
+<p><strong>ActorSink.actorRefWithBackpressure Operator</strong>: This <code>actorRefWithBackpressure</code> sends elements from a Source to a Sink, which is connected to a given <code>ActorRef</code> using backpressure. This pushes elements downstream if the actor signals a demand. Therefore, there won't be a message overflow.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">enum Ack {
+    INSTANCE;
+}
+
+interface Protocol {}
+
+    record Init(ActorRef ack) implements Protocol {}
+    record Message(ActorRef ackTo, String msg) implements Protocol {}
+    record Complete() implements Protocol {}
+    record Fail(Throwable ex) implements Protocol {}
+
+    final ActorRef actorRef = // spawned actor
+
+    final Complete completeMessage = new Complete();
+
+    final Sink&lt;string, notused=""&gt; sink =
+        ActorSink.actorRefWithBackpressure(
+            actorRef,
+            (responseActorRef, element) -&gt; new Message(responseActorRef, element),
+            (responseActorRef) -&gt; new Init(responseActorRef),
+            Ack.INSTANCE,
+            completeMessage,
+            (exception) -&gt; new Fail(exception));
+
+    Source.single("msg1").runWith(sink, system);
+            &lt;/string,&gt;</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">trait Ack
+object Ack extends Ack
+
+trait Protocol
+case class Init(ackTo: ActorRef[Ack]) extends Protocol
+case class Message(ackTo: ActorRef[Ack], msg: String) extends Protocol
+case object Complete extends Protocol
+case class Fail(ex: Throwable) extends Protocol
+
+val actor: ActorRef[Protocol] = targetActor()
+
+val sink: Sink[String, NotUsed] = ActorSink.actorRefWithBackpressure(
+    ref = actor,
+    messageAdapter = (responseActorRef: ActorRef[Ack], element) =&gt; Message(responseActorRef, element),
+    onInitMessage = (responseActorRef: ActorRef[Ack]) =&gt; Init(responseActorRef),
+    ackMessage = Ack,
+    onCompleteMessage = Complete,
+    onFailureMessage = (exception) =&gt; Fail(exception))
+
+Source.single("msg1").runWith(sink)
+</code></pre>
+<p>The <code>Protocol</code> trait defines the messages which are used to communicate between the stream and the actor.</p>
+<ul>
+<li><strong>Init</strong>: A message sent when the stream starts, containing a reference to the actor that will receive the acknowledgment messages.</li>
+<li><strong>Message</strong>: A message containing the actual data element from the stream and a reference to the actor that will receive the acknowledgment messages.</li>
+<li><strong>Complete</strong>: A message sent when the stream is successfully completed.</li>
+<li><strong>Fail</strong>: A message sent when the stream encounters a failure, containing the exception.</li>
+</ul>
+<p>Then one creates an actor by calling a <code>targetActor()</code> function (which is not defined in the code snippet provided).</p>
+<p>Define a <code>Sink</code> named sink using the <code>ActorSink.actorRefWithBackpressure</code> method.</p>
+<ul>
+<li><code>ref</code> The actor reference to which the stream will send messages.</li>
+<li><code>messageAdapter</code> A function that converts the stream element into a Message with the appropriate acknowledgment actor reference.</li>
+<li><code>onInitMessage</code> A function that creates the <code>Init</code> message containing the acknowledgment actor reference.</li>
+<li><code>ackMessage</code> The acknowledgment message that the actor sends back to the stream after processing an element.</li>
+<li><code>onCompleteMessage</code> The message to send when the stream is successfully completed.</li>
+<li><code>onFailureMessage</code> A function that converts a stream failure (exception) into a Fail message.</li>
+</ul>
+<p>Finally, we create a <code>Source</code> with a single element "msg1" and connect it to the sink. This source will send the "msg1" string to the actor through the sink.</p>
+<p>When the stream is executed, it will send an <code>Init</code> message to the actor, followed by a Message containing the "msg1" element. The actor will process the message and send back an <code>Ack</code> message to the stream, indicating that it is ready to receive the next message. In this case, since there is only one element in the source, the stream will complete and send a <code>Complete</code> message to the actor. If an error occurs during the stream processing, the <code>Fail</code> message with the exception will be sent to the actor.</p>
+<p>A great read on Actor Integration with Akka Streams is also this article from <a href="https://blog.rockthejvm.com/akkastreams-to-actors-and-back/" target="_blank" rel="noopener">RockTheJvm</a>.</p>
+
+<h3>Akka Alpakka - Simple Integration to External Services</h3>
+
+
+<p><a href="https://doc.akka.io/libraries/alpakka/current/" target="_blank" rel="noopener">Akka Alpakka</a> is a powerful library that extends the capabilities of Akka Streams, enabling seamless integration with various external systems and technologies. Such as databases, message brokers, cloud storage providers, and more. By providing a diverse set of connectors, Alpakka simplifies the process of exchanging data between Akka Streams applications and other platforms.</p>
+<blockquote>
+<p><strong>Side note</strong>: Akka Alpakka embodies the notion of adaptability and compatibility, as alpacas are known for their ability to thrive in diverse environments.</p>
+</blockquote>
+<p>The following three connectors are very popular. I will shortly describe them and name the benefits of using Akka Alpakka afterward.</p>
+<ul>
+<li><strong>Apache Kafka Connector</strong>: This connector enables seamless integration with the widely-used Apache Kafka distributed streaming platform, simplifying the process of producing and consuming messages in Akka Streams applications.</li>
+<li><strong>Apache Cassandra Connector</strong>: The Cassandra Connector empowers Akka Streams applications to interact with Apache Cassandra, a highly scalable and distributed NoSQL database. It enables efficient and reliable data storage and retrieval through CassandraSessions.</li>
+<li><strong>AWS S3 Connector</strong>: The S3 Connector streamlines the storing and downloading of files from and to AWS. Additionally, it includes utility functions for bucket management such as creating, listing, and deleting them.</li>
+</ul>
+<p>Why Akka Alpakka is Invaluable to Developers: Akka Alpakka's pre-built connectors save developers countless hours of effort by eliminating the need to create custom solutions for data exchange between Akka Streams applications and external systems. With Alpakka, developers can focus on their core business logic, knowing that the library's connectors are designed with robustness, performance, and scalability in mind. Furthermore, the connectors are built to adhere to the Reactive Streams specification, ensuring seamless integration with Akka Streams' back-pressure mechanism, and providing an end-to-end reactive pipeline.</p>
+
+<h3>TestKit for easy testing</h3>
+
+
+<p>The <a href="https://doc.akka.io/libraries/akka-core/current/stream/stream-testkit.html" target="_blank" rel="noopener">Akka Streams TestKit</a> provides a powerful and flexible way to test your Akka Stream applications. With its suite of built-in tools and utilities, the TestKit makes it easy to verify the correctness and performance of your stream components. It comes with two main components that are TestSource and TestSink which provide sources and sinks that materialize to probes that allow fluent API.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">Source&lt;Integer, NotUsed&gt; sourceUnderTest = Source.fromJavaStream(() -&gt; IntStream.rangeClosed(1, 4))
+    .filter(num -&gt; num % 2 == 0)
+    .map(num -&gt; num * 2);
+
+sourceUnderTest.runWith(TestSink.probe(testKit.system()), testKit.system())
+    .request(2)
+        .expectNext(4, 8)
+        .expectComplete();
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">
+val sourceUnderTest = Source(1 to 4).filter(_ % 2 == 0).map(_ * 2)
+sourceUnderTest.runWith(TestSink[Int]()).request(2).expectNext(4, 8).expectComplete()
+</code></pre>
+<p>This code snippet tests a Source that takes a sequence of integers from 1 to 4, filters out odd numbers, and multiplies the even numbers by 2.</p>
+<p><strong>Java</strong></p>
+<pre><code class="language-java">
+Sink&lt;Integer, NotUsed&gt; sinkUnderTest = Sink.cancelled();
+TestSource.&lt;Integer&gt;probe(testKit.system())
+.toMat(sinkUnderTest, Keep.left())
+.run(testKit.system())
+.expectCancellation();
+</code></pre>
+<p><strong>Scala</strong></p>
+<pre><code class="language-scala">val sinkUnderTest = Sink.cancelled
+TestSource[Int]().toMat(sinkUnderTest)(Keep.left).run().expectCancellation()
+</code></pre>
+<p>This code snippet tests the behavior of a <code>Sink</code> that cancels the stream immediately upon materialization.</p>
+<p>As you can see, each component can be tested separately. One is able to break a stream into multiple flows and unit test each of them individually. This is incredibly useful for ensuring that your application is running fine and simplifies the creation of complex tests.</p>
+<p>Because of the reusability, you can create your stream components once and reuse them any number of times. And because of the composability, one can create arbitrary complex data pipelines by concatenating individual components. A Stream component is independent, if it runs in one place it will run everywhere.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Conclusion</h2>
+<p>In this blog, I've introduced you to the tools that will allow you to quickly become productive. From its set of built-in operators to integrating with external services using Akka Alpakka, combining your Streams with Akka Actors and testing them with the TestKit. As you continue to delve into the world of Akka Streams, you will discover that its ability to manage back pressure, provide fault tolerance, and enable distributed processing makes it an invaluable asset for building scalable and efficient data-driven applications. By following the tips, tricks, and best practices outlined in this article, you will be well on your way to mastering Akka Streams and leveraging its full potential to develop high-performance, resilient applications. Now it's your turn to start experimenting with Akka Streams today and watch your productivity soar!</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Jul 7, 2023
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

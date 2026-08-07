@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adopting agentic AI for financial services — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#0B0B0C; --paper-2:#141416; --plate:#1A1A1D;
+  --ink:#F5F5F1; --body:#E8E8E5; --mute:#9A9A97; --faint:#5A5A57;
+  --rule:rgba(255,255,255,0.10); --rule-hi:rgba(255,255,255,0.16);
+  --accent:#FFCE4A; --accent-2:#E9B426;
+  --teal:#6BC9CE; --good:#7FD9A0; --bad:#F09090;
+  --display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(255,206,74,0.35);padding-bottom:1px}
+a:hover{border-bottom-color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:100;transition:width 0.05s linear}
+.colophon{border-bottom:1px solid var(--rule);padding:18px 28px;display:flex;align-items:baseline;gap:14px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+.colophon .brand{font-weight:800;color:var(--ink);font-size:14.5px;letter-spacing:0;text-transform:none}
+.colophon .sep{color:var(--faint)}
+.colophon .r{margin-left:auto}
+.col{max-width:640px;margin:0 auto;padding:0 clamp(20px,5vw,28px)}
+.wide{max-width:940px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+.hero{padding:76px 0 32px}
+.kicker{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:'';width:28px;height:2px;background:var(--accent)}
+h1.title{font-family:var(--display);font-size:clamp(36px,5vw,48px);line-height:1.08;letter-spacing:-0.022em;font-weight:700;color:var(--ink);margin-bottom:24px;text-wrap:balance}
+.standfirst{font-family:var(--text);font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--body);font-weight:300;margin-bottom:40px;max-width:620px;text-wrap:pretty}
+.byline{display:grid;grid-template-columns:1fr auto;gap:4px 20px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--mute);letter-spacing:0.02em}
+.byline .au{color:var(--ink);font-weight:600}
+.byline .r{text-align:right}
+.byline time{color:var(--mute)}
+.body{padding:0}
+article > .body:first-of-type{padding-top:44px}
+article > .body:last-of-type{padding-bottom:100px}
+.body p{margin-bottom:28px;font-family:var(--text);font-size:18px;line-height:1.7;color:var(--body);hanging-punctuation:first}
+.body p.lede::first-letter{font-family:var(--display);font-weight:700;color:var(--ink);font-size:4.6em;line-height:0.88;float:left;padding:8px 14px 0 0;margin:6px 0 0 -2px}
+.body h2{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:60px 0 8px;display:flex;align-items:center;gap:12px}
+.body h2::before{content:'';width:22px;height:1px;background:var(--accent)}
+.body h3{font-family:var(--display);font-size:28px;line-height:1.22;font-weight:700;color:var(--ink);margin:0 0 22px;text-wrap:balance;letter-spacing:-0.012em;padding-bottom:14px;border-bottom:1px solid var(--rule);position:relative}
+.body h3::after{content:'§';position:absolute;right:0;top:0;font-family:var(--display);font-size:20px;color:var(--faint);opacity:0;transition:opacity 0.15s ease}
+.body h3:hover::after{opacity:1}
+.body strong{font-weight:600;color:var(--ink)}
+.body em{font-style:italic;color:var(--ink)}
+.body code{font-family:var(--mono);font-size:0.86em;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:3px}
+.body ul,.body ol{margin:0 0 28px 24px}
+.body li{margin-bottom:10px;font-family:var(--text);font-size:18px;line-height:1.65;color:var(--body)}
+.pullquote{max-width:720px;margin:52px auto;padding:36px 0;text-align:center;border-top:1px solid var(--rule-hi);border-bottom:1px solid var(--rule-hi);font-family:var(--display);font-size:28px;line-height:1.32;color:var(--ink);font-weight:400;letter-spacing:-0.014em;text-wrap:balance}
+.pullquote cite{display:block;margin-top:20px;font-family:var(--display);font-style:normal;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+.enote{margin:36px 0;padding:6px 0 6px 22px;border-left:2px solid var(--accent);font-family:var(--text);font-size:17px;line-height:1.6;color:var(--body)}
+.enote b{font-family:var(--display);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);display:block;margin-bottom:8px}
+.rtbl{width:100%;margin:20px 0 6px;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}
+.rtbl caption{text-align:left;caption-side:top;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:6px}
+.rtbl thead th{padding:6px 12px 5px;font-family:var(--display);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);text-align:left;border-bottom:1px solid var(--ink);vertical-align:bottom;line-height:1.25}
+.rtbl thead th:first-child{color:var(--ink)}
+.rtbl thead th.grp{font-size:9.5px;color:var(--accent);border-bottom:1px solid var(--rule-hi);text-align:center;padding-bottom:3px;letter-spacing:0.16em}
+.rtbl tbody td{padding:5px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:baseline;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;text-align:left;white-space:nowrap}
+.rtbl tbody td.prop{font-family:var(--text);font-size:12px;color:var(--ink);font-weight:400;white-space:normal}
+.rtbl tbody td.win{color:var(--good);font-weight:600}
+.rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
+.rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
+.rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);margin:44px 0;padding:26px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.stat-row .stat{padding:8px 24px;text-align:center}
+.stat-row .stat + .stat{border-left:1px solid var(--rule)}
+.stat b{display:block;font-family:var(--display);font-variant-numeric:tabular-nums;font-size:42px;letter-spacing:-0.024em;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1}
+.stat .lbl{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute)}
+@media (max-width:640px){.stat-row{grid-template-columns:1fr;padding:0}.stat-row .stat{padding:22px 0;border-top:1px solid var(--rule)}.stat-row .stat + .stat{border-left:none}.stat-row .stat:first-child{border-top:0}}
+.footnotes{margin:80px 0 0;padding-top:26px;border-top:1px solid var(--rule-hi);font-family:var(--display);font-size:13.5px;line-height:1.7;color:var(--mute)}
+.footnotes h4{font-family:var(--display);font-size:11.5px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink);font-weight:700;margin-bottom:16px}
+.footnotes ol{margin:0 0 0 24px}
+.footnotes li{margin-bottom:10px}
+.foot{border-top:1px solid var(--rule);padding:24px 28px;font-family:var(--display);font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:0.16em}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">Financial services · Guest analysis</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">Analyst opinion · Intellyx</div>
+  <h1 class="title">Adopting agentic AI systems for financial services.</h1>
+  <p class="standfirst">
+    BNY hired AI agents — with logins, email addresses, and managers. Citi is deploying autonomous systems to its developers. The race to production agentic AI in financial services is underway, and the majority of these systems are not yet ready for it.
+  </p>
+  <div class="byline">
+    <div><span class="au">Eric Newcomer</span> · CTO and Principal Analyst, Intellyx</div>
+    <div class="r"><time datetime="2025-09-05">Sep 5, 2025</time> · 7 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Financial services organizations are developing agentic AI systems that autonomously and reliably execute human tasks, make decisions, and take actions proactively. The problem is that the majority of agentic AI systems are not yet ready for production. Organizations are developing individual AI agents and multi-agent systems as initial steps, and trying out agentic AI for internal systems.</p>
+
+<p>But the race is on, and agentic AI is rapidly becoming a competitive issue.</p>
+
+<p>According to a recent article, BNY currently uses AI agents as employees, giving them logins, email addresses, and managers for supervision. A BNY agent can autonomously detect and fix issues in code, although a human still approves a change before it is deployed. In January, Citi announced that it is working on agentic AI systems for the "do it for me" economy, and in July started deploying agentic systems internally for developers to automate software patches and upgrades.</p>
+
+<p>Citi predicts applicability to a broad range of additional use cases, including personalizing new product offers to customers, virtual financial planners, automating routine operational tasks, real-time risk profiling for loans, cashflow forecasting, customer onboarding, and fraud detection.</p>
+
+<p>Agentic AI systems have tremendous potential to reshape the financial services landscape, but challenges remain in moving from current "human in the loop" systems to the fully autonomous systems that can reason and take independent action.</p>
+
+</div>
+
+<div class="wide">
+<table class="rtbl">
+  <caption>Table 1 · Agentic AI deployment maturity across three FS incumbents</caption>
+  <colgroup>
+    <col style="width:22%">
+    <col style="width:26%">
+    <col style="width:26%">
+    <col style="width:26%">
+  </colgroup>
+  <thead>
+    <tr><th>Institution</th><th>Current use</th><th>Human in loop</th><th>Announced next</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="prop">BNY</td><td>agent-as-employee (code fixes)</td><td>approves deploys</td><td>internal supervision at scale</td></tr>
+    <tr><td class="prop">Citi</td><td>dev patches &amp; upgrades</td><td>reviews changes</td><td>customer product personalization</td></tr>
+    <tr><td class="prop">Capital One</td><td>Akka-backed payment systems</td><td>—</td><td>agentic loan / cashflow flows</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="4"><b>Note.—</b>All three institutions have moved beyond pilots into internal production; none has removed the human-in-the-loop layer for customer-facing decisions. Sources: recent BNY press coverage, Citi Jan/Jul announcements, Capital One customer references.</td></tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="body col">
+
+<h2>Section I · Relying on AI agents</h2>
+<h3>Trust is a service-level agreement.</h3>
+
+<p>As financial services firms deploy more and more AI agents, and build up the components of agentic systems, they increasingly need to ensure the agents are reliable and trustworthy. A big challenge is the agent's reliance on human language to interact with the large language models that power the generative AI agents use.</p>
+
+<p>Interacting with computers using human language greatly simplifies the way in which people interact with computers, reducing time for research, analysis, and reporting. But using human language also introduces new risk and uncertainty. Human language is ambiguous and subject to interpretation, which can produce incorrect results and hallucinations. Until these issues are resolved, a human has to be in the loop to confirm the results.</p>
+
+<p>Defining a set of service-level agreements that measure agent performance builds trust across five dimensions: latency, reliability, availability, accuracy, and safety. Breaking up a workflow or business process into a series of discrete steps also helps, reducing the scope of an agent's interaction with an LLM and focusing the evaluation process on fixing issues within that scope.</p>
+
+<blockquote class="pullquote">
+  The race is on, and agentic AI is rapidly becoming a competitive issue.
+  <cite>The financial-services shift</cite>
+</blockquote>
+
+<h2>Section II · Multi-agent systems</h2>
+<h3>The pattern already at work inside the incumbents.</h3>
+
+<p>Multi-agent systems perform complex tasks, such as onboarding a new customer, processing a payment, or responding to an incident or outage. Multi-agent systems communicate with each other to complete a workflow or business process. Individual agents reason and make decisions based on available data, but they still do not take independent action. Humans are typically still in the loop.</p>
+
+<p>Multi-agent systems communicate among agents in various patterns — peer to peer and hierarchical — share data among agents, and use a persistent memory system to store the prompts and results from multiple conversations with LLMs. Such agents typically need to access organizational tools such as ServiceNow, JIRA, or Splunk, and access internal data for training on regulatory compliance, preventing data leakage, flagging identity spoofing, or detecting fraud.</p>
+
+<p>Access to external data sources and tools can be defined using the Model Context Protocol (MCP). Communications between agents can be defined using the Agent-to-Agent (A2A) protocol.</p>
+
+<h2>Section III · Agentic AI systems</h2>
+<h3>Proactive, goal-driven, and coordinated across tools.</h3>
+
+<p>Simply put, an agentic AI system automatically executes a series of steps — including reasoning and adaptability — to take action to achieve a specific business goal. An agentic system can remove the "human in the loop" or significantly reduce human interaction.</p>
+
+<p>Starting with individual agents and building up multi-agent systems prepares the organization for the final goal of adopting agentic AI systems. Agentic AI systems actively learn, adapt, and autonomously take action, based on what they learn and decide. Agentic systems help financial services organizations become more cost efficient and deliver more personalized customer experiences.</p>
+
+<p>In contrast to AI agents that follow predefined workflows or respond to user prompts, agentic systems are proactive, goal-driven, and capable of taking coordinated actions across tools and data sources, within defined constraints. Organizations typically deploy agentic systems initially for internal activities — scheduling meetings, booking business travel, deploying application patches — before turning them on customer-facing flows.</p>
+
+<div class="enote">
+  <b>Three levels of maturity</b>
+  Individual AI agents → multi-agent systems → agentic AI systems. Most FS incumbents are between levels two and three today. The move from three to full autonomy carries governance and trust weight, beyond the technology change.
+</div>
+
+<h2>Section IV · The Akka Agentic Platform</h2>
+<h3>The runtime already carrying business-critical banking workloads.</h3>
+
+<p>Akka, used by dozens of financial institutions as the backbone to business-critical distributed systems, provides an agentic AI platform to develop, deploy, operate, and evaluate AI agents individually, in workflows, and ultimately in agentic systems. Capital One, Icon Solutions, Judopay, and dozens of other banks depend on Akka technology for payment systems, loan management, and more.</p>
+
+<p>Akka's compute model reduces infrastructure cost and token processing charges. Its simplified developer experience increases the velocity of change. The Akka Agentic Platform evaluates agents and agentic systems against a complex set of SLAs — performance, reliability, availability, accuracy, and safety — to build trust in generative AI.</p>
+
+</div>
+
+<div class="wide">
+<table class="rtbl">
+  <caption>Table 2 · Components of the Akka Agentic Platform</caption>
+  <colgroup>
+    <col style="width:22%">
+    <col style="width:78%">
+  </colgroup>
+  <thead>
+    <tr><th>Component</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="prop">Orchestration</td><td>Define and control long-running systems that survive crashes and network partitions.</td></tr>
+    <tr><td class="prop">Agents</td><td>Create agents, MCP tools, and HTTP/gRPC APIs; integrate any third-party broker or system.</td></tr>
+    <tr><td class="prop">Memory</td><td>Durable, in-memory, and sharded data for LLM conversation history and personalized behavior.</td></tr>
+    <tr><td class="prop">Streaming</td><td>High-performance data streaming for ambient, adaptive, and real-time AI.</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="2"><b>Note.—</b>All four components ship on the same runtime with a single SDK and shared deployment target. The platform supports long-running, multi-agent processes, large volumes of shared memory, and real-time streaming for ambient, adaptive, and edge AI use cases.</td></tr>
+  </tfoot>
+</table>
+</div>
+
+<div class="body col">
+
+<div class="stat-row">
+  <div class="stat"><b>Dozens</b><span class="lbl">of financial institutions on Akka</span></div>
+  <div class="stat"><b>99.9999%</b><span class="lbl">availability target</span></div>
+  <div class="stat"><b>5</b><span class="lbl">SLA dimensions evaluated</span></div>
+</div>
+
+<h2>Section V · The Intellyx take</h2>
+<h3>The analyst's position.</h3>
+
+<p>The potential impact of agentic AI on financial services organizations is immeasurable. The efficiencies and productivity gains are already obvious, as are the strategic business improvements. Better customer experience is driving adoption as well — whether improving customer service automation or simplifying account opening and loan processing.</p>
+
+<p>Akka has a long history of providing reliable, scalable distributed systems for enterprise applications. Akka brings this history and expertise to bear for agentic AI systems — solving challenges in development and operations, and most importantly, trust and safety.</p>
+
+<p>Financial services organizations embarking on agentic AI adoption should evaluate an AI-agent development framework such as the Akka Agentic Platform.</p>
+
+<div class="footnotes">
+  <h4>Notes &amp; references</h4>
+  <ol>
+    <li>Copyright © Intellyx B.V. Intellyx is editorially responsible for this document. No AI bots were used to write this content. At the time of writing, Akka is an Intellyx client.</li>
+    <li>BNY, Citi, and Capital One references are drawn from public press coverage and customer disclosures as of publication.</li>
+    <li>The five-dimension SLA framing (performance, reliability, availability, accuracy, safety) is Akka's platform-level evaluation model.</li>
+    <li>Image credit: ThisIsEngineering, Pexels.com.</li>
+  </ol>
+</div>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Published Sep 5, 2025
+</div>
+
+<script>
+(function(){
+  var bar=document.getElementById('prog');
+  function update(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}
+  window.addEventListener('scroll',update,{passive:true});update();
+})();
+</script>
+
+</body>
+</html>

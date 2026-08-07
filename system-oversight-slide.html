@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agentic System Stack</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #000; }
+  body {
+    display: grid;
+    place-items: center;
+    font-family: Inter, "Instrument Sans", Arial, sans-serif;
+  }
+  .page {
+    width: min(100vw, 67.5vh);
+    aspect-ratio: 1080 / 1600;
+    background: #000;
+    box-shadow: 0 24px 80px rgba(0,0,0,.45);
+  }
+  svg { display: block; width: 100%; height: 100%; background: #000; }
+  .mono { font-family: "IBM Plex Mono", "JetBrains Mono", Consolas, monospace; }
+  .serif { font-family: Georgia, "Times New Roman", serif; }
+  .ink { fill: #fff; }
+  .blue { fill: #F5C518; }
+  .muted { fill: #b8b8b8; }
+  .faint { fill: #777; }
+  .orange { fill: #F5C518; }
+  .tiny { font-size: 9px; letter-spacing: .72px; }
+  .corner { font-size: 7.4px; letter-spacing: .95px; }
+  .small { font-size: 11.5px; letter-spacing: .78px; }
+  .body { font-size: 13.2px; }
+  .body2 { font-size: 12.4px; }
+  .title { font-size: 49px; font-weight: 800; letter-spacing: -.9px; }
+  .box-title { font-size: 22px; font-weight: 800; letter-spacing: -.35px; }
+  .layer-title { font-size: 22px; font-weight: 800; letter-spacing: -.3px; }
+  .plane-title { font-size: 18px; font-weight: 800; letter-spacing: -.2px; }
+  .vertical { font-size: 10.2px; letter-spacing: 1px; }
+  .hair { stroke: rgba(245,197,24,.42); stroke-width: 1.15; fill: none; vector-effect: non-scaling-stroke; }
+  .hair-orange { stroke: #F5C518; stroke-width: 1.15; fill: none; vector-effect: non-scaling-stroke; }
+  .dash { stroke: rgba(245,197,24,.32); stroke-width: .95; stroke-dasharray: 4 6; fill: none; vector-effect: non-scaling-stroke; }
+  .box { fill: rgba(255,255,255,.022); stroke: #2A2A2A; stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .box-warm { fill: rgba(245,197,24,.055); stroke: rgba(245,197,24,.50); stroke-width: 1.15; vector-effect: non-scaling-stroke; }
+  .rule { stroke: rgba(245,197,24,.20); stroke-width: .85; stroke-dasharray: 4 5; vector-effect: non-scaling-stroke; }
+</style>
+</head>
+<body>
+<main class="page">
+<svg viewBox="0 0 1080 1600" role="img" aria-label="The Agentic System Stack blueprint">
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 Z" fill="rgba(245,197,24,.42)"/>
+    </marker>
+  </defs>
+
+  <rect width="1080" height="1600" fill="#000"/>
+
+  <g class="hair">
+    <path d="M14 14 h10 M14 14 v10 M1066 14 h-10 M1066 14 v10 M14 1586 h10 M14 1586 v-10 M1066 1586 h-10 M1066 1586 v-10"/>
+  </g>
+
+  <text x="56" y="118" class="title ink">The Agentic System Stack</text>
+
+  <text x="56" y="178" class="mono tiny blue">WHO CONTROLS</text>
+  <g transform="translate(56 188)">
+    <rect class="box" x="0" y="0" width="316" height="84"/>
+    <text x="13" y="40" class="box-title ink">HITL</text>
+    <text x="13" y="61" class="body2 muted">End users provide feedback on</text>
+    <text x="13" y="76" class="body2 muted">answers, actions, and outcomes.</text>
+
+    <rect class="box" x="334" y="0" width="316" height="84"/>
+    <text x="347" y="40" class="box-title ink">HOTL</text>
+    <text x="347" y="61" class="body2 muted">A system manager reviews agent</text>
+    <text x="347" y="76" class="body2 muted">behavior and provides guidance.</text>
+
+    <rect class="box" x="668" y="0" width="316" height="84"/>
+    <text x="681" y="40" class="ink" style="font-size:20.5px;font-weight:800;letter-spacing:-.35px;">SYSTEM OVERSIGHT</text>
+    <text x="681" y="61" class="body2 muted">The organization examines how the</text>
+    <text x="681" y="76" class="body2 muted">entire system behaves over time.</text>
+  </g>
+
+  <text x="56" y="311" class="mono tiny blue">HOW AGENTS COMPOSE</text>
+
+  <g transform="translate(56 320)">
+    <rect class="box" x="0" y="0" width="477" height="68"/>
+    <text x="13" y="38" class="box-title ink">SEQUENTIAL HANDOFF</text>
+    <text x="13" y="60" class="body2 muted">Current task ownership transfers; one agent is active at a time.</text>
+
+    <rect class="box" x="507" y="0" width="477" height="68"/>
+    <text x="520" y="38" class="box-title ink">DELEGATIVE WORKERS</text>
+    <text x="520" y="60" class="body2 muted">Coordinator creates subtasks; isolated workers return typed results.</text>
+
+    <rect class="box" x="0" y="82" width="477" height="68"/>
+    <text x="13" y="120" class="box-title ink">TEAM LEADERSHIP</text>
+    <text x="13" y="142" class="body2 muted">Lead creates a team; members claim tasks and message peers.</text>
+
+    <rect class="box" x="507" y="82" width="477" height="68"/>
+    <text x="520" y="120" class="box-title ink">MODERATION</text>
+    <text x="520" y="142" class="body2 muted">Moderator controls turns, transcript scope and completion.</text>
+  </g>
+
+  <g class="mono vertical blue" transform="translate(0 -16)">
+    <text x="76" y="576" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 76 576)">ORCHESTRATION</text>
+    <path class="hair" d="M86 528 v107 m0 -107 h8 m-8 107 h8"/>
+
+    <text x="78" y="930" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 78 930)">CONTEXT ENGINEERING</text>
+    <path class="hair" d="M86 762 v338 m0 -338 h8 m-8 338 h8"/>
+
+    <text x="78" y="1197" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 78 1197)">TOOL ENG.</text>
+    <path class="hair" d="M86 1116 v114 m0 -114 h8 m-8 114 h8"/>
+
+    <text x="128" y="739" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 128 739)">LOOP ENG.</text>
+    <path class="hair" d="M134 645 v220 m0 -220 h8 m-8 220 h8"/>
+
+    <text x="128" y="914" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 128 914)">PROMPT ENG.</text>
+    <path class="hair" d="M134 876 v120 m0 -120 h8 m-8 120 h8"/>
+
+    <text x="128" y="1101" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 128 1101)">KNOWLEDGE ENG.</text>
+    <path class="hair" d="M134 1008 v218 m0 -218 h8 m-8 218 h8"/>
+
+    <text x="184" y="984" text-anchor="middle" dominant-baseline="middle" style="letter-spacing:.55px" transform="rotate(-90 184 984)">RAG  -  READ PATH</text>
+    <path class="dash" d="M185 646 v675" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  </g>
+
+  <g transform="translate(196 500)">
+    <rect class="box" x="0" y="0" width="528" height="111"/>
+    <text x="34" y="38" class="layer-title ink">WORKFLOW &amp; ORCHESTRATION</text>
+    <text x="510" y="28" text-anchor="end" class="mono corner faint">THE SYSTEM</text>
+    <text x="34" y="72" class="body muted">canHandoffTo, Delegation, TeamLeadership, Moderation</text>
+    <text x="34" y="92" class="body muted">queues, schedules, events, handoffs</text>
+
+    <rect class="box" x="0" y="120" width="528" height="111"/>
+    <text x="34" y="158" class="layer-title ink">HARNESS &amp; LOOP RUNTIME</text>
+    <text x="510" y="148" text-anchor="end" class="mono corner faint">NERVOUS SYSTEM</text>
+    <text x="34" y="192" class="body muted">Plan -> act -> observe -> evaluate -> next state</text>
+    <text x="34" y="212" class="body muted">continue - retry - replan - escalate - stop - roll back</text>
+
+    <rect class="box" x="0" y="240" width="528" height="111"/>
+    <text x="34" y="278" class="layer-title ink">RUNTIME CONTEXT ASSEMBLY</text>
+    <text x="510" y="268" text-anchor="end" class="mono corner faint">THE WORKBENCH</text>
+    <text x="34" y="312" class="body muted">Per-step selection: instructions, state, retrieved evidence</text>
+    <text x="34" y="332" class="body muted">memories, tool results, summaries</text>
+
+    <rect class="box" x="0" y="360" width="528" height="111"/>
+    <text x="34" y="398" class="layer-title ink">INSTRUCTIONS &amp; CONTRACTS</text>
+    <text x="510" y="388" text-anchor="end" class="mono corner faint">THE CONSTITUTION</text>
+    <text x="34" y="432" class="body muted">Identity, goals, constraints, few-shot examples</text>
+    <text x="34" y="452" class="body muted">tool guidance, structured output contracts</text>
+
+    <rect class="box" x="0" y="480" width="528" height="111"/>
+    <text x="34" y="518" class="layer-title ink">KNOWLEDGE, MEMORY &amp; STATE</text>
+    <text x="510" y="508" text-anchor="end" class="mono corner faint">THE LIBRARY</text>
+    <text x="34" y="552" class="body muted">RAG corpora, semantic &amp; episodic memory, provenance</text>
+    <text x="34" y="572" class="body muted">procedural knowledge, persistent state</text>
+
+    <rect class="box" x="0" y="600" width="528" height="111"/>
+    <text x="34" y="638" class="layer-title ink">TOOLS, APIs &amp; SKILLS</text>
+    <text x="510" y="628" text-anchor="end" class="mono corner faint">THE HANDS</text>
+    <text x="34" y="672" class="body muted">Tool schemas, MCP servers, integrations, code execution</text>
+    <text x="34" y="692" class="body muted">permissions, validation, idempotency</text>
+
+    <rect class="box" x="0" y="720" width="528" height="111"/>
+    <text x="34" y="758" class="layer-title ink">MODELS &amp; INFERENCE</text>
+    <text x="510" y="748" text-anchor="end" class="mono corner faint">THE BRAIN</text>
+    <text x="34" y="792" class="body muted">Reasoning, efficient, multimodal, embedding, guard models</text>
+    <text x="34" y="812" class="body muted">routing, caching, fallback</text>
+
+    <rect class="box" x="0" y="840" width="528" height="111"/>
+    <text x="34" y="878" class="layer-title ink">RUNTIME &amp; ENVIRONMENT</text>
+    <text x="510" y="868" text-anchor="end" class="mono corner faint">BODY &amp; LEGS</text>
+    <text x="34" y="912" class="body muted">Compute, containers, sandboxes, filesystem, network</text>
+    <text x="34" y="932" class="body muted">secrets, databases, external systems</text>
+
+    <path class="dash" d="M8 116 h512"/>
+    <path class="dash" d="M8 476 h512"/>
+    <path class="dash" d="M8 836 h512"/>
+  </g>
+
+  <text x="760" y="510" class="mono tiny blue">THE HORIZONTAL PLANES</text>
+
+  <g transform="translate(760 528)">
+    <rect class="box" x="0" y="0" width="290" height="290"/>
+    <text x="16" y="58" class="plane-title ink">GOVERNANCE, POLICY</text>
+    <text x="16" y="80" class="plane-title ink">&amp; HUMAN CONTROL</text>
+    <text x="16" y="132" class="body2 muted">- Risk &amp; blast-radius classification</text>
+    <text x="16" y="160" class="body2 muted">- Deterministic guardrails outside</text>
+    <text x="26" y="177" class="body2 muted">model reasoning</text>
+    <text x="16" y="205" class="body2 muted">- HITL, HOTL, System Oversight</text>
+    <text x="26" y="222" class="body2 muted">authority placement</text>
+    <text x="16" y="250" class="body2 muted">- Budgets, approvals, release &amp;</text>
+    <text x="26" y="267" class="body2 muted">rollback policy</text>
+
+    <rect class="box" x="0" y="322" width="290" height="290"/>
+    <text x="16" y="380" class="plane-title ink">IDENTITY, SECURITY</text>
+    <text x="16" y="402" class="plane-title ink">&amp; TRUST</text>
+    <text x="16" y="454" class="body2 muted">- Agent &amp; user identity; least privilege</text>
+    <text x="16" y="482" class="body2 muted">- Delegated authority, secrets,</text>
+    <text x="26" y="499" class="body2 muted">data boundaries</text>
+    <text x="16" y="527" class="body2 muted">- Prompt-injection defense &amp;</text>
+    <text x="26" y="544" class="body2 muted">tool sandboxing</text>
+    <text x="16" y="572" class="body2 muted">- Auditable actions across</text>
+    <text x="26" y="589" class="body2 muted">every handoff</text>
+
+    <rect class="box" x="0" y="644" width="290" height="290"/>
+    <text x="16" y="702" class="plane-title ink">OBSERVABILITY, EVALS</text>
+    <text x="16" y="724" class="plane-title ink">&amp; ECONOMICS</text>
+    <text x="16" y="776" class="body2 muted">- Traces, state transitions,</text>
+    <text x="26" y="793" class="body2 muted">tool-call evidence</text>
+    <text x="16" y="821" class="body2 muted">- Golden scenarios, LLM-as-judge,</text>
+    <text x="26" y="838" class="body2 muted">deterministic checks</text>
+    <text x="16" y="866" class="body2 muted">- Drift, regression &amp; reliability</text>
+    <text x="26" y="883" class="body2 muted">attribution</text>
+    <text x="16" y="911" class="body2 muted">- Cost, latency &amp; resource telemetry</text>
+  </g>
+
+  <path class="hair" d="M729 609 h13 l18 32"/>
+  <path class="hair" d="M729 976 h31"/>
+  <path class="hair" d="M729 1290 h13 l18 -32"/>
+
+  <line x1="56" y1="1465" x2="1024" y2="1465" class="rule"/>
+  <text x="760" y="1515" fill="#F5C518" opacity=".05" style="font-size:96px;font-weight:900;letter-spacing:-3px;">AKKA</text>
+  <text x="56" y="1492" class="orange" style="font-size:17px;font-weight:800;">///</text>
+  <text x="88" y="1491" class="mono tiny blue">BLUEPRINT</text>
+  <text x="178" y="1491" class="body ink"><tspan font-weight="700">Layers compose upward</tspan> and must hold even when the model reasons badly.</text>
+  <text x="56" y="1513" class="mono tiny blue">LOOP VS ORCH</text>
+  <text x="178" y="1513" class="body muted">Loop engineering controls one execution cycle; orchestration composes loops, agents and workflows.</text>
+  <text x="56" y="1535" class="mono tiny blue">LEARNING LOOP</text>
+  <text x="178" y="1535" class="body muted">Traces and evaluations feed improvements back into prompts, knowledge, context policies, skills, tools and orchestration.</text>
+  <text x="56" y="1557" class="mono tiny blue">SRC</text>
+  <text x="88" y="1557" class="mono tiny ink">Akka AutonomousAgent docs - Anthropic engineering - Google agents guide</text>
+  <text x="806" y="1557" class="mono tiny ink">DRAWN - TYLER JEWELL</text>
+  <text x="1024" y="1557" text-anchor="end" class="mono tiny ink">ADAPTED - AKKA</text>
+</svg>
+</main>
+</body>
+</html>
