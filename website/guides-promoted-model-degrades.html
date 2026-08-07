@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What if a promoted model degrades later? | Akka</title>
+<meta name="description" content="Online evaluation keeps grading production traffic after promotion, and the routing policy returns the affected class of work to the previous model.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Models and routing</div>
+      <h1 class="q-headline">What happens when a promoted model <span class="accent">degrades later?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>Online evaluation keeps grading production traffic after the promotion, so a fall in quality appears as a change in the graded score. The routing policy returns the affected class of work to the previous model.</p>
+        <p><b>The gate that promoted the model is where the model is removed.</b> Rollback is a change to the routing policy, so moving the traffic back requires no release.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Grading continues after the promotion.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A promotion is decided on a shadow run, which measures a candidate against traffic captured over a period. Traffic changes after that period, through a new document format, a new product, or a phrase that was rare last quarter.</p>
+     <p>Online evaluation runs against the interaction log while the system serves, so the score for each class of work is current. A fall shows against the score that class already met.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 226" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The graded quality of a promoted model falls over time and drops below the score it was promoted at. At the crossing the routing state changes and the class of work returns to the previous model."><text x="0" y="18" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">GRADED QUALITY IN PRODUCTION</text><line x1="24" y1="80" x2="616" y2="80" stroke="#3A3A40" stroke-width="1" stroke-dasharray="5,5"/><text x="616" y="72" text-anchor="end" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8.5">the score the class already met</text><polyline points="24,58 130,60 236,64 320,70 380,80 452,100 540,112 616,118" fill="none" stroke="#FFCE4A" stroke-width="2"/><line x1="392" y1="42" x2="392" y2="216" stroke="#E74C3C" stroke-width="1.4"/><text x="400" y="38" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="9">graded score falls below it</text><text x="0" y="158" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">ROUTING STATE</text><line x1="24" y1="186" x2="392" y2="186" stroke="#FFCE4A" stroke-width="4"/><line x1="392" y1="186" x2="616" y2="186" stroke="#3A3A40" stroke-width="4"/><text x="208" y="208" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="10">the promoted model serves the class</text><text x="504" y="208" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="10">the class returns to the previous model</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What starts a review</div>
+     <h2 class="rv">Drift is one of the triggers the governance loop acts on.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>Runtime-detected drift</b><span>Grades falling against the score for a class of work, detected on the same record governance reads.</span></div>
+     <div class="r"><b>A declared change</b><span>A prompt revision, a model swap or a tool change, named in the AI events taxonomy and routed to the reviewers the matrix requires.</span></div>
+     <div class="r"><b>A scheduled review</b><span>A cadence set by the control matrix, so a class of work with no incident is still measured.</span></div>
+     <div class="r"><b>A regulation update</b><span>The monthly corpus watch, which scopes the review to the rows the change affects.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the rollback costs</div>
+     <h2 class="rv">Returning the traffic requires no deployment.</h2>
+    </div>
+    <div class="prose rv">
+     <p>The previous model stays available as a destination the policy can name, so restoring it is a change to the policy. Agents routing through it reach the previous model on the next request.</p>
+     <p>The grades, the fall and the routing change are written to the interaction record. Reading that record afterwards shows the sequence and where the fall began.</p>
+     <p>Akka Verify scopes the review to what changed. A prompt change is a half-day cycle. A foundation-model swap runs for weeks and is budgeted before it starts.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>How quickly is a fall detected?</h3>
+      <p>Detection follows the evaluation cadence set for the class of work. Event evaluations fire on runtime events without blocking, and periodic evaluations aggregate over the interaction log on a schedule.</p>
+     </div>
+     <div class="q">
+      <h3>Does a rollback discard the model?</h3>
+      <p>The weights stay in your environment. The routing policy stops naming the model as a destination, and the training loop can produce a further candidate from the traffic that exposed the fall.</p>
+     </div>
+     <div class="q">
+      <h3>What if the previous model was retired?</h3>
+      <p>A promotion does not require retiring the model it replaced. Keeping the previous model available as a destination is what makes the routing change a rollback.</p>
+     </div>
+     <div class="q">
+      <h3>Is the model always the cause?</h3>
+      <p>A fall in graded score can come from the model, the prompt, a tool that changed, or the traffic itself. The interaction record holds each of those, so the cause is read from the record.</p>
+     </div>
+     <div class="q">
+      <h3>Can a control stop the model while the review runs?</h3>
+      <p>The kill switch halts in-flight and future tool and LLM calls and moves the system to a defined safe state. Oversight personnel exercise it, and the runtime records that it was exercised.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Online evaluation, drift detection and the review loop are capabilities of <a href="/platform/verify" class="accent">Akka Verify</a>. Routing and promotion gates are capabilities of <a href="/platform/optimize" class="accent">Akka Optimize</a>.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/guides/promoting-a-smaller-model">
+        <div class="k">Guide</div>
+        <h3>When is a smaller model ready to promote?</h3>
+        <p>The gate the rollback returns through.</p>
+       </a>
+       <a href="/platform/verify">
+        <div class="k">Solution</div>
+        <h3>Akka Verify</h3>
+        <p>Evaluation, enforcement and the evidence record an auditor reads.</p>
+       </a>
+       <a href="/guides/routing-a-request-to-the-right-model">
+        <div class="k">Guide</div>
+        <h3>How does a request get routed to the right model?</h3>
+        <p>Where the destination for a class of work is named.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

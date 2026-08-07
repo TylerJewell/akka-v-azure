@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides: running agents in production | Akka</title>
+<meta name="description" content="Each guide answers one engineering question about taking an agent to production: what survives a restart, what a system costs, who is accountable for an agent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDES HUB. The index carries the whole corpus, so the areas are   */
+  /*  laid out in balanced columns: they range from one question to ten  */
+  /*  and a fixed grid would leave large gaps.                           */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --muted:#9a9a9a;--dim:#6c6c6c;--line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:96px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  .accent{color:var(--yellow)}
+  .band--hair{border-top:1px solid var(--line)}
+
+  #hero{padding-top:104px;padding-bottom:64px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.10),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .hero-headline{font-size:clamp(40px,5.4vw,78px);line-height:1.04;letter-spacing:-.035em;
+    max-width:14ch;margin-top:28px}
+  .hero-lede{color:#c9c9cf;font-size:clamp(17px,1.5vw,21px);margin:26px 0 0;max-width:60ch;line-height:1.6}
+
+  /* The written guide, given the entry point a long index cannot provide. */
+  .start{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:30px 0;margin-top:48px;display:flex;align-items:baseline;gap:28px;flex-wrap:wrap}
+  .start .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;flex-shrink:0}
+  .start a{font-size:clamp(19px,1.9vw,26px);font-weight:600;letter-spacing:-.02em;
+    text-decoration:none;line-height:1.25}
+  .start a:hover{color:var(--yellow)}
+  .start .go{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;white-space:nowrap}
+
+  .jump{display:flex;flex-wrap:wrap;gap:0 14px;align-items:center;padding:22px 0;
+    border-bottom:1px solid var(--line);margin-bottom:58px;
+    font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase}
+  .jump a{color:var(--muted);text-decoration:none;padding:5px 0}
+  .jump a:hover{color:var(--yellow)}
+  .jump .sep{color:var(--line-2)}
+
+  .idx{column-count:3;column-gap:52px}
+  .area{break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 48px}
+  .area h3{font-size:19px;letter-spacing:-.015em}
+  .area-blurb{margin:8px 0 0;color:var(--dim);font-size:13px;line-height:1.5}
+  .area ul{list-style:none;margin:16px 0 0;padding:0}
+  .area li{padding:11px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.45;color:var(--dim)}
+  .area li.done{color:var(--white)}
+  .area li.done a{text-decoration:none;font-weight:600}
+  .area li.done a::after{content:" \2192";color:var(--yellow)}
+  .area li.done a:hover{color:var(--yellow)}
+
+  .note{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--dim);margin-top:16px}
+
+  @media (max-width:1100px){ .idx{column-count:2} }
+  @media (max-width:700px){ .idx{column-count:1} .start{gap:14px} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="eyebrow">Guides</div>
+      <h1 class="hero-headline">What it takes to run agents <span class="accent">in production.</span></h1>
+      <p class="hero-lede">Each guide is a short answer to one engineering question about taking an agent to production. Every answer also says what it costs to run and what the runtime has to provide.</p>
+
+      <div class="start">
+        <span class="lab">Start here</span>
+        <a href="/guides/agent-fails-mid-task">What happens when an agent fails mid-task?</a>
+        <span class="go">Read the guide &rarr;</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <nav class="jump">
+       <a href="#aa">Durability and failure</a> <span class="sep">&middot;</span>
+       <a href="#ab">State and memory</a> <span class="sep">&middot;</span>
+       <a href="#ac">Streaming and flow control</a> <span class="sep">&middot;</span>
+       <a href="#ad">Cost and scale</a> <span class="sep">&middot;</span>
+       <a href="#ae">Models and routing</a> <span class="sep">&middot;</span>
+       <a href="#af">Governance and control</a> <span class="sep">&middot;</span>
+       <a href="#ag">Operations and deployment</a> <span class="sep">&middot;</span>
+       <a href="#ah">Evaluation and quality</a> <span class="sep">&middot;</span>
+       <a href="#ai">Rollout and delivery</a>
+      </nav>
+
+      <div class="idx">
+    <div class="area" id="aa">
+     <h3>Durability and failure</h3>
+     <p class="area-blurb">Agent work has to survive a restart, a deployment, and a wait that lasts days.</p>
+     <ul>
+      <li class="done"><a href="/guides/agent-fails-mid-task">What happens when an agent fails mid-task?</a></li>
+      <li class="done"><a href="/guides/in-flight-work-during-deployment">What happens to in-flight work during a deployment or node drain?</a></li>
+      <li class="done"><a href="/guides/agent-waits-for-a-human">How does an agent wait days for a human decision?</a></li>
+      <li class="done"><a href="/guides/retry-without-repeating-side-effects">How do you retry an agent step without repeating its side effect?</a></li>
+      <li class="done"><a href="/guides/model-call-hangs">What happens when a model call hangs instead of failing?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ab">
+     <h3>State and memory</h3>
+     <p class="area-blurb">An agent&#x27;s memory lives somewhere, and every turn pays to read it.</p>
+     <ul>
+      <li class="done"><a href="/guides/where-agent-memory-lives">Where should an agent&#x27;s memory live, and what does it cost per turn?</a></li>
+      <li class="done"><a href="/guides/reconstruct-what-an-agent-knew">How do you reconstruct what an agent knew when it decided?</a></li>
+      <li class="done"><a href="/guides/context-growing-without-bound">How do you stop context from growing without bound?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ac">
+     <h3>Streaming and flow control</h3>
+     <p class="area-blurb">Work arrives faster than the thing consuming it can take.</p>
+     <ul>
+      <li class="done"><a href="/guides/agent-outruns-consumer">What happens when an agent produces work faster than the consumer can take it?</a></li>
+      <li class="done"><a href="/guides/model-provider-rate-limits">What happens when a model provider rate-limits you mid-run?</a></li>
+      <li class="done"><a href="/guides/guardrail-on-a-streaming-response">How do you apply a guardrail to a response that is still streaming?</a></li>
+      <li class="done"><a href="/guides/real-time-data-into-context">How do you feed real-time data into an agent&#x27;s context?</a></li>
+      <li class="done"><a href="/guides/traffic-spikes-and-queued-work">What happens to queued agent work when traffic spikes?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ad">
+     <h3>Cost and scale</h3>
+     <p class="area-blurb">An agentic system&#x27;s cost to run changes as it scales.</p>
+     <ul>
+      <li class="done"><a href="/guides/agent-costs-outrun-traffic">Why do agent costs rise faster than agent traffic?</a></li>
+      <li class="done"><a href="/guides/five-agents-to-a-hundred">What changes between 5 agents and 100?</a></li>
+      <li class="done"><a href="/guides/did-a-cheaper-model-save-money">How do you measure whether a cheaper model actually saved money?</a></li>
+      <li class="done"><a href="/guides/what-idle-agents-cost">What do you pay for when agents are idle?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ae">
+     <h3>Models and routing</h3>
+     <p class="area-blurb">Model choice, training a smaller model, and owning the result decide what inference costs.</p>
+     <ul>
+      <li class="done"><a href="/guides/routing-a-request-to-the-right-model">How does a request get routed to the right model?</a></li>
+      <li class="done"><a href="/guides/when-a-smaller-model-makes-sense">When does routing to a smaller model make sense?</a></li>
+      <li class="done"><a href="/guides/training-data-for-smaller-models">Where does the training data for a smaller model come from?</a></li>
+      <li class="done"><a href="/guides/train-a-smaller-model-on-your-data">What does it take to train a smaller model on your own data?</a></li>
+      <li class="done"><a href="/guides/promoting-a-smaller-model">How do you know a smaller model is good enough to promote?</a></li>
+      <li class="done"><a href="/guides/who-owns-a-trained-model">Who owns a model trained on your data, and can you take it elsewhere?</a></li>
+      <li class="done"><a href="/guides/training-on-production-traffic">Does training on production traffic create a compliance problem?</a></li>
+      <li class="done"><a href="/guides/optimize-agents-built-elsewhere">Can Akka optimize agents that do not run on Akka?</a></li>
+      <li class="done"><a href="/guides/promoted-model-degrades">What happens when a promoted model degrades later?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="af">
+     <h3>Governance and control</h3>
+     <p class="area-blurb">An operator has to stop an agent, prove what it did, and satisfy an auditor.</p>
+     <ul>
+      <li class="done"><a href="/guides/stop-an-agent-before-it-acts">How do you stop an agent before it acts?</a></li>
+      <li class="done"><a href="/guides/what-evidence-an-auditor-asks-for">What evidence does an auditor actually ask for?</a></li>
+      <li class="done"><a href="/guides/prove-what-runs-was-approved">How do you prove the system running is the system that was approved?</a></li>
+      <li class="done"><a href="/guides/who-is-accountable-for-an-agent">Who is accountable when an agent acts on a person&#x27;s behalf?</a></li>
+      <li class="done"><a href="/guides/which-regulations-apply">How do you know which regulations apply to what you are building?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ag">
+     <h3>Operations and deployment</h3>
+     <p class="area-blurb">One system runs in several regions, and the rules differ in each.</p>
+     <ul>
+      <li class="done"><a href="/guides/agents-in-more-than-one-region">What does it take to run agents in more than one region?</a></li>
+      <li class="done"><a href="/guides/agent-data-inside-a-jurisdiction">How do you keep agent data inside a jurisdiction?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ah">
+     <h3>Evaluation and quality</h3>
+     <p class="area-blurb">Output with no single right answer still has to be judged.</p>
+     <ul>
+      <li class="done"><a href="/guides/evaluate-open-ended-output">How do you evaluate an agent with no single right answer?</a></li>
+     </ul>
+    </div>
+    <div class="area" id="ai">
+     <h3>Rollout and delivery</h3>
+     <p class="area-blurb">Everyone who builds has to build the same way, whether they write code or not.</p>
+     <ul>
+      <li class="done"><a href="/guides/non-developers-build-agents">How do you let non-developers build agentic systems without losing control?</a></li>
+      <li class="done"><a href="/guides/many-developers-one-way">How do you keep hundreds of developers across regions building the same way?</a></li>
+      <li class="done"><a href="/guides/code-drifting-from-spec">What stops code from drifting away from what was specified?</a></li>
+      <li class="done"><a href="/guides/developer-without-distributed-systems">How do you onboard a developer with no distributed-systems background?</a></li>
+      <li class="done"><a href="/guides/what-a-specification-contains">What does a specification actually contain?</a></li>
+      <li class="done"><a href="/guides/testing-a-generated-system">How do you test a system that was generated instead of hand-written?</a></li>
+      <li class="done"><a href="/guides/spec-driven-in-existing-tools">Where does spec-driven delivery fit with the tools we already use?</a></li>
+      <li class="done"><a href="/guides/who-maintains-the-system">Who maintains the system after it is delivered?</a></li>
+      <li class="done"><a href="/guides/rules-that-differ-by-region">How do you enforce different rules in different regions from one delivery model?</a></li>
+      <li class="done"><a href="/guides/technical-debt-over-time">What happens to technical debt over the life of the system?</a></li>
+     </ul>
+    </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

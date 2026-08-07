@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guardrails on a response that is still streaming | Akka</title>
+<meta name="description" content="A streaming response leaves the process in pieces, so the check has to clear each piece before it is released. A partial response cannot be recalled.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Streaming and flow control</div>
+      <h1 class="q-headline">How do you apply a guardrail to a response that is <span class="accent">still streaming?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>A streaming response leaves the process in pieces while the model is still producing it. A check that waits for the last token has nothing left to prevent, because the earlier pieces already reached the caller.</p>
+        <p><b>Akka Verify runs guardrails inline at the agent-response boundary.</b> The runtime groups tokens into a unit the guardrail can evaluate and releases that unit after the verdict returns.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Streaming moves the decision point earlier.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A response returned whole is one object. The check reads all of it, returns a verdict, and the runtime emits the response or refuses it. Nothing has reached the caller while the check runs.</p>
+     <p>Streaming emits the answer in pieces as the model produces them, which is what makes the first word appear in a few hundred milliseconds. Each piece that leaves the process is read by the caller, and no protocol recalls it.</p>
+     <p>An inline check on a stream therefore runs repeatedly. The runtime accumulates output until there is enough content for a verdict, applies the guardrail to that content, and releases it once the verdict is PASS.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inside the stream the runtime groups tokens into a unit, the guardrail decides, and a passing unit reaches the caller while a blocked unit is never emitted. After the stream, the model output reaches the caller first and the verdict arrives last."><defs><marker id="c3y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker><marker id="c3r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E74C3C"/></marker><marker id="c3g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7A7A7A"/></marker></defs><text x="0" y="16" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">CHECK INSIDE THE STREAM</text><rect x="0" y="42" width="80" height="40" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="40" y="67" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">model</text><g fill="#FFCE4A"><rect x="92" y="56" width="12" height="12" rx="2"/><rect x="112" y="56" width="12" height="12" rx="2"/><rect x="132" y="56" width="12" height="12" rx="2"/></g><text x="104" y="88" text-anchor="middle" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="9">tokens grouped into a unit</text><line x1="152" y1="62" x2="176" y2="62" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#c3y)"/><rect x="188" y="36" width="140" height="52" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="258" y="59" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="12" font-weight="600">guardrail</text><text x="258" y="76" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="9">runs before the unit is released</text><line x1="334" y1="54" x2="392" y2="40" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#c3y)"/><text x="360" y="34" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">pass</text><rect x="404" y="22" width="152" height="38" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="480" y="46" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">the caller reads it</text><line x1="334" y1="72" x2="392" y2="106" stroke="#E74C3C" stroke-width="1.6" marker-end="url(#c3r)"/><text x="352" y="98" text-anchor="middle" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="8">block</text><rect x="404" y="90" width="152" height="38" rx="5" fill="#131316" stroke="#E74C3C"/><text x="480" y="114" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">nothing is emitted</text><line x1="0" y1="178" x2="640" y2="178" stroke="#2A2A2A"/><text x="0" y="202" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">CHECK AFTER THE STREAM</text><g font-family="Instrument Sans,sans-serif" font-size="10.5" fill="#8A8A8A" text-anchor="middle"><rect x="0" y="216" width="84" height="34" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="42" y="238">model</text><rect x="164" y="216" width="92" height="34" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="210" y="238">the caller</text><rect x="316" y="216" width="84" height="34" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="358" y="238">check</text></g><line x1="88" y1="233" x2="158" y2="233" stroke="#3A3A40" stroke-width="1.4" marker-end="url(#c3g)"/><line x1="260" y1="233" x2="310" y2="233" stroke="#3A3A40" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#c3g)"/><text x="412" y="237" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10.5">the verdict arrives last</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the check needs</div>
+     <h2 class="rv">A guardrail on a stream evaluates a group of tokens.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>Content a check can judge</b><span>A single token carries no meaning to evaluate. The runtime groups tokens until the content is large enough for the guardrail to return a verdict on it.</span></div>
+     <div class="r"><b>A verdict before release</b><span>Each unit is emitted after its check returns PASS, so the caller receives only content that has been checked.</span></div>
+     <div class="r"><b>A sanitizer in the path</b><span>A sanitizer redacts, masks or reshapes a unit before it continues. The original content and the change are both recorded.</span></div>
+     <div class="r"><b>A defined ending</b><span>A block part way through terminates the response with a recorded reason, so the caller receives a refusal with an explanation.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The cost</div>
+     <h2 class="rv">Holding a unit delays the first token the caller sees.</h2>
+    </div>
+    <div class="prose rv">
+     <p>The perceived speed of a streaming response is the time to its first word. A guardrail that evaluates larger units returns stronger verdicts and pushes that first word later. Unit size is the setting that governs both.</p>
+     <p>Compliance owns the policy matrix that decides which controls run inline. A control that must prevent an outcome runs in the path and pays that latency. A control whose obligation is evidence runs against the interaction log after the response completes. The inline control and the after-the-fact control write to the same interaction record.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>What does the caller see when a block fires part way through?</h3>
+      <p>The caller has received the units that passed and then receives a termination carrying the reason. The refusal, the policy that produced it and the content held back are written to the interaction record in the same transaction.</p>
+     </div>
+     <div class="q">
+      <h3>What happens if the guardrail itself errors?</h3>
+      <p>A required production guardrail fails closed, so an error or a timeout stops the content from being emitted. A check that failed open would stop enforcing under the load that makes enforcement matter.</p>
+     </div>
+     <div class="q">
+      <h3>Can the check run on the prompt as well?</h3>
+      <p>Guardrails run at the tool boundary, the LLM boundary and the agent-response boundary. A check on the input stops a request before it reaches the model and before it consumes tokens.</p>
+     </div>
+     <div class="q">
+      <h3>What about a tool call the agent makes while output is streaming?</h3>
+      <p>The tool call is held at its own boundary and receives its own verdict. The runtime gates the call, so the record shows whether the tool executed.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Inline guardrails, sanitizers and the interaction record are capabilities of <a href="/platform/verify" class="accent">Akka Verify</a>, running on the Akka SDK runtime.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/verify">
+        <div class="k">Solution</div>
+        <h3>Akka Verify</h3>
+        <p>Inline enforcement, evaluation, and the evidence record an auditor reads.</p>
+       </a>
+       <a href="/guides/stop-an-agent-before-it-acts">
+        <div class="k">Guide</div>
+        <h3>How do you stop an agent before it acts?</h3>
+        <p>Where the verdict sits relative to the action.</p>
+       </a>
+       <a href="/platform/sdk">
+        <div class="k">Solution</div>
+        <h3>Akka SDK</h3>
+        <p>Streaming as a component of the runtime that executes the agent.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where should an agent memory live? | Akka</title>
+<meta name="description" content="Every agent turn reads and writes state. Whether that read crosses a network decides the floor on how fast a turn can complete and how much infrastructure the agent needs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; State and memory</div>
+      <h1 class="q-headline">Where should an agent memory live, and <span class="accent">what does it cost per turn?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>Every agent turn reads what the agent already knows and writes what it learned. Whether that read crosses a network sets the floor on how fast a turn can finish.</p>
+        <p><b>Akka holds agent state in the runtime that executes the agent, replicated across nodes.</b> Reads take single-digit milliseconds and no separate store has to be provisioned, scaled or failed over.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">The read path decides the floor.</h2>
+    </div>
+    <div class="prose rv">
+     <p>An agent turn is a sequence of dependent steps. The agent reads context, calls a model, and writes what changed, often several times before producing an answer. Every read and write sits on the path to the response, so their latency multiplies by the number of steps.</p>
+     <p>Placing that state in an external store adds two network round trips to every turn, and adds a second system with its own capacity planning, failover, and backup schedule. Holding it in the runtime removes the hop and folds durability into replication that already exists for the agent.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An agent turn reading memory from an external store crosses the network twice. An agent turn reading memory held in the runtime crosses no network at all."><defs><marker id="b1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7A7A7A"/></marker><marker id="b1y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker></defs><text x="0" y="16" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">MEMORY IN AN EXTERNAL STORE</text><rect x="0" y="38" width="112" height="42" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="56" y="64" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">agent turn</text><line x1="120" y1="50" x2="236" y2="50" stroke="#7A7A7A" stroke-width="1.4" marker-end="url(#b1g)"/><line x1="236" y1="68" x2="120" y2="68" stroke="#7A7A7A" stroke-width="1.4" marker-end="url(#b1g)"/><text x="178" y="42" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">read</text><text x="178" y="86" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">write</text><rect x="248" y="38" width="124" height="42" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="310" y="64" text-anchor="middle" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="11">store</text><text x="392" y="58" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10.5">a network round trip on each read and write</text><text x="392" y="74" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10.5">and its own capacity, failover and backup</text><line x1="0" y1="118" x2="640" y2="118" stroke="#2A2A2A"/><text x="0" y="146" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">MEMORY IN THE RUNTIME</text><rect x="0" y="168" width="240" height="52" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="120" y="190" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="11" font-weight="600">agent turn and its state</text><text x="120" y="207" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="9">same process, replicated across nodes</text><text x="262" y="188" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="10.5">no network hop on the read path</text><text x="262" y="204" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="10.5">durability from replication</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the choice sets</div>
+     <h2 class="rv">Latency is the cost you see first.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>Turn latency</b><span>Round trips to an external store are paid on every read and every write, and a multi-step turn pays them repeatedly.</span></div>
+     <div class="r"><b>Failure surface</b><span>An external store is a second thing that can be unavailable while the agent is up, and its outage looks like an agent fault.</span></div>
+     <div class="r"><b>Operational load</b><span>Capacity, replication, backup and patching for the store belong to whoever provisioned it.</span></div>
+     <div class="r"><b>Cost</b><span>Per-query pricing scales with turns rather than with users, and a chatty agent multiplies it.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What this changes</div>
+     <h2 class="rv">Latency budget returns to the model call.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A user-facing agent has a total budget before the interaction feels slow. The model call consumes most of it, so the remainder decides how many steps the agent can take before the response arrives.</p>
+     <p>Swiggy cut prediction latency from 144ms to 71ms while holding 5,000 predictions a second on a single model, and the reduction came from removing repeated work on the path.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>Does the state survive a restart?</h3>
+      <p>Durable state is written to an event journal as it changes and replicated across nodes, so a restart replays it.</p>
+     </div>
+     <div class="q">
+      <h3>What about state larger than memory?</h3>
+      <p>State is sharded across the cluster, so capacity grows with the cluster. A single agent instance holds only its own state.</p>
+     </div>
+     <div class="q">
+      <h3>Can an agent still use a vector database?</h3>
+      <p>Retrieval from a vector store is a tool call for knowledge the agent looks up. The state in this guide is what the agent itself accumulated, which is read and written on every turn.</p>
+     </div>
+     <div class="q">
+      <h3>What happens across regions?</h3>
+      <p>State is replicated active-active, so a region loss recovers in under a minute with no committed writes lost.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Durable, in-memory, sharded state is described in the <a href="https://doc.akka.io/sdk/index.html" class="accent">Akka SDK documentation</a>. <b>Customer figures.</b> Swiggy latency results were published by Swiggy engineering.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/sdk">
+        <div class="k">Solution</div>
+        <h3>Akka SDK</h3>
+        <p>The runtime holds the state of the agent.</p>
+       </a>
+       <a href="/guides/agent-fails-mid-task">
+        <div class="k">Guide</div>
+        <h3>What happens when an agent fails mid-task?</h3>
+        <p>Durable state lets a failed run resume.</p>
+       </a>
+       <a href="/customer-stories/swiggy">
+        <div class="k">Customer</div>
+        <h3>Swiggy</h3>
+        <p>Prediction latency from 144ms to 71ms.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

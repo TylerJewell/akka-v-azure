@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What happens to technical debt over time? | Akka</title>
+<meta name="description" content="Technical and knowledge debt accumulate when the specification and the code move apart. Verifying every change against the specification keeps them together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Rollout and delivery</div>
+      <h1 class="q-headline">What happens to technical debt <span class="accent">over the life of the system?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>Technical debt accumulates when the account of what a system should do and the system itself move apart. Each change that nothing reconciles with the specification adds to the distance.</p>
+        <p><b>Akka Specify verifies every change against the specification, so the code never drifts from it.</b> Technical and knowledge debt stop accumulating over the life of the system.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Rework consumes 20 to 40% of engineering capacity.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Engineering capacity lost to rework caused by earlier architectural choices runs at 20 to 40%. The choice that caused it was reasonable when it was made, and the cost arrives once enough of the system depends on it.</p>
+     <p>Knowledge debt runs alongside it. The reason a component works the way it does lives with the people who built it, and it leaves when they do. A team maintaining a system it did not design pays for that gap on every change.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 255" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One change follows two paths. Without the specification it merges, its reason is lost, a later team works around it and the work becomes rework. With the specification it is verified, its reason is recorded, a later team reads it and the next change is made against the requirement.">
+ <defs>
+  <marker id="i10g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7A7A7A"/></marker>
+  <marker id="i10y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker>
+ </defs>
+ <text x="0" y="18" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">WITHOUT THE SPECIFICATION</text>
+ <rect x="0" y="104" width="112" height="44" rx="5" fill="#131316" stroke="#FFCE4A"/>
+ <text x="56" y="131" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="11" font-weight="600">a change</text>
+ <path d="M112,116 C136,116 140,74 154,66" fill="none" stroke="#7A7A7A" stroke-width="1.6" marker-end="url(#i10g)"/>
+ <path d="M112,136 C136,136 140,186 154,194" fill="none" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#i10y)"/>
+ <line x1="164" y1="64" x2="560" y2="64" stroke="#3A3A40" stroke-width="2"/>
+ <g fill="#3A3A40"><circle cx="176" cy="64" r="4.5"/><circle cx="300" cy="64" r="4.5"/><circle cx="424" cy="64" r="4.5"/></g>
+ <circle cx="548" cy="64" r="4.5" fill="#E74C3C"/>
+ <g font-family="Instrument Sans,sans-serif" font-size="9.5" fill="#8A8A8A" text-anchor="middle">
+  <text x="176" y="48">it merges</text><text x="300" y="48">the reason is lost</text><text x="424" y="48">a team works around it</text>
+ </g>
+ <text x="548" y="48" text-anchor="middle" fill="#E74C3C" font-family="Instrument Sans,sans-serif" font-size="9.5">rework</text>
+ <line x1="0" y1="160" x2="640" y2="160" stroke="#2A2A2A"/>
+ <line x1="164" y1="194" x2="560" y2="194" stroke="#FFCE4A" stroke-width="2"/>
+ <g fill="#FFCE4A"><circle cx="176" cy="194" r="4.5"/><circle cx="300" cy="194" r="4.5"/><circle cx="424" cy="194" r="4.5"/><circle cx="548" cy="194" r="4.5"/></g>
+ <g font-family="Instrument Sans,sans-serif" font-size="9.5" fill="#D8D8D8" text-anchor="middle">
+  <text x="176" y="216">it is verified</text><text x="300" y="216">the reason is recorded</text><text x="424" y="216">a team reads it</text><text x="548" y="216">the next change fits</text>
+ </g>
+ <text x="0" y="242" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">WITH THE SPECIFICATION</text>
+</svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Where debt enters</div>
+     <h2 class="rv">Each unreconciled change makes the written account less accurate.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>An undocumented change</b><span>Behaviour changes and the specification does not, so the document describes a system that no longer exists.</span></div>
+     <div class="r"><b>A verbal exception</b><span>A reviewer allows a departure in a meeting, and the exception leaves no trace once that reviewer moves on.</span></div>
+     <div class="r"><b>A shortcut under time pressure</b><span>A workaround ships and the reason for it is never written down, so a later team reads it as a design choice.</span></div>
+     <div class="r"><b>An early dependency</b><span>One architectural choice sets what every later change works around. Switching cost off a first-choice runtime grows non-linearly with the size of the deployed base.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What enforcement changes</div>
+     <h2 class="rv">The specification stays accurate because a change cannot leave it.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Every change is verified against the specification before it merges, so the specification describes the running system at every point in its life. A team that joins later reads the requirement instead of reconstructing it from code.</p>
+     <p>An exception is written into the specification, where it carries an author, a scope and a review. Debt prevention becomes a guarantee of the delivery model.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>What about the debt a system already carries?</h3>
+      <p>A specification written against what the system is meant to do makes the gap visible on the first check. Every requirement the running code does not meet is reported, and that list is the backlog.</p>
+     </div>
+     <div class="q">
+      <h3>Does this cover knowledge debt as well as code?</h3>
+      <p>The specification carries the goals, the risk envelope, the knowledge sources and the operational envelope. The reasons behind the system are in the artifact every change is checked against.</p>
+     </div>
+     <div class="q">
+      <h3>What happens when the platform version changes?</h3>
+      <p>The specification describes the system in its own terms, so agents stay portable across deployments and Akka versions. An upgrade is verified against the same specification.</p>
+     </div>
+     <div class="q">
+      <h3>Who owns the specification after delivery?</h3>
+      <p>The customer maintains the specifications. Extending the system means editing the artifact the check reads.</p>
+     </div>
+     <div class="q">
+      <h3>How does this show up in cost?</h3>
+      <p>Rework runs at 20 to 40% of engineering capacity, and GenAI projects that scale past pilot run 2x to 3x over cost. The two figures measure decisions made early and paid for later.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Specification-checked change and debt prevention are part of <a href="/platform/specify" class="accent">Akka Specify</a>. <b>Figures.</b> Rework, cost-overrun and switching-cost estimates come from the BCG, Deloitte and McKinsey studies cited on the <a href="/efficiency" class="accent">efficiency</a> page.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/efficiency">
+        <div class="k">Argument</div>
+        <h3>Efficiency decides which enterprises scale AI</h3>
+        <p>What rework costs, and what removes it.</p>
+       </a>
+       <a href="/platform/specify">
+        <div class="k">Solution</div>
+        <h3>Akka Specify</h3>
+        <p>Every change verified against the specification.</p>
+       </a>
+       <a href="/guides/code-drifting-from-spec">
+        <div class="k">Guide</div>
+        <h3>What stops code from drifting away from what was specified?</h3>
+        <p>The check keeps the code and the specification together.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

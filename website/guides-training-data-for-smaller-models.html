@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where does training data for a smaller model come from? | Akka</title>
+<meta name="description" content="From production traffic your agents already handled, after it has been graded. The grades decide which responses are worth imitating.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Models and routing</div>
+      <h1 class="q-headline">Where does the training data for a <span class="accent">smaller model come from?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>From the traffic your agents have already handled. Every interaction leaves a record of what was asked and what the model returned. Grading is scoring each of those responses against the criteria you set for a good answer, and <b>the scored records are the training set.</b></p>
+        <p>Without a score, prompts and completions teach a smaller model to imitate the larger one, mistakes included. The score is what tells the training which responses were worth imitating.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Grading is what makes the records usable.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Collecting traffic is straightforward. Any system serving agents can log what went in and what came out. A log holds no opinion about which responses were good, and a smaller model trained on all of it reproduces the average of the larger one.</p>
+     <p>Grading supplies the opinion. Structured output is scored by a rule: a query either parses and returns the right rows, or it does not. Unstructured output is scored by a second model reading the response against criteria you wrote.</p>
+     <p>The same evaluation decides whether a response was acceptable to serve. Running it produces the quality signal and the training signal at once.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Production traffic is evaluated, the graded records train a candidate model, the candidate shadows live traffic, and the gate promotes it when quality holds and token use falls.">
+ <defs><marker id="e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker></defs>
+ <g font-family="Instrument Sans,sans-serif" font-size="10.5" fill="#D8D8D8" text-anchor="middle">
+  <rect x="0" y="70" width="108" height="44" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="54" y="97">production traffic</text>
+  <rect x="140" y="70" width="108" height="44" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="194" y="90">evaluation</text><text x="194" y="105" font-size="9" fill="#A6A6A6">grades every run</text>
+  <rect x="280" y="70" width="108" height="44" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="334" y="90">training</text><text x="334" y="105" font-size="9" fill="#A6A6A6">on graded records</text>
+  <rect x="420" y="70" width="108" height="44" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="474" y="90">shadow run</text><text x="474" y="105" font-size="9" fill="#A6A6A6">against live traffic</text>
+ </g>
+ <g stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#e)">
+  <line x1="110" y1="92" x2="132" y2="92"/><line x1="250" y1="92" x2="272" y2="92"/><line x1="390" y1="92" x2="412" y2="92"/>
+ </g>
+ <path d="M528,92 H566 Q578,92 578,104 V140 Q578,152 566,152 H66 Q54,152 54,140 V124" fill="none" stroke="#FFCE4A" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#e)"/>
+ <text x="316" y="172" text-anchor="middle" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9">promoted when quality holds and token use falls</text>
+ <line x1="0" y1="200" x2="640" y2="200" stroke="#2A2A2A"/></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What it removes</div>
+     <h2 class="rv">Nothing has to be exported.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A stack assembled from separate products has to move this data. The trace lives in an observability tool. The evaluation runs somewhere else. The training job reads from a bucket a pipeline wrote. Each hop is a copy, a schema, a permission boundary, and a bill.</p>
+     <p>When evaluation, training, and inference run on the same runtime as the agents, <b>the trace the agent emitted is the record used to grade, to train, and to serve.</b> There is no export step, because nothing left.</p>
+     <p>Akka Verify reads that same record for governance, so training adds no second data-handling surface to review.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The requirement</div>
+     <h2 class="rv">Coverage matters more than volume.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>Enough traffic</b><span>The work you want a smaller model to take has to appear in production traffic at volume. Rare paths stay with the larger model.</span></div>
+     <div class="r"><b>Evaluations that mean something</b><span>A grade is only as good as the criterion behind it. Where the criterion is vague, the training inherits the vagueness.</span></div>
+     <div class="r"><b>Coverage, not volume</b><span>Ten thousand near-identical requests train less than a few hundred that span the range of the work.</span></div>
+     <div class="r"><b>A promotion gate</b><span>A candidate has to be measured against the incumbent on live traffic before it serves any of it.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>How much traffic is needed before this is worth doing?</h3>
+      <p>The volume depends on how narrow the task is. A well-bounded task with consistent structure needs far less than an open-ended one. The test is whether a sample of the work you want to move is representative of all of it.</p>
+     </div>
+     <div class="q">
+      <h3>Does this need labelled data?</h3>
+      <p>Training needs no separate labelling project. The evaluations that already decide whether a response was acceptable produce the labels as a side effect of running.</p>
+     </div>
+     <div class="q">
+      <h3>What if the incumbent model is often wrong?</h3>
+      <p>Then the grades say so, and the records that failed are not what the candidate trains toward. A model trained on scored traffic learns only from the responses that passed.</p>
+     </div>
+     <div class="q">
+      <h3>Whose data is the model trained on, and where does it run?</h3>
+      <p>You own the model. The model is tuned from an open-weight base inside your own environment, and the weights that result are yours to keep and to move.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Evaluation, training, and promotion are capabilities of <a href="/platform/optimize" class="accent">Akka Optimize</a>.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/optimize">
+        <div class="k">Solution</div>
+        <h3>Akka Optimize</h3>
+        <p>Routing traffic to the best open-weight model and training smaller ones on your data.</p>
+       </a>
+       <a href="/efficiency">
+        <div class="k">Argument</div>
+        <h3>Efficiency decides which enterprises scale AI</h3>
+        <p>Cost per verified task, and what it prices.</p>
+       </a>
+       <a href="/platform/verify">
+        <div class="k">Solution</div>
+        <h3>Akka Verify</h3>
+        <p>The evidence record the grading writes to.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

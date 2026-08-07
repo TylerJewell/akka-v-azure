@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How does a request reach the right model? | Akka</title>
+<meta name="description" content="A routing policy picks the model for each task from the class of work, the score it has to reach, the token budget, and where the data may go.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Models and routing</div>
+      <h1 class="q-headline">How does a request get routed to the <span class="accent">right model?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>A routing policy chooses the model for each task. The policy reads the class of work, the quality threshold for that class, the token budget, and the residency rule on the data.</p>
+        <p><b>Akka Optimize routes each task to the best model from any vendor, under policies you write.</b> The choice is made in the runtime that executes the agent, so changing the model for a class of work changes no agent code.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Agent traffic is a mixture of tasks with different difficulty.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A single agent extracts fields from a document, classifies an incoming request, and reasons over a contract. Each of those tasks is a separate class of work with its own quality requirement. Sending every class to one model prices the easiest of them at the rate of the hardest.</p>
+     <p>Routing per task requires knowing which model handles each class of work well. Akka Optimize grades production traffic continuously, so every class carries a measured score for each model that has run it.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 216" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A request reaches a routing policy that reads the task class, the quality threshold, the budget and the residency rule, and the request continues to a frontier model, to a specialized model trained on your traffic, or to a second vendor when the first refuses the call."><defs><marker id="e1y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker></defs><rect x="0" y="96" width="104" height="44" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="52" y="123" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">request</text><line x1="112" y1="118" x2="158" y2="118" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#e1y)"/><rect x="168" y="86" width="152" height="64" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="244" y="112" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="12" font-weight="600">routing policy</text><text x="244" y="130" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="8.5">task &#183; threshold &#183; budget &#183; residency</text><line x1="328" y1="104" x2="398" y2="56" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#e1y)"/><line x1="328" y1="118" x2="398" y2="118" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#e1y)"/><line x1="328" y1="132" x2="398" y2="182" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#e1y)"/><rect x="410" y="30" width="218" height="46" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="519" y="50" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">frontier model</text><text x="519" y="66" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="8.5">the class of work that needs it</text><rect x="410" y="95" width="218" height="46" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="519" y="115" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="11" font-weight="600">specialized model</text><text x="519" y="131" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="8.5">trained on your own traffic</text><rect x="410" y="160" width="218" height="46" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="519" y="180" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">second vendor</text><text x="519" y="196" text-anchor="middle" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="8.5">first vendor is rate-limiting</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the policy reads</div>
+     <h2 class="rv">The routing decision has defined inputs.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>The class of work</b><span>The kind of task the request belongs to, which is what the measured quality scores are attached to.</span></div>
+     <div class="r"><b>The quality threshold</b><span>The score a response has to reach for that class, taken from the evaluations that already grade production runs.</span></div>
+     <div class="r"><b>The token budget</b><span>What the class is allowed to spend, which is what makes a cheaper model the choice once its quality reaches that threshold.</span></div>
+     <div class="r"><b>Where it may run</b><span>Residency and vendor rules, so a task carrying regulated data reaches only the models permitted to receive it.</span></div>
+     <div class="r"><b>Provider state</b><span>A rate limit or an outage at one vendor is a routing input, so the task moves to another model that meets the same threshold.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What routing changes</div>
+     <h2 class="rv">Model choice stops being a code change.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A model named in application code makes every model change a release. A team in that position runs a migration each time a provider ships a new version, and the migration touches every agent that named the old one.</p>
+     <p>A routing policy keeps the choice outside the agent. Adding a model, retiring one, or moving a class of work from a frontier model to a specialized one is a change to the policy, and the agents that route through it are untouched.</p>
+     <p>A specialized model trained on your own traffic is the cheapest destination the policy can name. Specialized models run faster and consume up to 80% fewer tokens than foundry models on the class of work they were trained for.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>Who writes the routing policy?</h3>
+      <p>The team that owns the agent and its budget writes the policy, and compliance owns the residency rules it has to respect. Routing is configuration in the runtime, so a revision does not require an application change.</p>
+     </div>
+     <div class="q">
+      <h3>How is the best model for a class of work decided?</h3>
+      <p>Graded production traffic decides it. Every run is scored against the criteria set for its class, so the comparison between models is measured on the work the system actually does.</p>
+     </div>
+     <div class="q">
+      <h3>What happens when the chosen model is unavailable?</h3>
+      <p>The policy names the models each class of work may use. When one of them is rate-limiting or down, the runtime sends the task to another model that meets the same threshold.</p>
+     </div>
+     <div class="q">
+      <h3>Does routing lock the system to one vendor?</h3>
+      <p>Routing spans vendors, and a class of work can name models from several of them. Native A2A, ACP and MCP support keeps agents and tools interoperable across vendors, models and runtimes.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Per-task routing across vendors, grading and token reporting are capabilities of <a href="/platform/optimize" class="accent">Akka Optimize</a>.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/optimize">
+        <div class="k">Solution</div>
+        <h3>Akka Optimize</h3>
+        <p>Routing traffic to the best open-weight model and training smaller ones on your data.</p>
+       </a>
+       <a href="/guides/when-a-smaller-model-makes-sense">
+        <div class="k">Guide</div>
+        <h3>When does routing to a smaller model make sense?</h3>
+        <p>The graded score decides which class of work moves.</p>
+       </a>
+       <a href="/efficiency">
+        <div class="k">Argument</div>
+        <h3>Efficiency decides which enterprises scale AI</h3>
+        <p>What token spend does at scale.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

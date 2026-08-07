@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What evidence does an auditor ask for? | Akka</title>
+<meta name="description" content="An auditor asks for the record of what the system did, complete and unaltered. A sampled log answers for the runs it kept and for none of the rest.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Governance and control</div>
+      <h1 class="q-headline">What evidence does an auditor <span class="accent">actually ask for?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>An auditor asks for the record of what the system did: the interaction, the control that applied to it, the authority it ran under, and proof the record has not changed since it was written. Completeness is the property under examination. A record covering some of the runs answers for those runs and leaves the rest undocumented.</p>
+        <p><b>Akka Verify writes a non-sampled, cryptographically hash-chained interaction log.</b> Every event embeds the identity, the permissions and the policy bindings resolved at the moment the action executed.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Sampling is a cost control that removes the record.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Observability tools sample by design. Keeping one run in a hundred holds the storage bill down and preserves the shape of a latency distribution, which is what those tools report on.</p>
+     <p>An auditor examining one loan decision needs that decision. A sampled log holds it at whatever rate the sampler was configured for, and the gap cannot be filled afterwards, because the run has completed and the state it held is gone.</p>
+     <p>Akka captures every interaction into petabyte-scale storage, indexed and queryable, and the log is non-sampled by contract.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 241" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One action produces two paths. Inside the runtime the authority is resolved at execution and every event is chained to the one before it. Outside the request path a copy reaches a sampler, which keeps one run and leaves the rest with no record."><defs><marker id="f2y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker><marker id="f2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7A7A7A"/></marker></defs><text x="0" y="16" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">INSIDE THE RUNTIME</text><rect x="0" y="34" width="104" height="42" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="52" y="60" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">action runs</text><line x1="112" y1="55" x2="160" y2="55" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#f2y)"/><rect x="172" y="28" width="140" height="54" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="242" y="51" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="11" font-weight="600">authority resolved</text><text x="242" y="68" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="9">identity &#183; permissions &#183; policy</text><line x1="320" y1="55" x2="358" y2="55" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#f2y)"/><g fill="#131316" stroke="#FFCE4A"><rect x="368" y="40" width="44" height="30" rx="3"/><rect x="424" y="40" width="44" height="30" rx="3"/><rect x="480" y="40" width="44" height="30" rx="3"/><rect x="536" y="40" width="44" height="30" rx="3"/><rect x="592" y="40" width="44" height="30" rx="3"/></g><g stroke="#FFCE4A" stroke-width="1.4"><line x1="412" y1="55" x2="424" y2="55"/><line x1="468" y1="55" x2="480" y2="55"/><line x1="524" y1="55" x2="536" y2="55"/><line x1="580" y1="55" x2="592" y2="55"/></g><text x="504" y="94" text-anchor="middle" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9">every event hashed with the one before it</text><line x1="0" y1="124" x2="640" y2="124" stroke="#2A2A2A"/><text x="0" y="150" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">OUTSIDE THE REQUEST PATH</text><path d="M52,80 V162" fill="none" stroke="#3A3A40" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#f2g)"/><rect x="0" y="168" width="140" height="42" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="70" y="194" text-anchor="middle" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="11">a copy arrives</text><line x1="148" y1="189" x2="186" y2="189" stroke="#7A7A7A" stroke-width="1.4" marker-end="url(#f2g)"/><rect x="196" y="168" width="116" height="42" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="254" y="187" text-anchor="middle" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="11">sampler</text><text x="254" y="201" text-anchor="middle" fill="#7A7A7A" font-family="Instrument Sans,sans-serif" font-size="9">keeps a fraction</text><line x1="320" y1="189" x2="358" y2="189" stroke="#7A7A7A" stroke-width="1.4" marker-end="url(#f2g)"/><g fill="none" stroke="#E74C3C" stroke-dasharray="3,3"><rect x="368" y="174" width="44" height="30" rx="3"/><rect x="424" y="174" width="44" height="30" rx="3"/><rect x="536" y="174" width="44" height="30" rx="3"/><rect x="592" y="174" width="44" height="30" rx="3"/></g><rect x="480" y="174" width="44" height="30" rx="3" fill="#131316" stroke="#3A3A40"/><text x="504" y="228" text-anchor="middle" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="9">the runs the sampler dropped left no record</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the record carries</div>
+     <h2 class="rv">An evidence record covers the action, the control, the authority and the chain.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>What the system did</b><span>The prompt, the response, and every tool call the agent proposed. The runtime gates each call, so the record distinguishes a call that executed from one a guardrail refused.</span></div>
+     <div class="r"><b>Which control applied</b><span>The guardrail verdict, the policy that produced it, and the Eval Matrix row the policy answers to. An Eval Matrix is the signed list of safeguards a system must implement and demonstrate.</span></div>
+     <div class="r"><b>Who held the authority</b><span>The workload identity of the service, the delegation chain from the person to the agent to any sub-agent to the tool, and the permissions in force at that moment.</span></div>
+     <div class="r"><b>That nothing changed</b><span>Each event is cryptographically chained to the event before it. Removing or editing a record breaks the chain, and the break is visible to anyone recomputing it.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Retention</div>
+     <h2 class="rv">Each retention floor comes from the regulation that sets it.</h2>
+    </div>
+    <div class="prose rv">
+     <p>EU AI Act Article 11 sets a ten-year floor for technical documentation. Article 26 sets a six-month floor for automatically generated logs. DORA requires five years or more for financial firms. A ninety-day window sold as a billing tier is shorter than every one of those.</p>
+     <p>Akka maps retention to those floors across explicit categories: the interaction log, trace tiers, Annex IV documentation, evidence exports, the held-execution archive, and the audit and change log. Legal hold is a first-class operation, so a record under hold survives the expiry its category would otherwise apply.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>Is a trace the same as an evidence record?</h3>
+      <p>A trace records timing and structure for an engineer debugging a request. An evidence record carries the decision, the authority behind it, and a chain that proves the record was not altered. Traces are sampled and can be edited after they are written.</p>
+     </div>
+     <div class="q">
+      <h3>Can this record be produced from outside the runtime?</h3>
+      <p>The permissions and policy bindings in force at execution are visible to the runtime that propagated them. A component receiving a copy of the interaction afterwards receives the content without the authority it ran under.</p>
+     </div>
+     <div class="q">
+      <h3>What does an auditor do with a hash chain?</h3>
+      <p>Recomputing the chain over an exported set shows whether any record was removed or changed, because each event carries a hash of the event before it. The check runs on the export the auditor holds.</p>
+     </div>
+     <div class="q">
+      <h3>Who can stop a record from expiring?</h3>
+      <p>Legal hold is applied by the compliance owner and suspends retention expiry for the records it covers. A record under hold is retained until the hold is released.</p>
+     </div>
+     <div class="q">
+      <h3>Does the record cover agents built on other frameworks?</h3>
+      <p>Evaluation and evidence capture work against agents built elsewhere. The authority snapshot requires the runtime to propagate identity through each call, which means the agent runs on Akka.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> The non-sampled interaction log, authority snapshots, retention categories and legal hold are capabilities of <a href="/platform/verify" class="accent">Akka Verify</a>. <b>Instruments named.</b> The EU AI Act and DORA are public regulatory texts.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/verify">
+        <div class="k">Solution</div>
+        <h3>Akka Verify</h3>
+        <p>Inline enforcement and the evidence record an auditor reads.</p>
+       </a>
+       <a href="/guides/prove-what-runs-was-approved">
+        <div class="k">Guide</div>
+        <h3>How do you prove what runs is what was approved?</h3>
+        <p>What the evidence record is compared against.</p>
+       </a>
+       <a href="/guides/which-regulations-apply">
+        <div class="k">Guide</div>
+        <h3>How do you know which regulations apply?</h3>
+        <p>Where the control rows and retention floors come from.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

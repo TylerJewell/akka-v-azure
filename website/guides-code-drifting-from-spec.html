@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What stops code from drifting away from spec? | Akka</title>
+<meta name="description" content="Every change is checked against the specification before it merges, so a change that contradicts the specification is refused at the point it is written.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Rollout and delivery</div>
+      <h1 class="q-headline">What stops code from drifting away from <span class="accent">what was specified?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>Every change is checked against the specification before it merges. A change that contradicts the specification is refused while its author is still working on it.</p>
+        <p><b>Akka Specify makes the specification the artifact each change is verified against.</b> The specification and the code cannot separate, because a change that leaves the specification never lands.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Drift accumulates one accepted change at a time.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A specification written at the start of a project describes the system as it was designed. Changes then arrive at the pace of the business. Each change is small and reasonable on its own. Each is written by someone who has not read the document.</p>
+     <p>Nobody decides to abandon the specification. The document ages while the code moves, and within a few quarters the two describe different systems. The specification is then treated as history, and the code becomes the only account of what the system does.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 243" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Without a check the code line moves further from the specification line with every change. With a check the code tracks the specification, and a change that contradicts it is deflected and returned to its author.">
+ <defs><marker id="i3r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E74C3C"/></marker></defs>
+ <text x="0" y="16" fill="#A6A6A6" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">WITHOUT THE CHECK</text>
+ <line x1="14" y1="46" x2="548" y2="46" stroke="#3A3A40" stroke-width="1.4" stroke-dasharray="5,5"/>
+ <text x="556" y="50" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10">the specification</text>
+ <polyline points="20,46 120,56 220,68 320,82 420,96 520,110" fill="none" stroke="#7A7A7A" stroke-width="2"/>
+ <g fill="#3A3A40"><circle cx="120" cy="56" r="4.5"/><circle cx="220" cy="68" r="4.5"/><circle cx="320" cy="82" r="4.5"/><circle cx="420" cy="96" r="4.5"/></g>
+ <circle cx="520" cy="110" r="4.5" fill="#E74C3C"/>
+ <text x="528" y="114" fill="#E74C3C" font-family="Instrument Sans,sans-serif" font-size="10">the code</text>
+ <line x1="0" y1="150" x2="640" y2="150" stroke="#2A2A2A"/>
+ <text x="0" y="174" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="1.4">WITH THE CHECK</text>
+ <line x1="14" y1="200" x2="548" y2="200" stroke="#3A3A40" stroke-width="1.4" stroke-dasharray="5,5"/>
+ <text x="556" y="204" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10">the specification</text>
+ <line x1="20" y1="200" x2="520" y2="200" stroke="#FFCE4A" stroke-width="2"/>
+ <g fill="#FFCE4A"><circle cx="120" cy="200" r="4.5"/><circle cx="220" cy="200" r="4.5"/><circle cx="420" cy="200" r="4.5"/><circle cx="520" cy="200" r="4.5"/></g>
+ <line x1="300" y1="200" x2="322" y2="224" stroke="#E74C3C" stroke-width="1.6"/>
+ <circle cx="324" cy="226" r="4.5" fill="#E74C3C"/>
+ <path d="M332,226 H352 Q362,226 362,216 V204" fill="none" stroke="#E74C3C" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#i3r)"/>
+ <text x="372" y="230" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="9">refused and returned to its author</text>
+ </svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the check reads</div>
+     <h2 class="rv">A change is compared against the requirement it touches.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>The functional requirement</b><span>What the system is supposed to do. A change that alters behaviour the specification fixed is refused.</span></div>
+     <div class="r"><b>The risk envelope</b><span>The safeguards the system must enforce. Removing a guardrail binding fails the check even when the code compiles.</span></div>
+     <div class="r"><b>The operational envelope</b><span>Service level, regions, latency and token budget. A change that breaks the deployment topology those set is caught before release.</span></div>
+     <div class="r"><b>The traceability link</b><span>Each generated artifact carries the line of specification that required it, so the check knows which requirement a file answers to.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Where the check runs</div>
+     <h2 class="rv">The check runs at the point the change is written.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Akka Specify runs inside the repositories, CI systems and AI coding assistants a team already uses. A developer sees the refusal in the editor, and the same check runs again on the branch in CI.</p>
+     <p>A build-and-deploy gate then runs the evaluation suite and fails the deploy when the signed control set is unmet. The gate produces a versioned, hash-chained report, so a refusal is a record an auditor can read.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>What happens when the specification is the thing that is wrong?</h3>
+      <p>The specification is edited first and the code change follows it. Editing a requirement is an explicit act with an author, a reviewer and a record.</p>
+     </div>
+     <div class="q">
+      <h3>Does this slow down an urgent change?</h3>
+      <p>The check runs at the speed of the build. An urgent change that agrees with the specification passes without a person in the loop, and one that contradicts it names the requirement it broke.</p>
+     </div>
+     <div class="q">
+      <h3>What about code written before the specification existed?</h3>
+      <p>A specification written against what an existing system is meant to do makes the gap visible on the first check. Every requirement the running code does not meet is reported.</p>
+     </div>
+     <div class="q">
+      <h3>Can a team grant itself an exception?</h3>
+      <p>An exception is written into the specification, where it carries an author and a scope. The exception stays attached to the system for as long as it applies. An exception granted verbally in a review leaves no trace once the reviewer moves on.</p>
+     </div>
+     <div class="q">
+      <h3>How is this different from a linter or a policy-as-code rule?</h3>
+      <p>A linter checks the shape of the code against rules about code. The specification states what the system is for, which regions it runs in and what it must never do, and the check compares the change against that.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Specification-checked change is a capability of <a href="/platform/specify" class="accent">Akka Specify</a>. Build-time deploy gates and hash-chained reports are capabilities of <a href="/platform/verify" class="accent">Akka Verify</a>.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/specify">
+        <div class="k">Solution</div>
+        <h3>Akka Specify</h3>
+        <p>The specification each change is verified against.</p>
+       </a>
+       <a href="/guides/technical-debt-over-time">
+        <div class="k">Guide</div>
+        <h3>What happens to technical debt over the life of the system?</h3>
+        <p>What drift costs once it accumulates.</p>
+       </a>
+       <a href="/guides/many-developers-one-way">
+        <div class="k">Guide</div>
+        <h3>How do you keep hundreds of developers building the same way?</h3>
+        <p>Golden paths and the specifications that hold them.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do you stop an agent before it acts? | Akka</title>
+<meta name="description" content="Stopping an action requires running in the same path that executes it. A check reading the result afterwards can only record what already happened.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Governance and control</div>
+      <h1 class="q-headline">How do you stop an agent <span class="accent">before it acts?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>Stopping an action requires running in the same path that executes it. A check that reads the result afterwards can only record what already happened.</p>
+        <p><b>Akka Verify runs guardrails inline in the transactional path.</b> The check finishes before a response is emitted or a tool call is made, and the action, the verdict and the audit entry are written in one transaction.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">Position in the request path decides what a check can do.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A check runs either outside the request path or inside it. Outside, the check receives a copy of what the agent did. The check can score the response, raise an alert, and open a ticket. The action it is scoring has already executed.</p>
+     <p>Inside, the check holds the request while it runs. The agent proposes an action, the guardrail returns a decision, and the runtime acts on that decision before anything reaches a customer or a system of record.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A proposed action passes through a gate that allows, blocks, or holds it for a person. An observer outside the path receives a copy only after the action has executed."><defs><marker id="f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker><marker id="f1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7A7A7A"/></marker></defs><text x="0" y="18" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">INSIDE THE REQUEST PATH</text><rect x="0" y="40" width="104" height="42" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="52" y="66" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">agent</text><line x1="112" y1="61" x2="164" y2="61" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#f1a)"/><text x="138" y="52" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">proposes</text><rect x="176" y="34" width="124" height="54" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="238" y="57" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="12" font-weight="600">guardrail</text><text x="238" y="74" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="9">decides before execution</text><line x1="308" y1="61" x2="360" y2="61" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#f1a)"/><text x="334" y="52" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">allowed</text><rect x="372" y="40" width="132" height="42" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="438" y="66" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">the action runs</text><line x1="206" y1="96" x2="206" y2="132" stroke="#E74C3C" stroke-width="1.4" marker-end="url(#f1a)"/><text x="196" y="148" text-anchor="middle" fill="#E74C3C" font-family="JetBrains Mono,monospace" font-size="9">blocked</text><line x1="272" y1="96" x2="272" y2="132" stroke="#FFCE4A" stroke-width="1.4" marker-end="url(#f1a)"/><text x="290" y="148" text-anchor="middle" fill="#FFCE4A" font-family="JetBrains Mono,monospace" font-size="9">held for a person</text><line x1="0" y1="180" x2="640" y2="180" stroke="#2A2A2A"/><text x="0" y="202" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.2">OUTSIDE THE REQUEST PATH</text><line x1="438" y1="86" x2="438" y2="214" stroke="#3A3A40" stroke-width="1.4" stroke-dasharray="4,4" marker-end="url(#f1g)"/><rect x="372" y="216" width="132" height="30" rx="5" fill="#0C0C0F" stroke="#3A3A40"/><text x="438" y="236" text-anchor="middle" fill="#8A8A8A" font-family="Instrument Sans,sans-serif" font-size="10.5">observer</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What an inline check can do</div>
+     <h2 class="rv">The verdict allows, blocks, sanitizes, or escalates.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>Allow</b><span>The action executes. The verdict and the action are recorded together, so the log shows the check ran and what it concluded.</span></div>
+     <div class="r"><b>Block</b><span>The action does not execute. The agent receives the refusal and can be re-prompted with the constraint that failed.</span></div>
+     <div class="r"><b>Sanitize</b><span>A sanitizer redacts, masks, or reshapes the content before it continues. The original and the change are both recorded.</span></div>
+     <div class="r"><b>Escalate</b><span>The run pauses and a person decides. Durable suspension holds the paused run across crashes and deployments for as long as the decision takes.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The cost</div>
+     <h2 class="rv">An inline check adds latency to every request it guards.</h2>
+    </div>
+    <div class="prose rv">
+     <p>A check in the request path runs before the response, so its duration is added to the response. The latency cost is why each control chooses its own mode.</p>
+     <p>Compliance owns the policy matrix that makes the choice. A control that must prevent an outcome runs inline. A control that only has to be evidenced runs against the interaction log after the fact. Inline checks and after-the-fact checks produce the same evidence record. Only the inline check can change what happens.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>What happens if the guardrail itself fails?</h3>
+      <p>The runtime treats an unavailable check as a failed check, so the action does not execute. A guardrail that fails open is a guardrail that stops enforcing under exactly the load that makes enforcement matter.</p>
+     </div>
+     <div class="q">
+      <h3>Does a human review stall the system?</h3>
+      <p>The paused run holds its state and releases its resources. Other work continues, and the held run resumes at the step where it stopped once the decision arrives, whether that takes a minute or three days.</p>
+     </div>
+     <div class="q">
+      <h3>Who decides which controls block?</h3>
+      <p>Compliance owns the policy matrix, and the runtime enforces it. Engineers do not hand-code the decision, so a change to policy does not require a change to application code.</p>
+     </div>
+     <div class="q">
+      <h3>What does the record show when an action is blocked?</h3>
+      <p>The proposed action, the policy that refused it, the verdict, and the time. The record is written in the same transaction as the refusal, so an auditor reads the decision itself. A missing result would leave the auditor inferring one.</p>
+     </div>
+     <div class="q">
+      <h3>Can this run against agents built elsewhere?</h3>
+      <p>Evaluation and evidence work against agents built on other frameworks. Inline enforcement requires the runtime to sit in the execution path, which means the agent runs on Akka.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Guardrails, sanitizers, durable human-in-the-loop suspension and the interaction record are capabilities of <a href="/platform/verify" class="accent">Akka Verify</a>.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/platform/verify">
+        <div class="k">Solution</div>
+        <h3>Akka Verify</h3>
+        <p>Evaluation, inline enforcement, and the evidence record an auditor reads.</p>
+       </a>
+       <a href="/guides/which-regulations-apply">
+        <div class="k">Guide</div>
+        <h3>How do you know which regulations apply?</h3>
+        <p>The classification decides which controls a system has to enforce.</p>
+       </a>
+       <a href="/industries/financial-services">
+        <div class="k">Industry</div>
+        <h3>Agentic AI for regulated finance</h3>
+        <p>Financial actions are regulated, irreversible, and time-critical.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>

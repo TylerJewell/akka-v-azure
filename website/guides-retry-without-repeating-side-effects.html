@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do you retry a step without repeating its side effect? | Akka</title>
+<meta name="description" content="A retry is safe when the runtime recorded whether the call executed. A timeout tells you the response was lost and says nothing about whether the action happened.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  GUIDE PAGE. Answer first, then the mechanism, then what it costs.  */
+  /*  Same design system as /efficiency and the industry pages.          */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:64px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(22px,1.9vw,28px);line-height:1.2}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+  /* Editorial split: the section heading sits in a narrow left column and the
+     content fills the rest, so a 68ch prose measure no longer leaves half the
+     page empty. Collapses to stacked below 900px. */
+  .band--hair > .inner, .band--panel > .inner{
+    display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:0 52px;align-items:start}
+  .sec-head{grid-column:1;margin-bottom:0;max-width:none;position:sticky;top:32px}
+  .sec-head h2{margin:12px 0 0}
+  .band--hair > .inner > :not(.sec-head), .band--panel > .inner > :not(.sec-head){grid-column:2}
+
+  .crumb{font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim)}
+  .crumb a{color:var(--muted);text-decoration:none}
+  .crumb a:hover{color:var(--yellow)}
+
+  #hero{padding-top:64px;padding-bottom:44px;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.08),transparent 55%),var(--black)}
+  #hero .inner{max-width:1000px}
+  .q-headline{font-size:clamp(34px,4.4vw,62px);line-height:1.06;letter-spacing:-.035em;max-width:19ch;margin:26px 0 0}
+
+  /* Answer first. This block is what an answer engine quotes, so it stands alone
+     and states the whole answer before any explanation. */
+  .answer{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:28px 0;margin-top:32px;max-width:74ch}
+  .answer .lab{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--yellow);font-weight:600;margin-bottom:16px}
+  .answer p{margin:0 0 16px;color:#e4e4e8;font-size:clamp(17px,1.5vw,20px);line-height:1.62}
+  .answer p:last-child{margin-bottom:0}
+  .answer b{color:var(--white);font-weight:600}
+
+  .prose{max-width:70ch}
+  .prose p{color:#c9c9cf;font-size:16.5px;line-height:1.68;margin:0 0 18px}
+  .prose p b{color:var(--white);font-weight:600}
+  .prose p:last-child{margin-bottom:0}
+
+  .fig{margin:26px 0}
+  .fig-art{width:100%;max-width:100%;margin:0 auto}
+  .fig-art svg{width:100%;height:auto;display:block}
+  .fig-note{font-size:11px;line-height:1.6;color:var(--dim);margin:14px auto 0;max-width:100%;text-align:center}
+
+  /* Requirements, two across. A single full-width column left a long gap
+     beside the label and ran the prose to a 90-character measure. */
+  .req{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;margin-top:4px}
+  .req .r{padding:16px 0;border-top:1px solid var(--line)}
+  .req .r b{display:block;color:var(--white);font-weight:600;font-size:14.5px;
+    letter-spacing:-.01em;margin-bottom:5px}
+  .req .r span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+
+  .qa{max-width:none}
+  .qa .q{border-top:1px solid var(--line);padding:20px 0}
+  .qa h3{font-size:17px;margin-bottom:8px;line-height:1.3}
+  .qa p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.65}
+
+  .rel{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .rel a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;transition:border-color .18s}
+  .rel a:hover{border-color:var(--yellow)}
+  .rel .k{font-family:var(--mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim)}
+  .rel h3{font-size:16px;margin:12px 0 8px;line-height:1.35}
+  .rel p{margin:0;color:var(--muted);font-size:13.5px}
+
+  .sources{font-size:11px;line-height:1.6;color:var(--dim);margin-top:34px;max-width:86ch}
+  .sources b{color:var(--muted);font-weight:600}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .rel{grid-template-columns:1fr}
+    .band--hair > .inner, .band--panel > .inner{display:block}
+    .sec-head{position:static;margin-bottom:26px}
+  }
+  @media (max-width:820px){ .req{grid-template-columns:1fr;gap:0} }
+  @media (max-width:620px){ section{padding:64px var(--pad)} }
+</style>
+</head>
+<body>
+
+  <section id="hero">
+    <div class="inner">
+      <div class="crumb"><a href="/guides">Guides</a> &nbsp;/&nbsp; Durability and failure</div>
+      <h1 class="q-headline">How do you retry an agent step without <span class="accent">repeating its side effect?</span></h1>
+      <div class="answer">
+        <div class="lab">Answer</div>
+        <p>The runtime records whether each tool call executed, and the retry reads that record before acting. A call already recorded as executed is skipped and its result reused.</p>
+        <p><b>A timeout on its own cannot answer the question.</b> A lost response looks identical whether the payment was sent or never reached the provider.</p>
+      </div>
+    </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">The mechanism</div>
+     <h2 class="rv">A timeout reports a lost response.</h2>
+    </div>
+    <div class="prose rv">
+     <p>When a tool call times out, the caller knows the response did not arrive. The action behind it may have completed, may have failed, or may still be running. Retrying on that information sends the request a second time and hopes the far side deduplicates it.</p>
+     <p>Recording the outcome moves the question inside the system. The runtime gates the call, writes that it executed, and the retry reads that write. The decision no longer depends on inferring intent from silence.</p>
+    </div>
+    <div class="fig rv">
+     <div class="fig-art">
+<svg viewBox="0 0 640 192" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A retry reads the record of the tool call. When the record shows the call completed the retry skips it. When no record exists the retry makes the call."><defs><marker id="a4y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FFCE4A"/></marker></defs><rect x="0" y="86" width="112" height="44" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="56" y="113" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">retry begins</text><line x1="120" y1="108" x2="172" y2="108" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#a4y)"/><rect x="184" y="80" width="132" height="56" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="250" y="103" text-anchor="middle" fill="#FFFFFF" font-family="Instrument Sans,sans-serif" font-size="11" font-weight="600">read the record</text><text x="250" y="120" text-anchor="middle" fill="#A6A6A6" font-family="Instrument Sans,sans-serif" font-size="9">did this call execute?</text><line x1="324" y1="94" x2="392" y2="60" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#a4y)"/><text x="352" y="60" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">yes</text><rect x="404" y="34" width="150" height="42" rx="5" fill="#131316" stroke="#2A2A2A"/><text x="479" y="60" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">skip, reuse the result</text><line x1="324" y1="122" x2="392" y2="158" stroke="#FFCE4A" stroke-width="1.6" marker-end="url(#a4y)"/><text x="352" y="160" text-anchor="middle" fill="#7A7A7A" font-family="JetBrains Mono,monospace" font-size="8">no</text><rect x="404" y="140" width="150" height="42" rx="5" fill="#131316" stroke="#FFCE4A"/><text x="479" y="166" text-anchor="middle" fill="#D8D8D8" font-family="Instrument Sans,sans-serif" font-size="11">make the call</text></svg>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What the record has to carry</div>
+     <h2 class="rv">A retry needs the outcome of the call.</h2>
+    </div>
+    <div class="req rv">
+     <div class="r"><b>That the call happened</b><span>Written when the call completed, in the same transaction as the state change it caused.</span></div>
+     <div class="r"><b>What it returned</b><span>So the resumed run reuses the result and continues, without a second call to obtain it.</span></div>
+     <div class="r"><b>The idempotency key</b><span>Passed to providers that support one, so a duplicate arriving from the network is refused at the far side as well.</span></div>
+     <div class="r"><b>The failure, when it failed</b><span>A recorded failure is as useful as a recorded success. Both remove the ambiguity that makes a retry dangerous.</span></div>
+    </div>
+   </div>
+  </section>
+  <section class="band--hair">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">What this changes</div>
+     <h2 class="rv">The deduplication layer stops being yours to build.</h2>
+    </div>
+    <div class="prose rv">
+     <p>Teams that hit this build idempotency keys, a deduplication table, and a reconciliation job that finds the duplicates the first two missed. Each piece is written to compensate for a missing record, and each is maintained forever.</p>
+     <p>Judopay rebuilt its mobile payment platform on Akka and cut production code by half, with the retry and reconciliation logic among the code that stopped being necessary.</p>
+    </div>
+   </div>
+  </section>
+  <section class="band--panel">
+   <div class="inner">
+    <div class="sec-head">
+     <div class="eyebrow">Questions</div>
+     <h2 class="rv">Related questions.</h2>
+    </div>
+    <div class="qa rv">
+     <div class="q">
+      <h3>What if the provider has no idempotency key?</h3>
+      <p>The runtime record still prevents the second call from the agent side, which is where the retry originates. A key adds protection against duplicates created by the network.</p>
+     </div>
+     <div class="q">
+      <h3>Does every tool call need this?</h3>
+      <p>A read that returns the same answer twice is safe to repeat. The record matters for calls that change something: a payment, a filing, a message, a write to a system of record.</p>
+     </div>
+     <div class="q">
+      <h3>What happens when the call is genuinely unknown?</h3>
+      <p>The runtime marks it unresolved and the run escalates. Guessing is what the record exists to prevent. An unresolved payment is a decision for a person.</p>
+     </div>
+     <div class="q">
+      <h3>Is this the same as a transaction?</h3>
+      <p>A database transaction covers the writes inside one system. The record covers a call to a system that shares no transaction with yours, which is why the runtime that made the call has to hold it.</p>
+     </div>
+    </div>
+    <div class="sources"><b>On Akka.</b> Recorded tool execution and journal replay are described in the <a href="https://doc.akka.io/sdk/index.html" class="accent">Akka SDK documentation</a>. <b>Customer figures.</b> Judopay results are reported by the customer.</div>
+   </div>
+  </section>
+
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">Keep reading</div>
+        <h2 class="rv">Related.</h2>
+      </div>
+      <div class="rel rv">
+       <a href="/guides/agent-fails-mid-task">
+        <div class="k">Guide</div>
+        <h3>What happens when an agent fails mid-task?</h3>
+        <p>The task failed partway through, so the work has to run again.</p>
+       </a>
+       <a href="/platform/sdk">
+        <div class="k">Solution</div>
+        <h3>Akka SDK</h3>
+        <p>Durable state and recorded execution.</p>
+       </a>
+       <a href="/industries/financial-services">
+        <div class="k">Industry</div>
+        <h3>Agentic AI for regulated finance</h3>
+        <p>Where a duplicated action is an incident.</p>
+       </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  </script>
+
+</body>
+</html>
