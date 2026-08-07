@@ -20,3 +20,26 @@ git add \
   sales-presentation/generated/optimize/hubspot.html \
   case-studies/hubspot \
   comparisons/hubspot
+
+# Prose gate. Staged HTML and Markdown are checked against the house-voice rule
+# bank. Context is taken from the path, because a question heading is correct in
+# a guide FAQ and wrong in a section heading.
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(html|md)$' || true)
+for f in $STAGED; do
+  [ -f "$f" ] || continue
+  case "$f" in
+    website/guides*)                 CTX=guide ;;
+    website/*)                       CTX=web ;;
+    case-studies/*)                  CTX=case-study ;;
+    battlecards/*)                   CTX=battlecard ;;
+    comparisons/*)                   CTX=web ;;
+    blog-technical/*)                CTX=blog ;;
+    *)                               CTX=web ;;
+  esac
+  python tools/auditors/voice/audit.py --context "$CTX" "$f" || {
+    echo ""
+    echo "Prose gate failed on $f."
+    echo "Fix the violations, or commit with --no-verify if the auditor is wrong."
+    exit 1
+  }
+done
