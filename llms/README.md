@@ -36,20 +36,70 @@ Three changes, made in `llms-master.txt` and propagated:
 Deliberately not done: mapping the four offerings to four costs. The three advantages are
 about the runtime and were left as they are.
 
-Still unreconciled, flagged rather than changed: "up to 80% fewer tokens" and "70 to 90%
-lower infrastructure cost" sit alongside the deck's "operating costs up to 90%" and
-Swiggy's measured 22%; "production-ready in days" sits alongside Specify delivering "in
-weeks". Each is defensible on its own, and a model asked "how fast" or "how much cheaper"
-will pick one.
+### 2026-08-05 — the four solutions become the positioning spine
 
-**Raw sources / snapshots (reference):**
+Full audit in `positioning-audit-2026-08.md`. The file had four competing organizing
+frames: four offerings (L24), efficiency (L26), "three advantages" (L57), "three bands"
+(L79). A model asked for Akka's advantages could answer three ways and be quoting the
+document each time.
+
+Structural changes:
+
+1. **`The Three Advantages` and `The Akka Stack` deleted.** Replaced by one section,
+   `The Efficiency Each Solution Creates`, placed directly after the efficiency thesis so
+   argument and evidence sit together. Each solution is introduced by the cost it removes:
+   SDK/infrastructure, Specify/rework, Optimize/token spend, Verify/governance effort.
+2. **`Akka SDK` section added.** "Akka SDK" previously appeared twice in 547 lines and had
+   no section, while Specify, Optimize and Verify each had one. It carries the largest
+   efficiency number in the document (operating costs up to 90%).
+3. **The four efficiency results moved out of `Customers`** and attached to the solution
+   each one proves: Fox/SDK, Dojo/Specify, Swiggy/Optimize, Manulife/Verify.
+4. **`Governance With Akka Verify` folded under `Akka Verify`** as a subsection.
+5. **Product model corrected.** One *offering* (the Akka Agentic AI Platform); four
+   *solutions* on it, each usable independently, all delivered through the platform.
+   "Ways to get started" removed from all seven instances across both files.
+
+Numbers reconciled:
+
+- **Corpus read from source 2026-08-05: 190 regulations, 1,230 controls, 742
+  penalty-bearing.** Counted across 201 `controls*.yaml` files in
+  `explainability/framework/regulations`. The published 1,215 was stale by 15 controls;
+  penalty-bearing matched exactly. The battlecards' 189 / 962 / 574 is a separate,
+  older count and is **not** reconciled.
+- **Infrastructure cost standardised on "up to 90%"** (was "70 to 90%" in three places).
+  Matches the deck and states a ceiling.
+- **Time to production split by solution.** The days claim belonged to the runtime and now
+  reads "a system that compiles is ready for production"; the weeks claim belongs to
+  Specify. Four conflicting answers became two scoped ones.
+
+Language: eight antitheses, five counting-abstraction constructions, and three absolutes
+removed. `Akka guarantees AI efficiencies … so that none exist at the largest scale` had
+"efficiencies" as the antecedent of "none" and stated the opposite of its intent; fixed in
+both files. **The same sentence is still the live subtitle on the overview deck's
+efficiency slide.**
+
+Still unreconciled, flagged rather than changed: "up to 80% fewer tokens" sits alongside
+Swiggy's measured 22%. Both are defensible, and a model asked "how much does Akka cut
+token cost?" will quote 80% and then cite Swiggy as the proof.
+
+**Live snapshots (the before-picture, kept until publish):**
 
 | File | Source | Notes |
 |---|---|---|
-| `llms-local-original.txt` | Local (this repo) | Original 445-line corporate-positioning superset, pre-merge. Kept as raw source. Uses the 3-dimension framing (Reliability / Risk Control / Repeatability). |
-| `llms-update-approved-notes.md` | Local | Working notes on approved updates to the original local `llms.txt`. |
-| `akka.io-llms.txt` | https://akka.io/llms.txt | Live concise index. Snapshot fetched 2026-07-11. |
-| `akka.io-llms-full.txt` | https://akka.io/llms-full.txt | Live full overview. Snapshot fetched 2026-07-11. |
+| `akka.io-llms.txt` | https://akka.io/llms.txt | Live concise index, fetched 2026-07-11. Re-verified byte-identical to live on 2026-08-05, so live has not moved since. |
+| `akka.io-llms-full.txt` | https://akka.io/llms-full.txt | Live full overview, fetched 2026-07-11. Same re-verification. |
+
+Both are the diff baseline for the pending publish. Refresh them from live with the curl
+commands at the end of this file once the new pair ships.
+
+**Publishing is out of scope for this repo.** The live `akka.io/llms.txt` and
+`llms-full.txt` ship through a separate path, so a gap between the files here and what the
+site serves is expected and is not a defect to re-report. This repo owns the content;
+something else owns the deploy.
+
+`llms-local-original.txt` (the 445-line pre-merge superset, 3-dimension framing) and
+`llms-update-approved-notes.md` were deleted 2026-08-05, superseded by `llms-master.txt`.
+Both are recoverable from git at 67532e3.
 
 `akka.io/llms-all.txt` does not exist (404) as of 2026-07-11.
 
