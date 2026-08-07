@@ -19,3 +19,7 @@ _build/corpus-path.local
 
 # Local secrets / per-machine scratch state (NEVER commit)
 scratchpad/
+
+# Sales enablement. Tracked on the enablement branch, kept off main so
+# GitHub Pages does not serve it.
+/enablement/
