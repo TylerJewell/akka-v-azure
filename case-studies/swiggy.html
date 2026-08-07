@@ -21,6 +21,7 @@
  <div class="meta">
  <span>Industry&nbsp;·&nbsp;<b>Food Delivery &amp; Logistics</b></span>
  <span>Offering&nbsp;·&nbsp;<b>Akka Agentic AI Platform</b></span>
+ <span>Solution&nbsp;·&nbsp;<b>Akka Optimize</b></span>
  </div>
  </div>
  </header>
@@ -55,12 +56,12 @@
  <section class="body">
 
  <h2>The challenge</h2>
- <p>Swiggy runs machine learning at the center of its delivery operation. Its order-assignment flow must score every candidate pairing of an order with a delivery executive across an entire city and return a decision within <span class="num">one minute</span>. That produces high-throughput batch prediction requests — a single query fans out into thousands of model calls — each bound by a strict latency SLA.</p>
+ <p>Swiggy runs machine learning at the center of its delivery operation. Its order-assignment flow must score every candidate pairing of an order with a delivery executive across an entire city and return a decision within <span class="num">one minute</span>. The produces high-throughput batch prediction requests — a single query fans out into thousands of model calls — each bound by a strict latency SLA.</p>
  <p>Under that fanout, P99 prediction latency reached <span class="num">144ms</span>, and duplicate feature lookups and per-request model calls multiplied the work. Missing the one-minute window degrades dispatch quality directly: slower assignment means longer delivery times and idle riders at peak demand.</p>
 
  <h2>Why Akka</h2>
- <p>Swiggy built its Data Science Platform on the <b>Akka Agentic AI Platform</b> and applied five optimization strategies on top of it: micro-batch construction, client- and server-side feature reuse, batching at the feature-store level, batching at the model-prediction level, and partial prediction with micro-batch timeouts. The platform handles concurrency, request steering, and durable in-memory state so the data science team writes prediction logic, not serving infrastructure.</p>
- <p>This is the <b>Never Fail</b> guarantee: the Akka Agentic AI Platform handles clustering, resilience, durable state, and traffic steering under load, so the application stays inside its SLA even as batch volume spikes.</p>
+ <p>Swiggy built its Data Science Platform on the <b>Akka Agentic AI Platform</b> and applied five optimization strategies on top of it: micro-batch construction, client- and server-side feature reuse, batching at the feature-store level, batching at the model-prediction level, and partial prediction with micro-batch timeouts. The platform handles concurrency, request steering, and durable in-memory state so the data science team writes prediction logic.</p>
+ <p>The <b>Never Fail</b> guarantee means the Akka Agentic AI Platform handles clustering, resilience, durable state, and traffic steering under load, so the application stays inside its SLA even as batch volume spikes.</p>
 
  <div class="pullstat">
  <div class="n">5,000+</div>
@@ -70,13 +71,13 @@
  <h2>The results</h2>
  <p><b>Scale.</b> The platform sustains <span class="num">5,000+ predictions per second</span> on a single model. City-level order-assignment batches — every order scored against every eligible rider — complete inside the <span class="num">one-minute</span> SLA, at a tested batch size of 30.</p>
  <p><b>Cost to operate.</b> Feature reuse and micro-batching eliminate duplicate feature-store lookups and collapse per-request model calls into shared batches, roughly <b>halving</b> the compute spent per prediction across a fanout.</p>
- <p><b>Speed to production.</b> The five strategies are reusable platform primitives rather than per-model engineering, cutting new-model onboarding time by about <span class="num">60%</span> and moving teams from trained model to production serving in days.</p>
+ <p><b>Speed to production.</b> The five strategies are reusable platform primitives that every model shares, cutting new-model onboarding time by about <span class="num">60%</span> and moving teams from trained model to production serving in days.</p>
  <p><b>Business impact.</b> P99 prediction latency fell from <span class="num">144ms to 71ms</span>, a 2&times; reduction, keeping city-scale dispatch decisions inside their SLA at peak load.</p>
 
  <h2>The agentic opportunity</h2>
  <div class="bridge">
  <p>Swiggy's order-assignment flow is already an agentic decision at scale: for every order it evaluates thousands of order-and-rider pairings, weighs ETA, distance, and executive availability, and commits a dispatch within one minute. On the <b>Akka Agentic AI Platform</b>, that flow becomes a governed dispatch agent — one that scores candidates in real time, negotiates trade-offs across a live city, adapts to demand surges, and orchestrates fulfillment, running at the same 5,000-predictions-per-second scale Swiggy already proved, with durable state that survives failure and recovery inside the SLA.</p>
- <p>The platform that halved Swiggy's prediction latency is the same platform that builds and runs agentic AI today. Enterprises build on the <b>Akka Agentic AI Platform</b> directly, or have a system delivered and operated through <b>Akka Specify</b>. Both provide the production guarantees Swiggy's platform has run on.</p>
+ <p>The platform that halved Swiggy's prediction latency is the same platform that builds and runs agentic AI today. Enterprises build on the <b>Akka Agentic AI Platform</b> directly, or have a system delivered and operated through <b>Akka Specify</b>. Each path provides the production guarantees Swiggy's platform has run on.</p>
  </div>
 
  </section>

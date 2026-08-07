@@ -138,13 +138,13 @@
           <div class="vlabel">Agentforce — Salesforce-bound agents</div>
           <h3>It lives inside the CRM suite</h3>
           <p class="vbody">Agentforce is an application-layer agent built into Salesforce. Agents are authored in Agentforce Builder, compiled by Agent Script into Salesforce metadata, and executed by the Atlas Reasoning Engine, grounded in Salesforce CRM objects and Data Cloud. Data Cloud is a technical prerequisite and the agents are an add-on to your Salesforce licenses.</p>
-          <p class="vbody">It reaches non-Salesforce systems through Flow and API callouts, but the orchestration, reasoning, and state stay inside Salesforce, and it runs only on Salesforce-hosted SaaS. You deploy where Salesforce runs it, not where you choose.</p>
+          <p class="vbody">Agentforce reaches non-Salesforce systems through Flow and API callouts. The orchestration, reasoning, and state stay inside Salesforce, and it runs only on Salesforce-hosted SaaS. Salesforce decides where the agent is deployed.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Platform</div>
           <h3>It runs anywhere you put it</h3>
-          <p class="vbody">Akka is the runtime an agentic system runs on, not an application inside one. It provides native agents, durable in-memory state, real-time streaming, an API layer, orchestration, observability, and governance as one platform, for any workload across any system, independent of any single SaaS data model.</p>
-          <p class="vbody">It carries no platform prerequisite and no vendor data model. You deploy it on Akka cloud, a hyperscaler VPC, your own Kubernetes, on-prem, or sovereign cloud, and the specs are portable. The stack is yours to own and move.</p>
+          <p class="vbody">Akka is the runtime an agentic system runs on. Akka provides native agents, durable in-memory state, real-time streaming, an API layer, orchestration, observability, and governance as one platform, for any workload across any system, independent of any single SaaS data model.</p>
+          <p class="vbody">Akka carries no platform prerequisite and no vendor data model. You deploy it on Akka cloud, a hyperscaler VPC, your own Kubernetes, on-prem, or sovereign cloud, and the specs are portable. The stack is yours to own and move.</p>
         </div>
       </div>
     </div>
@@ -203,22 +203,22 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance covers the whole AI system or only the part inside Salesforce. Agentforce governs the data flowing through its own ecosystem. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action, across any workload, with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is whether governance covers the whole AI system or only the part inside Salesforce. Agentforce governs the data flowing through its own ecosystem. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action, across any workload, with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Agentforce — Salesforce-scoped</div>
           <h3>Inside the ecosystem</h3>
           <p class="sub">Scoped to Salesforce</p>
-          <p class="vbody">Agentforce governs through the Einstein Trust Layer: toxicity and bias detection, prompt and response masking, a zero-retention LLM gateway, and an audit trail logged to Data Cloud. Those safeguards are scoped to the Salesforce ecosystem and the data flowing through it.</p>
-          <p class="vbody">It is not a broad EU AI Act conformance program. It does not perform pre-deployment high-risk classification, gate a deployment before it ships, capture multi-persona regulatory sign-offs, or produce a sealed, portable audit artifact for systems outside Salesforce.</p>
+          <p class="vbody">Agentforce governs through the Einstein Trust Layer: toxicity and bias detection, prompt and response masking, a zero-retention LLM gateway, and an audit trail logged to Data Cloud. The Trust Layer safeguards are scoped to the Salesforce ecosystem and the data flowing through it.</p>
+          <p class="vbody">The Trust Layer is not a broad EU AI Act conformance program. The Trust Layer does not perform pre-deployment high-risk classification, gate a deployment before it ships, capture multi-persona regulatory sign-offs, or produce a sealed, portable audit artifact for systems outside Salesforce.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
           <h3>Before the action</h3>
           <p class="sub">Block &amp; escalate</p>
           <p class="vbody">With Akka, your risk and compliance teams write the policies themselves, in a separate versioned lifecycle that is independent of the agents — there is no developer code to customize. The runtime enforces every policy inline at the agent boundary, so human-in-the-loop approvals, human-on-the-loop halt switches, sanitizers, guardrails, evaluations, testing gates, and simulations all run before an action executes and block or escalate anything that does not pass.</p>
-          <p class="vbody">Every call is traced automatically into petabyte-scale, tamper-evident storage, and that same trace data feeds continuous evaluations that keep running in production, right alongside your agents. This applies to any agentic workload, not only the part inside a single SaaS application.</p>
+          <p class="vbody">Every call is traced automatically into petabyte-scale, tamper-evident storage, and that same trace data feeds continuous evaluations that keep running in production, right alongside your agents. Akka's coverage extends to any agentic workload, including the parts outside a single SaaS application.</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on an open platform, not inside a suite.</h2>
+      <h2 class="rv">Build on an open platform.</h2>
       <p class="lede rv">Akka Platform runs and governs the entire agentic system under a contractual SLA, across any system, on the infrastructure you own. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

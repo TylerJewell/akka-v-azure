@@ -122,7 +122,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. LangChain</div>
       <h1 class="hero-headline rv">LangChain is a framework. <span class="accent">Akka is a platform.</span></h1>
-      <p class="lede rv">LangChain is the fastest path to a prototype and the slowest path to production. With a framework you assemble the parts and operate the result — availability, durable state, governance, and the pager are yours. With a platform the system comes assembled and operated, under a contractual SLA.</p>
+      <p class="lede rv">LangChain gets a prototype running quickly, and the work of taking it to production is yours. With a framework you assemble the parts and operate the result — availability, durable state, governance, and the pager are yours. With a platform the system comes assembled and operated, under a contractual SLA.</p>
     </div>
   </section>
 
@@ -137,7 +137,7 @@
         <div class="vcard">
           <div class="vlabel">LangChain — Framework</div>
           <h3>You build and operate it</h3>
-          <p class="vbody">LangChain hands you libraries for orchestration and integrations, plus LangSmith for observability. Those are components, not a running system, so your engineers wire them together and build the state, streaming, and governance around them.</p>
+          <p class="vbody">LangChain hands you libraries for orchestration and integrations, plus LangSmith for observability. The libraries and LangSmith are components. Your engineers wire them together and build the state, streaming, and governance around them.</p>
           <p class="vbody">Then your team runs it — scaling it, handling failover and recovery, and carrying the pager. There is no application-level SLA, so the availability of the running system is yours to guarantee.</p>
         </div>
         <div class="vcard akka">
@@ -203,7 +203,7 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Observe, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to who writes the policy and when it acts. With LangChain, developers code the safeguards into the agent, and evaluators score the result after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is who writes the policy and when the policy takes effect. With LangChain, developers code the safeguards into the agent, and evaluators score the result after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
@@ -211,7 +211,7 @@
           <h3>After the fact</h3>
           <p class="sub">Detect &amp; alert</p>
           <p class="vbody">With LangChain, the safeguards live in application code, written by the same engineers who build the agent. LangSmith traces the calls and runs evaluators that score for bias, toxicity, PII leakage, and prompt injection, then alerts you.</p>
-          <p class="vbody">Because it works on the record of what already happened, the actual blocking, the tamper-evident logging, and the sign-offs are things you wire in yourself, project by project. And evaluation is a job you run against datasets offline, not something watching production.</p>
+          <p class="vbody">Because it works on the record of what already happened, the actual blocking, the tamper-evident logging, and the sign-offs are things you wire in yourself, project by project. Evaluation is a job you run against datasets offline, after production has moved on.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -234,11 +234,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the framework when</div>
-          <p class="vbody">Reach for the framework when you are prototyping or exploring agent patterns, when the system is internal or low-stakes enough that some downtime is fine, and when your team is ready to own the state, scaling, recovery, and governance that come with running it yourself. It is also the right call when you want low-level control over every component.</p>
+          <p class="vbody">Reach for the framework when you are prototyping or exploring agent patterns, when the system is internal or low-stakes enough that some downtime is fine, and when your team is ready to own the state, scaling, recovery, and governance that come with running it yourself. Assembling the components yourself is also the right call when you want low-level control over each one.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for the platform when the system has to stay up, survive failure, and recover on its own, and when it has to pass an audit and enforce governance while it runs. It fits when you want a single vendor accountable for availability under an SLA, and when you would rather ship the system than build and operate the plumbing underneath it.</p>
+          <p class="vbody">Reach for the platform when the system has to stay up, survive failure, and recover on its own, and when it has to pass an audit and enforce governance while it runs. Akka fits when you want a single vendor accountable for availability under an SLA, and when you would rather ship the system than build and operate the plumbing underneath it.</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on a platform, not a framework.</h2>
+      <h2 class="rv">Build on a platform.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs agentic systems under a contractual SLA. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

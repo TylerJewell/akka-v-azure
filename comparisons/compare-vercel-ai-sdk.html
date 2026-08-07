@@ -122,7 +122,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. Vercel AI SDK</div>
       <h1 class="hero-headline rv">The Vercel AI SDK is an app toolkit. <span class="accent">Akka is a platform.</span></h1>
-      <p class="lede rv">The Vercel AI SDK is the fastest way to wire a model into an app and the app still has to be run by you. With a toolkit you assemble the parts and operate the result — availability, durable state, governance, and the pager are yours. With a platform the system comes assembled and operated, under a contractual SLA.</p>
+      <p class="lede rv">The Vercel AI SDK wires a model into an app in a few lines, and running that app is still yours to do. With a toolkit you assemble the parts and operate the result — availability, durable state, governance, and the pager are yours. With a platform the system comes assembled and operated, under a contractual SLA.</p>
     </div>
   </section>
 
@@ -137,8 +137,8 @@
         <div class="vcard">
           <div class="vlabel">Vercel AI SDK — Toolkit</div>
           <h3>You build and operate it</h3>
-          <p class="vbody">The Vercel AI SDK is a TypeScript library that abstracts model providers behind one API and adds tool loops, streaming, UI hooks, and MCP support. It runs inside serverless functions you deploy, so your engineers wire it together and build the durable runtime, cross-region state, and governance around it.</p>
-          <p class="vbody">Then your team runs it — scaling the functions, handling failover and recovery, and carrying the pager. The published 99.99% SLA covers Vercel's hosting platform on a commercially reasonable efforts basis, not the running agent, which is yours to keep available.</p>
+          <p class="vbody">The Vercel AI SDK is a TypeScript library that abstracts model providers behind one API and adds tool loops, streaming, UI hooks, and MCP support. The SDK runs inside serverless functions you deploy, so your engineers wire it together and build the durable runtime, cross-region state, and governance around it.</p>
+          <p class="vbody">Then your team runs it — scaling the functions, handling failover and recovery, and carrying the pager. The published 99.99% SLA covers Vercel's hosting platform on a commercially reasonable efforts basis. The running agent is yours to keep available.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Platform</div>
@@ -203,14 +203,14 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to who writes the policy and when it acts. With the Vercel AI SDK, logging and evaluation are libraries a team bolts on around the agent, after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is who writes the policy and when the policy takes effect. With the Vercel AI SDK, logging and evaluation are libraries a team bolts on around the agent, after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Vercel AI SDK — Bolt on</div>
           <h3>After the fact</h3>
           <p class="sub">Add &amp; monitor</p>
-          <p class="vbody">With the Vercel AI SDK, the safeguards live in application code, written by the same TypeScript engineers who build the agent. The SDK abstracts model calls, tool loops, and streaming; the security and privacy certifications cover the hosting platform, not the decisions the agent makes.</p>
+          <p class="vbody">With the Vercel AI SDK, the safeguards live in application code, written by the same TypeScript engineers who build the agent. The SDK abstracts model calls, tool loops, and streaming; the security and privacy certifications cover the hosting platform. The decisions the agent makes fall outside them.</p>
           <p class="vbody">You can add logging and evaluation libraries, but they work on the record of what already happened. The actual blocking, the immutable ledger, pre-deployment classification, and the sealed audit artifact are things you wire in yourself, project by project — and there is no built-in path for a risk officer to author and version a governance contract of their own.</p>
         </div>
         <div class="vcard akka">
@@ -234,11 +234,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the toolkit when</div>
-          <p class="vbody">Reach for the Vercel AI SDK when you are building streaming chat UIs and front-end model wiring in TypeScript, when the work lives inside a React or Next.js app and ships on serverless hosting, and when the system is interactive or low-stakes enough that some downtime is fine. It fits when your team is ready to own the durable runtime, state, recovery, and governance that come with running it yourself.</p>
+          <p class="vbody">Reach for the Vercel AI SDK when you are building streaming chat UIs and front-end model wiring in TypeScript, when the work lives inside a React or Next.js app and ships on serverless hosting, and when the system is interactive or low-stakes enough that some downtime is fine. Temporal fits when your team is ready to own the durable runtime, state, recovery, and governance that come with running it yourself.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for the platform when the system has to stay up, survive failure, and recover on its own, and when it has to pass an audit and enforce governance while it runs. It fits when you want a single vendor accountable for availability under an SLA, and when you would rather ship the system than build and operate the plumbing underneath it.</p>
+          <p class="vbody">Reach for the platform when the system has to stay up, survive failure, and recover on its own, and when it has to pass an audit and enforce governance while it runs. Akka fits when you want a single vendor accountable for availability under an SLA, and when you would rather ship the system than build and operate the plumbing underneath it.</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on a platform, not a toolkit.</h2>
+      <h2 class="rv">Build on a platform.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs agentic systems under a contractual SLA. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

@@ -122,7 +122,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. n8n</div>
       <h1 class="hero-headline rv">n8n is a workflow-automation tool. <span class="accent">Akka is a platform.</span></h1>
-      <p class="lede rv">n8n is the fast path to an internal automation and a slow path to a production agentic system. It connects apps and APIs on a visual canvas, with AI Agent nodes added on top. A production agentic system needs durable execution, agentic scale, memory, streaming, and runtime governance — with n8n you provision and operate those yourself. Akka delivers them as one operated runtime, and stands behind it.</p>
+      <p class="lede rv">n8n is the fast path to an internal automation and a slow path to a production agentic system. n8n connects apps and APIs on a visual canvas, with AI Agent nodes added on top. A production agentic system needs durable execution, agentic scale, memory, streaming, and runtime governance — with n8n you provision and operate those yourself. Akka delivers them as one operated runtime, and stands behind it.</p>
     </div>
   </section>
 
@@ -137,8 +137,8 @@
         <div class="vcard">
           <div class="vlabel">n8n — Workflow-automation tool</div>
           <h3>You wire it and operate it</h3>
-          <p class="vbody">n8n is a visual workflow-automation tool that connects 400+ apps and APIs on a node-based canvas, with an AI Agent node built on the LangChain JavaScript framework. It fits integrations and internal automations, and self-hosting gives a team full control of its data.</p>
-          <p class="vbody">To scale, n8n runs in queue mode: a Redis broker distributes executions to worker processes, PostgreSQL is required, and multiple main instances provide availability. Enterprise Cloud carries a 99.5% uptime commitment. Durable execution, agentic scale, memory, streaming, and AI governance sit outside that scope, and you provision and operate them.</p>
+          <p class="vbody">n8n is a visual workflow-automation tool that connects 400+ apps and APIs on a node-based canvas, with an AI Agent node built on the LangChain JavaScript framework. n8n fits integrations and internal automations, and self-hosting gives a team full control of its data.</p>
+          <p class="vbody">To scale, n8n runs in queue mode: a Redis broker distributes executions to worker processes, PostgreSQL is required, and multiple main instances provide availability. Enterprise Cloud carries a 99.5% uptime commitment. Durable execution, agentic scale, memory, streaming, and AI governance fall outside that scope, and you provision and operate them.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Platform</div>
@@ -203,15 +203,15 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. n8n streams audit logs and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is where governance runs: inside the runtime, or in a separate service alongside it. n8n streams audit logs and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">n8n — Bolt-on</div>
           <h3>After the fact</h3>
           <p class="sub">Add it around the canvas</p>
-          <p class="vbody">n8n Enterprise provides audit logs and log streaming — operational telemetry for the automation layer. It publishes no AI-governance capability: no inline policy enforcement, no decision explainability, no human pause or override of a running agent, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.</p>
-          <p class="vbody">Any AI governance is a separate tool you add and operate. Those tools read logs after the fact — they cannot gate a deployment or stop an action before it happens.</p>
+          <p class="vbody">n8n Enterprise provides audit logs and log streaming — operational telemetry for the automation layer. n8n publishes no AI-governance capability: no inline policy enforcement, no decision explainability, no human pause or override of a running agent, no immutable interaction ledger, no pre-deployment classification, and no sealed audit artifact.</p>
+          <p class="vbody">Any AI governance is a separate tool you add and operate. Log-based tools report after the fact and cannot gate a deployment or stop an action before it happens.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -238,7 +238,7 @@
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for Akka when you are building a production agentic system rather than an automation — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with durable execution, recovery, and governance built into the runtime.</p>
+          <p class="vbody">Reach for Akka when you are building a production agentic system — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with durable execution, recovery, and governance built into the runtime.</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on a platform, not an automation canvas.</h2>
+      <h2 class="rv">Build on a platform.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs the entire agentic system under a contractual SLA — durable execution, memory, streaming, and governance included. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

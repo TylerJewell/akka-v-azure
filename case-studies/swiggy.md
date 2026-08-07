@@ -1,6 +1,6 @@
 # Swiggy cuts ML prediction latency in half
 
-**Industry:** Food Delivery & Logistics · **Offering:** Akka Agentic AI Platform
+**Industry:** Food Delivery & Logistics · **Offering:** Akka Agentic AI Platform · **Solution:** Akka Optimize
 
 ---
 

@@ -122,7 +122,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. AWS Bedrock</div>
       <h1 class="hero-headline rv">AWS Bedrock is a cloud model service. <span class="accent">Akka is a platform.</span></h1>
-      <p class="lede rv">Bedrock gives you AWS-locked building blocks — model access plus a set of AgentCore services — that you assemble and operate yourself, all inside AWS. An agentic system needs orchestration, agents, memory, streaming, APIs, and governance running as one thing, anywhere you need to run it. With Bedrock you wire those services together and AWS owns where they run. With Akka you get one operated, governed runtime, and you own where it runs.</p>
+      <p class="lede rv">Bedrock gives you AWS-locked building blocks — model access plus a set of AgentCore services — that you assemble and operate yourself, all inside AWS. An agentic system needs orchestration, agents, memory, streaming, APIs, and governance running together, anywhere you need to run it. With Bedrock you wire those services together and AWS owns where they run. With Akka you get one operated, governed runtime, and you own where it runs.</p>
     </div>
   </section>
 
@@ -203,15 +203,15 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Observe, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. Bedrock offers content filters and tool-access rules as separate services you assemble on top of the agent. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is where governance runs: inside the runtime, or in a separate service alongside it. Bedrock offers content filters and tool-access rules as separate services you assemble on top of the agent. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">AWS Bedrock — Observe</div>
           <h3>After the fact</h3>
           <p class="sub">Filter &amp; detect</p>
-          <p class="vbody">Bedrock Guardrails filter unsafe content and PII at the model-inference layer, and AgentCore Policy governs agent-to-tool access; Observability reports to CloudWatch. These enforce vendor-defined safety filters and tool rules, not the obligations of a named regulation.</p>
-          <p class="vbody">There is no built-in classification against the EU AI Act, no immutable hash-chained evidence ledger as a platform guarantee, no pre-deployment governance gate, and no sealed audit artifact. Governance is assembled from separate services rather than running as its own lifecycle.</p>
+          <p class="vbody">Bedrock Guardrails filter unsafe content and PII at the model-inference layer, and AgentCore Policy governs agent-to-tool access; Observability reports to CloudWatch. The controls enforce vendor-defined safety filters and tool rules. The obligations of a named regulation are not among them.</p>
+          <p class="vbody">There is no built-in classification against the EU AI Act, no immutable hash-chained evidence ledger as a platform guarantee, no pre-deployment governance gate, and no sealed audit artifact. Governance is assembled from separate services, each configured and operated on its own.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -238,7 +238,7 @@
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for Akka when you want orchestration, agents, memory, streaming, APIs, and governance pre-integrated and operated under one SLA, when you need to run in any cloud, on-prem, or a sovereign environment rather than a single provider, and when governance has to enforce named regulations inline before an action, not report on it afterward.</p>
+          <p class="vbody">Reach for Akka when you want orchestration, agents, memory, streaming, APIs, and governance pre-integrated and operated under one SLA, when you need to run in any cloud, on-prem, or a sovereign environment without binding to a single provider, and when governance has to enforce named regulations inline, before an action runs.</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on a platform, not locked-in blocks.</h2>
+      <h2 class="rv">Build on a portable platform.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs the entire agentic system under a contractual SLA, in your AWS VPC, on another cloud, on your own Kubernetes, or on-prem. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

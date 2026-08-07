@@ -1,6 +1,6 @@
 # Fox personalizes every viewer at streaming scale
 
-**Industry:** Streaming Entertainment · **Offering:** Akka Agentic AI Platform
+**Industry:** Streaming Entertainment · **Offering:** Akka Agentic AI Platform · **Solution:** Akka SDK
 
 ---
 
@@ -15,7 +15,7 @@ Fox runs its real-time content recommendation engine on the Akka Agentic AI Plat
 | Metric | Result |
 |---|---|
 | **Speed to Production** | **3×** — the development velocity. Engineers focus on personalization logic instead of infrastructure, shipping recommendation improvements continuously rather than on a release cycle. |
-| **Cost to Operate** | **40%** — lower cost per personalized session. Automatic scaling matches capacity to live demand, so infrastructure follows viewership instead of running provisioned for peak. |
+| **Cost to Operate** | **150k → 22k** — cores running the personalization engine after porting to Akka, and 40% lower cost per personalized session. Shared compute and automatic scaling tie infrastructure to live demand. |
 | **Scale** | **5 billion** — tokens per second of real-time personalization, matching every viewer to content across a 300,000-title catalog without pre-computing results. |
 
 *Business outcome: hyper-personalized experiences that increase viewer engagement and grow addressable advertising revenue.*
