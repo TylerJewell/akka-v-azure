@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Every system makes the next one cheaper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --yellow:#F5C518; --black:#000; --white:#fff;
+  --pad-6:6vw; --dia:1120px;
+}
+@media (min-width:1537px){ :root{ --pad-6:92px; } }
+html { background:var(--black); }
+body {
+  font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--black); color:var(--white);
+  max-width:1536px; margin:0 auto; overflow-x:clip;
+}
+
+/* ── slide shell ─────────────────────────────────────────── */
+#fly-wrapper { position:relative; }
+#fly-sticky {
+  min-height:860px; height:100vh; height:100dvh;
+  position:sticky; top:0;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:0 var(--pad-6); background:var(--black); overflow:hidden;
+}
+#fly-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image:radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
+  background-size:48px 48px; pointer-events:none; z-index:0;
+}
+
+/* ── head ────────────────────────────────────────────────── */
+.fly-head { position:relative; z-index:2; max-width:900px; }
+.fly-eyebrow {
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:11px; text-transform:uppercase; letter-spacing:3px;
+  color:var(--yellow); font-weight:600; margin-bottom:22px;
+}
+.fly-eyebrow::before { content:''; display:block; width:28px; height:2px; background:var(--yellow); }
+.fly-headline {
+  font-size:clamp(30px,4vw,60px); font-weight:700;
+  line-height:1.06; letter-spacing:-0.03em; color:var(--white);
+}
+.fly-headline .accent { color:var(--yellow); }
+.fly-sub {
+  margin-top:20px; max-width:780px;
+  font-size:clamp(14px,1.15vw,18px); line-height:1.6; color:#9a9a9a;
+}
+
+/* ── diagram ─────────────────────────────────────────────── */
+.fly-diagram { position:relative; z-index:2; margin:40px auto 0; max-width:var(--dia); width:100%; }
+
+.fly-wheels { display:grid; grid-template-columns:repeat(3,1fr); gap:2.6%; }
+.fly-wheel {
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:4px; padding:18px 22px 16px;
+  background:rgba(255,255,255,0.015);
+  text-align:left;
+}
+.fly-wheel-label {
+  font-size:10px; text-transform:uppercase; letter-spacing:2px;
+  color:var(--yellow); font-weight:600;
+}
+.fly-wheel-sol { margin-top:5px; font-size:14px; font-weight:500; color:#cfcfcf; }
+.fly-loop { display:block; width:100%; height:auto; margin:12px 0 2px; }
+.fly-loop text {
+  font-family:'Roboto Mono',ui-monospace,monospace;
+  font-size:17px; fill:#e6e6e6;
+}
+.fly-loop path { fill:none; stroke:rgba(245,197,24,0.55); stroke-width:1.5; }
+.fly-wheel-cap {
+  margin-top:14px; padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.10);
+  font-size:15px; line-height:1.5; color:#cfcfcf;
+}
+
+/* ── spine ───────────────────────────────────────────────── */
+.fly-stems { display:grid; grid-template-columns:repeat(3,1fr); gap:2.6%; height:30px; }
+.fly-stems span { position:relative; }
+.fly-stems span::before {
+  content:''; position:absolute; left:50%; top:0; bottom:0;
+  width:1px; background:linear-gradient(to bottom, rgba(255,255,255,0.16), rgba(245,197,24,0.60));
+}
+.fly-spine { margin:-8px 0 0; }
+.fly-spine .sdk {
+  font-family:'Instrument Sans',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:2.6px; fill:var(--yellow);
+}
+
+@media (max-width:820px) {
+  #fly-sticky { min-height:0; height:auto; position:relative; padding:96px var(--pad-6) 88px; }
+  .fly-headline { font-size:clamp(28px,8vw,42px); }
+  .fly-wheels { grid-template-columns:1fr; gap:16px; }
+  .fly-stems { display:none; }
+  .fly-diagram { margin-top:30px; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+    <path d="M0 0 L8 4 L0 8 z" fill="#F5C518" stroke="none"/>
+  </marker>
+</defs></svg>
+
+<div id="fly-wrapper">
+  <div id="fly-sticky">
+
+    <div class="fly-head">
+      <div class="fly-eyebrow">AI software factory</div>
+      <div class="fly-headline">Akka&rsquo;s flywheels make the next system <span class="accent">cheaper.</span></div>
+      <div class="fly-sub">Create enterprise AI software factories that turn intent into running systems, and keep the knowledge of how they work inside the company.</div>
+    </div>
+
+    <div class="fly-diagram">
+
+      <div class="fly-wheels">
+
+        <div class="fly-wheel">
+          <div class="fly-wheel-label">Development</div>
+          <div class="fly-wheel-sol">Akka Specify</div>
+          <svg class="fly-loop" viewBox="0 0 310 86" role="img" aria-label="spec to build to check, returning to spec">
+            <text x="42"  y="26" text-anchor="middle">spec</text>
+            <text x="155" y="26" text-anchor="middle">build</text>
+            <text x="268" y="26" text-anchor="middle">check</text>
+            <path d="M70 20 H121"  marker-end="url(#ah)"/>
+            <path d="M189 20 H234" marker-end="url(#ah)"/>
+            <path d="M268 38 V64 Q268 74 258 74 H52 Q42 74 42 64 V44" marker-end="url(#ah)"/>
+          </svg>
+          <div class="fly-wheel-cap">Each build sharpens the golden paths and auditors, so the next idea reaches production faster.</div>
+        </div>
+
+        <div class="fly-wheel">
+          <div class="fly-wheel-label">Intelligence</div>
+          <div class="fly-wheel-sol">Akka Optimize</div>
+          <svg class="fly-loop" viewBox="0 0 310 86" role="img" aria-label="route to observe to train, returning to route">
+            <text x="42"  y="26" text-anchor="middle">route</text>
+            <text x="155" y="26" text-anchor="middle">observe</text>
+            <text x="268" y="26" text-anchor="middle">train</text>
+            <path d="M76 20 H111"  marker-end="url(#ah)"/>
+            <path d="M199 20 H234" marker-end="url(#ah)"/>
+            <path d="M268 38 V64 Q268 74 258 74 H52 Q42 74 42 64 V44" marker-end="url(#ah)"/>
+          </svg>
+          <div class="fly-wheel-cap">Classifying your production traffic finds better routes and trains smaller models.</div>
+        </div>
+
+        <div class="fly-wheel">
+          <div class="fly-wheel-label">Governance</div>
+          <div class="fly-wheel-sol">Akka Verify</div>
+          <svg class="fly-loop" viewBox="0 0 310 86" role="img" aria-label="control to run to measure, returning to control">
+            <text x="42"  y="26" text-anchor="middle">control</text>
+            <text x="155" y="26" text-anchor="middle">run</text>
+            <text x="268" y="26" text-anchor="middle">measure</text>
+            <path d="M86 20 H131"  marker-end="url(#ah)"/>
+            <path d="M179 20 H224" marker-end="url(#ah)"/>
+            <path d="M268 38 V64 Q268 74 258 74 H52 Q42 74 42 64 V44" marker-end="url(#ah)"/>
+          </svg>
+          <div class="fly-wheel-cap">Continuous controls tune your risk model, so new AI ships faster with fewer human decisions.</div>
+        </div>
+
+      </div>
+
+      <div class="fly-stems"><span></span><span></span><span></span></div>
+
+      <svg class="fly-loop fly-spine" viewBox="0 0 1120 76" role="img"
+           aria-label="Akka Runtime loop: supervise, adapt, rebalance, returning to supervise">
+        <!-- loop wraps the full column width; the top border breaks for the label -->
+        <path d="M770 58 H1104 Q1114 58 1114 48 V18 Q1114 8 1104 8 H542"/>
+        <path d="M194 8 H16 Q6 8 6 18 V48 Q6 58 16 58 H350" marker-end="url(#ah)"/>
+        <text class="sdk" x="368" y="12" text-anchor="middle">AKKA RUNTIME &#183; ACTOR CONCURRENCY</text>
+        <text x="408" y="64" text-anchor="middle">supervise</text>
+        <text x="560" y="64" text-anchor="middle">adapt</text>
+        <text x="712" y="64" text-anchor="middle">rebalance</text>
+        <path d="M466 58 H522" marker-end="url(#ah)"/>
+        <path d="M598 58 H654" marker-end="url(#ah)"/>
+      </svg>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

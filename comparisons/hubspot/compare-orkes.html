@@ -92,13 +92,13 @@
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Orkes vs. Akka</div>
-        <h2 class="rv">One layer, or the whole system.</h2>
+        <h2 class="rv">A durable-execution engine beside a full agentic platform.</h2>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Orkes — Orchestration engine</div>
           <h3>You build the rest and operate it</h3>
-          <p class="vbody">Orkes Conductor gives you a durable, event-driven engine for orchestrating long-running workflows and agents, descended from Netflix Conductor. That is one layer of an agentic system. In Conductor an agent is a workflow that calls an LLM to decide its next step; the durable memory, the streaming tier, the API layer, and the AI-governance stack are pieces you select, wire together, and operate around the orchestration core — and you own every failure across those seams.</p>
+          <p class="vbody">Orkes Conductor gives you a durable, event-driven engine for orchestrating long-running workflows and agents, descended from Netflix Conductor. Durable execution covers the workflow layer of an agentic system. In Conductor an agent is a workflow that calls an LLM to decide its next step; the durable memory, the streaming tier, the API layer, and the AI-governance stack are pieces you select, wire together, and operate around the orchestration core — and you own every failure across those seams.</p>
           <p class="vbody">Orkes Cloud runs that orchestration layer under an availability SLA of up to 99.99% on multi-region clusters. State lives in external datastores you provision and operate — Redis by default, Elasticsearch for indexing, pluggable Postgres, MySQL, or Cassandra — each under its own availability terms.</p>
         </div>
         <div class="vcard akka">
@@ -164,15 +164,15 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. Orkes certifies the infrastructure and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is where governance runs: inside the runtime, or in a separate service alongside it. Orkes certifies the infrastructure and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Orkes — Bolt-on</div>
           <h3>After the fact</h3>
           <p class="sub">Add it around the engine</p>
-          <p class="vbody">Orkes holds SOC 2 Type II and HIPAA through isolated-cloud deployment — security compliance for the infrastructure — plus role-based access control, secret management, and audit logs. It publishes no AI-governance capability: no real-time policy enforcement, no decision explainability, no human pause or override of a running agent as a platform primitive, no immutable interaction ledger, and no pre-deployment classification.</p>
-          <p class="vbody">Any AI governance is a separate tool you add and operate. Those tools read logs after the fact — they cannot gate a deployment or stop an action before it happens.</p>
+          <p class="vbody">Orkes holds SOC 2 Type II and HIPAA through isolated-cloud deployment — security compliance for the infrastructure — plus role-based access control, secret management, and audit logs. Temporal publishes no AI-governance capability: no real-time policy enforcement, no decision explainability, no human pause or override of a running agent as a platform primitive, no immutable interaction ledger, and no pre-deployment classification.</p>
+          <p class="vbody">Any AI governance is a separate tool you add and operate. Log-based tools report after the fact and cannot gate a deployment or stop an action before it happens.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -195,11 +195,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the engine when</div>
-          <p class="vbody">Reach for Orkes when you need durable orchestration of long-running workflows, when you are coordinating steps and tools rather than running a full agentic system, and when your team is ready to select, integrate, and operate the memory, streaming, API, and governance layers around the orchestration core. Conductor carries a real orchestration heritage from Netflix and runs in production at large enterprises.</p>
+          <p class="vbody">Reach for Orkes when you need durable orchestration of long-running workflows, when the work is coordinating steps and tools inside a larger system, and when your team is ready to select, integrate, and operate the memory, streaming, API, and governance layers around the orchestration core. Conductor carries a real orchestration heritage from Netflix and runs in production at large enterprises.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for Akka when you are building an agentic system rather than a single orchestration layer — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with recovery and governance built in on the same durability principles.</p>
+          <p class="vbody">Reach for Akka when you are building an agentic system — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with recovery and governance built in on the same durability principles.</p>
         </div>
       </div>
     </div>
@@ -226,7 +226,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build the whole system, not just the orchestration.</h2>
+      <h2 class="rv">Build the whole system.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs the entire agentic system under a contractual SLA — orchestration included, on the same durable-execution principles Orkes Conductor is built on. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

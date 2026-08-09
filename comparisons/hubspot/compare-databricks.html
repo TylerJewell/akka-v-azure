@@ -83,7 +83,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. Databricks</div>
       <h1 class="hero-headline rv">Databricks is a data platform. <span class="accent">Akka is an agentic platform.</span></h1>
-      <p class="lede rv">Databricks is where your data, features, and models live, with an agent layer built around them. That is the tier agents read from. It is not the runtime an agentic system runs on. Databricks agents run on stateless serving endpoints and read your Lakehouse; Akka is the operated, governed, always-on runtime that holds agent state, keeps the system available, and enforces policy on every action.</p>
+      <p class="lede rv">Databricks is where your data, features, and models live, with an agent layer built around them. Databricks is the tier agents read from. Databricks is not the runtime an agentic system runs on. Databricks agents run on stateless serving endpoints and read your Lakehouse; Akka is the operated, governed, always-on runtime that holds agent state, keeps the system available, and enforces policy on every action.</p>
     </div>
   </section>
 
@@ -98,7 +98,7 @@
         <div class="vcard">
           <div class="vlabel">Databricks — Data platform</div>
           <h3>Where agents read from</h3>
-          <p class="vbody">Databricks is a lakehouse — Delta Lake storage, Unity Catalog, Vector Search, and Model Serving — with Agent Bricks and the Mosaic AI Agent Framework built around it. That is the data, feature, and model tier. Agents defined there read your governed data and run on stateless serving endpoints, with session and long-term memory externalized to Lakebase, its managed Postgres, and re-read at the start of every turn.</p>
+          <p class="vbody">Databricks is a lakehouse — Delta Lake storage, Unity Catalog, Vector Search, and Model Serving — with Agent Bricks and the Mosaic AI Agent Framework built around it. Databricks is the data, feature, and model tier. Agents defined there read your governed data and run on stateless serving endpoints, with session and long-term memory externalized to Lakebase, its managed Postgres, and re-read at the start of every turn.</p>
           <p class="vbody">Databricks publishes a 99.9% control-plane SLA. Model Serving rides the Databricks SLA, and there is no published six-nines number for the agent-serving tier. Disaster recovery is customer-architected, and Model Serving endpoints are not replicated in Databricks managed DR.</p>
         </div>
         <div class="vcard akka">
@@ -164,7 +164,7 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance acts on the running agent or beside it. Databricks governs the data and access, and adds AI-governance frameworks and guidance on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is whether governance acts on the running agent or observes it from outside. Databricks governs the data and access, and adds AI-governance frameworks and guidance on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
@@ -172,7 +172,7 @@
           <h3>After the fact</h3>
           <p class="sub">Govern the data and access</p>
           <p class="vbody">Databricks governance is data governance. Unity Catalog enforces access control, captures column-level lineage, logs activity for audit, and governs agents, tools, and models as catalog assets with on-behalf-of controls. Databricks also publishes AI-governance frameworks and responsible-AI guidance, and states it is committed to EU AI Act compliance.</p>
-          <p class="vbody">These govern the data the agent reads and record what happened. They do not block a prohibited action before it executes, halt a running process, or classify a system against regulatory obligations before deployment.</p>
+          <p class="vbody">The frameworks govern the data the agent reads and record what happened. The frameworks do not block a prohibited action before it executes, halt a running process, or classify a system against regulatory obligations before deployment.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -195,11 +195,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the data platform when</div>
-          <p class="vbody">Reach for Databricks when the work is data and analytics — the lakehouse, feature store, vector search, and model serving. Those are its layer, and for storage, semantic retrieval, and hosted inference it is the tier to build on. If your agents mainly need governed access to that data and a place to serve models, Databricks provides it.</p>
+          <p class="vbody">Reach for Databricks when the work is data and analytics — the lakehouse, feature store, vector search, and model serving. The lakehouse, feature store, vector search, and model serving are its layer, and for storage, semantic retrieval, and hosted inference Databricks is the tier to build on. If your agents mainly need governed access to that data and a place to serve models, Databricks provides it.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the agentic platform when</div>
-          <p class="vbody">Reach for Akka when you are running an agentic system in production — durable agent state, orchestration, streaming, APIs, and governance operated under one SLA, with active-active failover and inline policy enforcement. Akka runs above the data tier, not in place of it: the lakehouse stays the system of record, and the governed agentic system runs on Akka.</p>
+          <p class="vbody">Reach for Akka when you are running an agentic system in production — durable agent state, orchestration, streaming, APIs, and governance operated under one SLA, with active-active failover and inline policy enforcement. Akka runs above the data tier. The lakehouse stays the system of record, and the governed agentic system runs on Akka.</p>
         </div>
       </div>
     </div>
@@ -226,7 +226,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Run agents on an agentic platform, not a data platform.</h2>
+      <h2 class="rv">Run agents on an agentic platform.</h2>
       <p class="lede rv">Databricks is where your data and models live. Akka is the operated, governed, always-on runtime that agents run on above it — durable state, a six-nines SLA, and inline enforcement on every action. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

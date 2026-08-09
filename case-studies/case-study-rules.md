@@ -25,6 +25,7 @@ State what happened and what it means. Nothing else. If a sentence is doing anyt
 - Don't tack a benefit, payoff, reassurance, or invitation onto the end of a statement or paragraph ("...so you win too," "I'd rather you tell me where I'm wrong now than later," "and that's how we all succeed"). State the point and stop. The last sentence has to be content, not a closer.
 - Don't editorialize or over-emphasize a point ("This is the big one," "This is key," "what really matters is," "make no mistake"). State it plainly and move on; emphasis comes from order or a number, not narration.
 - No empty intensifiers used for emphasis: "real" ("a real website," "a real stake," "real money"), "actually," "truly," "genuine." Name the thing plainly.
+- No "the shape of X" and no "X-shaped" as a descriptor ("the shape of the obligations," "the shape of the problem," "the shape of the claim," "an LLM-shaped task"). It is AI speak; no one says it out loud. Name the property you mean — the size, the structure, the split, the category — or state the thing itself.
 
 **Required instead:** subject–verb–fact. "Throughput rose from 1,600 to 12,000 orders per minute." Lead every paragraph with the fact; explain after. If you would not say it to a skeptical engineer across a table, do not write it.
 

@@ -92,13 +92,13 @@
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Temporal vs. Akka</div>
-        <h2 class="rv">One layer, or the whole system.</h2>
+        <h2 class="rv">A durable-execution engine beside a full agentic platform.</h2>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Temporal — Durable-execution engine</div>
           <h3>You build the rest and operate it</h3>
-          <p class="vbody">Temporal gives you an engine for durably running long workflows. That is one layer of an agentic system. The agents, the memory, the streaming, the API layer, and the governance are pieces you select, wire together, and operate around the orchestration core — and you own every failure across those seams.</p>
+          <p class="vbody">Temporal gives you an engine for durably running long workflows. Durable execution covers the workflow layer of an agentic system. The agents, the memory, the streaming, the API layer, and the governance are pieces you select, wire together, and operate around the orchestration core — and you own every failure across those seams.</p>
           <p class="vbody">Temporal Cloud runs that orchestration layer under a 99.99% SLA. The services you bolt on around it run under their own SLAs, or none.</p>
         </div>
         <div class="vcard akka">
@@ -164,15 +164,15 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Bolt on, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. Temporal certifies the infrastructure and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is where governance runs: inside the runtime, or in a separate service alongside it. Temporal certifies the infrastructure and leaves AI governance to tools you add on top. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Temporal — Bolt-on</div>
           <h3>After the fact</h3>
           <p class="sub">Add it around the engine</p>
-          <p class="vbody">Temporal holds SOC 2 Type II, GDPR, and HIPAA — security compliance for the infrastructure. It publishes no AI-governance capability: no real-time policy enforcement, no decision explainability, no human pause or override of a running process, no immutable interaction ledger, and no pre-deployment classification.</p>
-          <p class="vbody">Any AI governance is a separate tool you add and operate. Those tools read logs after the fact — they cannot gate a deployment or stop an action before it happens.</p>
+          <p class="vbody">Temporal holds SOC 2 Type II, GDPR, and HIPAA — security compliance for the infrastructure. Temporal publishes no AI-governance capability: no real-time policy enforcement, no decision explainability, no human pause or override of a running process, no immutable interaction ledger, and no pre-deployment classification.</p>
+          <p class="vbody">Any AI governance is a separate tool you add and operate. Log-based tools report after the fact and cannot gate a deployment or stop an action before it happens.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -195,11 +195,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the engine when</div>
-          <p class="vbody">Reach for Temporal when you need durable execution for long-running workflows, when you are orchestrating steps rather than running autonomous agents, and when your team is ready to select, integrate, and operate the memory, streaming, API, and governance layers around it — and to keep workflow code strictly deterministic.</p>
+          <p class="vbody">Reach for Temporal when you need durable execution for long-running workflows, when the work is orchestrating steps and the agents are not autonomous, and when your team is ready to select, integrate, and operate the memory, streaming, API, and governance layers around it — and to keep workflow code strictly deterministic.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for Akka when you are building an agentic system rather than a single workflow — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with recovery and governance built in and no determinism constraint on your code.</p>
+          <p class="vbody">Reach for Akka when you are building an agentic system — agents, memory, streaming, APIs, and governance — and you want them pre-integrated and operated under one SLA, with recovery and governance built in and no determinism constraint on your code.</p>
         </div>
       </div>
     </div>
@@ -226,7 +226,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build the whole system, not just the orchestration.</h2>
+      <h2 class="rv">Build the whole system.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs the entire agentic system under a contractual SLA — orchestration included, on the same durable-execution principles Temporal is built on. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

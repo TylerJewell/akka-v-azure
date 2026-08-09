@@ -99,13 +99,13 @@
           <div class="vlabel">Azure AI Foundry — Cloud AI toolkit</div>
           <h3>You assemble it and operate it, on Azure</h3>
           <p class="vbody">A production agent on Azure AI Foundry is stitched together from separately provisioned Azure services. Microsoft's Standard setup requires you to bring and operate a Cosmos DB account, an AI Search resource, an Azure Storage account, and a Key Vault; a realistic agent also draws in Azure OpenAI, an API Management gateway, and Azure Monitor. You integrate them, and you own the reliability and recovery across every seam.</p>
-          <p class="vbody">Those services run on Azure identity, gateway, and data. The Agent Service that ties them together carries no availability or state-durability SLA, and moving the system off Azure means rebuilding it.</p>
+          <p class="vbody">The assembled services run on Azure identity, gateway, and data. The Agent Service that ties them together carries no availability or state-durability SLA, and moving the system off Azure means rebuilding it.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Platform</div>
           <h3>It comes built, operated, and portable</h3>
           <p class="vbody">Akka gives you agents, durable memory, real-time streaming, an HTTP and gRPC API layer, orchestration, observability, and governance as one pre-integrated runtime — provisioned once and operated as one system. You describe the system you want, and the platform generates it, tests it, and runs it.</p>
-          <p class="vbody">Akka runs on any cloud, on-prem, or in a sovereign region, with portable specs and no lock-in to one provider's identity or data services. It keeps running with active-active replication and automatic failover under a contractual 99.9999% availability SLA on the entire platform.</p>
+          <p class="vbody">Akka runs on any cloud, on-prem, or in a sovereign region, with portable specs and no lock-in to one provider's identity or data services. Akka keeps running with active-active replication and automatic failover under a contractual 99.9999% availability SLA on the entire platform.</p>
         </div>
       </div>
     </div>
@@ -174,7 +174,7 @@
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
         <h2 class="rv">Observe, or enforce.</h2>
-        <p class="lede rv" style="margin-top:18px">It comes down to whether governance sits inside the runtime or beside it. Azure AI Foundry assesses and documents through a set of services that observe and score after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
+        <p class="lede rv" style="margin-top:18px">The difference is where governance runs: inside the runtime, or in a separate service alongside it. Azure AI Foundry assesses and documents through a set of services that observe and score after the fact. With Akka, risk and compliance write the policies independently of the agents, and the runtime enforces them on every action — with no developer code to customize.</p>
       </div>
       <div class="versus rv">
         <div class="vcard">
@@ -182,7 +182,7 @@
           <h3>After the fact</h3>
           <p class="sub">Assess &amp; document across services</p>
           <p class="vbody">Azure AI Foundry offers assessment and mapping spread across several services. Purview Compliance Manager ingests regulations such as the EU AI Act, extracts controls, maps improvement actions, and syncs Foundry evaluation results; Content Safety filters content, API Management applies gateway policies, and Monitor and Entra collect logs. Each of these observes, scores, and records.</p>
-          <p class="vbody">They are not a single enforcement plane woven into the agent's execution. The evaluations score after the run, the logs are read after the fact, and there is no built-in way to pause or override a running agent, capture authorization atomically at execution time, or gate a release on a pre-deployment classification.</p>
+          <p class="vbody">No single enforcement plane is woven into the agent's execution. The evaluations score after the run and the logs are read after the fact. There is no built-in way to pause or override a running agent, capture authorization atomically at execution time, or gate a release on a pre-deployment classification.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Akka — Enforce</div>
@@ -205,11 +205,11 @@
       <div class="versus rv">
         <div class="vcard">
           <div class="vlabel">Choose the cloud toolkit when</div>
-          <p class="vbody">Reach for Azure AI Foundry when your organization is committed to Azure, you want to build against the Azure OpenAI models and the surrounding Azure services, and your team is ready to provision, integrate, and operate Cosmos DB, AI Search, Storage, the gateway, and monitoring — and to own the availability and recovery of the assembled agent yourself.</p>
+          <p class="vbody">Reach for Azure AI Foundry when your organization is committed to Azure and wants to build against the Azure OpenAI models and the surrounding Azure services, with a team ready to provision, integrate, and operate Cosmos DB, AI Search, Storage, the gateway, and monitoring — and to own the availability and recovery of the assembled agent yourself.</p>
         </div>
         <div class="vcard akka">
           <div class="vlabel">Choose the platform when</div>
-          <p class="vbody">Reach for Akka when you want agents, memory, streaming, APIs, and governance pre-integrated and operated under one SLA, when a regional outage cannot mean losing agent state, and when you need to run on any cloud, on-prem, or in a sovereign region rather than binding the system to a single provider's identity and data services.</p>
+          <p class="vbody">Reach for Akka when you want agents, memory, streaming, APIs, and governance pre-integrated and operated under one SLA, when a regional outage cannot mean losing agent state, and when you need to run on any cloud, on-prem, or in a sovereign region without binding the system to a single provider's identity and data services.</p>
         </div>
       </div>
     </div>
@@ -236,7 +236,7 @@
   <!-- ===================== CLOSE ===================== -->
   <section class="band--panel close">
     <div class="inner">
-      <h2 class="rv">Build on a portable platform, not cloud-locked blocks.</h2>
+      <h2 class="rv">Build on a portable platform.</h2>
       <p class="lede rv">Azure AI Foundry gives you Azure-locked building blocks to assemble and operate. Akka Platform builds, runs, and governs the whole agentic system under a contractual SLA, on any cloud, on-prem, or in a sovereign region. Tell us what you are building, and we will show you how it runs in production.</p>
       <div class="rv"><a class="cta" href="https://akka.io/contact">Talk to Akka <span aria-hidden="true">→</span></a></div>
     </div>

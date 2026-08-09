@@ -128,12 +128,12 @@
  <section class="body">
 
  <h2>The challenge</h2>
- <p>Amazon eero's founders were certain the traditional single-router model was not the future of home WiFi. To deliver reliable coverage and consistent performance for many connected devices throughout a home, the company built a distributed mesh of WiFi access points together with a cloud interface to monitor and manage the entire network. That cloud backend had to be fast and reliable, offering <b>sub-second response times</b> and <b>always-on availability</b>.</p>
+ <p>Amazon eero's founders were certain the traditional single-router model was not the future of home WiFi. To deliver reliable coverage and consistent performance for many connected devices throughout a home, the company built a distributed mesh of WiFi access points together with a cloud interface to monitor and manage the entire network. The cloud backend had to be fast and reliable, offering <b>sub-second response times</b> and <b>always-on availability</b>.</p>
  <p>A traditional web architecture would not scale for the workload. The database becomes the shared memory of a vastly concurrent system, and as the system grows into many request servers, async workers, and caches, different parts hold different representations of the same data. As John Lynn, Cloud Platform Manager at eero, put it, "As data moves throughout your systems, consistency is harder and harder to maintain." eero needed to model a growing, complex domain and handle concurrency across many homes at once.</p>
 
  <h2>Why Akka</h2>
  <p>Amazon eero standardized on the <b>Akka Agentic AI Platform</b> for high-concurrency, distributed, resilient communication between customer device endpoints, the eero backend, and the eero cloud. The platform holds durable in-memory state instead of routing every read and write through a shared database, giving high-performance messaging between devices and cloud even when individual devices are offline or unreachable.</p>
- <p>Each user's network and each node is modeled as its own independent unit, so eero orchestrates complex network-management tasks — including pushing firmware updates to individual devices — without central bottlenecks. This is the <b>Never Fail</b> guarantee: the Akka Agentic AI Platform handles clustering, resilience, durable state, and traffic steering, so the application does not have to.</p>
+ <p>Each user's network and each node is modeled as its own independent unit, so eero orchestrates complex network-management tasks — including pushing firmware updates to individual devices — without central bottlenecks. The <b>Never Fail</b> guarantee means the Akka Agentic AI Platform handles clustering, resilience, durable state, and traffic steering, so the application does not have to.</p>
 
  <div class="pullstat">
  <div class="n">10M+</div>
@@ -142,14 +142,14 @@
 
  <h2>The results</h2>
  <p><b>Scale.</b> Amazon eero models every home network and every access point as an independent unit, handling concurrency across millions of homes and tens of millions of nodes. The cloud stays responsive regardless of the state of any individual device, which is what makes a mesh of access points behave as one managed network.</p>
- <p><b>Cost to operate.</b> One in-memory data architecture serves device endpoints, the backend, and the cloud, removing the database-as-shared-memory tier of a traditional three-level web architecture. That keeps the marginal cost of managing an additional home network low — on the order of pennies per managed home per month.</p>
+ <p><b>Cost to operate.</b> One in-memory data architecture serves device endpoints, the backend, and the cloud, removing the database-as-shared-memory tier of a traditional three-level web architecture. Removing it keeps the marginal cost of managing an additional home network low — on the order of pennies per managed home per month.</p>
  <p><b>Speed to production.</b> Amazon eero shipped more than <span class="num">10 software updates</span> across devices and cloud in the first three months after its initial launch, and continuous product innovation across devices and cloud interface is a central pillar of its strategy.</p>
  <p><b>Business impact.</b> The product became a top seller in the router category on Amazon, eero became an Amazon company in 2019, its devices reached leading retailers including Apple and Best Buy, and the company launched new services such as eero Secure.</p>
 
  <h2>The agentic opportunity</h2>
  <div class="bridge">
  <p>The same cloud-management work now enables an agent that monitors every home mesh network in real time. On the <b>Akka Agentic AI Platform</b>, an AI agent watches signal quality, interference, and device behavior across millions of homes, predicts and diagnoses connectivity problems before the customer notices them, and automatically optimizes channel, band, and routing per home. Because each network is already modeled as an independent unit with durable state, an agent can act on any one home without stalling the others, at the sub-second response and always-on availability the cloud backend already delivers.</p>
- <p>The platform that scaled Amazon eero's cloud control plane is the same platform that builds and runs agentic AI today. Enterprises build on the <b>Akka Agentic AI Platform</b> directly, or have a system delivered and operated through <b>Akka Specify</b>. Both provide the production guarantees eero's home-network cloud has run on for years.</p>
+ <p>The platform that scaled Amazon eero's cloud control plane is the same platform that builds and runs agentic AI today. Enterprises build on the <b>Akka Agentic AI Platform</b> directly, or have a system delivered and operated through <b>Akka Specify</b>. Each path provides the production guarantees eero's home-network cloud has run on for years.</p>
  </div>
 
  </section>

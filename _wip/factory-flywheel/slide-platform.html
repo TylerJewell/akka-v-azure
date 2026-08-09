@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Akka Agentic AI Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* tokens and shell lifted from akka-overview/index.html */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --yellow:#FFCE4A; --black:#000000; --dark:#07070C; --white:#F1F1F1;
+  --line:#2A2A2A; --muted:#A6A6A6; --dim:#888;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+html{background:var(--black);}
+body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:clip;}
+section{position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:64px 6vw; overflow:hidden;}
+.inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
+section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
+h1,h2{letter-spacing:-0.03em; line-height:1.05; font-weight:700;}
+.accent{color:var(--yellow);}
+.shead{font-size:clamp(30px,4.4vw,58px); margin-bottom:14px; max-width:22ch;}
+.ssub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
+
+/* left column narrowed 25% from the cake's 1.5fr; the right column keeps its measure */
+.pf-grid{display:grid; grid-template-columns:1.25fr 1fr; gap:50px; align-items:center;
+         margin:46px auto 0; max-width:1148px;}
+.pf-grid > *{min-width:0;}
+.cake-wrap{position:relative; border:1px solid rgba(255,206,74,0.28); border-radius:16px; padding:34px 30px 30px; background:rgba(255,206,74,0.012);}
+.pf-msg{align-self:start;}
+.pf-msg p{font-size:clamp(16px,1.4vw,21px); line-height:1.66; color:var(--muted); font-weight:400;}
+.pf-msg .accent{color:var(--yellow); font-weight:600;}
+.pf-msg .seg{display:block;}
+.pf-msg .seg + .seg{margin-top:14px;}
+
+/* ── flywheel diagram, compact ─────────────────────────────── */
+.fly-wheels{display:grid; grid-template-columns:repeat(3,1fr); gap:2.6%;}
+.fly-wheel{border:1px solid rgba(255,255,255,0.14); border-radius:4px; padding:15px 14px 14px; background:rgba(255,255,255,0.015);}
+.fly-wheel-label{font-size:10px; text-transform:uppercase; letter-spacing:1.8px; color:var(--yellow); font-weight:600;}
+.fly-wheel-sol{margin-top:4px; font-size:14px; font-weight:500; color:#cfcfcf;}
+.fly-loop{display:block; width:100%; height:auto; margin:12px 0 2px;}
+.fly-loop text{font-family:var(--mono); font-size:15px; fill:#e6e6e6;}
+.fly-loop path{fill:none; stroke:rgba(255,206,74,0.55); stroke-width:1.4;}
+.fly-wheel-cap{margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.10);
+               font-size:13px; line-height:1.45; color:#cfcfcf;}
+.fly-stems{display:grid; grid-template-columns:repeat(3,1fr); gap:2.6%; height:22px;}
+.fly-stems span{position:relative;}
+.fly-stems span::before{content:''; position:absolute; left:50%; top:0; bottom:0; width:1px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0.16), rgba(255,206,74,0.60));}
+.fly-spine{margin:-8px 0 0;}
+.fly-spine .sdk{font-family:'Instrument Sans',sans-serif; font-size:10px; font-weight:600;
+                letter-spacing:1.6px; fill:var(--yellow);}
+
+@media (max-width:900px){
+  .pf-grid{grid-template-columns:1fr; gap:34px;}
+  .fly-wheels{grid-template-columns:1fr; gap:12px;}
+  .fly-stems{display:none;}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+    <path d="M0 0 L8 4 L0 8 z" fill="#FFCE4A" stroke="none"/>
+  </marker>
+</defs></svg>
+
+<section id="s-akka-platform">
+  <div class="inner">
+
+    <h2 class="shead">Akka <span class="accent">Agentic AI</span> Platform</h2>
+    <div class="ssub">A platform designed to scale AI efficiently across diverse dev teams, projects,<br>and geographies while lowering token costs and enforcing policies.</div>
+
+    <div class="pf-grid">
+
+      <div class="cake-wrap">
+
+        <div class="fly-wheels">
+
+          <div class="fly-wheel">
+            <div class="fly-wheel-label">Development</div>
+            <div class="fly-wheel-sol">Akka Specify</div>
+            <svg class="fly-loop" viewBox="0 0 140 122" role="img" aria-label="spec to build to check, returning to spec">
+              <text x="88" y="24"  text-anchor="middle">spec</text>
+              <text x="88" y="62"  text-anchor="middle">build</text>
+              <text x="88" y="100" text-anchor="middle">check</text>
+              <path d="M88 32 V48" marker-end="url(#ah)"/>
+              <path d="M88 70 V86" marker-end="url(#ah)"/>
+              <path d="M88 108 V112 Q88 116 80 116 H22 Q14 116 14 108 V27 Q14 19 22 19 H64" marker-end="url(#ah)"/>
+            </svg>
+            <div class="fly-wheel-cap">Each build sharpens the golden paths and auditors, so the next idea reaches production faster.</div>
+          </div>
+
+          <div class="fly-wheel">
+            <div class="fly-wheel-label">Intelligence</div>
+            <div class="fly-wheel-sol">Akka Optimize</div>
+            <svg class="fly-loop" viewBox="0 0 140 122" role="img" aria-label="route to observe to train, returning to route">
+              <text x="88" y="24"  text-anchor="middle">route</text>
+              <text x="88" y="62"  text-anchor="middle">observe</text>
+              <text x="88" y="100" text-anchor="middle">train</text>
+              <path d="M88 32 V48" marker-end="url(#ah)"/>
+              <path d="M88 70 V86" marker-end="url(#ah)"/>
+              <path d="M88 108 V112 Q88 116 80 116 H22 Q14 116 14 108 V27 Q14 19 22 19 H59" marker-end="url(#ah)"/>
+            </svg>
+            <div class="fly-wheel-cap">Classifying your production traffic finds better routes and trains smaller models.</div>
+          </div>
+
+          <div class="fly-wheel">
+            <div class="fly-wheel-label">Governance</div>
+            <div class="fly-wheel-sol">Akka Verify</div>
+            <svg class="fly-loop" viewBox="0 0 140 122" role="img" aria-label="control to run to measure, returning to control">
+              <text x="88" y="24"  text-anchor="middle">control</text>
+              <text x="88" y="62"  text-anchor="middle">run</text>
+              <text x="88" y="100" text-anchor="middle">measure</text>
+              <path d="M88 32 V48" marker-end="url(#ah)"/>
+              <path d="M88 70 V86" marker-end="url(#ah)"/>
+              <path d="M88 108 V112 Q88 116 80 116 H22 Q14 116 14 108 V27 Q14 19 22 19 H50" marker-end="url(#ah)"/>
+            </svg>
+            <div class="fly-wheel-cap">Continuous controls tune your risk model, so new AI ships faster with fewer human decisions.</div>
+          </div>
+
+        </div>
+
+        <div class="fly-stems"><span></span><span></span><span></span></div>
+
+        <svg class="fly-loop fly-spine" viewBox="0 0 610 76" role="img"
+             aria-label="Akka Runtime loop: supervise, adapt, rebalance, returning to supervise">
+          <path d="M456 58 H600 Q608 58 608 50 V16 Q608 8 600 8 H253"/>
+          <path d="M147 8 H10 Q2 8 2 16 V50 Q2 58 10 58 H153" marker-end="url(#ah)"/>
+          <text class="sdk" x="200" y="12" text-anchor="middle">AKKA RUNTIME</text>
+          <text x="202" y="63" text-anchor="middle">supervise</text>
+          <text x="305" y="63" text-anchor="middle">adapt</text>
+          <text x="408" y="63" text-anchor="middle">rebalance</text>
+          <path d="M250 58 H274" marker-end="url(#ah)"/>
+          <path d="M335 58 H359" marker-end="url(#ah)"/>
+        </svg>
+
+      </div>
+
+      <div class="pf-msg">
+        <p>
+          <span class="seg">Akka runs your agentic system in our <span class="accent">proprietary platform that guarantees resilience and scalability</span>, including the agents, their memory, orchestration, guardrails, evaluations, training, and inference.</span>
+          <span class="seg">Spec-driven delivery enables citizen, ML, and pro-code developers to create <span class="accent">production-ready systems in days</span>.</span>
+          <span class="seg">Once there, the platform keeps identifying and training smaller models so your agents cost less to run.</span>
+          <span class="seg">And, it <span class="accent">enforces your guardrails and policies</span> at runtime, even for agents not written in Akka.</span>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

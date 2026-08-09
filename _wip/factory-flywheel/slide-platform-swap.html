@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Akka Agentic AI Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* tokens, shell and cake lifted verbatim from akka-overview/index.html */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --yellow:#FFCE4A; --black:#000000; --white:#F1F1F1;
+  --line:#2A2A2A; --muted:#A6A6A6; --dim:#888;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+html{background:var(--black);}
+body{font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--black); color:var(--white); overflow-x:clip;}
+section{position:relative; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; padding:64px 6vw; overflow:hidden;}
+.inner{position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto;}
+section::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,206,74,0.04) 1px, transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0;}
+h1,h2{letter-spacing:-0.03em; line-height:1.05; font-weight:700;}
+.accent{color:var(--yellow);}
+.shead{font-size:clamp(30px,4.4vw,58px); margin-bottom:14px; max-width:22ch;}
+.ssub{font-size:clamp(15px,1.35vw,19px); color:var(--muted); max-width:64ch; line-height:1.55; margin-bottom:40px;}
+
+.pf-grid{display:grid; grid-template-columns:1.5fr 0.9fr; gap:50px; align-items:center; margin-top:46px;}
+.pf-grid > *{min-width:0;}
+.cake-wrap{position:relative; border:1px solid rgba(255,206,74,0.28); border-radius:16px; padding:40px 34px 34px; background:rgba(255,206,74,0.012);}
+.cake{display:flex; flex-direction:column;}
+.layer{display:grid; grid-template-columns:98px 1fr; gap:0 22px; align-items:stretch;}
+.role{align-self:center; text-align:right; font-family:var(--mono); text-transform:uppercase; letter-spacing:2px; font-size:10px; font-weight:600; color:var(--dim); line-height:1.7;}
+.role b{color:var(--muted); font-weight:600; display:block;}
+.cards{display:grid; grid-template-columns:1fr; gap:14px;}
+.cards.two{grid-template-columns:1fr 1fr;}
+.cards.two.govwide{grid-template-columns:0.8fr 1.2fr;}
+.ocard{border:1px solid var(--line); border-radius:11px; padding:26px 24px; text-align:center; background:rgba(255,255,255,0.025); transition:border-color .3s, transform .2s;}
+.ocard:hover{border-color:rgba(255,206,74,0.5); transform:translateY(-2px);}
+.oname{font-size:clamp(16px,1.6vw,21px); font-weight:600; letter-spacing:-0.01em; color:var(--white);}
+.osub{margin-top:12px; color:var(--muted); font-size:clamp(11.5px,0.92vw,13px); letter-spacing:.2px; line-height:1.5; white-space:nowrap;}
+.osub .d{color:var(--yellow); font-weight:600; padding:0 4px;}
+.conn{display:grid; grid-template-columns:98px 1fr; gap:0 22px; height:26px;}
+.conn .rail{display:grid;}
+.conn.two .rail{grid-template-columns:1fr 1fr;}
+.conn.one .rail{grid-template-columns:1fr;}
+.conn .rail span{justify-self:center; width:2px; height:100%; background:linear-gradient(var(--yellow) 0 45%, transparent 45% 100%); background-size:100% 8px; opacity:.55; animation:flow .9s linear infinite;}
+@keyframes flow{from{background-position:0 0;}to{background-position:0 8px;}}
+
+.pf-msg p{font-size:clamp(16px,1.4vw,21px); line-height:1.66; color:var(--muted); font-weight:400;}
+.pf-msg .accent{color:var(--yellow); font-weight:600;}
+.pf-msg .seg{display:block;}
+.pf-msg .seg + .seg{margin-top:14px;}
+
+/* ── the swap ──────────────────────────────────────────────────
+   The chip list STAYS IN FLOW and only fades, so every card keeps
+   exactly the height its original content gave it. The loop is
+   absolutely positioned over that same space and takes no layout
+   room, so no box in the cake changes size or position.          */
+.oswap{position:relative;}
+.oswap .osub{transition:opacity .35s ease;}
+.oswap .fly-loop{
+  position:absolute; left:50%; top:50%;
+  width:100%; max-width:240px; height:auto;
+  /* nudged down off the product name; the loop is taller than the line it replaces */
+  transform:translate(-50%,calc(-50% + 4px)) scale(.94);
+  opacity:0; pointer-events:none;
+  transition:opacity .45s ease, transform .55s cubic-bezier(.16,1,.3,1);
+}
+.revealed .oswap .osub{opacity:0;}
+.revealed .oswap .fly-loop{opacity:1; transform:translate(-50%,calc(-50% + 4px)) scale(1);}
+.revealed .ocard{border-color:rgba(255,206,74,0.42);}
+
+/* Each loop assembles a station at a time rather than appearing whole:
+   word, arrow, word, arrow, word, then the return arc closes the circuit. */
+/* Word, then the line that connects it, then the next word, and so on. The closing
+   arc is the last thing drawn.
+   Transitions live on the BASE rule, not inside .revealed — declared only in the
+   target state they are absent from the before-change style and the value jumps. */
+.fly-loop text{font-family:var(--mono); font-size:12px; fill:#e6e6e6;
+               opacity:0; transition:opacity .38s ease;}
+.revealed .fly-loop text{opacity:1;}
+
+/* Drawing paths carry pathLength="100", so one dash rule hides every path no matter
+   its real geometry. Arrowheads are part of the path, not markers — an SVG marker
+   ignores stroke-dasharray and pops into view before its line has drawn. */
+.fly-loop path{fill:none; stroke:var(--yellow); stroke-width:1.3;
+               stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1;
+               stroke-dasharray:100; stroke-dashoffset:100;}
+.revealed .fly-loop path:not(.fly-trace){stroke-dashoffset:0; stroke-opacity:.26;}
+
+/* The wheel — a repeating dash runs the whole circuit forever, on the same 0.9s
+   period as the connector rails already flowing between the cake's bands.
+   No pathLength here, so the dash pitch stays in real user units. */
+.fly-loop path.fly-trace{stroke-width:2; stroke-linecap:round; opacity:0;
+                         stroke-dasharray:3.5 6.5; stroke-dashoffset:0;}
+.revealed .fly-loop path.fly-trace{opacity:1;}
+@keyframes wheel{ from{stroke-dashoffset:0;} to{stroke-dashoffset:-10;} }
+
+/* Every delay written out. Nothing here resolves through a custom property: a var()
+   anywhere in the `transition` shorthand makes the whole declaration
+   pending-substitution, and the draw jumps straight to its end value.
+   Beat is 0.30s — word, its line, word, its line, word, then the closing arc. */
+.fw-1 text:nth-of-type(1){transition-delay:0.00s}
+.fw-1 text:nth-of-type(2){transition-delay:0.60s}
+.fw-1 text:nth-of-type(3){transition-delay:1.20s}
+.fw-1 path:nth-of-type(1){transition:stroke-dashoffset .34s ease-out 0.30s, stroke-opacity .6s ease 2.40s}
+.fw-1 path:nth-of-type(2){transition:stroke-dashoffset .34s ease-out 0.90s, stroke-opacity .6s ease 2.40s}
+.fw-1 path:nth-of-type(3){transition:stroke-dashoffset .80s ease-out 1.50s, stroke-opacity .6s ease 2.40s}
+.fw-1 path.fly-trace{transition:opacity .7s ease 2.40s}
+.revealed .fw-1 path.fly-trace{animation:wheel .9s linear infinite both; animation-delay:2.40s}
+
+.fw-2 text:nth-of-type(1){transition-delay:0.20s}
+.fw-2 text:nth-of-type(2){transition-delay:0.80s}
+.fw-2 text:nth-of-type(3){transition-delay:1.40s}
+.fw-2 path:nth-of-type(1){transition:stroke-dashoffset .34s ease-out 0.50s, stroke-opacity .6s ease 2.60s}
+.fw-2 path:nth-of-type(2){transition:stroke-dashoffset .34s ease-out 1.10s, stroke-opacity .6s ease 2.60s}
+.fw-2 path:nth-of-type(3){transition:stroke-dashoffset .80s ease-out 1.70s, stroke-opacity .6s ease 2.60s}
+.fw-2 path.fly-trace{transition:opacity .7s ease 2.60s}
+.revealed .fw-2 path.fly-trace{animation:wheel .9s linear infinite both; animation-delay:2.60s}
+
+.fw-3 text:nth-of-type(1){transition-delay:0.40s}
+.fw-3 text:nth-of-type(2){transition-delay:1.00s}
+.fw-3 text:nth-of-type(3){transition-delay:1.60s}
+.fw-3 path:nth-of-type(1){transition:stroke-dashoffset .34s ease-out 0.70s, stroke-opacity .6s ease 2.80s}
+.fw-3 path:nth-of-type(2){transition:stroke-dashoffset .34s ease-out 1.30s, stroke-opacity .6s ease 2.80s}
+.fw-3 path:nth-of-type(3){transition:stroke-dashoffset .80s ease-out 1.90s, stroke-opacity .6s ease 2.80s}
+.fw-3 path.fly-trace{transition:opacity .7s ease 2.80s}
+.revealed .fw-3 path.fly-trace{animation:wheel .9s linear infinite both; animation-delay:2.80s}
+
+.fw-4 text:nth-of-type(1){transition-delay:0.60s}
+.fw-4 text:nth-of-type(2){transition-delay:1.20s}
+.fw-4 text:nth-of-type(3){transition-delay:1.80s}
+.fw-4 path:nth-of-type(1){transition:stroke-dashoffset .34s ease-out 0.90s, stroke-opacity .6s ease 3.00s}
+.fw-4 path:nth-of-type(2){transition:stroke-dashoffset .34s ease-out 1.50s, stroke-opacity .6s ease 3.00s}
+.fw-4 path:nth-of-type(3){transition:stroke-dashoffset .80s ease-out 2.10s, stroke-opacity .6s ease 3.00s}
+.fw-4 path.fly-trace{transition:opacity .7s ease 3.00s}
+.revealed .fw-4 path.fly-trace{animation:wheel .9s linear infinite both; animation-delay:3.00s}
+
+/* right panel — original copy crossfades to the flywheel copy in place */
+.pf-msg{position:relative; align-self:start;}
+.pf-msg .msg{transition:opacity .45s ease;}
+/* centred on the original block so any extra height spills evenly, not all off the bottom */
+.pf-msg .msg-fly{position:absolute; top:50%; left:0; right:0; transform:translateY(-50%);}
+.revealed .pf-msg .msg-orig{opacity:0;}
+/* the flywheel copy fades in place. No transform on the paragraphs — any vertical
+   movement here reads as the text being redrawn. */
+.msg-fly .seg{opacity:0; transition:opacity .5s ease;}
+.revealed .msg-fly .seg{opacity:1;}
+.revealed .msg-fly .seg:nth-child(1){transition-delay:.26s;}
+.revealed .msg-fly .seg:nth-child(2){transition-delay:.38s;}
+.revealed .msg-fly .seg:nth-child(3){transition-delay:.50s;}
+.revealed .msg-fly .seg:nth-child(4){transition-delay:.62s;}
+.revealed .msg-fly .seg:nth-child(5){transition-delay:.74s;}
+
+.hint{position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:2;
+      font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#7a7a7a;
+      transition:opacity .4s ease;}
+.revealed .hint{opacity:0;}
+
+@media (max-width:820px){
+  .pf-grid{grid-template-columns:1fr; gap:36px;}
+  .pf-msg p{font-size:17px;}
+}
+/* NOTE: a prefers-reduced-motion block used to sit here and disabled the dash
+   mechanism outright, so the loops could never draw on a machine with Windows
+   animations turned off. Decide the accessible fallback deliberately before this
+   ships — suppressing the perpetual wheel is reasonable, killing the draw is not. */
+</style>
+</head>
+<body>
+
+<section id="s-akka-platform">
+  <div class="inner">
+
+    <h2 class="shead">Akka <span class="accent">Agentic AI</span> Platform</h2>
+    <div class="ssub">A platform designed to scale AI efficiently across diverse dev teams, projects,<br>and geographies while lowering token costs and enforcing policies.</div>
+
+    <div class="pf-grid">
+
+      <div class="cake-wrap">
+        <div class="cake">
+
+          <div class="layer">
+            <div class="role">Deliver<b>&amp; Govern</b></div>
+            <div class="cards two govwide">
+
+              <div class="ocard">
+                <div class="oname">Akka Specify</div>
+                <div class="oswap">
+                  <div class="osub">specs<span class="d">·</span>generation<span class="d">·</span>modernization</div>
+                  <svg class="fly-loop fw-1" viewBox="0 0 250 46" role="img" aria-label="spec to build to check, returning to spec">
+                    <text x="53"  y="14" text-anchor="middle">spec</text>
+                    <text x="122" y="14" text-anchor="middle">build</text>
+                    <text x="194" y="14" text-anchor="middle">check</text>
+                    <path pathLength="100" d="M74 10 H97 M92 6 L97 10 L92 14"/>
+                    <path pathLength="100" d="M146 10 H169 M164 6 L169 10 L164 14"/>
+                    <path pathLength="100" d="M194 22 V32 Q194 40 186 40 H61 Q53 40 53 32 V19 M49 24 L53 19 L57 24"/>
+                    <path class="fly-trace" d="M74 10 H97"/>
+                    <path class="fly-trace" d="M146 10 H169"/>
+                    <path class="fly-trace" d="M194 22 V32 Q194 40 186 40 H61 Q53 40 53 32 V19"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="ocard">
+                <div class="oname">Akka Verify</div>
+                <div class="oswap">
+                  <div class="osub">evaluations<span class="d">·</span>guardrails<span class="d">·</span>policies<span class="d">·</span>evidence</div>
+                  <svg class="fly-loop fw-2" viewBox="0 0 250 46" role="img" aria-label="control to run to measure, returning to control">
+                    <text x="53"  y="14" text-anchor="middle">control</text>
+                    <text x="125" y="14" text-anchor="middle">run</text>
+                    <text x="197" y="14" text-anchor="middle">measure</text>
+                    <path pathLength="100" d="M84 10 H108 M103 6 L108 10 L103 14"/>
+                    <path pathLength="100" d="M142 10 H166 M161 6 L166 10 L161 14"/>
+                    <path pathLength="100" d="M197 22 V32 Q197 40 189 40 H61 Q53 40 53 32 V19 M49 24 L53 19 L57 24"/>
+                    <path class="fly-trace" d="M84 10 H108"/>
+                    <path class="fly-trace" d="M142 10 H166"/>
+                    <path class="fly-trace" d="M197 22 V32 Q197 40 189 40 H61 Q53 40 53 32 V19"/>
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="conn two"><div></div><div class="rail"><span></span><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Build<b>&amp; Run</b></div>
+            <div class="cards">
+              <div class="ocard">
+                <div class="oname">Akka SDK</div>
+                <div class="oswap">
+                  <div class="osub osub-wrap">agents<span class="d">·</span>autonomous agents<span class="d">·</span>workflows<span class="d">·</span>event sourced entities<span class="d">·</span>key value entities<span class="d">·</span>views<br>HTTP endpoints<span class="d">·</span>gRPC endpoints<span class="d">·</span>MCP endpoints<span class="d">·</span>timed actions<span class="d">·</span>consumers</div>
+                  <svg class="fly-loop fw-3" viewBox="0 0 250 46" role="img" aria-label="supervise to adapt to rebalance, returning to supervise">
+                    <text x="38"  y="14" text-anchor="middle">supervise</text>
+                    <text x="125" y="14" text-anchor="middle">adapt</text>
+                    <text x="212" y="14" text-anchor="middle">rebalance</text>
+                    <path pathLength="100" d="M77 10 H101 M96 6 L101 10 L96 14"/>
+                    <path pathLength="100" d="M149 10 H173 M168 6 L173 10 L168 14"/>
+                    <path pathLength="100" d="M212 22 V32 Q212 40 204 40 H46 Q38 40 38 32 V19 M34 24 L38 19 L42 24"/>
+                    <path class="fly-trace" d="M77 10 H101"/>
+                    <path class="fly-trace" d="M149 10 H173"/>
+                    <path class="fly-trace" d="M212 22 V32 Q212 40 204 40 H46 Q38 40 38 32 V19"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="conn one"><div></div><div class="rail"><span></span></div></div>
+
+          <div class="layer">
+            <div class="role">Models<b>&amp; Compute</b></div>
+            <div class="cards">
+              <div class="ocard">
+                <div class="oname">Akka Optimize</div>
+                <div class="oswap">
+                  <div class="osub">SLMs<span class="d">·</span>training<span class="d">·</span>grading<span class="d">·</span>routing</div>
+                  <svg class="fly-loop fw-4" viewBox="0 0 250 46" role="img" aria-label="route to observe to train, returning to route">
+                    <text x="46"  y="14" text-anchor="middle">route</text>
+                    <text x="125" y="14" text-anchor="middle">observe</text>
+                    <text x="204" y="14" text-anchor="middle">train</text>
+                    <path pathLength="100" d="M70 10 H94 M89 6 L94 10 L89 14"/>
+                    <path pathLength="100" d="M156 10 H180 M175 6 L180 10 L175 14"/>
+                    <path pathLength="100" d="M204 22 V32 Q204 40 196 40 H54 Q46 40 46 32 V19 M42 24 L46 19 L50 24"/>
+                    <path class="fly-trace" d="M70 10 H94"/>
+                    <path class="fly-trace" d="M156 10 H180"/>
+                    <path class="fly-trace" d="M204 22 V32 Q204 40 196 40 H54 Q46 40 46 32 V19"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="pf-msg">
+
+        <p class="msg msg-orig">
+          <span class="seg">Akka runs your agentic system in our <span class="accent">proprietary platform that guarantees resilience and scalability</span>, including the agents, their memory, orchestration, guardrails, evaluations, training, and inference.</span>
+          <span class="seg">Spec-driven delivery enables citizen, ML, and pro-code developers to create <span class="accent">production-ready systems in days</span>.</span>
+          <span class="seg">Once there, the platform keeps identifying and training smaller models so your agents cost less to run.</span>
+          <span class="seg">And, it <span class="accent">enforces your guardrails and policies</span> at runtime, even for agents not written in Akka.</span>
+        </p>
+
+        <p class="msg msg-fly">
+          <span class="seg">Create enterprise AI software factories from <span class="accent">flywheels that learn</span>.</span>
+          <span class="seg">Every development build sharpens Akka&rsquo;s golden paths and auditors so that <span class="accent">the next team reaches production faster</span>.</span>
+          <span class="seg">Policies and controls are continuously evaluated to tune your risk model so that new AI requires <span class="accent">fewer human decisions</span>.</span>
+          <span class="seg">Actor-based concurrency continuously rebalances data, <span class="accent">guaranteeing resilience</span> and improving density.</span>
+          <span class="seg">Akka classifies your AI production traffic to identify better routes and to train <span class="accent">smaller, sovereign models</span>.</span>
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="hint">Click to run the flywheels</div>
+</section>
+
+<script>
+(function () {
+  var sec = document.getElementById('s-akka-platform');
+  sec.addEventListener('click', function () { sec.classList.toggle('revealed'); });
+})();
+</script>
+
+</body>
+</html>
