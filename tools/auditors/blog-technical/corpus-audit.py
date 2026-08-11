@@ -32,7 +32,7 @@ if sys.stdout.encoding.lower() != 'utf-8':
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
 INVENTORY = os.path.join(ROOT, 'scratchpad', 'hs-blog-inventory.json')
 POSTS_DIR = os.path.join(ROOT, 'blog-technical', 'posts')
-SCAFFOLDER = os.path.join(ROOT, 'scratchpad', 'scaffold_blog_technical.py')
+SCAFFOLDER = os.path.join(ROOT, 'tools', 'blog-technical', 'scaffold.py')
 
 
 def audit_one(path):

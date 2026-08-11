@@ -1,0 +1,27 @@
+/* Akka blog-technical theme — light variant.
+   Loaded after theme/base.css and overriding only the rules whose values
+   differ. The code block, the figure plates and the Prism tokens keep pinned
+   dark values rather than palette variables, so they stay a dark island on the
+   light page. */
+:root{--paper:#FAFAF7;--paper-2:#F0F0EB;--plate:#F5F5F0;--ink:#1A1A17;--body:#3A3A35;--mute:#75756F;--faint:#B8B8B3;--rule:rgba(0,0,0,0.10);--rule-hi:rgba(0,0,0,0.16);--accent:#8A6600;--link:#1F6E72;--accent-2:#B08800;--teal:#2A8A8E;--good:#2E7D4F;--bad:#B34141;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+/* Plates on light theme stay dark: source diagrams often have dark
+   backgrounds baked in, and a dark island reads cleaner on the light page
+   than a black rectangle on white. Light-bg images still work — they just
+   sit on a dark card. */
+figure.viz .plate{background:#141416;padding:24px;border:0}
+figure.viz .plate--paper{background:#FFFFFF;padding:32px;border:1px solid var(--rule)}
+figure.viz .plate--flush{background:#141416;padding:0;border:0;width:100%;max-width:100%;margin:0 auto}
+/* Code blocks stay a dark island on the light page — matches Anthropic/
+   Stripe/typical technical publications and gives Prism Tomorrow tokens
+   the dark backdrop they were designed for. Values are pinned (not vars)
+   so they don't flip with the theme palette. */
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:#141416!important;color:#E8E8E5!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border:0!important;text-shadow:none!important;border-radius:0!important;scrollbar-color:#FFCE4A #141416!important;scrollbar-width:thin}
+pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb,.rtbl::-webkit-scrollbar-thumb{background:rgba(138,102,0,0.5);border-radius:0}
+code[class*="language-"]{font-family:var(--mono)!important;color:#E8E8E5!important;text-shadow:none!important;background:none!important}
+/* Token colors pinned for the dark code island — vars would drag them into
+   the light palette. */
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:#9A9A97;font-style:italic}
+.token.punctuation{color:#E8E8E5}
+.token.string,.token.char,.token.attr-value{color:#7FD9A0}
+.token.number,.token.boolean{color:#FFCE4A;font-variant-numeric:tabular-nums}
+.token.keyword,.token.builtin{color:#6BC9CE;font-weight:500}
