@@ -27,6 +27,14 @@ git add \
 STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(html|md)$' || true)
 for f in $STAGED; do
   [ -f "$f" ] || continue
+  # The five decks are out of scope. Deck copy answers to the slide budgets in
+  # CLAUDE.md rather than the prose rule bank, which is written for running
+  # prose: a deck headline is the section, not an introduction to one, and a
+  # stat tile is a label with a full stop. Sources and built output both.
+  case "$f" in
+    akka-overview/*|akka-sdk/*|akka-verify/*|sales-presentation/*)
+      continue ;;
+  esac
   case "$f" in
     website/guides*)                 CTX=guide ;;
     website/*)                       CTX=web ;;
