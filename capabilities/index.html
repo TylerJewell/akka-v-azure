@@ -8,6 +8,7 @@
 :root {
   --black: #0A0A0A;
   --white: #FFFFFF;
+  --ink: #E8E8E5;
   --gray: #B0B0B0;
   --muted: #7A7A7A;
   --faint: #3A3A3A;
@@ -23,17 +24,19 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
   border-bottom: 1px solid var(--yellow);
   padding: 14px 28px 12px;
   display: flex; align-items: baseline; gap: 14px;
-  font-family: var(--mono); font-size: 10.5px;
+  font-family: var(--mono); font-size: 12px;
   color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px;
 }
 .colophon .brand {
-  font-family: var(--sans); font-weight: 900;
-  font-size: 14px; color: var(--white); letter-spacing: 0;
+  font-family: var(--sans); font-weight: 700;
+  font-size: 16px; color: var(--white); letter-spacing: 0;
 }
 .colophon .sep { color: var(--faint); }
 .colophon .doc { color: var(--white); }
 
 .spec {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 24px 28px 60px;
   column-count: 3;
   column-gap: 32px;
@@ -49,29 +52,30 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
 
 .cat h3 {
   font-family: var(--sans);
-  font-size: 10.5px; font-weight: 900;
+  font-size: 12px; font-weight: 700;
   color: var(--white); text-transform: uppercase; letter-spacing: 2px;
   padding: 8px 0 6px; margin-bottom: 8px;
   border-bottom: 1px solid var(--yellow);
 }
 
 .feat {
-  font-size: 11px; line-height: 1.42;
+  font-size: 13px; line-height: 1.45;
   padding: 2px 0;
   color: var(--gray);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Wrapping, not ellipsis. At this type size a capped column cannot hold every
+     capability on one line, and a truncated line drops the half of the sentence
+     that says what the capability does. */
+  text-wrap: pretty;
 }
 .feat b {
   font-family: var(--mono); font-weight: 600;
-  color: var(--white); font-size: 10.5px;
+  color: var(--ink); font-size: 12px;
 }
 
 .foot {
   border-top: 1px solid var(--line);
   padding: 12px 28px;
-  font-family: var(--mono); font-size: 9.5px;
+  font-family: var(--mono); font-size: 11px;
   color: var(--faint); text-transform: uppercase; letter-spacing: 1.5px;
 }
 
@@ -101,8 +105,8 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <h3>Platform runtime</h3>
     <div class="feat"><b>Clustering.</b> Peer cluster with gossip membership.</div>
     <div class="feat"><b>Sharding.</b> Deterministic entity partitioning.</div>
-    <div class="feat"><b>Entity rebalancing.</b> Auto-redistribution on membership change.</div>
-    <div class="feat"><b>Durable execution.</b> Workflows resume from last completed step.</div>
+    <div class="feat"><b>Entity rebalancing.</b> Redistributes on membership change.</div>
+    <div class="feat"><b>Durable execution.</b> Workflows resume from last step.</div>
     <div class="feat"><b>State replication.</b> Entity state across zones.</div>
     <div class="feat"><b>Multi-region.</b> Active-active state across regions.</div>
     <div class="feat"><b>Split-brain resolution.</b> Configurable partition strategies.</div>
@@ -120,6 +124,34 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
   </section>
 
   <section class="cat">
+    <h3>Akka Actors</h3>
+    <div class="feat"><b>Actor model.</b> Unit of state, behavior, and one mailbox.</div>
+    <div class="feat"><b>Serialized execution.</b> One message at a time, no locks.</div>
+    <div class="feat"><b>4KB actors.</b> Memory footprint of an idle actor.</div>
+    <div class="feat"><b>200M actors per core.</b> Density on a single CPU core.</div>
+    <div class="feat"><b>1M-node clusters.</b> Cluster size the runtime is built for.</div>
+    <div class="feat"><b>Actor hierarchy.</b> Parents supervise the children they create.</div>
+    <div class="feat"><b>Supervision strategies.</b> Resume, restart, stop, escalate.</div>
+    <div class="feat"><b>Backoff supervision.</b> Restarts spaced by backoff.</div>
+    <div class="feat"><b>Death watch.</b> Termination arrives as a message.</div>
+    <div class="feat"><b>Typed behaviors.</b> Protocols checked at compile time.</div>
+    <div class="feat"><b>Tell and ask.</b> Fire-and-forget, or request with reply.</div>
+    <div class="feat"><b>Mailbox types.</b> Unbounded, bounded, priority, control-aware.</div>
+    <div class="feat"><b>Stashing.</b> Hold messages until the actor changes behavior.</div>
+    <div class="feat"><b>Dispatchers.</b> Thread-pool, pinned, affinity pools.</div>
+    <div class="feat"><b>Actor timers.</b> Single-shot and periodic messages.</div>
+    <div class="feat"><b>Receive timeout.</b> Fires when an actor idles past a threshold.</div>
+    <div class="feat"><b>Routers.</b> Pool and group, round-robin or hashed.</div>
+    <div class="feat"><b>Location transparency.</b> One reference reaches any node.</div>
+    <div class="feat"><b>Remoting.</b> Actor messaging over encrypted transport.</div>
+    <div class="feat"><b>Cluster singleton.</b> One instance across the cluster.</div>
+    <div class="feat"><b>Distributed pub-sub.</b> Topic delivery across the cluster.</div>
+    <div class="feat"><b>Circuit breaker.</b> Trips a failing call path, half-opens to retry.</div>
+    <div class="feat"><b>Coordinated shutdown.</b> Ordered phases on leave or exit.</div>
+    <div class="feat"><b>Stream integration.</b> Actors as stream sources and sinks.</div>
+  </section>
+
+  <section class="cat">
     <h3>Development model</h3>
     <div class="feat"><b>Agent component.</b> LLM unit with session memory.</div>
     <div class="feat"><b>Workflow component.</b> Durable multi-step orchestration.</div>
@@ -131,7 +163,6 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <div class="feat"><b>Timed action.</b> Scheduled durable work.</div>
     <div class="feat"><b>Component composition.</b> Typed message passing.</div>
     <div class="feat"><b>Java 21+.</b> Java 21 language and above.</div>
-    <div class="feat"><b>Scala 3.</b> First-class Scala 3 support.</div>
     <div class="feat"><b>Component annotations.</b> Declarative wiring.</div>
     <div class="feat"><b>Effect API.</b> Value plus side effects.</div>
     <div class="feat"><b>Local dev console.</b> Topology, traces, state.</div>
@@ -204,7 +235,7 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <div class="feat"><b>Route.</b> Send each task to the fitting model.</div>
     <div class="feat"><b>Train.</b> Specialize models on your own data.</div>
     <div class="feat"><b>Serve.</b> Run in your environment, frontier fallback.</div>
-    <div class="feat"><b>Targeting engine.</b> Scores narrowness, volume, verifiability, spend.</div>
+    <div class="feat"><b>Targeting engine.</b> Scores narrowness, volume, spend.</div>
     <div class="feat"><b>Deterministic grader.</b> Structured prompts (SQL, JSON).</div>
     <div class="feat"><b>LLM judge.</b> Scores unstructured prompts.</div>
     <div class="feat"><b>Grades external harnesses.</b> Copilot, Claude Code, Cursor.</div>
@@ -299,13 +330,6 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <div class="feat"><b>Includes model training.</b> In the fixed price.</div>
     <div class="feat"><b>Includes delivery.</b> Implementation in the fixed price.</div>
     <div class="feat"><b>Includes 24/7 SRE.</b> Operations in the fixed price.</div>
-    <div class="feat"><b>Price input: token volume.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: system complexity.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: data upkeep.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: end-user scale.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: safeguard count.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: SLM optimization.</b> One of seven inputs.</div>
-    <div class="feat"><b>Price input: HA/DR level.</b> One of seven inputs.</div>
   </section>
 
   <section class="cat">

@@ -133,8 +133,13 @@ a stale one is a copy of the deck nobody is updating. Delete the page with
 answers 404 for these, because a source-code PUT to both environments leaves one addressable
 record. That 404 is the expected result, not a failed delete.
 
-None live. `platform/overview-preview` (page `218560780576`) was used for the efficiency
-redesign and removed 2026-08-03 when that deck shipped to `platform/overview`.
+None live. `platform/overview-preview` (page `219046029148`) carried the flywheel swap, the
+largest-scale slide and the section-id rename, and was removed 2026-08-11 when that deck
+shipped to `platform/overview`. `platform/capabilities-preview` (page `219119622799`) carried
+the capabilities type and column changes, and was removed the same day.
+
+An earlier `platform/overview-preview` (page `218560780576`) carried the efficiency redesign
+and was removed 2026-08-03 when that deck shipped.
 
 ## 7. Content rules (see `audit.py` §8)
 

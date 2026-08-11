@@ -554,17 +554,18 @@ SLIDE_WRAPPERS = {
 # Human-friendly deep-link slugs per deck. Format: real_id → friendly_slug.
 # Deep-link JS accepts either; scroll-tracked URL prefers the friendly slug.
 SLIDE_SLUGS = {
+    # The title slide carries no id, so updateHash's section[id] query skips it
+    # and the URL stays clean until the reader reaches the second slide.
     'overview': {
-        's-title': 'title',
-        's-thesis': 'cost-of-intelligence',
-        's-akka-platform': 'agentic-ai-platform',
-        's-platform': 'resilience-and-scalability',
-        's-eff': 'efficiency',
-        's-proof': 'production-reliability',
-        's6': 'resilience-tester',
-        's-packages': 'deployment',
-        's-routes': 'explore-platform',
-        's-close': 'contact',
+        'economics': 'cost-of-intelligence',
+        'smallest-scale': 'smallest-scale',
+        'platform': 'agentic-ai-platform',
+        'architecture': 'resilience-and-scalability',
+        'largest-scale': 'largest-scale',
+        'resilience': 'resilience-tester',
+        'deploy': 'deployment',
+        'explore': 'explore-platform',
+        'contact': 'contact',
     },
     # Read off the rendered slides 2026-08-03: s1 is THE DESIGN INTENT, s2 is
     # THE COMPONENTS, s13 is THE ARCHITECTURE. The old map had 'components' on
@@ -621,10 +622,13 @@ SLIDE_SLUGS = {
 # top of the deck with no indication why. Format: retired_slug → live_id.
 RETIRED_SLUGS = {
     'overview': {
-        # #s-morph became #s-akka-platform in the efficiency redesign.
-        'enterprise-agentic-ai': 's-akka-platform',
-        # #s-scale became #s-eff.
-        'scalability': 's-eff',
+        'enterprise-agentic-ai': 'platform',
+        # The four-offering efficiency slide was replaced by the largest-scale
+        # slide, so both slugs that named it land there.
+        'scalability': 'largest-scale',
+        'efficiency': 'largest-scale',
+        # The proof slide is now named for its headline rather than its eyebrow.
+        'production-reliability': 'smallest-scale',
     },
     # 'components' is NOT listed for sdk. It is reused rather than retired: it
     # used to name s1 and now names s2, the slide that actually holds the
