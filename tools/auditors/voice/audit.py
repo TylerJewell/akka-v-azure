@@ -37,6 +37,10 @@ ALL = ('web', 'guide', 'faq', 'blog', 'deck', 'case-study', 'battlecard', 'inter
 # Sales enablement, playbooks, and battlecard notes. Trade terms are precise
 # there and vague in customer copy, so a few rules are scoped away from it.
 CUSTOMER_FACING = tuple(c for c in ALL if c != 'internal')
+# Surfaces that state what a thing is and how it works. Rationale belongs in a
+# limited part of the README and in product marketing, so the rules against
+# arguing for a choice are scoped away from web, deck and battlecard.
+DOCUMENTATION = ('guide', 'faq', 'blog', 'case-study', 'internal')
 
 # ── Rule bank ───────────────────────────────────────────────────
 # (pattern, rule name, scope, contexts)
@@ -114,6 +118,103 @@ RULES = [
  (r"^(What|Why|How|When|Where|Which|Who)\b[^?]{0,80}[.?]\s*$", 'rhetorical question heading', 'heading',
   ('web', 'blog', 'deck', 'case-study', 'battlecard')),
  (r"\bThis is the real story:", 'colon-drama', 'both', ALL),
+
+ # ── Sentences that defer the explanation to a neighbour ────────
+ # An announcement stub spends a sentence saying that an explanation follows.
+ # Every one of these is grammatically complete, so the fragment checks below
+ # never see them, and a run of them reads as explanation while carrying one
+ # fact between four sentences.
+ # Anchored at a sentence boundary, not a line start. A wrapped paragraph puts
+ # most sentences mid-line, and a line-start anchor reports the first one only.
+ (r"(?:^|(?<=[.!?])\s)(The|Its?|Our|This|That)\s+\w+\s+(is|are)\s+"
+  r"(simple|straightforward|this|as\s+follows|the\s+same)\b",
+  'announcement stub', 'prose', ALL),
+ # Spelled-out small numbers only. A measured figure is written in digits.
+ (r"(?:^|(?<=[.!?])\s)There (is|are)\s+(one|two|three|four|five|six|seven|eight|nine|ten)\s+\w+",
+  'announcement stub', 'prose', ALL),
+ (r"\b(follows|passes|fails|meets|comes down to)\s+(one|a single|the same)\s+"
+  r"(test|rule|criterion|standard|question|principle|idea|thing)\b",
+  'announcement stub', 'prose', ALL),
+ (r"(?:^|(?<=[.!?])\s)(One|A single)\s+\w+\s+"
+  r"(decides|settles|explains|drives|governs|answers)\s+(it|this|that)\b",
+  'announcement stub', 'prose', ALL),
+ (r"\b(works|goes|reads|breaks\s+down)\s+like\s+this\b", 'announcement stub', 'both', ALL),
+ (r"\bis\s+as\s+follows\b", 'announcement stub', 'both', ALL),
+ # A pointer standing in for the thing it points at.
+ (r"\bthe (former|latter)\b", 'back-reference to a thing never named', 'both', ALL),
+
+ # ── Courtroom vocabulary ───────────────────────────────────────
+ # An evaluation produces measurements. Describing them as testimony makes a
+ # software reader translate: a run has no permission to seek and no ruling to
+ # survive. Full list in docs/specs/prose-audit-list.html.
+ (r"\bmay claim\b|\bpermitted to claim\b|\ballowed to claim\b", 'courtroom vocabulary', 'both', ALL),
+ (r"\babsent evidence\b|\bproduced no evidence\b|\bno evidence (about|for)\b",
+  'courtroom vocabulary', 'both', ALL),
+ (r"\bfindings? (below|above)?\s*stands?\b", 'courtroom vocabulary', 'both', ALL),
+ (r"\b(not\s+)?quotable\b", 'courtroom vocabulary', 'both', ALL),
+
+ # ── Metaphor replacing a name in the codebase ──────────────────
+ (r"\b(the|one|a) ruler\b", 'metaphor for a named type', 'both', ALL),
+ (r"\bband movement\b", 'metaphor for a named type', 'both', ALL),
+ (r"\bpre-?flight\b", 'metaphor for a named type', 'both', ALL),
+ (r"\ba floor rather than\b", 'metaphor for a named type', 'both', ALL),
+
+ # ── Register no engineer speaks ────────────────────────────────
+ (r"\bby construction\b", 'register no engineer speaks', 'both', ALL),
+ (r"\bcarr(y|ies|ying) the (reasoning|argument|thinking)\b",
+  'register no engineer speaks', 'both', ALL),
+ (r"\bholds? the (session|reference|state|lock)\b", 'register no engineer speaks', 'both', ALL),
+ (r"\bis the point\b", 'register no engineer speaks', 'both', ALL),
+ (r"\bstructural difference\b", 'names no structure', 'both', ALL),
+ (r"\bcontribution standard\b", 'invented project vocabulary', 'both', ALL),
+
+ # ── Project vocabulary ─────────────────────────────────────────
+ # GitHub names the parts of a project: issue, pull request, milestone, label,
+ # release, discussion, branch, commit, tag. An invented synonym makes the
+ # reader translate before they can act, and "known gap" names an issue.
+ (r"\bknown[- ]gaps?\b", 'invented project vocabulary', 'both', ALL),
+ (r"\bgaps?\s+(list|register|log|analysis)\b", 'invented project vocabulary', 'both', ALL),
+ (r"\b(punch|wish|laundry)\s+list\b", 'invented project vocabulary', 'both', ALL),
+ (r"\bticket(s|ed)?\b", 'invented project vocabulary', 'both', ALL),
+
+ # ── Arguing for a choice inside documentation ──────────────────
+ # Documentation states what a thing is and how it works. Rationale belongs in
+ # a limited part of the README and in product marketing. Scoped away from
+ # 'web', 'deck' and 'battlecard', which are the surfaces that argue by design.
+ (r"\bwhich is why\b", 'argues for the choice', 'both', DOCUMENTATION),
+ (r"\bthe (reason|rationale|argument|case)\s+(for|behind|why|that)\b",
+  'argues for the choice', 'both', DOCUMENTATION),
+ (r"\b(this|that|it)\s+(matters|is important)\s+because\b", 'argues for the choice', 'both', DOCUMENTATION),
+ (r"\b(it'?s|it is)\s+worth\s+(noting|stating|saying|remembering)\b",
+  'argues for the choice', 'both', DOCUMENTATION),
+ (r"\bby design\b", 'argues for the choice', 'both', DOCUMENTATION),
+ (r"\b(is|are|was|were)\s+designed\s+to\b", 'argues for the choice', 'both', DOCUMENTATION),
+ (r"\bmakes? the case\b", 'argues for the choice', 'both', DOCUMENTATION),
+ # Narrating the document instead of writing it.
+ (r"\bthis\s+(section|document|page|chapter|table)\s+"
+  r"(covers|describes|explains|lists|shows|sets out|walks through)\b",
+  'meta-commentary about the document', 'both', DOCUMENTATION),
+ (r"\bbelongs?\s+(near|at)\s+the\s+top\b|\bbelongs?\s+in\s+(this|the)\s+(document|README|section)\b",
+  'meta-commentary about the document', 'both', DOCUMENTATION),
+ (r"\bas (we|you) (saw|noted|covered)\b", 'meta-commentary about the document', 'both', DOCUMENTATION),
+ # Narrating the artifact on the page instead of letting it speak.
+ (r"\bthe\s+(block|table|list|example|sample|figure|diagram|snippet|code)\s+"
+  r"(below|above|that follows|shown here)\b",
+  'meta-commentary about the document', 'both', DOCUMENTATION),
+
+ # ── Abstractions given a purpose or an intent ──────────────────
+ # "Every capability exists to keep a figure from being quoted" has a concept
+ # for a subject and credits it with an intention. A senior engineer names the
+ # class or the method and says what it does when it runs.
+ (r"\bexists?\s+(to|so\s+that|because|for)\b", 'abstraction given a purpose', 'both', ALL),
+ (r"\b(is|are|was|were)\s+there\s+to\b", 'abstraction given a purpose', 'both', ALL),
+ (r"\bthe\s+reason\s+\w+\s+exists?\b", 'abstraction given a purpose', 'both', ALL),
+ (r"\b(every|each|all\s+(of\s+)?the)\s+(capabilit(y|ies)|features?|rules?|decisions?|"
+  r"choices?|behaviours?|behaviors?|mechanisms?|abstractions?)\b",
+  'collective abstract subject', 'both', ALL),
+ (r"\bthe\s+(design|architecture|taxonomy|abstraction|structure|framework|split)\s+"
+  r"(ensures?|guarantees?|prevents?|allows?|enables?|separates?|keeps?|makes?)\b",
+  'abstract noun as agent', 'both', ALL),
 ]
 
 # Sentences that cannot be read on their own. Checked structurally rather than
@@ -129,8 +230,19 @@ BARE_DEMONSTRATIVE = re.compile(
     r"runs?|works?|happens?|follows?|applies|apply|matters?|counts?|comes|comes)\b")
 
 
+# A quantifier carrying the subject by pointing at the sentence before it.
+# "None of them requires a design change." is grammatical, has a subject and a
+# verb, and names nothing. The demonstrative pattern above misses it because
+# the head word is followed by "of" rather than by a verb.
+QUANTIFIER_SUBJECT = re.compile(
+    r"^(None|All|Each|Any|Some|Many|Most|Few|Several|Both|Either|Neither|"
+    r"One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten)\s+of\s+"
+    r"(them|these|those|it|us|the\s+\w+)\b", re.I)
+
+
 def bare_subject(sent):
-    return bool(BARE_PRONOUN.match(sent) or BARE_DEMONSTRATIVE.match(sent))
+    return bool(BARE_PRONOUN.match(sent) or BARE_DEMONSTRATIVE.match(sent)
+                or QUANTIFIER_SUBJECT.match(sent))
 
 # Wording that reads as a banned construction and is a verifiable fact.
 # A superlative about a named entity is a claim with a source behind it, not an
@@ -156,6 +268,43 @@ EXEMPT = re.compile(
     r"|\b(?:model|gives|more|market)\s+leverage\b")
 FRAGMENT_ANSWER = re.compile(r"^(Partly|Rarely|Yes|No|Maybe|Sometimes|Memory|Both|Neither|Correct)\.?$", re.I)
 
+# A sentence closing on a bare auxiliary borrows its verb phrase from the
+# sentence before it. "Loading a file, running a test lifecycle and hosting an
+# agent do not." is grammatical, carries a subject, and still cannot be read on
+# its own, so neither the fragment check nor the bare-subject check reaches it.
+ELIDED_PREDICATE = re.compile(
+    r"\b(do|does|did|is|are|was|were|has|have|had|can|could|will|would|should|must|may)"
+    r"(\s+not|n't)?\s*[.!]$", re.I)
+
+# A demonstrative naming an abstraction the paragraph never introduced.
+# "…all pass that test" points at a test, and the paragraph named a criterion.
+# Restricted to the nouns that carry this failure, because "that entity" after
+# a paragraph about entities is ordinary reference and reads correctly.
+ABSTRACT_REFERENT = (
+    'test', 'rule', 'criterion', 'standard', 'principle', 'check', 'distinction',
+    'difference', 'property', 'constraint', 'condition', 'requirement', 'mechanism',
+    'pattern', 'shape', 'split', 'choice', 'decision', 'tradeoff', 'trade-off',
+    'approach', 'problem', 'failure', 'effect', 'reason', 'point')
+DEICTIC = re.compile(
+    r"\b(?:that|this|those|these|such an?)\s+(%s)s?\b" % '|'.join(ABSTRACT_REFERENT), re.I)
+
+
+def unbound_deictic(block):
+    """Demonstratives pointing at an abstraction the block never named.
+
+    The noun is looked for in the text preceding the match, so a demonstrative
+    that refers back to something already introduced passes. Scoped to one
+    block: a referent established two paragraphs earlier is too far away to
+    carry, which is the same reasoning the parallel-frame check uses.
+    """
+    out = []
+    for m in DEICTIC.finditer(block):
+        noun = m.group(1).lower()
+        if re.search(r"\b%ss?\b" % re.escape(noun), block[:m.start()], re.I):
+            continue
+        out.append(m.group(0))
+    return out
+
 # Independent clauses chained with commas into one sentence.
 CLAUSE_VERB = re.compile(
     r"\b(is|are|was|were|has|have|had|does|do|did|can|will|would|should|must|"
@@ -164,6 +313,75 @@ CLAUSE_VERB = re.compile(
     r"contributes?|writes?|reads?|moves?|stops?|starts?|leaves?|arrives?|depends?|means?|"
     r"operates?|detects?|recovers?|bills?|trains?|learns?|teaches?|builds?|gives?|inherits?|"
     r"provides?|supplies|supply|prices?|names?|answers?|judges?|solves?|propagates?)\b", re.I)
+
+
+# A short phrase punctuated as a sentence. "Same position." "New work."
+# "Field for field." "Mechanical." Nineteen of these shipped in a published
+# comparison table, because the fragment checks above look for a relative
+# clause or a pronoun opener and find neither.
+#
+# Deciding in general whether a sentence has a main verb needs a parser, and a
+# verb list cannot substitute: a first attempt at this check listed 80 verbs and
+# reported 508 hits across the collateral, nearly all of them real sentences
+# whose verb was absent from the list ("Akka owns the SLA", "GDPR Chapter V
+# governs transfers"). The bounded form below reports only when no word in the
+# phrase could inflect as a finite verb, and only up to four words, so a
+# sentence with any verb-shaped word passes whether or not the verb is known.
+INFLECTED = re.compile(r"\w+(s|ed|ing|n't)$", re.I)
+FINITE_MARKER = re.compile(
+    r"\b(is|are|was|were|be|been|am|has|have|had|do|does|did|can|could|will|would|"
+    r"shall|should|may|might|must|cannot|won|don|doesn|isn|aren|hasn|haven)\b", re.I)
+IDENTIFIER = re.compile(r"^[A-Za-z_][\w.$]*(\(\))?$")
+
+# An imperative opens on a bare verb, which carries no inflection to detect.
+# "Cite the source." and "Concede first." are sentences and instructions are
+# written that way, so the opening word is checked against this closed set.
+# Only the first word is tested, so a miss costs one unreported fragment.
+IMPERATIVE = frozenset("""
+add adopt apply ask assert assign attribute audit avoid break budget build
+call cap capture change check choose cite claim classify close collect commit
+compare concede confirm connect consider count create declare define delete
+deliver deploy derive describe design detect do document draft drop emit
+enable enforce ensure escalate evaluate exclude expect explain export extend
+fetch find fix flag follow gate generate give go group guard handle hold
+ignore implement import include inspect install invoke isolate keep label lead
+let limit link list load log look make map mark match measure merge mock
+monitor move name note open own pass pick pin plan poll prefer prevent price
+print prove publish put query quote raise rank rate read record reduce refuse
+reject release remove rename render repeat replace report request require
+reset resolve restore retry return reuse review route run sample say scale
+schedule scope score see seed select send separate serve set share ship show
+sign skip sort split stage start state stop store submit support surface
+tag take target tell test throw trace track treat trigger try tune turn
+update use validate verify wait watch wrap write
+""".split())
+
+# A period after a number, inside a citation, or after an abbreviation is not a
+# sentence boundary. "EU AI Act Art." is a citation cut in half by the splitter.
+CITATION_NOISE = re.compile(r"^[\d(),;%&#\s]|[;%)]")
+ABBREVIATION = frozenset("""
+art sec fig no vs eg ie etc inc ltd co corp dept est approx vol ch pp ver rev
+""".split())
+
+
+def punctuated_without_verb(sent):
+    text = sent.strip()
+    if not text.endswith('.') or text.endswith('...'):
+        return False
+    words = text.rstrip('.').split()
+    if not (1 <= len(words) <= 4):
+        return False
+    if CITATION_NOISE.search(text):
+        return False
+    if words[0].strip('*_`').lower() in IMPERATIVE:
+        return False
+    if words[-1].strip('*_`').lower() in ABBREVIATION:
+        return False
+    if any(IDENTIFIER.match(w) and ('.' in w or '(' in w) for w in words):
+        return False                      # a cell naming a method or a type
+    if FINITE_MARKER.search(text):
+        return False
+    return not any(INFLECTED.match(w) for w in words)
 
 
 SUBORDINATOR = re.compile(r"^\s*(what|when|which|that|how|who|where|while|because|if|although|after|before|since|unless|and how|and what|and where|to)\b", re.I)
@@ -251,9 +469,56 @@ def strip_non_prose(text):
     return NON_PROSE.sub(lambda m: '\n' * m.group(0).count('\n'), text)
 
 
+# A comment inside a code sample is prose, and it was reaching readers
+# unexamined: blocks() yields only the prose-bearing elements, so nothing
+# inside <pre> or a fenced block was ever checked. "One transcript, three
+# judges, three lenses on the same rubric family." is a noun phrase with a
+# period on it and shipped in a published sample.
+CODE_BLOCK = re.compile(r"<pre\b[^>]*>(.*?)</pre>|^```[^\n]*\n(.*?)^```", re.S | re.M)
+LINE_COMMENT = re.compile(r"(?:^|\s)(?://|#)\s+(.+?)$", re.M)
+BLOCK_COMMENT = re.compile(r"/\*+(.*?)\*/", re.S)
+
+
+def code_comments(text):
+    """Yield (line, comment text) for every comment inside a code sample.
+
+    Tag markup is removed first, so a highlighted comment reads as its words.
+    A comment shorter than four words is a label rather than a sentence, and
+    the sentence rules do not apply to it.
+    """
+    for m in CODE_BLOCK.finditer(text):
+        body = m.group(1) or m.group(2) or ''
+        base = text[:m.start()].count('\n')
+        body = re.sub(r'<[^>]+>', '', body)
+        body = body.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')
+        for cm in LINE_COMMENT.finditer(body):
+            said = cm.group(1).strip()
+            if len(said.split()) >= 4:
+                yield base + body[:cm.start()].count('\n') + 1, said
+        for cm in BLOCK_COMMENT.finditer(body):
+            said = re.sub(r'\s*\*\s*', ' ', cm.group(1)).strip()
+            if len(said.split()) >= 4:
+                yield base + body[:cm.start()].count('\n') + 1, said
+
+
+FENCED = re.compile(r"^```.*?^```", re.S | re.M)
+
+
+def strip_fenced(text):
+    """Blank the inside of fenced blocks, keeping newlines so lines still count.
+
+    A fenced block holds code or program output, and neither is prose. A sample
+    report pasted into a README was reporting its own lines as sentences that
+    cannot stand alone. Comments inside the fence are still audited, because
+    code_comments() reads the unstripped text.
+    """
+    return FENCED.sub(lambda m: '\n' * m.group(0).count('\n'), text)
+
+
 def blocks(text, path):
     """Yield (line, kind, sentence-bearing text) for prose-bearing elements."""
     if path.lower().endswith(('.md', '.markdown')):
+        text = strip_fenced(text)
         # Headings are single lines. Prose is wrapped, so it is yielded as whole
         # paragraphs: a pattern bounded by sentence punctuation cannot match
         # across a line break, and rules were silently passing on wrapped copy.
@@ -265,7 +530,10 @@ def blocks(text, path):
             if len(para) > 3:
                 yield i, 'prose', para
         return
-    for m in re.finditer(r'<(p|h[1-4]|figcaption|blockquote|li|dd|caption)(?:\s[^>]*)?>(.*?)</\1>', text, re.S):
+    # td and th were absent until 2026-08-08, so no HTML table cell had ever
+    # been checked, while the rules name table cells as a place violations
+    # concentrate. A markdown table row reaches the engine as ordinary prose.
+    for m in re.finditer(r'<(p|h[1-4]|figcaption|blockquote|li|dd|caption|td|th)(?:\s[^>]*)?>(.*?)</\1>', text, re.S):
         tag = m.group(1).lower()
         s = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', m.group(2))).strip()
         if len(s) < 4:
@@ -467,18 +735,36 @@ def structural(line, kind, s):
             rule, match = 'phrase written as a sentence', sent[:110]
         elif bare_subject(sent):
             rule, match = 'sentence cannot stand alone', sent[:110]
+        elif punctuated_without_verb(sent):
+            rule, match = 'phrase punctuated as a sentence', sent[:110]
+        elif ELIDED_PREDICATE.search(sent):
+            rule, match = 'elided predicate', sent[:110]
         elif is_comma_splice(sent):
             rule, match = 'comma-spliced clause chain', sent[:110]
         else:
             continue
         out.append({'line': line, 'kind': kind, 'rule': rule,
                     'match': match, 'context': s[:170]})
+    for match in unbound_deictic(s):
+        out.append({'line': line, 'kind': kind,
+                    'rule': 'back-reference to a thing never named',
+                    'match': match, 'context': s[:170]})
     return out
+
+
+# Two kinds of file are not ours to rewrite. A catalogue quotes the banned
+# constructions in order to ban them, and rewriting it would delete the
+# examples. Verbatim text is a standard document such as a code of conduct,
+# where the wording is the point. Both carry the marker in the file, so a reader
+# sees the exemption and no filename list is maintained anywhere.
+CATALOGUE = re.compile(r"prose-audit:\s*(catalogue|verbatim)", re.I)
 
 
 def audit_file(path, context=None, standalone_zones=('answer', 'faq')):
     with open(path, encoding='utf-8') as f:
         text = f.read()
+    if CATALOGUE.search(text):
+        return []
     is_md = path.lower().endswith(('.md', '.markdown'))
     if not is_md:
         text = strip_non_prose(text)
@@ -519,6 +805,17 @@ def audit_file(path, context=None, standalone_zones=('answer', 'faq')):
                          'match': s[:110], 'context': s[:170]})
         if kind == 'prose':
             hits.extend(structural(line, kind, s))
+    for line, said in code_comments(text):
+        for pat, rule, scope, ctxs in RULES:
+            if scope == 'heading':
+                continue
+            if context and context not in ctxs:
+                continue
+            m = re.search(pat, said, re.I)
+            if m and not _exempt(said, m):
+                hits.append({'line': line, 'kind': 'comment', 'rule': rule,
+                             'match': m.group(0)[:110], 'context': said[:170]})
+        hits.extend(structural(line, 'comment', said))
     # One hit per rule per line keeps the report readable.
     seen, out = set(), []
     for h in hits:

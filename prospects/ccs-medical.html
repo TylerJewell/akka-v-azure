@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>What US law asks of a supplier running an AI calling agent | Akka</title>
+<meta name="description" content="Six instruments carry obligations for a HIPAA covered entity running a patient-facing voice agent: HIPAA, the CMS fraud and abuse statutes, PCI DSS 4.0, the Texas Responsible Artificial Intelligence Governance Act, the Utah AI Policy Act and Colorado's automated-decision statute. Together they resolve to 39 controls. This paper sets out what those controls require and where each one is satisfied.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── case-study.css (inlined for a self-contained, shareable single file) ── */
+:root{
+  --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+  --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+  --gold:#FFCE4A; --gold-deep:#E9B426;
+  --display:"Instrument Sans",system-ui,sans-serif;
+  --text:"Roboto",system-ui,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400;
+  -webkit-font-smoothing:antialiased;}
+a{color:var(--ink);text-decoration:none}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{background:var(--black);color:#fff;padding:88px 0 72px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,206,74,.05) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 22px;
+  display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--gold)}
+.hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.025em;
+  font-size:clamp(34px,5.2vw,56px);line-height:1.05;margin:0 0 22px;color:#fff;
+  text-wrap:balance}
+.hero h1 .hl{color:var(--gold)}
+.subtitle{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.2vw,23px);
+  line-height:1.45;color:#C9C9CE;margin:0;max-width:44ch}
+.meta{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;
+  margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:#9A9AA2;text-transform:uppercase}
+.meta b{color:var(--gold);font-weight:500}
+.lead{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.4vw,25px);
+  line-height:1.5;color:var(--ink);margin:56px 0 8px}
+.lead .hl{background:linear-gradient(transparent 62%,rgba(255,206,74,.5) 62%);font-weight:500}
+section.body{padding:8px 0}
+.body h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(24px,3vw,32px);line-height:1.15;color:var(--ink);margin:52px 0 18px}
+.body p{margin:0 0 20px}
+.body p b, .body strong{color:var(--ink);font-weight:700}
+.num{font-family:var(--mono);font-weight:500;color:var(--ink);
+  background:rgba(255,206,74,.16);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.pullstat{margin:44px 0;padding:36px 32px;background:var(--black);color:#fff;border-radius:12px;
+  display:flex;align-items:baseline;gap:28px;flex-wrap:wrap}
+.pullstat .n{font-family:var(--display);font-weight:700;font-size:clamp(56px,10vw,88px);
+  line-height:.9;letter-spacing:-.04em;color:var(--gold)}
+.pullstat .t{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.4vw,22px);
+  line-height:1.35;color:#D8D8DC;max-width:30ch}
+.cta{background:var(--black);color:#fff;text-align:center;padding:72px 24px;margin-top:72px}
+.cta-kicker{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 16px}
+.cta h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(28px,4vw,42px);margin:0 0 14px;color:#fff}
+.cta-sub{font-family:var(--display);font-weight:400;font-size:clamp(17px,2.1vw,20px);
+  line-height:1.45;color:#C9C9CE;margin:0 auto 30px;max-width:40ch}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;
+  font-size:16px;background:var(--gold);color:#111;padding:15px 30px;border-radius:8px;
+  transition:transform .15s ease,background .15s ease}
+.btn:hover{background:#fff;transform:translateY(-1px)}
+.btn .arw{transition:transform .15s ease}
+.btn:hover .arw{transform:translateX(3px)}
+@media(max-width:680px){
+  body{font-size:17px}
+  .hero{padding:64px 0 52px}
+  .pullstat{gap:14px}
+}
+</style>
+<style>
+  /* ── Paper extensions ── */
+  .wrap{max-width:900px}
+  .tbl{overflow-x:auto;margin:8px 0 28px}
+  .tbl table{width:100%;border-collapse:collapse;font-size:15px;min-width:620px}
+  .tbl th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px 12px;
+    border-bottom:2px solid var(--line);vertical-align:bottom}
+  .tbl th:first-child{color:var(--ink)}
+  .tbl td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;
+    line-height:1.5;color:var(--body)}
+  .tbl td.row-h{font-family:var(--display);font-weight:600;color:var(--ink)}
+  .tbl td.n{font-family:var(--mono);text-align:right;color:var(--ink);white-space:nowrap}
+  .tbl th.n{text-align:right}
+  .tbl tbody tr:hover{background:var(--wash)}
+  .oblig{margin:8px 0 0;padding:0;list-style:none}
+  .oblig li{padding:18px 0;border-top:1px solid var(--line)}
+  .oblig li:first-child{border-top:none}
+  .oblig .h{font-family:var(--display);font-weight:600;font-size:17px;color:var(--ink);margin:0 0 4px}
+  .oblig .d{font-size:16px;line-height:1.6;color:var(--body);margin:0}
+  .body h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em;
+    color:var(--ink);margin:32px 0 10px}
+  @media print{
+    /* Keep the on-screen design. Print the backgrounds, bleed the dark bands
+       left to right, and break pages between blocks rather than inside them. */
+    @page{margin:13mm 0}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{font-size:10.5pt;line-height:1.62}
+    .wrap{max-width:none;padding:0 17mm}
+    .hero{padding:15mm 0 13mm}
+    .hero h1{font-size:27pt}
+    .subtitle{font-size:12.5pt}
+    .lead{font-size:14pt;margin:11mm 0 3mm}
+    .body h2{font-size:17pt;margin:10mm 0 4mm}
+    .body h3{font-size:12.5pt;margin:7mm 0 2mm}
+    .tbl table{font-size:9.6pt}
+    .cta{padding:14mm 17mm;margin-top:13mm}
+    /* smart breaks: keep blocks whole, let long tables flow with a repeating head */
+    .pullstat,.oblig li,.cta,.meta,.lead{break-inside:avoid}
+    .body h2,.body h3,.lead-in{break-after:avoid}
+    .tbl,.tbl table{break-inside:auto}
+    .tbl thead{display:table-header-group}
+    .tbl tr{break-inside:avoid}
+    .body p{orphans:3;widows:3}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Healthcare · United States</p>
+    <h1>What US law asks of a supplier running an <span class="hl">AI calling agent</span></h1>
+    <p class="subtitle">Six instruments carry obligations for a covered entity running a
+      patient-facing voice agent. Together they resolve to 39 controls.</p>
+    <p class="meta">
+      <span>Industry <b>Durable medical equipment</b></span>
+      <span>Jurisdiction <b>United States, 50 states</b></span>
+      <span>Prepared for <b>CCS Medical</b></span>
+    </p>
+  </div>
+</header>
+
+<section class="body">
+  <div class="wrap">
+
+    <p class="lead">HIPAA, the CMS fraud and abuse statutes, PCI DSS 4.0, the Texas Responsible
+      Artificial Intelligence Governance Act, the Utah AI Policy Act and Colorado's
+      automated-decision statute set out what a durable medical equipment supplier owes when a
+      voice agent speaks to its patients. <span class="hl">Those six instruments resolve to 39
+      discrete controls.</span> Twenty-two of the 39 are decided while the call is in progress.</p>
+
+    <p>HIPAA is the instrument CCS Medical already runs a programme against. The obligations that
+      bind a voice agent most tightly come from two places outside it. The Telephone Consumer
+      Protection Act governs whether the call may be placed at all. The Medicare DMEPOS supplier
+      standards govern what the call may be about. The Telephone Consumer Protection Act carries
+      statutory damages of $500 to $1,500 per call, and a DMEPOS breach carries revocation of
+      Medicare billing privileges.</p>
+
+    <p>The Federal Communications Commission ruled on 8 February 2024 that AI-generated voices are
+      artificial voices under the Telephone Consumer Protection Act. Every outbound call the agent
+      places therefore requires prior express consent, and marketing content requires prior express
+      written consent. The Act carries a private right of action of $500 to $1,500 per call.
+      Consent has to be provable for each call that was placed.</p>
+
+    <p>A supplier that bills Medicare Part B is bound by the DMEPOS supplier standards at
+      42 CFR §424.57. Standard (c)(11) prohibits unsolicited telephone contact with a Medicare
+      beneficiary. Contact is permitted where the beneficiary has given written consent, where the
+      beneficiary is an existing customer being contacted about an item already purchased, and
+      where the contact concerns a covered item currently being rented. The sanction for a breach
+      is revocation of billing privileges.</p>
+
+    <h2>What the instruments ask a supplier to do</h2>
+
+    <ul class="oblig">
+      <li>
+        <p class="h">Say that the caller is software</p>
+        <p class="d">The Utah AI Policy Act requires a supplier using generative AI in a regulated
+          consumer transaction to disclose that use when the consumer asks. Section 5 of the
+          Federal Trade Commission Act reaches a synthetic voice that leads a patient to believe
+          they are speaking to a person. Colorado HB 26-1263 and the California BOT Act impose a
+          proactive disclosure on operators of a conversational AI service, and the scope of both
+          for a telephone agent is set out below.</p>
+      </li>
+      <li>
+        <p class="h">Hold the consent before the call is placed</p>
+        <p class="d">The Telephone Consumer Protection Act requires prior express consent for an
+          artificial-voice call and prior express written consent where the content is marketing.
+          The DMEPOS supplier standards require written beneficiary consent, an existing customer
+          relationship for the item in question, or a current rental. Both tests run before the
+          dial. A record naming the patient, the item and the date of consent answers both tests.</p>
+      </li>
+      <li>
+        <p class="h">Keep the call inside the subject it was authorised for</p>
+        <p class="d">The DMEPOS exception covers an item the beneficiary already purchases. A call
+          that moves to a different product line falls outside it and puts billing privileges at
+          risk. The treatment exemption under the Telephone Consumer Protection Act narrows on the
+          same movement. The Fair Debt Collection Practices Act and Regulation F apply once the
+          call turns to a balance owed, adding contact-frequency limits, calling-hour limits and
+          required disclosures.</p>
+      </li>
+      <li>
+        <p class="h">Protect what is said on the call</p>
+        <p class="d">Call audio, transcripts and derived summaries are Protected Health Information
+          and enter the designated record set. The HIPAA Security Rule at 45 CFR §164.312 requires
+          encryption at rest and in transit, access controls, audit logging and transmission
+          security over all of it. PCI DSS 4.0 applies when a card number is spoken on a recorded
+          line. All-party consent statutes in California, Washington, Illinois, Pennsylvania,
+          Florida and Massachusetts require the patient's consent before recording begins.</p>
+      </li>
+      <li>
+        <p class="h">Never present the agent as a clinician</p>
+        <p class="d">Tennessee SB 1580 prohibits representing an AI system as a qualified
+          mental-health professional. Section 5 of the Federal Trade Commission Act reaches the
+          same representation about clinical care. A patient who asks the agent a
+          clinical question receives a referral to a person, and the agent holds no authority to
+          answer it.</p>
+      </li>
+      <li>
+        <p class="h">Produce the record afterwards</p>
+        <p class="d">The Telephone Consumer Protection Act is litigated call by call, and the
+          defence is the consent record for the call that was placed. HIPAA gives a patient a right
+          of access to the designated record set. A DMEPOS audit asks which beneficiary authorised
+          which contact. A dated record tied to the individual call answers the call-by-call claim,
+          the access request and the audit.</p>
+      </li>
+    </ul>
+
+    <h2>Where each control is satisfied</h2>
+
+    <p class="lead-in">There are 39 controls that must be implemented at different parts of your SDLC.</p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>Satisfied at</th><th class="n">Controls</th><th>What it looks like in practice</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Build and release time</td><td class="n">17</td>
+            <td>A gate in the delivery pipeline confirming the artifact exists, is current and is
+              approved. For example, HIPAA requires a security architecture covering the five
+              technical safeguards over Protected Health Information, so the pipeline holds the
+              release until that document is attached to the agent version.</td></tr>
+          <tr><td class="row-h">Continuous observation</td><td class="n">3</td>
+            <td>A check that runs on every interaction, or on a schedule, and records a verdict.
+              For example, HIPAA access controls are recertified on a schedule, and an evaluator
+              writes the result to the log.</td></tr>
+          <tr><td class="row-h">The moment of the action</td><td class="n">19</td>
+            <td>A decision taken in the transactional path before the action is emitted.
+              For example, the HIPAA minimum-necessary rule limits what the agent may say back to
+              a caller, so a sanitizer masks the Protected Health Information the turn did not
+              need before the words are spoken.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The distribution separates this system from most of the corpus. Across the 39 controls,
+      22 are decided while the call is in progress. A voice agent speaks to the patient, handles
+      Protected Health Information and card data on the same line, and changes subject inside a
+      single call. The obligations attach to the utterance.</p>
+
+    <div class="pullstat">
+      <div class="n">191</div>
+      <div class="t">global AI regulations in the corpus, carrying 1,254 controls</div>
+    </div>
+
+    <p>The six instruments account for 39 of those controls. State privacy and biometric law adds
+      50 more. The California Consumer Privacy Act, the Washington My Health My Data Act, and the
+      privacy statutes of Texas, Virginia, Oregon, Iowa, Indiana and Montana carry
+      exemptions for a covered entity that differ state by state, and several exempt Protected
+      Health Information without exempting the entity that holds it. The Illinois Biometric
+      Information Privacy Act carries 7 of the 50 and applies once a voiceprint is used to identify
+      or authenticate a caller, with statutory damages of $1,000 to $5,000 per violation and a
+      private right of action.</p>
+
+    <h2>Obligations that turn on a scope question</h2>
+
+    <p>Two state conversational-AI statutes reach a patient-facing voice agent on their face and
+      carry exclusions that have to be tested against the enacted text before they are counted.
+      Both statutes are excluded from the 39.</p>
+
+    <p>Colorado HB 26-1263 binds operators of a publicly accessible conversational AI service and
+      applies from 1 January 2027, with the first Attorney General report due 1 July 2027. The
+      statute counts each offending output as a separate violation. That section carries around
+      eleven exclusions, and two of them reach this deployment: customer-support systems, and
+      entities already regulated under HIPAA. A refill and reorder agent operated by a covered
+      entity has a claim to both. Confirming that claim against C.R.S. § 6-1-1708 is the first
+      item of legal work, because it decides ten controls and an annual filing.</p>
+
+    <p>The California BOT Act at Cal. Bus. &amp; Prof. Code § 17941 requires bot disclosure where
+      the communication incentivises a sale. The operative text reaches a person who uses a bot to
+      communicate with another person in California online. A telephone call is not an online
+      communication on the ordinary reading, which places a voice agent outside the section. The
+      Act applies to any web chat or messaging channel CCS Medical runs alongside the phone line.</p>
+
+    <h2>How Akka Verify satisfies each part</h2>
+
+    <p>Akka Verify is a continuous evaluation and governance product for agentic AI. It is
+      delivered on the Akka runtime, which is what lets evaluation and governance run alongside the
+      agents themselves.</p>
+
+    <h3>The risk survey</h3>
+    <p>We provide a plain-language questionnaire that your AI owners answer about what each system
+      does, what it touches, what it decides and what could go wrong. We then derive all of the
+      controls that you must implement from a library of 191 global regulations, including HIPAA
+      and the state AI statutes. These controls are exported as an evaluation matrix.
+      The telephony and collections instruments named above are being added to that library, and
+      the survey gains the questions that activate them.</p>
+
+    <h3>The Eval Matrix</h3>
+    <p>Evaluation matrices are lists of controls. Akka creates enforcement points and harnesses to
+      validate proper execution of every control. This applies to agents built with Akka and to
+      third-party agents.</p>
+
+    <p class="lead-in">The types of controls implemented by Akka:</p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>Mechanism</th><th>What it does</th><th class="n">Controls</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Build gate</td>
+            <td>Runs in the delivery pipeline and fails the build when the required evidence is missing or out of date</td><td class="n">17</td></tr>
+          <tr><td class="row-h">Sanitizer</td>
+            <td>Transforms the payload, masking or redacting a class of data such as personal, health or financial information</td><td class="n">14</td></tr>
+          <tr><td class="row-h">Guardrail</td>
+            <td>Checks traffic at a point in the agent's lifecycle and allows or blocks it</td><td class="n">4</td></tr>
+          <tr><td class="row-h">Scheduled evaluation</td>
+            <td>Runs on a schedule against live production state and records what it finds</td><td class="n">2</td></tr>
+          <tr><td class="row-h">Event evaluation</td>
+            <td>Runs when a runtime or business event fires and records what it finds</td><td class="n">1</td></tr>
+          <tr><td class="row-h">Human in the loop</td>
+            <td>Holds the action and waits for a person to decide</td><td class="n">1</td></tr>
+          <tr><td class="row-h">Human on the loop</td>
+            <td>A governance reviewer watches live output and adjusts policy and thresholds while the system runs</td><td class="n">0</td></tr>
+          <tr><td class="row-h">Halt</td>
+            <td>A registered, exercisable intervention that brings the system to a stop in a safe state</td><td class="n">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Automatic enforcement for runtime controls</h3>
+    <p>The 22 controls that resolve to observation or to a decision in the moment are enforced by
+      the runtime alongside the agent. A guardrail on the agent's first utterance carries the
+      disclosure the Utah Act and the Federal Trade Commission Act require. Sanitizers mask
+      Protected Health Information and card
+      data on the wire, which is the HIPAA minimum-necessary rule and the PCI DSS requirement on a
+      recorded line. Authorization at the tool boundary carries the consent test, so a call to a
+      patient whose record holds no prior express consent is refused before the dial. A workflow
+      pause holds an action for human approval. Evaluators score each interaction in the background
+      for subject drift, which is the DMEPOS boundary and the point where the Fair Debt Collection
+      Practices Act attaches. Every decision and every verdict is recorded in the same
+      event-sourced log as the action it governed, which is what makes it evidence.</p>
+
+    <h3>Harness execution for controls outside the runtime</h3>
+    <p>The 17 controls satisfied at build and release time run through the harness. TestKit asks
+      whether the system behaves correctly, EvalKit asks whether it performs against quality
+      rubrics and whether it has regressed, and both run against real cases in the delivery
+      pipeline and against historical production data. Each run produces a dated record tied to the
+      matrix row it satisfies, which is the artifact an Office for Civil Rights investigation asks
+      to see. The subject-drift boundary that the DMEPOS standard draws is tested through the same
+      machinery pointed at recorded calls that crossed it.</p>
+
+    <h3>Tracing and retention</h3>
+    <p>Akka traces every agentic AI interaction automatically. The trace carries the rendered
+      prompt, the model and its version, the tools that were called, the authorization in force at
+      the time, and the verdict of every control that ran. Retention is tiered, so recent traces
+      stay immediately queryable and older ones compress into archive at a fraction of the cost,
+      which keeps petabyte-scale history affordable. A Telephone Consumer Protection Act claim that
+      asks what was said on a call placed three years ago is answered from the record itself.</p>
+
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <p class="cta-kicker">Read more</p>
+    <h2>Akka Verify</h2>
+    <p class="cta-sub">Continuous evaluation and governance for agentic AI, delivered on the Akka
+      runtime.</p>
+    <a class="btn" href="https://akka.io/platform/verify">akka.io/platform/verify <span class="arw">&rarr;</span></a>
+  </div>
+</section>
+
+</body>
+</html>

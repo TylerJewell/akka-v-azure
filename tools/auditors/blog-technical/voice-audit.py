@@ -102,6 +102,29 @@ def _extract_text_blocks(html, source_path=''):
         yield line, 'caption', text
 
 
+# Wording that matches a pattern above and is a verifiable factual claim.
+# Kept in step with the EXEMPT block in tools/auditors/voice/audit.py: the two
+# banks are separate copies, and an exemption added to one and not the other
+# makes the same sentence pass one auditor and fail the other.
+#   "an evaluation harness" is a category of software; "harness the model" is
+#   the hype verb the rule is aimed at.
+EXEMPT = re.compile(
+    r"\bmission[- ]critical\b"
+    r"|\b(?:third-party|agent|evaluation|test|coding|AI)\s+harness"
+    r"|harness(?:es)?\s+(?:such as|like|that|the customer)"
+    r"|\b(?:model|gives|more|market)\s+leverage\b")
+
+
+def _exempt(text, match):
+    """True when the flagged wording sits inside a verifiable factual claim.
+
+    Scoped to the span around the match so one exempt phrase in a paragraph
+    does not clear an unrelated hit later in the same block.
+    """
+    lo, hi = max(0, match.start() - 30), min(len(text), match.end() + 30)
+    return bool(EXEMPT.search(text[lo:hi]))
+
+
 def audit_file(path):
     with open(path, 'r', encoding='utf-8') as f:
         html = f.read()
@@ -115,6 +138,8 @@ def audit_file(path):
             patterns = HEADING_PATTERNS + PROSE_PATTERNS
         for pat, rule in patterns:
             for m in re.finditer(pat, text, re.I | re.MULTILINE):
+                if _exempt(text, m):
+                    continue
                 hits.append({
                     'line': line,
                     'tag': tag,
