@@ -176,4 +176,4 @@ Databricks bills on DBU consumption — pay-per-token plus provisioned-throughpu
 
 ---
 
-*Akka — Reliable AI for Every Industry. The Agentic Systems Platform. akka.io · June 2026*
+*Akka — Scale AI, Efficiently. The Agentic Systems Platform. akka.io · June 2026*

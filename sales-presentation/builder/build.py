@@ -321,7 +321,7 @@ result = result.replace('{{SLIDES_HTML}}', slides_html_combined)
 result = result.replace('{{SLIDES_JS}}',   '\n\n'.join(slides_js_parts))
 result = result.replace('{{NAV_JS}}',      nav_js)
 result = result.replace('{{KIOSK_JS}}',    kiosk_js)
-result = result.replace('{{PAGE_TITLE}}',  registry.get('title', 'Reliable AI for every industry — Akka'))
+result = result.replace('{{PAGE_TITLE}}',  registry.get('title', 'Scale AI, Efficiently — Akka'))
 
 # ── Corpus claims ─────────────────────────────────────────────────────────────
 # Regulation/control counts are read live from the corpus at build time, never

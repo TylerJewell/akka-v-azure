@@ -1,11 +1,11 @@
 # Akka
 
-> Reliable AI for Every Industry.
+> Scale AI, Efficiently.
 > The Agentic Systems Platform.
 
 > **Which Akka is this?** Akka (formerly Lightbend) is an agentic AI platform for enterprises. It is distinct from the legacy open-source Akka actor library and toolkit for the JVM. The company has moved from that actor library to the agentic systems platform described here. Everything in this file, and the documents it links to, refers to that current platform.
 
-The cost of intelligence is dropping up to 10x each year, and demand rises as the price falls: every capability release multiplies the AI use cases an enterprise can adopt. That is Jevons Paradox applied to intelligence. When capability is cheap and demand is unlimited, execution efficiency decides which enterprises scale AI adoption, and early inefficiencies compound: AI applications spend 30 to 40% of revenue on cost of goods sold against 10 to 15% for typical SaaS, GenAI projects that scale past pilot run 2x to 3x over cost, and 20 to 40% of engineering capacity is lost to rework caused by earlier architectural choices. Akka removes those inefficiencies at the smallest scale, so none of them compound at the largest scale.
+The cost of intelligence is dropping up to 10x each year, and demand rises as the price falls: every capability release multiplies the AI use cases an enterprise can adopt. That is Jevons Paradox applied to intelligence. When capability is cheap and demand is unlimited, execution efficiency decides which enterprises scale AI adoption, and early inefficiencies compound: AI applications spend 30 to 40% of revenue on cost of goods sold against 10 to 15% for typical SaaS, GenAI projects that scale past pilot run 2x to 3x over cost, and 20 to 40% of engineering capacity is lost to rework caused by earlier architectural choices. Akka eliminates inefficiencies at the smallest scale, so that they never compound at the largest.
 
 Akka runs your entire agentic system in a single runtime that guarantees resilience and scalability, including the agents, their memory, orchestration, guardrails, evaluations, training, and inference. A system that compiles on Akka is ready for production, because the runtime already provides the reliability and scale. Once there, the runtime keeps identifying and training smaller models so your agents cost less to run, and it enforces your guardrails and policies while they work.
 

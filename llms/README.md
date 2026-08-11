@@ -36,6 +36,31 @@ Three changes, made in `llms-master.txt` and propagated:
 Deliberately not done: mapping the four offerings to four costs. The three advantages are
 about the runtime and were left as they are.
 
+### 2026-08-11 — the banner becomes efficiency
+
+Marketing approved replacing "Reliable AI for Every Industry" as the overarching claim with
+"Scale AI, Efficiently". Reliability is retained as a supporting claim, not the lead.
+
+Changed in `llms-master.txt` and propagated to `llms.txt` and `llms-full.txt`:
+
+1. The H1 blockquote reads `> Scale AI, Efficiently.` The second line,
+   `> The Agentic Systems Platform.`, is unchanged.
+2. `llms-master.txt` and `llms-full.txt` opened on the single-runtime paragraph, so the first
+   claim a model read was resilience. An efficiency paragraph now precedes it, matching the
+   order `llms.txt` already used. The runtime paragraph is unchanged and still carries
+   "guarantees resilience and scalability" — reliability now reads as the mechanism rather
+   than the headline. `reliab*` still appears 8 times in the master.
+3. "Akka removes those inefficiencies at the smallest scale, so none of them compound at the
+   largest scale" became "Akka eliminates inefficiencies at the smallest scale, so that they
+   never compound at the largest", matching the approved wording on the overview deck.
+
+`akka.io-llms.txt` and `akka.io-llms-full.txt` are untouched. They are the live baseline and
+still carry the old banner, so the diff against live is now intentional and shows exactly
+what the next publish changes.
+
+Note: `llms-full.txt` diverges from `llms-master.txt` from character 2933 onward, in a
+sentence about the four solutions. That drift predates this change.
+
 ### 2026-08-05 — the four solutions become the positioning spine
 
 Full audit in `positioning-audit-2026-08.md`. The file had four competing organizing

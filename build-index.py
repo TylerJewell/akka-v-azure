@@ -29,7 +29,7 @@ PRESENTATIONS = [
      "title": "AI that lowers its own bill.", "sub": "AKKA OPTIMIZE"},
     {"link": "akka-verify/", "title": "AI, under control.", "sub": "AKKA VERIFY"},
     {"link": "akka-sdk/", "title": "Everything an agentic system needs.", "sub": "AKKA SDK"},
-    {"link": "akka-overview/", "title": "Reliable AI for Every Industry.", "sub": "AKKA OVERVIEW"},
+    {"link": "akka-overview/", "title": "Scale AI, Efficiently.", "sub": "AKKA OVERVIEW"},
     {"link": "case-studies/", "title": "Akka Customer Stories", "sub": "CASE STUDIES"},
     {"link": "website/", "title": "Akka Industry Stories", "sub": "INDUSTRIES"},
 ]

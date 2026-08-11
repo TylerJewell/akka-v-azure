@@ -175,4 +175,4 @@ The OSS framework is free, but production means LlamaCloud's consumption credits
 - **Akka platform / facts:** akka-facts.md — 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 4ms reads / sub-10ms writes; 190 regulations / 1,040 controls / 671 with a financial penalty; 19 standards (trust.akka.io); up to 90% cheaper, ~10T vs ~2T tokens/core, ~80% less compute (akka.io/blog/go-slow-to-go-fast); Manulife up to 300% more concurrency, 30–50% faster; Tubi 5B tokens/sec; since 2007, 100,000+ deployments, 52 banks; profitable; Dell Technologies Capital
 ```
 
-*Akka — Reliable AI for Every Industry · akka.io · June 2026*
+*Akka — Scale AI, Efficiently · akka.io · June 2026*

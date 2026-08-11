@@ -202,4 +202,4 @@ AgentCore meters its services on per-vCPU-hour, per-request, and per-token units
 - **Akka performance:** akka.io/blog/go-slow-to-go-fast — Manulife up to 300% more concurrency, 30–50% faster; ~10T vs. ~2T tokens/core; ~80% less compute than Python.
 - **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-minute RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with a financial penalty; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital largest shareholder.
 
-*Reliable AI for Every Industry | akka.io — June 2026*
+*Scale AI, Efficiently | akka.io — June 2026*

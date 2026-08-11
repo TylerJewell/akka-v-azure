@@ -171,4 +171,4 @@ Agentforce can call external systems through Flow and API callouts, but the reas
 **Akka platform:** 99.9999% availability, active-active HA/DR, sub-1-min RTO, zero-byte RPO (contractual indemnities); 190 regulations / 1,040 controls / 671 with a financial penalty; 100,000+ deployments / since 2007; profitable; Dell Technologies Capital largest shareholder.
 **Akka trust center:** trust.akka.io — 19 compliance standards; SOC 2 II + public SOC 3; annual pen tests, SBOMs, 40+ policies.
 
-*Comparison for teams building agentic AI. Akka — Reliable AI for Every Industry. June 2026.*
+*Comparison for teams building agentic AI. Akka — Scale AI, Efficiently. June 2026.*
