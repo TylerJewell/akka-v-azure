@@ -92,6 +92,8 @@
  .metric-box{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:30px 0;margin-top:44px;max-width:74ch}
  .metric-box .big{font-size:clamp(24px,2.6vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.2}
  .metric-box p{color:var(--muted);font-size:15px;margin:14px 0 0}
+ .metric-box a{color:var(--yellow);text-decoration:none;font-size:14px;font-weight:600;display:inline-block;margin-top:18px}
+ .metric-box a:hover{text-decoration:underline}
 
  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
  .proof-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:34px}
@@ -257,7 +259,7 @@
    <!-- Column 2: Demand -->
    <div class="th-col" data-col="2">
     <div class="th-eyebrow">Demand</div>
-    <h3 class="th-head">Every capability release <span class="accent">multiplies</span> the AI use cases an enterprise can adopt.</h3>
+    <h3 class="th-head">A capability release <span class="accent">opens</span> AI use cases an enterprise could not adopt before.</h3>
     <p class="th-body">Jevons Paradox: as the unit cost of intelligence falls, enterprise AI demand accelerates.</p>
     <div class="th-cap">Multiplier since 2022 &middot; log scale</div>
     <div class="th-viz">
@@ -356,7 +358,7 @@
   <div class="inner">
    <div class="sec-head">
     <div class="eyebrow">What removes each cost</div>
-    <h2 class="rv">The cost each solution <span class="accent">removes.</span></h2>
+    <h2 class="rv">Each solution removes <span class="accent">one named cost.</span></h2>
     <p class="lede rv" style="margin-top:18px">Akka has one offering, the Akka Agentic AI Platform. The solutions that run on it each remove a specific cost. Any one of them can be used on its own, and all are delivered through the platform, which supplies the runtime, the evidence record, and the governance model.</p>
    </div>
    <table class="costs rv">
@@ -399,12 +401,12 @@
   <div class="inner">
    <div class="sec-head">
     <div class="eyebrow">The mechanism</div>
-    <h2 class="rv">Every capability runs on one runtime.</h2>
+    <h2 class="rv">Agents, memory, orchestration, and inference run in one runtime.</h2>
    </div>
    <div class="prose rv">
-    <p>Akka runs every part of an agentic system in one runtime, and that runtime guarantees resilience and scalability. Agents, memory, orchestration, streaming, endpoints, guardrails, evaluations, training, and inference are properties of the same system. <b>Each one draws on the same compute, and each one is billed once.</b></p>
+    <p>Akka runs every part of an agentic system in one runtime, and that runtime guarantees resilience and scalability. Agents, memory, orchestration, streaming, endpoints, guardrails, evaluations, training, and inference are properties of the same system. <b>Akka bills that shared compute once.</b></p>
     <p>Hyperscalers offer a comparable breadth of AI capability, delivered as separate services that you provision, connect, and operate. You configure failover, handle scaling, load-test, and harden the system before it can carry real traffic. You build the integration between those services and you keep it working.</p>
-    <p>The savings above follow from that difference, and they continue as the deployed base grows.</p>
+    <p>Adding another system to an Akka deployment adds no new metered services.</p>
    </div>
   </div>
  </section>
@@ -443,17 +445,18 @@
  <section class="band--hair">
   <div class="inner">
    <div class="sec-head">
-    <div class="eyebrow">The unit of measure</div>
-    <h2 class="rv">Cost per verified task.</h2>
+    <div class="eyebrow">Total cost</div>
+    <h2 class="rv">A five-trillion-token year costs $1.67M on Akka and $8.09M on AWS.</h2>
    </div>
    <div class="prose rv">
-    <p>Cost per token prices consumption. A wrong answer consumes few tokens and still costs the business, because the work it failed to do gets done again downstream.</p>
-    <p>Akka measures <b>cost per verified task</b>: the total cost of producing an outcome that passed its evaluations. Optimize reads evaluated production traffic to find work a smaller model can take, then trains, proves, and promotes it. Quality is held to the evidence Verify already collects, on the same interaction record, <b>so cost falls without behaviour drifting.</b></p>
-    <p>Because both run on one runtime, the trace an agent emitted is the same record used to grade it, to train against it, and to serve the result. There is nothing to export between an evaluation tool, a training service, and an inference endpoint, and no second and third bill for moving the data between them.</p>
+    <p>Both prices cover the same work: 5,000 billion tokens a year across software, customer service, document, search, and data workloads, graded at 80% on AWS and 80.2% on Akka. Model inference, durable memory, agent runtime, logging, storage and transfer, an enterprise support plan, and consultants each bill separately on AWS. The Akka figure is one price.</p>
+    <p>Shared compute produces the gap. The services billed separately on AWS run on the reserved capacity Akka already holds, so adding memory, streaming, or evaluation to a system adds no line to the bill. Idle agents scale to zero and consume none of that capacity.</p>
+    <p>Both prices come from published list rates read in August 2026. The calculator recomputes them for a different volume, workload mix, or cloud.</p>
    </div>
    <div class="metric-box rv">
-    <div class="big">Cost and compliance read <span class="accent">the same record.</span></div>
-    <p>The loop that lowers cost runs on the same interaction record that governance runs on.</p>
+    <div class="big">Akka runs that year of work for <span class="accent">$1.67M.</span></div>
+    <p>AWS bills $8.09M for the same volume at the same accuracy.</p>
+    <a href="https://akka.io/calculator">Calculate your spend &rarr;</a>
    </div>
   </div>
  </section>
@@ -463,7 +466,7 @@
   <div class="inner">
    <div class="sec-head">
     <div class="eyebrow">Customer results</div>
-    <h2 class="rv">Cost, measured in production.</h2>
+    <h2 class="rv">Customers measured these cost results in production.</h2>
    </div>
    <div class="proof-grid rv">
 <div class="proof-card">
@@ -522,7 +525,7 @@
   <div class="inner">
    <div class="sec-head">
     <div class="eyebrow">Customer results</div>
-    <h2 class="rv">Delivery, measured in production.</h2>
+    <h2 class="rv">Customers measured these delivery results in production.</h2>
     <p class="lede rv" style="margin-top:18px">Rework is the cost that does not appear on an invoice. Rework sets the time to a first production release, the size of the team needed to get there, and how often that team ships afterwards.</p>
    </div>
    <div class="proof-grid rv">
@@ -552,7 +555,7 @@
 </div>
 <div class="proof-card">
  <div class="co">Leap Rail &middot; Healthcare</div>
- <h3>Operating room AI built by a fraction of the team.</h3>
+ <h3>Operating room AI built by 20&times; fewer developers.</h3>
  <div class="ba">
  <div class="ba-row"><span class="ba-lab">Before</span><div class="ba-track"><div class="ba-bar ba-before" style="width:100%"></div></div><span class="ba-val">comparable team</span></div>
  <div class="ba-row is-after"><span class="ba-lab">After</span><div class="ba-track"><div class="ba-bar ba-after" style="width:5%"></div></div><span class="ba-val">20&times; fewer</span></div>
@@ -584,7 +587,7 @@
   <div class="inner">
    <div class="sec-head">
     <div class="eyebrow">Questions</div>
-    <h2 class="rv">Common questions about agent efficiency.</h2>
+    <h2 class="rv">Common questions about agent efficiency</h2>
    </div>
    <div class="qa rv">
     <div class="q">
@@ -609,7 +612,7 @@
     </div>
     <div class="q">
      <h3>Why does cheaper intelligence increase what enterprises spend?</h3>
-     <p>Demand rises as the unit price falls. Every capability release multiplies the use cases an enterprise can adopt, so total consumption grows faster than the per-unit price declines. Economists call this Jevons Paradox, applied here to intelligence.</p>
+     <p>Demand rises as the unit price falls. A capability release opens use cases an enterprise could not adopt before, so total consumption grows faster than the per-unit price declines. Economists call this Jevons Paradox, applied here to intelligence.</p>
     </div>
    </div>
   </div>
