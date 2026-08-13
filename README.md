@@ -6,7 +6,7 @@ GitHub Pages.
 
 **Live index:** https://tylerjewell.github.io/presentations/
 
-## Public vs. internal — one rule
+## Public vs. internal
 
 **Everything tracked in this repo is published.** GitHub Pages serves the entire
 committed tree at the Live index URL above — *linked or not*. A file that isn't
@@ -77,8 +77,8 @@ deck, run:
 python build-index.py
 ```
 
-It pulls each deck's link text from its first-slide headline, the kicker from that
-slide's subtitle, and the `Last updated` date from the last commit on the linked file
+`build-index.py` pulls each deck's link text from its first-slide headline, the kicker
+from that slide's subtitle, and the `Last updated` date from the last commit on the linked file
 (`git log -1 --format=%cs`). Each deck is listed once, **ordered latest-updated first**
 (by the linked file's last commit time).
 
@@ -104,10 +104,10 @@ reading:
    AKKA_CORPUS_PATH="C:/Users/tyler/explain/framework/regulations" python _build/corpus_counts.py
    ```
 
-   It emits `regulations`, `controls` (authored, placeholders excluded), and penalty-bearing
-   `controls` / `regulations`. This script is the single source of truth — it supersedes any
-   manual grep counts. It refuses to guess: if the corpus is unreachable, the build fails
-   rather than shipping a stale number.
+   `corpus_counts.py` emits `regulations`, `controls` (authored, placeholders excluded),
+   and penalty-bearing `controls` / `regulations`. This script is the single source of truth and
+   supersedes any manual grep counts. An unreachable corpus fails the build, so a stale
+   number never ships.
 
 3. Apply the same set everywhere the edit touches. For deck sources, fix the slide/asset then
    rebuild `generated/`; for marker-based pages, `_build/apply_corpus.py` rewrites the marked
@@ -121,7 +121,8 @@ for labels, code, and stat numbers.
 
 ### Color palette (canonical)
 
-These are the official brand values. Use them by name; do not invent near-equivalents.
+The values below are the official brand palette. Use them by name; do not invent
+near-equivalents.
 
 | Name | Hex | Use |
 |---|---|---|
@@ -149,9 +150,20 @@ Drop-in CSS custom properties for a new deck:
 }
 ```
 
+### Page chrome
+
+Every HTML document links the Akka favicon in `<head>`:
+
+```html
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+```
+
+Body fragments — per-slide `slide.html` sources and `hubspot.html` imports — have no
+`<head>` and are exempt. Their wrapping shell carries it.
+
 ### Applying it
 
-- **One accent.** Spark Yellow is the single accent. Reserve it for the accented span
+- **Spark Yellow is the single accent.** Reserve it for the accented span
   in a headline, subheadlines, and key emphasis — not for large fills.
 - **Links and interactivity in River Blue.** Hyperlinks are River Blue; interactive
   elements signal clickability by shifting to River Blue on hover (border and label).
