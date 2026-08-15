@@ -2,7 +2,12 @@
    Every post links this file, so a change here reaches all of them. The light
    variant links theme/light.css after it; that file holds only the rules whose
    values differ, so anything not named there is inherited from here. */
-:root{--paper:#0B0B0C;--paper-2:#141416;--plate:#1A1A1D;--ink:#DCDCD6;--body:#B8B8B3;--mute:#7C7C79;--faint:#4E4E4C;--rule:rgba(255,255,255,0.08);--rule-hi:rgba(255,255,255,0.14);--accent:#FFCE4A;--link:#00DBDD;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+/* The page sits on Medium Black #141414, the palette's second surface, rather
+   than near-black: the same foregrounds on a field that reads softer at length.
+   Body holds 9.25:1 here, headings 13.4:1, Spark Yellow 12.4:1, River Blue
+   10.7:1. Code is the one surface that goes darker than the page — above it the
+   block would stop reading as a separate island. */
+:root{--paper:#141414;--paper-2:#1C1C1E;--plate:#232326;--code:#0B0B0C;--ink:#DCDCD6;--body:#B8B8B3;--mute:#7C7C79;--faint:#4E4E4C;--rule:rgba(255,255,255,0.10);--rule-hi:rgba(255,255,255,0.17);--accent:#FFCE4A;--link:#00DBDD;--accent-2:#E9B426;--teal:#6BC9CE;--good:#7FD9A0;--bad:#F09090;--display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--text:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'Roboto Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body{background:var(--paper);color:var(--body);font-family:var(--text);font-size:18px;line-height:1.55;font-weight:400}
@@ -88,6 +93,42 @@ article{counter-reset:section}
    and caption (figcaption) are constrained to body-col width (640px) and
    centered within .wide, so they line up with body prose no matter how
    wide the graphic runs. The plot-wrap sizes to --fig-w (or full width). */
+/* A source image too short to hold a diagram is a section separator. It keeps
+   its own size, carries no figure number, and stays in the reading column. */
+.body img.deco{display:block;margin:36px auto;max-width:100%;height:auto}
+
+/* Post footer — tags and related posts. Set in the display face at eyebrow
+   size so it reads as apparatus rather than as more article. The heading is
+   not a .body h2: that selector carries the section counter, and these are
+   not sections. */
+.postfoot{border-top:1px solid var(--rule-hi);margin-top:72px;padding-top:36px;padding-bottom:96px}
+.postfoot__h{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--mute);margin:0 0 18px}
+.postfoot__h + .postfoot__h{margin-top:44px}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+.tags a{display:inline-block;font-family:var(--display);font-size:11.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.14em;color:var(--body);
+  border:1px solid var(--rule-hi);padding:7px 14px;text-decoration:none}
+.tags a:hover{color:var(--paper);background:var(--accent);border-color:var(--accent);text-decoration:none}
+/* Hairline rows rather than cards — the same thin-table treatment the rest of
+   the theme uses for a short list of parallel items. */
+.related{list-style:none;margin:0;padding:0}
+.related li{border-bottom:1px solid var(--rule);margin:0}
+.related li:first-child{border-top:1px solid var(--rule)}
+.related a{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:baseline;
+  padding:16px 0;text-decoration:none;color:var(--ink)}
+.related a:hover{text-decoration:none;color:var(--accent)}
+.related .t{font-family:var(--display);font-size:17px;line-height:1.3;font-weight:600;text-wrap:balance}
+.related .d{font-family:var(--display);font-size:12px;letter-spacing:0.02em;color:var(--mute);white-space:nowrap}
+@media (max-width:560px){
+  .related a{grid-template-columns:1fr}
+  .related .d{white-space:normal}
+}
+
+/* A source oembed carries whatever pixel size the provider handed back — the
+   corpus holds 560x315, 774x435 and a 256x144. None of them is the width of
+   the column they land in, so the embed is sized here and holds 16:9. */
+figure.viz iframe,.body iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0}
+
 figure.viz{margin:52px 0}
 figure.viz > .viz-title,
 figure.viz > h4,
@@ -124,6 +165,17 @@ figure.viz figcaption b{color:var(--body);font-weight:600}
 .table-scroll caption{text-align:left;caption-side:top;font-family:var(--display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--accent);margin-bottom:10px}
 .table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
 .table-scroll th{font-family:var(--display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--mute);border-bottom-color:var(--ink)}
+/* Set by tools/blog-technical/table_balance.py on a table whose every column
+   holds short values: there is no wrapping column to absorb the width, so the
+   slack is spread evenly and the values sit in the middle of what they get. */
+.table-scroll th.ctr,.table-scroll td.ctr{text-align:center}
+/* Wrapping columns that fit on one line: the column keeps the width it was
+   given and the text block is nudged in, so the row is not pinned left with
+   the leftover pooled at the right edge. */
+.table-scroll th.ind,.table-scroll td.ind{padding-left:calc(16px + var(--ind,0px))}
+/* A table whose rows want less than the reading column stays in it rather than
+   breaking out — the wide measure would start it left of the prose. */
+.body.col > .table-scroll.tight{width:auto;max-width:100%;margin-left:0;margin-right:0}
 .table-scroll td p{margin:0 0 10px;font-size:15px;line-height:1.5}
 .table-scroll td p:last-child{margin-bottom:0}
 .table-scroll td ul,.table-scroll td ol{margin:8px 0 0 20px}
@@ -144,7 +196,7 @@ figure.tbl > figcaption b{color:var(--body);font-weight:700;letter-spacing:0.02e
 .rtbl tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018)}
 .rtbl tfoot td{padding:8px 0 0;font-family:var(--text);font-style:normal;font-size:12px;line-height:1.5;color:var(--mute);border:0;text-align:left;letter-spacing:0.01em}
 .rtbl tfoot td b{color:var(--body);font-weight:700;letter-spacing:0.02em}
-pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--paper-2)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--paper-2)!important;scrollbar-width:thin}
+pre[class*="language-"]{font-family:var(--mono)!important;font-size:13.5px!important;line-height:1.65!important;background:var(--code)!important;color:var(--body)!important;padding:24px 28px!important;margin:32px 0!important;overflow-x:auto;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);text-shadow:none!important;border-radius:0!important;scrollbar-color:var(--accent) var(--code)!important;scrollbar-width:thin}
 /* Akka-styled scrollbar for code blocks and any overflow container */
 pre[class*="language-"]::-webkit-scrollbar,.plot-wrap::-webkit-scrollbar,.rtbl::-webkit-scrollbar{height:6px;width:6px;background:var(--paper-2)}
 pre[class*="language-"]::-webkit-scrollbar-thumb,.plot-wrap::-webkit-scrollbar-thumb,.rtbl::-webkit-scrollbar-thumb{background:rgba(255,206,74,0.5);border-radius:0}

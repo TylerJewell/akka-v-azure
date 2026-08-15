@@ -1,0 +1,106 @@
+<!--
+  templateType: blog_post
+  isAvailableForNewContent: true
+  label: AKKA - Blog post (technical)
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ content.name|striptags }}</title>
+    <meta name="description" content="{{ content.meta_description }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    {{ require_css(get_asset_url("../css/blog-technical.css")) }}
+    {{ standard_header_includes }}
+  </head>
+  <body>
+    {% global_partial path="AKKA-2024/templates/partials/header-april.html" %}
+
+    <div class="blog-technical">
+      <article>
+        {# The header the standalone document drew for itself, from the post's
+           own fields — so a migrated post body carries the body alone. #}
+        <header class="hero col">
+          {% if content.widgets.eyebrow.body.value %}
+            <div class="kicker">{{ content.widgets.eyebrow.body.value }}</div>
+          {% endif %}
+          <h1 class="title">{{ content.name|striptags }}</h1>
+          {% if content.widgets.subtitle.body.value %}
+            <p class="standfirst">{{ content.widgets.subtitle.body.value }}</p>
+          {% endif %}
+          <div class="byline">
+            <span class="au">{{ content.blog_post_author.display_name }}</span>
+            <span class="r">
+              <time datetime="{{ content.publish_date|escape_attr }}">{{ content.publish_date|datetimeformat('%B %e, %Y') }}</time>
+              ·
+              {% if content.widgets.duration_override and content.widgets.duration_override.body.value %}
+                {{ content.widgets.duration_override.body.value }}
+              {% else %}
+                {{ content.post_body|wordcount|divide(300) }} min read
+              {% endif %}
+            </span>
+          </div>
+        </header>
+
+        {{ content.post_body }}
+
+        {# Tags and related posts. No author bio and no CTA: the post ends on
+           where to read next. Related is drawn from the post's first tag —
+           topic, not author, is what a reader is following. #}
+        {# 'Retired' marks a post as dropped from the blog roll. It is internal
+           bookkeeping, not a subject, so it never reaches a reader. #}
+        {% set tags = [] %}
+        {% for tag in content.tag_list %}
+          {% if tag.name != 'Retired' %}{% do tags.append(tag) %}{% endif %}
+        {% endfor %}
+        {% if tags %}
+        <div class="postfoot col">
+          <p class="postfoot__h">Filed under</p>
+          <div class="tags">
+            {% for tag in tags %}
+              <a href="{{ blog_tag_url(group.id, tag.slug) }}" rel="tag">{{ tag.name|escape_html }}</a>
+            {% endfor %}
+          </div>
+
+          {% set related = blog_recent_topic_posts(group.id, tags[0].slug, 4) %}
+          {% set shown = [] %}
+          {% for post in related %}{% if post.id != content.id and shown|length < 3 %}
+            {% do shown.append(post) %}
+          {% endif %}{% endfor %}
+          {% if shown %}
+          <p class="postfoot__h">More on {{ tags[0].name|escape_html }}</p>
+          <ul class="related">
+            {% for post in shown %}
+            <li>
+              <a href="{{ post.absolute_url|escape_url }}">
+                <span class="t">{{ post.name|escape_html }}</span>
+                <span class="d">{{ post.publish_date|datetimeformat('%B %e, %Y') }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        {% endif %}
+      </article>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+      if (window.Prism && Prism.plugins && Prism.plugins.autoloader) {
+        Prism.plugins.autoloader.languages_path =
+          'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+      }
+      if (window.Prism) { Prism.highlightAll(); }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    {% global_partial path="AKKA-2024/templates/partials/footer.html" %}
+    {{ standard_footer_includes }}
+  </body>
+</html>
