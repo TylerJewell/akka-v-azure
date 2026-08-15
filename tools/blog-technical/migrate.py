@@ -99,6 +99,53 @@ def snapshot(slug, post):
     return path
 
 
+LIVE_BLOG = '162235293071'
+
+
+def convert(slug, post, body, token):
+    """Write the converted body to the live post.
+
+    Only postBody is sent. A blog post's template belongs to its blog, and
+    including templatePath makes the whole PATCH fail with
+    BLOG_POST_TEMPLATE_PATH_NOT_SETTABLE — a 400 that returns no error to a
+    caller that does not read the response, leaving the post untouched while
+    the run reports success.
+    """
+    if 'class="body col"' not in body:
+        sys.exit(f'{slug}: converted body has no .body content — refusing to write')
+    result = api('PATCH', f'/cms/v3/blogs/posts/{post["id"]}', {'postBody': body}, token)
+    if not isinstance(result, dict) or 'id' not in result:
+        sys.exit(f'{slug}: PATCH rejected: {str(result)[:200]}')
+    api('POST', f'/cms/v3/blogs/posts/{post["id"]}/draft/push-live', {}, token)
+
+
+def convert_all(token, limit=None):
+    """Convert every published post on the live blog that has a conversion."""
+    posts, after = [], None
+    while True:
+        page = api('GET', '/cms/v3/blogs/posts?limit=100'
+                   + (f'&after={after}' if after else ''), token=token)
+        posts += [p for p in page.get('results', [])
+                  if p.get('contentGroupId') == LIVE_BLOG
+                  and p.get('currentState') == 'PUBLISHED']
+        after = (page.get('paging') or {}).get('next', {}).get('after')
+        if not after:
+            break
+
+    done = skipped = 0
+    for post in posts[:limit]:
+        slug = (post.get('slug') or '').split('/', 1)[-1]
+        if not os.path.exists(os.path.join(ROOT, 'blog-technical', 'posts', f'{slug}.html')):
+            print(f'  skip     {slug} — no conversion')
+            skipped += 1
+            continue
+        snapshot(slug, post)
+        convert(slug, post, body_only(post_source(slug)), token)
+        done += 1
+        print(f'  {done:3d}/{len(posts)} {slug}')
+    print(f'\nconverted {done}, skipped {skipped}, of {len(posts)} published posts')
+
+
 STAGING_BLOG = '185742639222'
 # The staging blog refuses to publish a post without one; most posts have none.
 STAGING_IMAGE = ('https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578'
@@ -147,18 +194,26 @@ def stage(slug, token):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('slug', nargs='+')
+    ap.add_argument('slug', nargs='*')
+    ap.add_argument('--all', action='store_true',
+                    help='convert every published post on the live blog')
+    ap.add_argument('--limit', type=int, default=None)
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--revert', action='store_true')
     ap.add_argument('--staging', action='store_true',
                     help='copy into the staging blog instead of touching the live post')
     args = ap.parse_args()
 
+    if args.all:
+        convert_all(port.get_token(), args.limit)
+        return
     if args.staging:
         token = port.get_token()
         for slug in args.slug:
             stage(slug, token)
         return
+    if not args.slug:
+        sys.exit('give a slug, or --all')
     if len(args.slug) > 1:
         sys.exit('one slug at a time unless --staging')
     args.slug = args.slug[0]
@@ -186,9 +241,7 @@ def main():
         return
 
     print('  snapshot:    ', snapshot(args.slug, post))
-    api('PATCH', f'/cms/v3/blogs/posts/{pid}',
-        {'postBody': body, 'templatePath': TEMPLATE_PATH}, token)
-    api('POST', f'/cms/v3/blogs/posts/{pid}/draft/push-live', {}, token)
+    convert(args.slug, post, body, token)
     print(f'  published:    https://akka.io/blog/{args.slug}')
 
 

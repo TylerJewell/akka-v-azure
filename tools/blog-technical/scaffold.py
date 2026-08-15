@@ -909,6 +909,21 @@ def _resolve_tag_names(tag_ids, tok):
     return [n for n in names if n]
 
 
+def _snapshot_body(slug):
+    """The post body as it stood before migration, if one was kept.
+
+    Migration replaced each live postBody with the converted output, so the API
+    now returns what this tool produced rather than what the author wrote.
+    Re-scaffolding a migrated post from the API would build on its own output;
+    the snapshot is the source.
+    """
+    path = os.path.join(ROOT, 'blog-technical', 'snapshots', f'{slug}.json')
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        return (json.load(f) or {}).get('postBody') or None
+
+
 def _fetch_post_via_api(slug, tok):
     """Look up a post by slug via HubSpot Blog API. Returns the full post JSON
     or None if not found. Slug may be given with or without the 'blog/' prefix."""
@@ -953,12 +968,13 @@ def scaffold_one(slug):
         'read_min': None,                       # optional; compute from body length
     }
     # Rough read-time from word count
-    text = re.sub(r'<[^>]+>', ' ', post.get('postBody') or '')
+    source_body = _snapshot_body(slug) or post.get('postBody') or ''
+    text = re.sub(r'<[^>]+>', ' ', source_body)
     words = len(re.findall(r'\S+', text))
     if words:
         meta['read_min'] = max(1, round(words / 220))
 
-    body = clean_body(post.get('postBody') or '')
+    body = clean_body(source_body)
     sections = extract_sections(body)
     scaffold = build_scaffold(slug, meta, sections)
     out_path = os.path.join(POSTS_DIR, f'{slug}.html')

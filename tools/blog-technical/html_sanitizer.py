@@ -399,6 +399,25 @@ def _extract_pres_from_hubl_modules(html):
                     parts.append(content if '<' in content else f'<p>{content}</p>')
             if parts:
                 return '\n'.join(parts)
+        # Grid module carrying video: the id is a field, not a URL, so nothing
+        # that looks for an embed src finds it. Each element pairs the id with
+        # its own heading.
+        elements = _module_attribute(block, 'grid_element')
+        if elements:
+            parts = []
+            for el in elements:
+                if not isinstance(el, dict) or not el.get('youtube_id'):
+                    continue
+                heading = re.sub(r'\s+', ' ', re.sub(r'</?h\d[^>]*>', '',
+                                                     el.get('richtext_field') or '')).strip()
+                if heading:
+                    parts.append(f'<h3>{heading}</h3>')
+                parts.append(
+                    '<iframe src="https://www.youtube.com/embed/%s" '
+                    'title="%s" frameborder="0" allowfullscreen></iframe>'
+                    % (el['youtube_id'], heading or 'Video'))
+            if parts:
+                return '\n'.join(parts)
         # Older shape: a flat title/content pair in field order.
         pairs = re.findall(r'"title"\s*:\s*"([^"]+)"\s*,\s*"content"\s*:\s*"([^"]*)"', block)
         if pairs:
