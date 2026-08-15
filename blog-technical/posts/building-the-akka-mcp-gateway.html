@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building the Akka MCP Gateway: Governed AI Tool Access for the Whole Organization — Akka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+<link rel="stylesheet" href="../theme/base.css">
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="colophon">
+  <span class="brand">AKKA</span>
+  <span class="sep">/</span>
+  <span>The Technical</span>
+  <span class="r">building-the-akka-mcp-gateway</span>
+</div>
+
+<article>
+
+<header class="hero col">
+  <div class="kicker">AI · SECURITY · DISTRIBUTED SYSTEMS</div>
+  <h1 class="title">Building the Akka MCP Gateway: Governed AI Tool Access for the Whole Organization</h1>
+  <p class="standfirst">Becoming an AI-first organization at Akka means more than giving employees access to a chat interface; it means connecting AI to the tools and data that drive our business, securely and responsibly. The Model Context Protocol (MCP) has emerged as the standard for doing exactly that, linking AI clients to external services. But wiring up each service individually, per user, per machine, introduces security gaps that put both employee and customer data at risk, and quickly becomes unmanageable to govern at scale.</p>
+  <div class="byline">
+    <div><span class='au'>Team Akka</span></div>
+    <div class="r"><time datetime="2026-08-05">Aug 5, 2026</time> · 6 min read</div>
+  </div>
+</header>
+
+<div class="body col">
+
+<p class="lede">Becoming an <strong>AI-first organization at Akka</strong> means more than giving employees access to a chat interface; it means connecting AI to the tools and data that drive our business, securely and responsibly. The Model Context Protocol (MCP) has emerged as the standard for doing exactly that, linking AI clients to external services. But wiring up each service individually, per user, per machine, introduces security gaps that put both employee and customer data at risk, and quickly becomes unmanageable to govern at scale.</p>
+<p>The <strong>Akka MCP Gateway</strong> solves this: a single, centrally-managed proxy that sits between our employees' MCP clients and our business tools, handling authentication, authorization, and auditability in one place. Built on <a href="https://akka.io">Akka</a>, it is designed to be durable, stateful, and production-ready from day one.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>The problem: MCP has no organizational governance or safety controls</h2>
+
+
+<figure>
+</div>
+
+<div class="wide">
+<figure class="viz">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap">
+    <div class="plate plate--flush"><img src="https://45500578.fs1.hubspotusercontent-na1.net/hubfs/45500578/screenshot-1785434248123-6b0f7f87.png" loading="lazy" alt="Diagram comparing direct MCP access without a gateway (nine separate connections, no shared policy, no audit) against the Akka MCP Gateway, where employees connect once via Okta SSO through a central gateway to Zoho Desk, Salesforce, and Google Drive with a tamper-evident audit trail"></div>
+  </div>
+  <figcaption>Diagram comparing direct MCP access without a gateway (nine separate connections, no shared policy, no audit) against the Akka MCP Gateway, where employees connect once via Okta SSO through a central gateway to Zoho Desk, Salesforce, and Google Drive with a tamper-evident audit trail</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+</figure>
+<p>The standard MCP authorization model is user-scoped. Every employee connects to every MCP server individually, with no shared policy or oversight. In practice this means:</p>
+<ol>
+<li><strong>No central policy enforcement:</strong> security teams have no consistent control over what tools are accessible to whom, or what those tools are permitted to do.</li>
+<li><strong>No audit trail:</strong> there is no unified log of which AI agent called which tool on whose behalf.</li>
+</ol>
+<p>For individual developers, this is a mild inconvenience. For any organization wanting a unified, governable interface to AI tools (giving technical and non-technical employees alike a consistent, understood experience), it is a significant blocker.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>The solution: central control without central friction</h2>
+
+
+<p>The gateway acts as a trusted intermediary that MCP clients (e.g. Claude Code, Cowork, IDE plugins) authenticate against <em>once</em>, via our organization's identity provider (Okta). From there, it handles everything else:</p>
+<p><strong>Single sign-on entry point.</strong> Employees log in once with their corporate Okta credentials. The gateway issues a session token that MCP clients use for all subsequent requests, and employees never gain more access than their existing Okta roles already permit.</p>
+<p><strong>Permission mirroring from Okta.</strong> The permissions and group memberships managed in Okta are mirrored in the gateway. This allows us to maintain a curated list of downstream MCP services (e.g. Zoho Desk, Salesforce, and others) and control exactly who has access to which of them. Employees only see the tools they are authorized for, based on the roles already defined in our identity provider.</p>
+<p><strong>Standards-compliant authorization.</strong> The gateway implements the MCP authorization specification out of the box. Any MCP-compatible client connects without custom configuration.</p>
+<p><strong>Authenticated proxy to upstream services.</strong> Behind the scenes, the gateway maintains connections to Zoho Desk, Salesforce, and other tools. It injects the correct credentials into each upstream request and refreshes them automatically when they expire.</p>
+<p><strong>Safe by default, flexible by design.</strong> All tools are read-only by default. Elevated permissions (e.g. write access, destructive operations) can be granted on demand, scoped to specific tools, and time-boxed so access expires automatically. This means employees cannot perform destructive actions until the organization is explicitly ready to permit them, protecting both internal data and customer records.</p>
+<p><strong>Durable interaction log.</strong> Every MCP tool call is recorded: tool name, parameters, response, user, timestamp. This gives security and compliance teams a complete, tamper-evident audit trail.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>A single interface across the organization</h2>
+
+
+<p>The gateway pattern is useful anywhere an organization wants AI agents to interact with internal tools safely, with consistent governance across the team. A few examples:</p>
+<p><strong>Customer support teams</strong> can give AI assistants access to Zoho Desk or Salesforce CRM without exposing individual credentials or risking unauthorized data modification. Support agents complete a one-time connection and their AI client is immediately governed by the same access controls as everything else.</p>
+<p><strong>Developer platforms</strong> can expose internal tools (e.g. issue trackers, monitoring dashboards, deployment systems) as MCP servers, then use the gateway to ensure only authenticated, authorized employees can invoke them, with a complete call log for compliance.</p>
+<p><strong>The governance story is the same regardless of role.</strong> Engineers, support staff, and executives all operate through the same gateway with the same Okta-defined permissions, with no special configuration and no different rules for different teams. Everyone gets a consistent interface to AI tools; no one sees more than their role permits.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Why Akka is the natural infrastructure layer for agentic AI</h2>
+
+
+<p>The MCP Gateway has requirements that are a near-perfect match for Akka's distributed systems primitives. These aren't incidental: the gateway's core concerns map directly onto Akka's building blocks.</p>
+<p><strong>Event sourcing as the audit log.</strong> The tamper-evident audit trail is not bolted on as a separate logging concern. Every MCP tool call (i.e. request, response, connection attempt, write rejection) is persisted as an immutable event by <code>McpInteractionEntity</code>, an <a href="https://doc.akka.io/sdk/event-sourced-entities.html">Akka Event Sourced Entity</a>. The audit trail is structurally guaranteed by the storage model itself. Adding an escalation status later is just another event, not an update that overwrites history.</p>
+<p><strong>Views for queryable projections over the event log.</strong> The interaction (audit) event log is append-only, but operators need to query it: by user, by MCP server, paginated, with total counts. <a href="https://doc.akka.io/sdk/views.html">Akka Views</a> consume the event stream and maintain live, indexed read models. The same events that form the compliance record also power the operational dashboard, with no separate ETL step.</p>
+<p><strong>Entities for stateful credential lifecycle.</strong> OAuth tokens are inherently stateful: they are issued, expire, refresh, and are revoked. <a href="https://doc.akka.io/sdk/key-value-entities.html">Akka Key-Value Entities</a> give each service connection (e.g. Salesforce, Zoho Desk, Google Drive, and others) its own durable, in-memory state with atomic updates. Token refresh happens inside the entity's command handler, with no race condition between an expiry check and a concurrent refresh. Sessions and pending OAuth flows are entities too, surviving process restarts without a separate cache or database layer.</p>
+<p><strong>MCP proxying via LangChain4j, coordinated by Akka.</strong> Each upstream service has a dedicated client class (e.g. <code>SalesforceMcpClient</code>) that uses LangChain4j's <code>DefaultMcpClient</code> with <code>StreamableHttpMcpTransport</code> to call the upstream MCP server over HTTP. Before each call, it fetches a valid OAuth token directly from the corresponding Akka entity via <a href="https://doc.akka.io/sdk/component-and-service-calls.html">ComponentClient</a>; token refresh, expiry, and revocation are all handled durably by the entity, not by ad-hoc in-process logic. Akka provides the reliable state backbone; LangChain4j handles the MCP wire protocol.</p>
+<p>Agentic AI workloads share a common set of hard infrastructure requirements: durable session and credential state, tamper-evident audit logs, consistent policy enforcement, and reliable proxying to external tools. These are not AI problems; they are distributed systems problems. Because all of this state survives restarts and scales horizontally, the gateway is production-ready without bolting on a cache, a database, and a logging pipeline separately.</p>
+<p>The pattern generalizes: any organization deploying AI agents at scale needs exactly this substrate (i.e. stateful, auditable, policy-enforced access to business tools). Akka provides it out of the box. The MCP Gateway is one instance of a broader truth: Akka is the natural infrastructure layer for agentic AI.</p>
+
+<h3>Built with Akka Specify</h3>
+
+
+<p>The gateway is also a proof point for how Akka systems are built. It was developed using <a href="https://akka.io/blog/introducing-akka-specify">Akka Specify</a>, Akka's spec-driven development tooling, going from requirements to running, tested code through AI-assisted prompting, with no manual scaffolding. The infrastructure layer and the development workflow reinforce each other: Akka handles the hard distributed systems concerns at runtime, and Akka Specify removes the friction of building those systems in the first place.</p>
+
+</div>
+
+<div class="body col">
+
+<h2>Outlook: enterprise-managed authorization</h2>
+<p>The Akka MCP Gateway was built before a formal enterprise auth standard existed. In June 2026, the MCP community published exactly that: the <a href="https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/">Enterprise-Managed Authorization (EMA)</a> extension.</p>
+<p>EMA formalizes the pattern the gateway implements: our organization's identity provider becomes the authoritative decision-maker for MCP server access. Administrators define policy once; employees get the right tools automatically on first login, scoped to their groups and roles, with no per-service consent screens and nothing to configure individually.</p>
+<p>The Akka MCP Gateway is a natural stepping stone to this world. Our next step is to evaluate EMA as the path toward zero-touch provisioning: employees log into Claude once with their corporate identity, and every tool our organization has approved is available immediately.</p>
+<p>The full source is open on GitHub at <a href="https://github.com/akka/mcp-gateway">github.com/akka/mcp-gateway</a>.</p>
+
+</div>
+
+</article>
+
+<div class="foot">
+  Akka · The Technical · Aug 5, 2026
+</div>
+
+<script>
+(function(){var bar=document.getElementById('prog');function u(){var h=document.documentElement;var s=h.scrollTop||document.body.scrollTop;var t=(h.scrollHeight||document.body.scrollHeight)-h.clientHeight;bar.style.width=(t>0?(s/t)*100:0)+'%';}window.addEventListener('scroll',u,{passive:true});u();})();
+</script>
+
+</body>
+</html>

@@ -34,6 +34,13 @@ for f in $STAGED; do
   case "$f" in
     akka-overview/*|akka-sdk/*|akka-verify/*|sales-presentation/*)
       continue ;;
+    # blog-technical/posts/ is scaffolded from live akka.io posts and carries
+    # their prose verbatim — scaffold.py invents no text. The rule bank judges
+    # copy we write, and rewriting a published author's post to pass it would
+    # change what the post says. The hand-authored exemplars one level up
+    # (blog-technical/*.html) are ours and stay in scope.
+    blog-technical/posts/*)
+      continue ;;
   esac
   case "$f" in
     website/guides*)                 CTX=guide ;;
