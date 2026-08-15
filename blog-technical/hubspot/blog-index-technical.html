@@ -1,0 +1,228 @@
+<!--
+  templateType: blog_listing
+  isAvailableForNewContent: true
+  label: AKKA - Blog Listing (technical)
+-->
+{% set template_css = "../../css/templates/blog-2025.css" %}
+{% extends "./layouts/base.html" %}
+
+{% block body %}
+
+{# Posts lead the page when they are marked "Feature on the blog index" on the
+   post itself. contents arrives newest first, so the three most recent featured
+   posts take the bands and everything else falls to the dated list. #}
+{% set lead_limit = 3 %}
+{% set leads = [] %}
+{% for content in contents %}
+  {% if content.widgets.featured_post.body.value and not content.widgets.hide_from_listing.body.value and leads|length < lead_limit %}
+    {% do leads.append(content.id) %}
+  {% endif %}
+{% endfor %}
+{% set role_tags = ["CAIO / CIO", "Architect / CTO", "Developer"] %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=optional" rel="stylesheet">
+
+<style>
+.bidx{
+  --black:#000000; --medium-black:#141414; --white:#F1F1F1; --yellow:#FFCE4A;
+  --blue:#00DBDD; --soft-grey:#A6A6A6; --medium-grey:#4E4E4E;
+  --display:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --measure:1440px;
+  background:var(--black);color:var(--white);font-family:var(--display);
+}
+.bidx *{box-sizing:border-box}
+.bidx a{color:inherit;text-decoration:none}
+
+/* The home page's above-the-fold treatment: the connection animation on
+   autoplay loop under its vertical wash, with the title centred over it. */
+.bidx__masthead{position:relative;overflow:hidden;min-height:360px;display:flex;
+  align-items:center;justify-content:center}
+.bidx__masthead video{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;z-index:0}
+.bidx__mastwash{position:absolute;inset:0;z-index:1;background:linear-gradient(
+  rgba(7,12,44,.42),rgba(11,10,54,.52) 55%,rgba(7,8,37,.72))}
+.bidx__masthead h1{position:relative;z-index:2;text-align:center;margin:0;padding:0 32px;
+  font-size:clamp(40px,6vw,72px);line-height:1.02;font-weight:600;
+  letter-spacing:-0.03em;color:var(--white)}
+
+/* Bands are separated by 15px of page black, the way the home page separates
+   its own. The wash values are the home page's, unchanged. */
+.bidx__band{position:relative;overflow:hidden;margin-top:15px;min-height:520px;display:flex}
+.bidx__band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  display:block;z-index:0}
+.bidx__wash{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,
+  rgba(7,18,35,.88) 0%,rgba(7,18,35,.72) 30%,rgba(7,18,35,.26) 60%,rgba(7,18,35,.12) 100%)}
+.bidx__bandinner{position:relative;z-index:2;max-width:var(--measure);width:100%;
+  margin:0 auto;padding:88px 66px;align-self:center}
+.bidx__eyebrow{font-size:13px;font-weight:400;letter-spacing:.15em;line-height:1;
+  text-transform:uppercase;color:var(--soft-grey);margin:0 0 21px}
+.bidx__bandtitle{font-size:clamp(32px,4vw,48px);line-height:1.08;font-weight:600;
+  letter-spacing:-0.02em;color:var(--white);max-width:760px;margin:0;text-wrap:balance}
+.bidx__bandtitle a:hover{color:var(--blue)}
+.bidx__dek{font-size:18px;line-height:1.5;color:var(--soft-grey);max-width:620px;margin:20px 0 0}
+.bidx__meta{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--soft-grey);
+  margin:22px 0 0;font-variant-numeric:tabular-nums}
+.bidx__arrow{display:inline-flex;align-items:center;gap:12px;margin-top:26px;
+  font-size:17px;font-weight:600;color:var(--blue)}
+.bidx__arrow svg{transition:transform .15s ease}
+.bidx__arrow:hover svg{transform:translateX(6px)}
+
+.bidx__index{max-width:var(--measure);margin:0 auto;padding:88px 66px 120px}
+.bidx__head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;
+  padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.16)}
+.bidx__head h2{font-size:28px;font-weight:600;letter-spacing:-0.01em;margin:0}
+.bidx__count{font-family:var(--mono);font-size:12px;color:var(--soft-grey);
+  font-variant-numeric:tabular-nums}
+.bidx__filters{display:flex;flex-wrap:wrap;gap:10px;padding:26px 0 6px;align-items:center}
+.bidx__flabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--medium-grey);margin-right:6px}
+.bidx__chip{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--soft-grey);
+  background:var(--medium-black);border:1px solid rgba(255,255,255,.12);padding:7px 13px;
+  cursor:pointer;transition:color .15s ease,border-color .15s ease}
+.bidx__chip:hover{color:var(--blue);border-color:var(--blue)}
+.bidx__chip[aria-pressed="true"]{color:var(--yellow);border-color:var(--yellow)}
+
+.bidx__rows{list-style:none;margin:34px 0 0;padding:0}
+.bidx__row{border-top:1px solid rgba(255,255,255,.10)}
+.bidx__row:last-child{border-bottom:1px solid rgba(255,255,255,.10)}
+.bidx__row a{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:12px 28px;
+  align-items:baseline;padding:19px 0}
+.bidx__row a:hover .bidx__rtitle{color:var(--blue)}
+.bidx__rdate{font-family:var(--mono);font-size:12px;color:var(--soft-grey);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.bidx__rtitle{font-size:19px;line-height:1.35;font-weight:500;color:var(--white);
+  transition:color .15s ease;text-wrap:pretty}
+.bidx__rtags{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+.bidx__tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--medium-grey);border:1px solid rgba(255,255,255,.10);padding:4px 8px;white-space:nowrap}
+.bidx__row.is-hidden{display:none}
+
+@media (max-width:1000px){
+  .bidx__index{padding-left:32px;padding-right:32px}
+  .bidx__bandinner{padding:64px 32px}
+  .bidx__band{min-height:420px}
+  .bidx__row a{grid-template-columns:1fr;gap:8px}
+  .bidx__rtags{justify-content:flex-start}
+}
+</style>
+
+<div class="body-container body-container--blog-index bidx">
+
+  <header class="bidx__masthead">
+    <video autoplay loop muted playsinline
+           src="https://akka.io/hubfs/0_Animation_Connection_1920x1080.mp4"></video>
+    <div class="bidx__mastwash"></div>
+    <h1>Blogs About Scaling AI</h1>
+  </header>
+
+  {% for content in contents %}
+    {% if content.id in leads %}
+      {% set art = content.widgets.band_image.body.src or content.featured_image %}
+      <section class="bidx__band">
+        {% if art %}<img src="{{ art }}" alt="" loading="lazy">{% endif %}
+        <div class="bidx__wash"></div>
+        <div class="bidx__bandinner">
+          {% if content.tag_list %}
+            <p class="bidx__eyebrow">
+              {% for tag in content.tag_list %}{% if tag.name != "Retired" and loop.index <= 3 %}{{ tag.name|escape_html }}{% if not loop.last and loop.index < 3 %} &middot; {% endif %}{% endif %}{% endfor %}
+            </p>
+          {% endif %}
+          <h2 class="bidx__bandtitle"><a href="{{ content.absolute_url }}">{{ content.name }}</a></h2>
+          {% if content.widgets.subtitle.body.value %}
+            <p class="bidx__dek">{{ content.widgets.subtitle.body.value }}</p>
+          {% endif %}
+          <p class="bidx__meta"><time datetime="{{ content.publish_date|escape_attr }}">{{ content.publish_date|datetimeformat('%B %e, %Y') }}</time></p>
+          <a class="bidx__arrow" href="{{ content.absolute_url }}">Read
+            <svg width="26" height="18" viewBox="0 0 26 18" fill="none" aria-hidden="true">
+              <path d="M0.75 9.03H24.25" stroke="currentColor"></path>
+              <path d="M17.25 17.03L25.25 9.03L17.25 1.03" stroke="currentColor"></path>
+            </svg></a>
+        </div>
+      </section>
+    {% endif %}
+  {% endfor %}
+
+  <section class="bidx__index">
+    <div class="bidx__head">
+      <h2>All posts</h2>
+      <span class="bidx__count" id="bidx-count"></span>
+    </div>
+
+    {# Roles first, then every other tag in use. 'Retired' marks a post as
+       dropped from the roll and is never offered as a filter. #}
+    <div class="bidx__filters">
+      <span class="bidx__flabel">Role</span>
+      {% for name in role_tags %}
+        <button class="bidx__chip" data-tag="{{ name|escape_attr }}">{{ name }}</button>
+      {% endfor %}
+    </div>
+    <div class="bidx__filters">
+      <span class="bidx__flabel">Topic</span>
+      {% set seen = [] %}
+      {% for content in contents %}
+        {% for tag in content.tag_list %}
+          {% if tag.name not in seen and tag.name not in role_tags and tag.name != "Retired" %}
+            {% do seen.append(tag.name) %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% for name in seen|sort %}
+        <button class="bidx__chip" data-tag="{{ name|escape_attr }}">{{ name }}</button>
+      {% endfor %}
+    </div>
+
+    <ul class="bidx__rows" id="bidx-rows">
+      {% for content in contents %}
+        {% if content.id not in leads and not content.widgets.hide_from_listing.body.value %}
+          <li class="bidx__row" data-tags="{% for tag in content.tag_list %}{{ tag.name|escape_attr }}{% if not loop.last %}|{% endif %}{% endfor %}">
+            <a {% if content.widgets.external_url.body.value %}href="{{ content.widgets.external_url.body.value }}"{% else %}href="{{ content.absolute_url }}"{% endif %}{% if content.widgets.new_tab.body.value %} target="_blank" rel="noopener"{% endif %}>
+              <time class="bidx__rdate" datetime="{{ content.publish_date|escape_attr }}">{{ content.publish_date|datetimeformat('%B %e, %Y') }}</time>
+              <span class="bidx__rtitle">{{ content.name }}</span>
+              <span class="bidx__rtags">
+                {% for tag in content.tag_list %}{% if tag.name != "Retired" and loop.index <= 4 %}<span class="bidx__tag">{{ tag.name|escape_html }}</span>{% endif %}{% endfor %}
+              </span>
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+
+  {% module "cta_module" path="/AKKA-2024/modules/Ready To Unleash Cta Module", label="Ready To Unleash Cta Module" %}
+</div>
+
+<script>
+(function(){
+  var active = new Set();
+  var rows = [].slice.call(document.querySelectorAll('.bidx__row'));
+  var count = document.getElementById('bidx-count');
+
+  // Selecting two tags narrows to posts carrying both.
+  function apply(){
+    var shown = 0;
+    rows.forEach(function(r){
+      var tags = (r.getAttribute('data-tags') || '').split('|');
+      var ok = true;
+      active.forEach(function(t){ if (tags.indexOf(t) === -1) ok = false; });
+      r.classList.toggle('is-hidden', !ok);
+      if (ok) shown++;
+    });
+    count.textContent = shown + (shown === 1 ? ' post' : ' posts');
+  }
+
+  document.querySelectorAll('.bidx__chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var tag = chip.getAttribute('data-tag');
+      if (active.has(tag)) { active.delete(tag); chip.setAttribute('aria-pressed','false'); }
+      else { active.add(tag); chip.setAttribute('aria-pressed','true'); }
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
+
+{% endblock body %}

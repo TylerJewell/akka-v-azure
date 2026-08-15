@@ -1,0 +1,37 @@
+<!--
+  templateType: blog_listing
+  isAvailableForNewContent: true
+  label: AKKA 2024 - Blog Listing
+-->
+{% set template_css = "../../css/templates/blog-2025.css" %}
+{% extends "./layouts/base.html" %}
+
+{% block body %}
+
+<div class="body-container body-container--blog-index blog-listing">
+  
+  {% module "module_17262126767249" path="/AKKA-2024/modules/Inner Page Header Module", label="Inner Page Header Module",
+    header_bg_option = "option_1",
+    main_title = "Akka Blog",
+    sub_content = "Read. Build. Distribute. Get all the latest from Akka."
+  %}
+  
+  {% if author %}
+    {% module "module_17389646365496" path="/AKKA-2024/modules/Blog Listing Multi Filter Module", label="Blog Listing Multi Filter Module" %}
+    
+  {% else %}
+    {% module "module_17392949023865" path="/AKKA-2024/modules/Blog Listing Latest Module", label="Blog Listing Latest Module" %}
+    {% module "module_17389646365496" path="/AKKA-2024/modules/Blog Listing Multi Filter Module", label="Blog Listing Multi Filter Module" %}
+  {% endif %}
+  
+  {# {% if !tag %}
+    {% module "module_172656097801328" path="/AKKA-2024/modules/Latest Blog Module", label="Latest Blog Module" %}
+  
+  {% endif %}
+  
+  {% module "module_172657351502163" path="/AKKA-2024/modules/Blog Listing Module", label="Blog Listing Module" %} #}
+  
+  {% module "module_17263764395902" path="/AKKA-2024/modules/Ready To Unleash Cta Module", label="Ready To Unleash Cta Module" %}
+  
+</div>
+{% endblock body %} 

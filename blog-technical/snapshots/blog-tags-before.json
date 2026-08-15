@@ -1,0 +1,1536 @@
+{
+ "177928807991": {
+  "slug": "akka-2405-fully-replicated-entities-across-regions-edge-and-clouds",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "177928807997": {
+  "slug": "not-all-cve-fixes-are-created-equal",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852042,
+   186180852252,
+   186181358772,
+   186181358912
+  ]
+ },
+ "177928808007": {
+  "slug": "akka-innovations-multi-cloud-edge-and-security-enhancements",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852042,
+   186180852064,
+   186180852252,
+   186181358772
+  ]
+ },
+ "178371700010": {
+  "slug": "benchmarking-database-sharding-in-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "179561980061": {
+  "slug": "benchmarking-database-sharding-in-akka-0",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "179666775839": {
+  "slug": "testing-blog-elements",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "179846275944": {
+  "slug": "akka-record-growth-fifty-new-customers-cash-flow-positive-new-growth-executives",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852064,
+   186181358772,
+   186181358859,
+   186181359137,
+   194011022260,
+   218085193992,
+   219530652736
+  ]
+ },
+ "179855649653": {
+  "slug": "building-zero-trust-security-into-your-akka-applications",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186181358772
+  ]
+ },
+ "179857675158": {
+  "slug": "akka-2405-the-edge-unleashed",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "179857675901": {
+  "slug": "webinar-akka-2405-release-highlights",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852042,
+   186180852064,
+   186180852252,
+   186181358772,
+   186181358912
+  ]
+ },
+ "179857761671": {
+  "slug": "the-database-is-the-bottleneck",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "179857763148": {
+  "slug": "akka-2405-more-security-more-performance-more-efficiency",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186180852064,
+   186181358772,
+   186181358912,
+   186181359137,
+   194011022260
+  ]
+ },
+ "179858489907": {
+  "slug": "2024-predictions-for-the-cloud-native-market",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852064,
+   186181359137,
+   194011022260,
+   218085193992,
+   219530652736
+  ]
+ },
+ "179858490023": {
+  "slug": "akka-edge-exploring-scale-to-zero",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179858519930": {
+  "slug": "cloud-architecture-will-fail-you-distributed-app-architecture-will-not",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179858521356": {
+  "slug": "deep-dive-of-event-driven-communication-between-edge-and-cloud",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179858521518": {
+  "slug": "what-is-akka-edge",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179860430744": {
+  "slug": "celebrating-a-milestone-akka-surpasses-1-billion-downloads",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186181358772,
+   186181358912,
+   186181359137,
+   218085193992,
+   219530652736
+  ]
+ },
+ "179860430886": {
+  "slug": "faster-and-smoother-rolling-updates-for-akka-clusters-in-kubernetes",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "179860431107": {
+  "slug": "akka-enabling-the-cloud-to-edge-continuum",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179860431366": {
+  "slug": "why-we-are-changing-the-license-for-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186181358772,
+   186181358912,
+   186181359137,
+   219530652736
+  ]
+ },
+ "179860570194": {
+  "slug": "webinar-akka-edge-sample-project-overview",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179860570477": {
+  "slug": "akka-edge-unifying-the-cloud-and-edge",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179860571293": {
+  "slug": "lightbend-achieves-soc-2-compliance",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186181359137,
+   219530652736
+  ]
+ },
+ "179860571485": {
+  "slug": "akka-2210-released",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852042,
+   186180852064,
+   186181358772,
+   186181359137
+  ]
+ },
+ "179958391600": {
+  "slug": "iot-building-digital-twins-with-akka-microservices",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "179958392180": {
+  "slug": "akka-grpc-update-delivers-1200-percent-performance-improvement",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "179975803692": {
+  "slug": "akka-with-java-21-less-is-more",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   186181358859,
+   186181358912
+  ]
+ },
+ "180062125164": {
+  "slug": "get-productive-with-akka-streams",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   186181358859,
+   186181358912
+  ]
+ },
+ "180062125687": {
+  "slug": "the-easy-button-for-durable-state-queries",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "180063008823": {
+  "slug": "adaptive-stream-parallelization-for-fun-and-throughput",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "180067710764": {
+  "slug": "akka-edging-further",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180067710902": {
+  "slug": "akka-edge-shaping-the-future-of-industry-with-edge-computing",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852042,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180076281205": {
+  "slug": "ditch-the-message-broker-go-faster",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186181358772,
+   194011022260
+  ]
+ },
+ "180077322047": {
+  "slug": "active-active",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "180077322823": {
+  "slug": "design-techniques-stateful-cloud-native-applications-resilience-recoverability-scalability",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   194011022260
+  ]
+ },
+ "180078439215": {
+  "slug": "cloud-native-app-design-techniques-distributed-state",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852252,
+   194011022260
+  ]
+ },
+ "180078439861": {
+  "slug": "cloud-native-app-design-techniques-cqrs-event-sourcing-messaging",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852252,
+   194011022260
+  ]
+ },
+ "180080152479": {
+  "slug": "cloud-native-app-design-techniques-message-delivery-reliability",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852252,
+   194011022260
+  ]
+ },
+ "180081395531": {
+  "slug": "benchmarking-kafka-vs-akka-brokerless-pub-sub",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "180081396819": {
+  "slug": "infoq-webinar-the-architects-guide-to-elasticity",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186181358772,
+   194011022260
+  ]
+ },
+ "180083233087": {
+  "slug": "akka-license-keys-and-no-spam-promise",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186181359137,
+   219530652736
+  ]
+ },
+ "180083233160": {
+  "slug": "oreilly-webinar-transcending-the-barriers-to-elasticity",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852064,
+   186180852252,
+   194011022260
+  ]
+ },
+ "180083233324": {
+  "slug": "is-community-backed-open-source-software-worth-the-risk",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186180852252,
+   219530652736
+  ]
+ },
+ "180083233603": {
+  "slug": "open-source-is-at-a-crossroads",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852042,
+   186180852252,
+   219530652736
+  ]
+ },
+ "180083233709": {
+  "slug": "lightbend-aims-to-democratize-distributed-systems-for-developers",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852042,
+   186180852064,
+   186181358772,
+   186181359137,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180083233904": {
+  "slug": "2x-latency-improvement-in-swiggy-ml-and-ai-platform",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180109866921": {
+  "slug": "new-font-sizes",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "180170548835": {
+  "slug": "lightbend-changes-its-software-licensing-model-for-akka-technology",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186181359137,
+   219530652736
+  ]
+ },
+ "180170549061": {
+  "slug": "lightbend-launches-akka-distributed-cluster-for-next-gen-edge-computing-across-multiple-data-centers",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852064,
+   186181358772,
+   186181359137,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180170549177": {
+  "slug": "lightbend-adds-industry-veteran-dan-rosanova-as-head-of-product",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "180170549283": {
+  "slug": "lightbend-releases-akka-2405-security-performance-edge-efficiency",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852042,
+   186180852064,
+   186181358772,
+   186181359137,
+   219530652736
+  ]
+ },
+ "180174290847": {
+  "slug": "first-programming-model-enabling-application-development-cloud-and-edge",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180852064,
+   186181358772,
+   186181359137,
+   194011022260,
+   218085193992
+  ]
+ },
+ "180270489182": {
+  "slug": "lightbend-scalac-partner-enable-enterprises-to-leverage-the-power-of-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186181358772,
+   186181359137,
+   194011022260,
+   218085193992,
+   219530652736
+  ]
+ },
+ "181368158271": {
+  "slug": "boundaries-between-cloud-and-edge-computing-will-continue-to-blur",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   218085193992
+  ]
+ },
+ "181370668906": {
+  "slug": "building-cloud-apps-with-akka-and-kubernetes",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "181631924860": {
+  "slug": "5-reactive-microservices-use-cases-that-power-business-innovation",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852064,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "181633570163": {
+  "slug": "reactive-programming-versus-reactive-systems",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "181638235732": {
+  "slug": "microservices-unleashed-evolving-mission-critical-applications-in-the-cloud",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "182051790759": {
+  "slug": "akka-3-frequently-asked-questions",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186181358912,
+   186181359137,
+   218085193992,
+   219530652736
+  ]
+ },
+ "182678270528": {
+  "slug": "lightbend-is-now-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186181358772,
+   186181359137,
+   194011022260,
+   218085193992,
+   219530652736
+  ]
+ },
+ "182725957774": {
+  "slug": "announcing-akka-3",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186181358772,
+   186181358859,
+   186181359137,
+   194011022260,
+   218085193992
+  ]
+ },
+ "182846636428": {
+  "slug": "lightbend-launches-akka-3-rebrands-company-as-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186181358772,
+   186181358859,
+   186181359137,
+   194011022260,
+   218085193992,
+   219530652736
+  ]
+ },
+ "183075549513": {
+  "slug": "webinar-introducing-akka-3",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   186181359137,
+   194011022260,
+   218085193992
+  ]
+ },
+ "183197704559": {
+  "slug": "multi-region-replicated-apps",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "184895015850": {
+  "slug": "workflows-with-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "185530083146": {
+  "slug": "build-and-run-apps-with-6-9s-availability",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011022260
+  ]
+ },
+ "185893916337": {
+  "slug": "saga-patterns-in-akka-part-1-event-choreography",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186031295390": {
+  "slug": "saga-patterns-in-akka-part-2-read-models",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186034829394": {
+  "slug": "webinar-mastering-event-sourcing",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186039452162": {
+  "slug": "saga-patterns-in-akka-part-3-exactly-once-delivery-with-deduplication",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186040555568": {
+  "slug": "saga-patterns-in-akka-part-4-error-handling-dlq",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186040725075": {
+  "slug": "saga-patterns-in-akka-part-5-orchestration-with-workflows",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   194011022260
+  ]
+ },
+ "186949049147": {
+  "slug": "webinar-blueprint-for-agentic-ai-services",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852252,
+   194011022260
+  ]
+ },
+ "187345048639": {
+  "slug": "how-to-distribute-application-state-with-akka-cluster-part-1-getting-started",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "187457041298": {
+  "slug": "how-to-distribute-application-state-with-akka-cluster-part-2-docker-and-local-deploy",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "187462453097": {
+  "slug": "how-to-distribute-application-state-with-akka-cluster-part-3-kubernetes-monitoring",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "187464793440": {
+  "slug": "-temporary-slug-c5f11f3a-3c0f-4978-ab09-b7e38a5b05c2",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "187773398457": {
+  "slug": "building-real-time-video-ai-service-with-google-gemini",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772,
+   186181358912
+  ]
+ },
+ "188406222698": {
+  "slug": "demystifying-ai-llms-and-rag",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772
+  ]
+ },
+ "189214992018": {
+  "slug": "ai-orchestration-tools",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "189258887023": {
+  "slug": "building-agentic-ai-systems-at-scale",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772
+  ]
+ },
+ "189297554022": {
+  "slug": "langchain-alternatives",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186181358772
+  ]
+ },
+ "189297958484": {
+  "slug": "agentic-ai-use-cases",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   219530652736
+  ]
+ },
+ "189304919573": {
+  "slug": "agentic-ai-tools",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "189449484665": {
+  "slug": "ai-agents-are-coming-for-your-saas-stack",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "189460288108": {
+  "slug": "akka-launches-new-deployment-options-for-agentic-ai-at-scale",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186181359137,
+   219530652736
+  ]
+ },
+ "189466098039": {
+  "slug": "from-concept-to-code-navigating-ai-services",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772
+  ]
+ },
+ "189466099540": {
+  "slug": "qcon-london-agentic-ai-services-blueprint",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772
+  ]
+ },
+ "189518647810": {
+  "slug": "new-akka-deployment-options-elasticity-on-any-infrastructure",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186181359137
+  ]
+ },
+ "189568799092": {
+  "slug": "key-capabilities-for-agentic-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186181358772,
+   194011021694,
+   194011022260
+  ]
+ },
+ "189617719685": {
+  "slug": "how-does-akka-clustering-work",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   185575457158,
+   186180851800,
+   186181358772,
+   186181358912,
+   194011022260
+  ]
+ },
+ "189650992783": {
+  "slug": "webinar-agentic-ai-design-patterns",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852042,
+   186180852252,
+   186181358772,
+   194011021660,
+   194011021694,
+   194011022260
+  ]
+ },
+ "189863150880": {
+  "slug": "cto-asks-cto-akka-ai-agents-distributed-systems",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852042,
+   186180852252,
+   186181358772,
+   194011021660,
+   194011021694,
+   194011022260
+  ]
+ },
+ "189913909319": {
+  "slug": "developer-experience-improvements-in-akka-libraries-25.05",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186181358772,
+   186181358859,
+   186181358912,
+   194011021694,
+   194011022260
+  ]
+ },
+ "190197893297": {
+  "slug": "mcp-a2a-acp-what-does-it-all-mean",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852042,
+   186181358772,
+   194011021660,
+   194011022260
+  ]
+ },
+ "190801449047": {
+  "slug": "cell-based-architectures-and-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186181358772
+  ]
+ },
+ "191267108232": {
+  "slug": "the-backbone-of-agentic-ai-distributed-systems-and-oss-sustainability",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   194011021694,
+   194011022260
+  ]
+ },
+ "191348563012": {
+  "slug": "use-cases-for-agentic-ai",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852252,
+   194011021660,
+   194011022260
+  ]
+ },
+ "192313811568": {
+  "slug": "demo-temperature-monitoring-agent",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   193596204105
+  ]
+ },
+ "192314426181": {
+  "slug": "demo-mcp-support-in-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   186180852252,
+   186181358772,
+   193596204105
+  ]
+ },
+ "192316056126": {
+  "slug": "demo-new-akka-sdk-component-agent",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772,
+   193596204105,
+   194011021666
+  ]
+ },
+ "192321515086": {
+  "slug": "announcing-akkas-agentic-ai-release",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772,
+   186181359137,
+   194011021621,
+   194011021660,
+   194011021666,
+   194011021694,
+   219530652736
+  ]
+ },
+ "192362253737": {
+  "slug": "introducing-akkas-new-agent-component",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772,
+   186181359137,
+   194011021666
+  ]
+ },
+ "192417719867": {
+  "slug": "akka-code-init-demo",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772,
+   186181358859,
+   193596204105,
+   194011022260
+  ]
+ },
+ "192478734216": {
+  "slug": "news-akka-introduces-agentic-ai-platform",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186181359137,
+   219530652736
+  ]
+ },
+ "192535757951": {
+  "slug": "akka-orchestration-guide-moderate-and-control-agents",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   194011021621
+  ]
+ },
+ "192541833036": {
+  "slug": "akka-agents-quickly-create-agents-mcp-grpc-api",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   194011021666
+  ]
+ },
+ "192605307665": {
+  "slug": "demo-build-and-deploy-a-multi-agent-system-with-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772,
+   193596204105,
+   194011021621,
+   194011021660,
+   194011021666,
+   194011021694
+  ]
+ },
+ "192608038701": {
+  "slug": "video-akka-overview",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   194011021621,
+   194011021660,
+   194011021666,
+   194011021694
+  ]
+ },
+ "192660796973": {
+  "slug": "akka-streaming-high-performance-stream-processing-for-real-time-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   194011021660
+  ]
+ },
+ "192666666118": {
+  "slug": "akka-memory-durable-in-memory-and-sharded-data",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   194011021694
+  ]
+ },
+ "192904641421": {
+  "slug": "webinar-creating-certainty-in-the-age-of-agentic-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   193596204105,
+   194011021660,
+   194011021694,
+   194011022260,
+   218085193992
+  ]
+ },
+ "193133281680": {
+  "slug": "adopting-agentic-ai-systems-for-financial-services-applications",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772,
+   194011022260
+  ]
+ },
+ "193600943409": {
+  "slug": "akka-ceo-on-architecting-agentic-scalable-distributed-systems",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181358772
+  ]
+ },
+ "194015533703": {
+  "slug": "agentic-ai-architecture",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   194011021666,
+   219530652736
+  ]
+ },
+ "194055379614": {
+  "slug": "inngest-vs-temporal",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   194011021621
+  ]
+ },
+ "194056058935": {
+  "slug": "agentic-ai-frameworks",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   194011021666
+  ]
+ },
+ "194057112451": {
+  "slug": "temporal-alternatives",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   194011021621
+  ]
+ },
+ "194107227229": {
+  "slug": "beyond-the-hype-how-to-address-ai-agent-dev-framework-obstacles",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   194011021666
+  ]
+ },
+ "194146208527": {
+  "slug": "event-sourcing-the-backbone-of-agentic-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772
+  ]
+ },
+ "194754442266": {
+  "slug": "agentic-systems-are-distributed-systems",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186180852252,
+   194011021621,
+   194011021660,
+   194011021666,
+   194011021694,
+   194011022260
+  ]
+ },
+ "195142906672": {
+  "slug": "news-akka-and-deloitte",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186181359137,
+   194011021666,
+   219530652736
+  ]
+ },
+ "195199101020": {
+  "slug": "agentic-ai-why-experience-matters-more-than-hype",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   194011021666,
+   194011022260
+  ]
+ },
+ "195701801590": {
+  "slug": "trustworthy-ai-with-akka",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852042,
+   186180852252,
+   194011021666,
+   219530652736
+  ]
+ },
+ "195916587280": {
+  "slug": "demo-recovering-a-completely-destroyed-region",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   186180851800,
+   186180852252,
+   186181358772,
+   186181358859,
+   193596204105,
+   194011022260
+  ]
+ },
+ "195923402027": {
+  "slug": "demo-simplified-workflow-step-syntax",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852252,
+   186181358772,
+   186181358859,
+   193596204105,
+   194011021621
+  ]
+ },
+ "196953742519": {
+  "slug": "python-ai-frameworks",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955375948": {
+  "slug": "how-to-build-agentic-ai",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955376933": {
+  "slug": "agentic-ai-workflows",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955717299": {
+  "slug": "genai-vs-agentic-ai",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955718919": {
+  "slug": "crewai-alternatives",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955797846": {
+  "slug": "agentic-ai-vs-ai-agents",
+  "state": "DRAFT",
+  "tagIds": [
+   182648349237
+  ]
+ },
+ "196955798048": {
+  "slug": "langchain-vs-crewai",
+  "state": "DRAFT",
+  "tagIds": []
+ },
+ "202460488273": {
+  "slug": "demo-surviving-the-split-how-akka-handles-disaster-scenarios",
+  "state": "PUBLISHED",
+  "tagIds": [
+   185575457098,
+   186180851800,
+   186180852252,
+   186181358772,
+   193596204105,
+   194011022260
+  ]
+ },
+ "202910300317": {
+  "slug": "what-is-agentic-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   194011021621,
+   194011021660,
+   194011021666,
+   194011021694,
+   194011022260,
+   219530652736
+  ]
+ },
+ "208394227100": {
+  "slug": "manulife-selects-akka-to-operationalize-agentic-ai",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457098,
+   185575457158,
+   186180851800,
+   186180852252,
+   186181359137,
+   194011021666,
+   219530652736
+  ]
+ },
+ "209217581129": {
+  "slug": "introducing-akka-specify",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   186181358772,
+   186181358859,
+   186181359137,
+   193596204105,
+   194011021666,
+   219530652736
+  ]
+ },
+ "212960097363": {
+  "slug": "go-slow-to-go-fast",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   186180852252,
+   194011021666,
+   212960094748,
+   219530652736
+  ]
+ },
+ "213622013510": {
+  "slug": "the-autonomous-operating-environment",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180851800,
+   194011021621,
+   194011021666,
+   194011021694,
+   212960094748
+  ]
+ },
+ "216285185300": {
+  "slug": "scaling-agentic-ai-session-gartner-2026",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   185575457158,
+   186180852252,
+   194011021666,
+   212960094748,
+   219530652736
+  ]
+ },
+ "218375974040": {
+  "slug": "building-the-akka-mcp-gateway",
+  "state": "PUBLISHED",
+  "tagIds": [
+   182648349237,
+   186180852042,
+   194011022260
+  ]
+ }
+}

@@ -165,6 +165,19 @@ def _strip_comments(css):
     return ''.join(out)
 
 
+def document_reset(scoped_css):
+    """A reset for the real document, which the scoping cannot reach.
+
+    scope_css rewrites `body{...}` and `*{margin:0}` to `.blog-technical ...`,
+    so the page's own body keeps the browser default 8px margin and no
+    background — an 8px white frame around a dark page. The colour is read back
+    out of the scoped CSS rather than written here, so it stays one value.
+    """
+    paper = re.search(r'--paper:\s*([^;}]+)', scoped_css)
+    paper = paper.group(1).strip() if paper else '#141414'
+    return 'html,body{margin:0;padding:0;background:%s}\n' % paper
+
+
 def scope_css(css, scope):
     """Recursively scope every top-level selector with .<scope>.
 
@@ -284,7 +297,7 @@ def build_body(slug):
     scoped_css = scope_css(css, scope)
     out = (
         HUBL_HEADER
-        + '<style>\n' + scoped_css.strip() + '\n</style>\n'
+        + '<style>\n' + document_reset(scoped_css) + scoped_css.strip() + '\n</style>\n'
         + body + '\n'
     )
     out_path = os.path.join(ROOT, 'scratchpad', 'hs-out', f'blog-technical-{slug}.html')

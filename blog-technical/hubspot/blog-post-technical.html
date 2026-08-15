@@ -21,6 +21,12 @@
   <body>
     {% global_partial path="AKKA-2024/templates/partials/header-april.html" %}
 
+    {# Editable per post. The blog index leads with the posts marked featured,
+       most recent first, and uses band_image for the artwork behind each one.
+       A featured post with no band_image falls back to its featured image. #}
+    {% boolean "featured_post" label="Feature on the blog index" export_to_template_context=True %}
+    {% image "band_image" label="Blog index band image (1920x600)" export_to_template_context=True %}
+
     <div class="blog-technical">
       <article>
         {# The header the standalone document drew for itself, from the post's

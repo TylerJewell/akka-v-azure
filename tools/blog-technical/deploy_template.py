@@ -38,6 +38,7 @@ def build_css():
     """Scope theme/base.css to .blog-technical, via a post that links it."""
     src = port.read(THEME_SRC)
     scoped = port.scope_css(port.collect_css(src, os.path.dirname(THEME_SRC)), 'blog-technical')
+    scoped = port.document_reset(scoped) + scoped
     out = os.path.join(BUILD, 'blog-technical.css')
     port.write(out, scoped)
     return out, len(scoped)
