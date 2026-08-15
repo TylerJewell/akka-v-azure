@@ -43,6 +43,22 @@ URL_REWRITES = {
     'https://doc.akka.io/sdk/agent-memory.html': 'https://doc.akka.io/sdk/agents/memory.html',
     'https://doc.akka.io/sdk/entities.html': 'https://doc.akka.io/sdk/event-sourced-entities.html',
     'https://doc.akka.io/concepts/event-sourced-entities.html': 'https://doc.akka.io/sdk/event-sourced-entities.html',
+    'https://doc.akka.io/java/build-your-first-application.html': 'https://doc.akka.io/java/author-your-first-service.html',
+}
+
+# Signed trust-centre resource links carry a per-session token that expires,
+# so each post holds a different dead URL. The trust centre indexes the same
+# documents.
+URL_REWRITE_PATTERNS = [
+    (re.compile(r'https://trust\.akka\.io/resources\?[^"\s]*'), 'https://trust.akka.io/'),
+]
+
+# Links with no destination left anywhere. The anchor is unwrapped so the words
+# stay and the 404 goes; inventing a replacement target would change what the
+# post points a reader at.
+DEAD_LINKS = {
+    'https://content.akka.io/guide/principles-and-patterns-for-distributed-application-architecture',
+    'https://content.akka.io/spov-request',
 }
 
 # House-voice regex bank — patterns to FLAG (not auto-fix) in the generated post.
@@ -470,6 +486,9 @@ def clean_body(body_html):
     for old, new in URL_REWRITES.items():
         body = body.replace(old, new)
         body = body.replace(old.replace('&', '&amp;'), new)
+    for pattern, new in URL_REWRITE_PATTERNS:
+        body = pattern.sub(new, body)
+    body = _unwrap_dead_links(body)
     # (inline style + non-whitelisted class stripping is already handled by
     # the whitelist sanitizer at the top of clean_body. The old blanket
     # `_strip_class` here stripped classes off <figure> and <div>, undoing
@@ -524,6 +543,14 @@ def _source_image_dims(html):
 # sections. Numbering one as a figure produces a caption and a figure number
 # over what reads as a fragment.
 DECORATIVE_MAX_H = 120
+
+
+def _unwrap_dead_links(body):
+    """Replace a dead anchor with its own text."""
+    def unwrap(m):
+        href = re.sub(r'&amp;', '&', m.group(1)).split('?')[0]
+        return m.group(2) if href in DEAD_LINKS else m.group(0)
+    return re.sub(r'<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)</a>', unwrap, body)
 
 
 def _wrap_images_in_figures(body, src_dims=None):

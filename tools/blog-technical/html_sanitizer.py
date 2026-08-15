@@ -19,6 +19,7 @@ Design intent: the auditor should never have to catch HubSpot leaks in the
 output. This sanitizer is deterministic and shape-agnostic.
 """
 
+import json
 import re
 
 
@@ -150,12 +151,37 @@ LEGACY_CODE_TO_LANG = {
 }
 
 
+_ACCORDION = re.compile(
+    r'<div[^>]*\bclass="[^"]*\baccordion\b[^"]*"[^>]*>\s*'
+    r'<div[^>]*\bclass="[^"]*\baccordion_title\b[^"]*"[^>]*>([\s\S]*?)</div>\s*'
+    r'<div[^>]*\bclass="[^"]*\baccordion_content\b[^"]*"[^>]*>([\s\S]*?)</div>\s*</div>',
+    re.I)
+
+
+def _flatten_accordions(html):
+    """Turn each accordion panel into a heading followed by its prose.
+
+    A collapsed panel's body is display:none markup that the class whitelist
+    then drops, so an FAQ built this way converts to its section labels and
+    nothing else — 98 words out of 4,317 in the post that surfaced it. The
+    question becomes an h3 and the answer follows it as ordinary prose, which
+    is what the panel already was underneath the toggle.
+    """
+    def flatten(m):
+        title = re.sub(r'\s+', ' ', re.sub(r'</?h\d[^>]*>', '', m.group(1))).strip()
+        return f'<h3>{title}</h3>\n{m.group(2)}\n'
+    previous = None
+    # Panels nest inside accordion_list / accordion_wrap; repeat until stable.
+    while previous != html:
+        previous, html = html, _ACCORDION.sub(flatten, html)
+    return html
+
+
 def sanitize(html):
     """Return normalized HTML with only whitelisted tags/attrs surviving."""
     # 0. Unescape backslash-escaped quotes: some source posts have literal
     # `class=\"language-java\"` (broken markup from a paste round-trip) that
     # browsers tolerate but attribute regex can't parse.
-    html = html.replace('\\"', '"').replace("\\'", "'")
     # 0a. Extract code blocks out of HubL {% module_block %} Tabs widgets.
     # The postBody can carry HubSpot custom modules — e.g. a Java/Scala tabs
     # widget — as raw `{% module_block ... "tabs": [{"columns":["<pre>..."]}] ... %}`
@@ -164,6 +190,15 @@ def sanitize(html):
     # extract every <pre>...</pre> found inside the module_block string and
     # emit them as bare pres — the tab UI is lost but the code survives.
     html = _extract_pres_from_hubl_modules(html)
+    # 0b. Unescape backslash-escaped quotes: some source posts have literal
+    # `class=\"language-java\"` (broken markup from a paste round-trip) that
+    # browsers tolerate but attribute regex can't parse. This runs AFTER the
+    # module extraction above: a module's payload is JSON, and unescaping its
+    # quotes first makes it unparseable, which silently drops whatever the
+    # module carried.
+    html = html.replace('\\"', '"').replace("\\'", "'")
+    # 0c. Flatten accordions to headings and prose.
+    html = _flatten_accordions(html)
     # 1. Strip HTML comments (some HubSpot posts have <!-- ... --> junk)
     html = re.sub(r'<!--.*?-->', '', html, flags=re.S)
 
@@ -306,6 +341,20 @@ def sanitize(html):
     return html
 
 
+def _module_attribute(block, name):
+    """Parse one `{% module_attribute "<name>" %}` payload as JSON, or None."""
+    m = re.search(r'\{%\s*module_attribute\s+"' + re.escape(name) + r'"[^%]*%\}'
+                  r'([\s\S]*?)\{%\s*end_module_attribute\s*%\}', block)
+    if not m:
+        return None
+    payload = re.sub(r'\{%\s*raw\s*%\}|\{%\s*endraw\s*%\}', '', m.group(1)).strip()
+    try:
+        value = json.loads(payload)
+    except ValueError:
+        return None
+    return value if isinstance(value, list) else None
+
+
 def _extract_pres_from_hubl_modules(html):
     """Find every `{% module_block %}...{% end_module_block %}` block in the
     source. For each block, extract what content we can recover:
@@ -332,12 +381,30 @@ def _extract_pres_from_hubl_modules(html):
                     parts.append(f'<p><strong>{labels[i]}</strong></p>')
                 parts.append(pre_clean)
             return '\n'.join(parts)
-        # FAQ module: harvest "title" / "content" pairs
-        faqs = re.findall(r'"title"\s*:\s*"([^"]+)"\s*,\s*"content"\s*:\s*"([^"]*)"', block)
+        # FAQ module: each entry is a question and its answer. The attribute is
+        # JSON, and its keys come in whatever order the editor serialised them
+        # — reading them as an ordered "title" then "content" pair silently
+        # matches nothing, which is how a 4,300-word FAQ converted to its
+        # section labels alone.
+        faqs = _module_attribute(block, 'faqs')
         if faqs:
             parts = []
-            for t, c in faqs:
-                parts.append(f'<p><strong>{_unescape(t)}</strong></p>')
+            for entry in faqs:
+                title = (entry.get('title') or '').strip()
+                content = (entry.get('content') or '').strip()
+                if title:
+                    parts.append(f'<h3>{title}</h3>')
+                if content:
+                    # Already markup; a question's answer is several paragraphs.
+                    parts.append(content if '<' in content else f'<p>{content}</p>')
+            if parts:
+                return '\n'.join(parts)
+        # Older shape: a flat title/content pair in field order.
+        pairs = re.findall(r'"title"\s*:\s*"([^"]+)"\s*,\s*"content"\s*:\s*"([^"]*)"', block)
+        if pairs:
+            parts = []
+            for t, c in pairs:
+                parts.append(f'<h3>{_unescape(t)}</h3>')
                 parts.append(f'<p>{_unescape(c)}</p>')
             return '\n'.join(parts)
         # Otherwise drop the block entirely

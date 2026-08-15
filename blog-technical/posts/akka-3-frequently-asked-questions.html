@@ -46,6 +46,80 @@
 
 <br>
 
+<h3>As an existing Akka libraries customer, is there anything I need to do now?</h3>
+
+
+<p class="lede">You do not! While we have introduced new ways to build and run Akka apps, those are additive and have no impact on your existing applications.</p>
+<p>The Akka libraries customers have used over the last 15 years are <em>included</em> in this new Akka, <em>will always</em> be a part of Akka, and <em>will indefinitely</em> <em>continue</em> to have new feature investments. The Akka libraries are foundational to our company, our business, and our products.</p>
+
+<h3>What is the support timeline for Akka?</h3>
+
+
+<p>We support feature releases for 2 years. We make feature releases approximately twice a year. The latest Akka libraries release with 2-year support was introduced in October 2024. Our managed services in the cloud are upgraded continuously and are supported indefinitely.</p>
+
+<h3>Do I need to upgrade my libraries to use the new Akka?</h3>
+
+
+<p>You do not.</p>
+<p>You can upgrade your libraries to the latest version at your leisure.</p>
+<p>You can use the Akka SDK and the new operating environments for developing and hosting new services. The services you build with the Akka SDK are interoperable (through event sharing and streaming) with services you build with the Akka libraries.</p>
+
+<h3>When should new projects consider using Akka libraries, the Akka SDK, or both?</h3>
+
+
+<p>We recommend starting development with the Akka SDK because it is so easy to use and will address most requirements. The Akka libraries are interoperable with the Akka SDK and should be used for custom persistence, Alpakka-based integrations, custom protocols, embedded actors, and actors on IOT devices with Rust.</p>
+<p>The Akka libraries are neither opinionated nor descriptive in guiding developers in how to design the behavior of a distributed system. They provide maximal control and configurability for you to tailor the behavior of a distributed system.</p>
+<p>The Akka SDK provides an opinionated approach to building services. The SDK imposes guardrails that make it simple to build responsive applications. Developers can build new services that scale to 1M TPS with under a day’s education.</p>
+<p>Further, apps and services built with the Akka SDK can be deployed in Akka’s new operating environments: Serverless, BYOC, or Self-Hosted. These operating environments automate day 2 operations of your services including elastic scaling to over 1M TPS, recovery, app migration, multi-cloud replication, and repatriation.</p>
+
+<h3>Can I operate existing Akka library apps in the new Serverless and BYOC (Bring Your Own Cloud) environments?</h3>
+
+
+<p>You cannot.</p>
+<p>The applications and services you build with the Akka libraries are operated with a self-hosted do-it-yourself model. We are looking at ways to enable certain types of Akka libraries apps to run within the new operating models, but since Akka actors offer incredible flexibility in how they are designed, it’s challenging to create a one-size-fits-all operating model for services built with Akka libraries.</p>
+
+<h3>Can I convert my applications written with Akka libraries to use the SDK?</h3>
+
+
+<p>Existing applications authored with the Akka libraries can interoperate with applications built with the Akka SDK through messaging, brokers, and integration.</p>
+<p>If you’d like to convert an existing Akka application based upon the libraries into the Akka SDK, services need to be restructured into an Akka SDK format. There is no automated way to convert your existing services to use the Akka SDK, but there are numerous parallels that you can learn to get started faster. The Akka SDK has a <a href="https://doc.akka.io/snapshots/akka-documentation/java/build-your-first-application.html#_generate_and_build_the_skeleton_project" rel="noopener" target="_blank">templating utility</a> that generates a new project with the appropriate structure.</p>
+<p>Depending upon the libraries that you use, there are similar Akka SDK components:</p>
+<div>
+
+<div class="table-scroll tight">
+<table style="table-layout:fixed"><colgroup><col style="width:51.9%"><col style="width:48.1%"></colgroup><tbody>
+<tr>
+<td><strong>If your app is using __ libraries module</strong></td>
+<td><strong>Then learn __ SDK component</strong></td>
+</tr>
+<tr>
+<td>Remoting - HTTP or gRPC</td>
+<td>Endpoints with timer / broker triggers</td>
+</tr>
+<tr>
+<td>Streams</td>
+<td>Streaming producers; Streaming consumers</td>
+</tr>
+<tr>
+<td>Alpakka</td>
+<td>Integration - brokers and messaging</td>
+</tr>
+<tr>
+<td>Actors, Entities - Cluster Sharding, Persistence</td>
+<td>Entity - KeyValue, Event Sourced</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<p>&nbsp;</p>
+
+<h3>What is the latest release of the Akka libraries?</h3>
+
+
+With Akka 3, the modules were given a 2.10 baseline feature release at the end of October 2024. See the <a href="https://doc.akka.io/reference/release-notes.html" rel="noopener" target="_blank">release notes</a> for the new features, bugs fixed, and CVEs resolved. There are a couple serious issues and CVEs resolved and we encourage you to upgrade your libraries quickly.
+
 </div>
 
 <div class="body col">
@@ -54,6 +128,136 @@
 
 
 <br>
+
+<h3>What are the differences between the Serverless, BYOC, and Self-Hosted operating environments?</h3>
+
+
+<p>In Serverless, we run everything for you in our cloud at Akka.io. With BYOC, you run responsive work fully managed by us within your VPC. With Self-Managed, you run responsive workloads managed by you in any datacenter or cloud of your choice.</p>
+<p>All three operating environments give you different ways to set up and operate regions where your applications can be deployed, host requests, elastically scale, and host replicas.</p>
+<p>Your applications can replicate across any number of regions and it does not matter whether the regions are Serverless, BYOC, or Self-Hosted. &nbsp;Applications can use replication and migration controls to run within multiple regions or perform a cutover from one region to another.</p>
+<p>You can add or remove regions by standing up a BYOC or Self-Hosted environment. Provisioning a BYOC environment is automated by Akka into your VPC environment. Self-Hosted environments require your administrators to configure, manage, and operate gateways, Kubernetes, database, and storage components of Akka.</p>
+<p>Akka runs its control plane, which is used to federate different regions into a single substrate for your apps, at Akka.io. The Self-Hosted operating environment is the data plane. Akka.io will only observe your application traffic if you deploy your applications in the Serverless environment.</p>
+<p>Most customers should start with Serverless as it’s scale-as-you-go and easy to get started. With Akka’s migration and cutover capabilities, most organizations can provision a BYOC when they require dedicated and controlled resources.</p>
+
+<h3>When should I choose Serverless, BYOC, or Self-Hosted options?</h3>
+
+
+<p>You should choose the plan based upon your control requirements and cost.</p>
+
+
+<div class="wide">
+<div class="table-scroll">
+<table style="table-layout:fixed"><colgroup><col style="width:17.6%"><col style="width:24.7%"><col style="width:57.7%"></colgroup>
+<tbody>
+<tr>
+<td>&nbsp;</td>
+<td>Choose for</td>
+<td>Comments</td>
+</tr>
+<tr>
+<td>Serverless - Priority</td>
+<td>
+<ol>
+<li>Development</li>
+<li>Pre-production</li>
+<li>Low volume workloads</li>
+<li>Standby environments</li>
+<li>TPS &lt;200</li>
+</ol>
+</td>
+<td>
+<p>Pooled resources so potential risk of noisy neighbor issues. It takes longer for Akka to provision new capacity if unplanned spikes.</p>
+<p>*Note: TPS refers to # of data units processed per second (read &amp; write)</p>
+</td>
+</tr>
+<tr>
+<td>Serverless - Critical</td>
+<td>
+<ol>
+<li>Critical workloads</li>
+<li>TPS &lt;1,000</li>
+</ol>
+</td>
+<td>Provisioned resources with shorter windows for scaling during spikes and bursting.</td>
+</tr>
+<tr>
+<td>BYOC</td>
+<td>
+<ol>
+<li>Controlled environment</li>
+<li>Hyperscaler fulfillment through marketplaces</li>
+<li>TPS &gt; 250</li>
+</ol>
+</td>
+<td>It becomes more cost effective to deploy BYOC rather than Serverless if your TPS goes above 500 or you will be storing &gt;1 TB of data. Additionally, BYOC provides dedicated TPS to easily exceed 1M with no cold starts.</td>
+</tr>
+<tr>
+<td>Self-hosted DFY</td>
+<td>
+<ol>
+<li>Locations where cloud hosting is unavailable or not permitted.</li>
+</ol>
+</td>
+<td>Ideal for edge environments or internally-managed kubernetes systems.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="body col">
+</div>
+<p>&nbsp;</p>
+
+<h3>Can I deploy Akka applications built with the libraries into your new hosting environments, like Serverless and BYOC?</h3>
+
+
+<p>You cannot.</p>
+<p>The Akka libraries are non-opinionated and each service built with the Akka libraries behaves differently making it difficult for us to define operating standards that would allow us to guarantee an SLA for every type of Akka libraries-based application.</p>
+<p>Existing applications authored with the Akka libraries can interoperate with applications built with the Akka SDK through messaging, brokers, and integration.</p>
+
+<h3>What is the difference between DIY Operations for the Akka libraries and Self-Hosted with the Akka SDK?</h3>
+
+
+<p>The Akka libraries are non-opinionated and give you full operational flexibility.</p>
+<p>The Akka SDK is opinionated and enables developers to create systems with a specific operating footprint. This allows Akka to automate many of the operations tied to elasticity, agility and resilience. The Self-Hosted operating model is automation implemented as a set of Kubernetes operators that manage the various storage, I/O, security, and compute resources for your Akka applications. This configuration also enables your environment to be a named Akka region and federated with regions managed by Akka in Serverless or BYOC environments.</p>
+
+<h3>What are the different clouds and regions where I can run Akka 3?</h3>
+
+
+<p>In the Serverless operating environment, at launch, we provide NA East / West and two EU regions that are running across AWS and GCP. You can request additional regions available in Azure, AWS, or GCP from within the Akka console. We will shortly have an Australia Azure region.</p>
+<p>You can deploy our BYOC solution into a VPC that runs in any region at AWS, GCP, or Azure.</p>
+<p>You can deploy our Self-Hosted solution into any data center or cloud environment that supports Kubernetes or K3s.</p>
+
+<h3>How are the Akka 3 SDK and operating environments designed?</h3>
+
+
+<p>The Akka SDK is an approach to building, testing, and debugging Akka applications that are composed of high-level components.</p>
+<p>At launch, we are providing components for developing HTTP endpoints (gRPC just around the corner), entities (apps that act as their own database), timers, workflows (for durable execution), and views (streaming materialized views, read-only representations across many entities). There are also multiple ways to integrate data with streaming producers, streaming consumers, and messaging brokers.</p>
+<p>Developers use the SDK to write services with a code structure that is easy to learn and enforces a separation between domain objects, APIs, and Akka components. Developers can build and run their applications offline in a local sandbox. A local console and event debugger are included. Developers do not need to install an Akka environment, Kubernetes, or a database to build and run applications locally.</p>
+<p>With the Akka SDK, developers build microservices packaged into Docker images that are ready for deployment. The generated microservices are built using the Akka libraries as part of the build process.</p>
+<p>Services can be executed locally or, when ready to operate elastically or across regions, deployed into one of Akka’s new operating environments: Serverless, BYOC, or Self-Hosted. The Docker images that were packaged by the Akka SDK are pushed into an image registry and the Akka operating environment will deploy the services.&nbsp;</p>
+<p>Operators are then able to define controls around how the application will elastically scale, which regions the application will replicate itself across, and whether services will be read-replicated or write-replicated.</p>
+<p>New versions of services are deployed by packing new Docker images and pushed into an operating environment. New versions of services are updated automatically with no end-user downtime.</p>
+
+<h3>What’s new and cool in Akka 3?</h3>
+
+
+<p>There are a few areas of significant innovation that will accelerate the velocity of development and automate Day 2 operations designed to improve the end-user experience and dramatically lower the cost of designing and operating an application.</p>
+<p><strong>Akka SDK</strong>. Developers – whether Java programmers or not – should need under a day to learn what is needed to be productive building and deploying applications with Akka. The SDK provides a way to build applications offline without developers having to set up cloud infrastructure locally. Also, Akka’s new separation of concerns separates your business domain logic apart from Akka coding. Your business logic can be written and tested without any Akka decorators or API calls required. A local console that simulates cloud operation and provides event debugging is available. Developers do not need to learn asynchronous programming, messaging, domain-driven design, or event sourcing to be productive. Akka provides structured templates which limit what portions of Java are needed to learn. And our operating environments are quick and easy to access, so that developers can see their system in action instantly.</p>
+<p><strong>Multi-Region Hosting &amp; Replication</strong>. Akka applications are natively multi-region. Akka.io Serverless runs multiple regions across AWS, GCP, and Azure. Applications can be deployed across one or multiple regions simultaneously. If your application is stateful, Akka automatically shards the data across compute within a single region and replicates your data across regions. End users can read or write to data in any region without understanding location semantics. Akka handles routing user traffic to the correct instances and re-balancing data as traffic increases or decreases. &nbsp;The multi-region transparency also works across Serverless, BYOC, or self-hosted and when combined with automatic replication, your applications can start in one location and migrate to other regions as needed, such for location migration, geographic distribution, or high availability.</p>
+<p><strong>Workflows</strong>. The Akka SDK provides a workflow component to implement long-running, multi-step business processes. Workflows provide durability, consistency and the ability to call other components and services. Business transactions can be modeled in one central place, and the Workflow will keep them running smoothly, or roll back if something goes wrong.</p>
+<p><strong>Integrations</strong>. Streaming producers, streaming consumers, and broker-based integrations can process data in real-time with built-in backpressure and integrate services with 3rd party systems or those built with Alpakka integration tier.</p>
+<p><strong>Multi-Master Replication</strong>. The Akka libraries now enable a single entity to be write replicated across many different locations. This enables clients to modify the same data in two different locations at the same time. Conflicts are resolved through CRDT-resolution transparently and with a merge function provided by developers. This capability is currently within the Akka libraries and will appear shortly within the Akka SDK.</p>
+<p><strong>Akka Resilience Guarantee</strong>. Akka (the company) will indemnify your app against data loss and lack of recoverability. Customers who are deploying the latest versions of Akka and have signed a subscription addendum are eligible to receive <a href="https://trust.akka.io/" rel="noopener" target="_blank">this policy</a>.</p>
+
+<h3>How do Cloudflare, Akamai, AWS Lambda, Azure Functions compare to the Akka SDK?</h3>
+
+
+<p>The Akka SDK can be used to implement services from other platforms with a broader set of reliability, messaging, and durability guarantees.</p>
+<p>Serverless and edge clouds are not application hosting platforms. They simplify building Functions as a Services (FaaS) systems with limited productization of the API or their ability to work with data. Most FaaS require your services to call into a separate, non-scalable database or proprietary cloud-hosted data service that operates outside the FaaS environment.</p>
+<p>Akka applications operate as their own durable, replicated, in-memory database. Your application’s logic and data are packaged together. Akka transparently handles sharding your application’s instances to scale elastically within a single region no matter how much data the application represents, and then replicates that data across different regions.</p>
+<p>As a starting point, you can convert Cloudflare Workers, Azure Functions, and AWS Lambdas to Akka SDK Endpoints with timer or broker triggers.&nbsp;</p>
 
 </div>
 
@@ -64,6 +268,57 @@
 
 <br>
 
+<h3>How is Akka 3 licensed?</h3>
+
+
+<p>The Akka libraries, Akka SDK, and the Self-Hosted operating environment are all licensed under the Business Source License 1.1, which is an open source software license. The BSL grants rights to use the software for free in development or pre-production but requires a commercial license from Akka to use in production.</p>
+<p>Your existing subscriptions all apply to the Akka libraries, Akka SDK, and Self-Hosted operating environments. You can interchangeably apply your existing core-based licenses for use across your existing libraries deployments or new deployments that use the Akka SDK and Self-Hosted operating environments.</p>
+<p>Deployment of applications into a BYOC or our Serverless environment requires a managed services agreement as they are hosted services rather than software licensing.</p>
+<p>You can purchase Serverless services by adding a credit card to your account or through credits purchased through a contract. BYOC services can only be purchased (today) through contract. In the near future, we will allow you to execute fulfillment through cloud marketplaces.</p>
+<p>You can contact your account executive to add credits or purchases for BYOC to your contract.</p>
+
+<h3>How is Akka 3 priced?</h3>
+
+
+<p><a href="/pricing" rel="noopener">Akka pricing</a> is based on the operating environment chosen: Serverless, BYOC, Self-Hosted, or DIY with the Akka libraries.</p>
+<p>The Akka libraries pricing for DIY operations remains the same. Pricing is based upon a per core-hour and cores are purchased in annual allotments. We offer free subscriptions for startups and OSS projects. OEM redistribution packages are tailored to the business model of the ISV. There are numerous volume discount packages available for organizations that purchase more than 10 cores at a time.</p>
+<p>Serverless pricing starts at $.25 / Akka Hour of hosting with committed use discounts available. 1 Akka Hour includes, 60 mins hosting, 25K Akka component requests, 100 GB storage, 1 GB network transfer, 1 region and 1 service. Akka scales seamlessly by adding hours as you increase demand, service, regions or projects. For a 30 day month, a small app that handles &lt;18M component requests with &lt;100GB of storage in a single region will cost $180.</p>
+<p>We also offer a $1.50 / Akka Hour tier that provides the same units of consumption but with a higher degree of consistency as physical resources will be provisioned rather than pooled.</p>
+<p>BYOC environments are environments that operate within your VPC but managed by Akka’s team. BYOC pricing is $750 / install / month plus $0.15 / Akka Hour where 1 Akka Hour is measured as 1 service-instance-hour. Akka apps are deployed as service instances. Each app deploys 3 service instances for redundancy and additional instances are added to accommodate demand. Customers pay their cloud vendor for resources. Akka regions are deployed on cloud clusters that cost ~$1,900 / month with nodes that provide 4 service-instance capacity costing ~$240 / month.</p>
+<p>Self-Hosted environments are environments where you run everything within your datacenter or VPC. Self-Hosted pricing is $5,000 / install / month plus $0.15 / Akka Hour where 1 Akka Hour is measured as 1 service-instance-hour. Akka apps are deployed as service instances. Each app deploys 3 service instances for redundancy and additional instances are added to accommodate demand. Customers provide their own Kubernetes, database, and storage.</p>
+
+<h3>What is the difference between per-hour and per-core-hour?</h3>
+
+
+<p>Akka’s Serverless, BYOC, and Self-Hosted environments are priced per-Akka Hour. Akka Hours are measured differently for each environment.</p>
+<p>Akka libraries are licensed as per-core-hour. Akka measures the total number of compute units that your operating environment depends upon, and measures their consumption across an hour.</p>
+
+<h3>If I have an existing Akka libraries subscription, can I use my allocation of cores towards the Akka SDK?</h3>
+
+
+<p>Yes, with a revised committed use contract.</p>
+<p>Your existing subscription’s cores can then be allocated for Akka libraries (DIY) and the new Self-Hosted variant that operates applications built with the SDK. To install the Self-Hosted operating environment, contact our sales and services team.</p>
+<p>BYOC and Serverless environments are not included in your existing subscription. You need to add a managed services subscription to gain access to these environments. You can also purchase Serverless credits with a credit card at Akka.io.</p>
+
+<h3>As an existing customer, can I get a discount for your BYOC or Serverless environments?</h3>
+
+
+<p>Yes!</p>
+<p>Your team members can create a free personal account at Akka.io with our Serverless operating environment. New accounts are granted 500 hours of free hosting which can be used for development, pre-production, or production services. We provide committed use purchase discounts that are coordinated with your Account Executive and Customer Support Manager.</p>
+<p>Additionally, we are offering enterprises a professional services partnership. Jump head first into Akka 3 with our team. We will build, test, and launch a new application side by side with your team with a month of development services. For $25,000 one of our Akka experts will work alongside your team and partners to build or prototype a new system with the Akka SDK that you can operate on any of our environments. If you push the system into production, your $25,000 will be applied as first year hosting credits for production usage.</p>
+
+<h3>Are there any changes to how I make payments?</h3>
+
+
+<p>There are not.</p>
+<p>You can use your existing contracting and PO process to purchase licenses or managed services subscriptions that will provide credits for usage with Serverless and BYOC environments.</p>
+<p>We have introduced an additional credit card billing option available at Akka.io for Serverless hosting. We will be making hyperscaler marketplace fulfillment (contracting, invoicing, billing and collections) available in 2025.</p>
+
+<h3>How do I avoid lock-in with Akka?</h3>
+
+
+<p>All of Akka’s software is BSL licensed and converts to Apache v2 licensing 36-48 months after release. This includes our libraries, the new Akka SDK, and the self-hosted operating environment. This means that you have assurances that there will be a path that your applications and operating environments can operate without a dependency (licensing or subscription) with Akka the company.</p>
+
 </div>
 
 <div class="body col">
@@ -72,6 +327,19 @@
 
 
 <br>
+
+<h3>What is the Akka resilience guarantee and how do I get it?</h3>
+
+
+<p>We believe in the resilience and reliability of Akka, to the point where we guarantee it. We will indemnify against losses caused by an Akka Application becoming unreliable.</p>
+<p>If Akka causes a loss of reliability in your application, we will reimburse you for the period of unreliability. Reliability is the ability of an application to function without loss of data. If the application ceases to function or loses information it is intended to retain, it is “unreliable”.</p>
+<p>The resilience guarantee policy is posted in our Trust Center, <a href="https://trust.akka.io/" rel="noopener" target="_blank">trust.akka.io</a>. It’s included in managed services agreements for our Serverless or BYOC operating environments. Existing Akka subscriptions will need to be upgraded to obtain this indemnity language. Contact your account executive to get this handled.</p>
+
+<h3>What is Akka’s SLA and how is it different from the resilience guarantee?</h3>
+
+
+<p>The Akka SLA defines the availability and performance guarantees that extend across our managed services. The SLA policy is posted in our Trust Center, <a href="http://trust.akka.io" rel="noopener" target="_blank">trust.akka.io</a>. It’s included within our managed services agreements for our Serverless or BYOC operating environments.</p>
+<p>The Akka resilience guarantee is available to all customers of Akka, whether you are licensing our software or purchasing a managed service.</p>
 
 </div>
 
@@ -82,6 +350,23 @@
 
 <br>
 
+<h3>Are license keys required for the Akka SDK?</h3>
+
+
+<p>If you are using the Akka libraries, you can get your license key by logging into your product support account, which has already been migrated to Akka.io.</p>
+<p>The Akka SDK includes the Akka libraries in the applications that it generates. The Akka SDK automatically injects the appropriate license key into the Akka apps that you develop. You do not need to acquire an Akka license key to build, deploy or operate Akka apps built with the SDK.</p>
+
+<h3>Does my organization have an account at Akka.io?</h3>
+
+
+<p>As an existing customer, you will have two separate accounts:</p>
+<ol>
+<li>An Akka support account that can be used for product support, Akkademy, and download tokens. Your existing Lightbend account has been transitioned to Akka.io.</li>
+<li>An Akka cloud account for your organization’s usage of services in our Serverless, BYOC, and Self-Hosted environments (services built with the new Akka SDK).</li>
+</ol>
+<p>We currently have not implemented SSO across these two types of accounts, so your organization will have different logins and credentials for each of these two.</p>
+<p>Your support account has been automatically provisioned. Each of your employees will get their own individual Akka cloud account. &nbsp;You will need to have an admin create a new Akka cloud&nbsp;account that will be designated as your organization account. Once defined, your employees and partners can be invited to join your organization environment. &nbsp;People who are part of the same organizational account at Akka.io Serverless or BYOC will then share in the projects and resources available to operate services.</p>
+
 </div>
 
 <div class="body col">
@@ -91,12 +376,40 @@
 
 <br>
 
+<h3>What is the best way to get trained on the new Akka SDK?</h3>
+
+
+<p>Just build an application and deploy it!</p>
+<p>The Akka docs have numerous examples and have been under design for many years. They offer insights and tutorials needed to build new services.</p>
+
+<h3>Are there Akkademy courses for the Akka SDK?</h3>
+
+
+<p>There are not. However, Akkademy offers theoretical training on Reactive Architecture and numerous courses for designing and building distributed systems with the Akka libraries.</p>
+
 </div>
 
 <div class="body col">
 
 <h2>Support, contact us, &amp; misc.</h2>
+
+
 <br>
+
+<h3>How do I get support for solutions running in your Serverless or BYOC operating environments?</h3>
+
+
+<p>Customers who have contracts that purchase credits can get support through the Akka product support portal. Note - currently your Akka.io Serverless account is separate from your Akka product support account. You will need to create separate accounts for each.</p>
+<p>Customers who are purchasing Serverless through credit card billing are provided an email-based support channel through support@akka.io.</p>
+
+<h3>Why did Lightbend change its business name to Akka?</h3>
+
+
+<p>We rebranded to Akka to better reflect who we are as a company and the mission we stand for. Originally, Lightbend was an umbrella holding company for a variety of products, including Akka as an open-source project, along with others like Lagom, Play Framework, CloudState, Cloudflow, and our hosted offering, Kalix. Over time, however, we consolidated our focus into a single product and brand: Akka.</p>
+<p>This shift highlights our commitment to Akka’s mission—simplifying the development of responsive applications that can scale effortlessly. The Akka brand embodies this vision, representing who we are and the value we bring to our users.</p>
+
+<h3>How do I email or contact employees of Lightbend under their Akka.io email address?</h3>
+<p>All existing Lightbend email addresses will continue uninterrupted. Akka.io aliases using the same email handle as Lightbend have been created and will forward to the appropriate message box.</p>
 
 </div>
 

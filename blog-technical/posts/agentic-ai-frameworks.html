@@ -31,7 +31,7 @@
   <p class="standfirst">Agentic AI systems are transforming the way enterprises approach business. Agentic AI systems are being used to improve incident response, improve productivity, and provide efficient customer support. These applications, and many others , are prompting organizations to begin planning and building agentic systems. In January 2025, Gartner found that 61% of organizations had begun their foray into agentic AI development. They predict that 33% of enterprise software applications will have agentic AI by 2028 (up from 0% in 2024).</p>
   <div class="byline">
     <div><span class='au'>Team Akka</span></div>
-    <div class="r"><time datetime="2025-08-07">Aug 7, 2025</time> · 14 min read</div>
+    <div class="r"><time datetime="2025-08-07">Aug 7, 2025</time> · 15 min read</div>
   </div>
 </header>
 
@@ -254,7 +254,6 @@
 </div>
 
 <div class="body col">
-
 </div>
 
 <h3>Akka</h3>
@@ -275,8 +274,14 @@
 
 <div class="body col">
 </p>
-<p><a href="https://akka.io/">Akka</a> is an enterprise-grade agentic AI platform that provides a comprehensive, integrated solution for building production-ready agentic systems. Built on 15 years of experience powering distributed systems, Akka offers four core components that work seamlessly together: Orchestration, Agents, Memory, and Streaming.</p>
-<p>The platform is designed for enterprise-scale performance, providing all necessary components in a single SDK rather than requiring teams to integrate multiple disparate tools.</p>
+<p><a href="https://akka.io/">Akka</a> is one offering, the Akka Agentic AI Platform. Four solutions run on it, and each removes a specific cost. Any one of them can be used on its own, and all are delivered through the platform, which supplies the runtime, the evidence record, and the governance model.</p>
+<ul>
+<li><strong><a href="https://akka.io/platform/sdk">Akka SDK</a> removes infrastructure cost.</strong> Agents, memory, orchestration, streaming, and endpoints run on shared compute inside one runtime. Fox shrank its AI personalization engine from 150,000 cores to 22,000 after porting to Akka.</li>
+<li><strong><a href="https://akka.io/platform/specify">Akka Specify</a> removes rework.</strong> Developers and non-developers write plain-language specifications, and every change is verified against them, so code does not drift from spec. Dojo put AI-based merchant onboarding into production in weeks, built by college graduates.</li>
+<li><strong><a href="https://akka.io/platform/optimize">Akka Optimize</a> removes token spend.</strong> Akka trains smaller models on your data and routes work to them as they improve. You own the models. Swiggy cut prediction latency from 144ms to 71ms while reducing token consumption 22%.</li>
+<li><strong><a href="https://akka.io/platform/verify">Akka Verify</a> removes governance effort.</strong> Risk teams define policies once and the runtime enforces them across every agent, against a corpus of 190 AI regulations and 1,230 controls. Manulife rolled Akka out to 2,000 developers in 6 countries under central risk control.</li>
+</ul>
+<p>The runtime handles clustering, resilience, failover, scaling, and traffic steering. A team does not provision or operate the seams between an orchestration layer, a memory store, a streaming tier, and a governance stack.</p>
 <ul>
 <li><strong>Memory</strong>: <a href="https://akka.io/akka-memory">Akka Memory</a> provides both short term and long term memory. The long term memory persists semantic knowledge, skills, and retrieved data across users, sessions, agents, and systems.</li>
 <li><a href="https://doc.akka.io/java/agents.html?__hstc=45788219.7da309ff7ade2a7bb0b02cc2cc3c5853.1754601381311.1754601381311.1754601381311.1&amp;__hssc=45788219.1.1754601381311&amp;__hsfp=3863828579#model" rel="noopener" target="_blank"><strong>LLMs supported</strong>:</a> Anthropic, Gemini, HuggingFace, OpenAI.</li>
@@ -455,7 +460,7 @@
 <h2>Building production-ready agentic AI with Akka</h2>
 <p>Building agentic AI agents is challenging, with many new infrastructural and coding paradigms. Using an agentic AI framework is a way to jump start development, while also keeping the team on track and avoiding common pitfalls.</p>
 <p>In this guide, we have walked through many of the critical features in agentic AI frameworks. Every organization has different needs and requirements for agentic AI agents, but it is likely that this guide will help you narrow your search from many frameworks to one or two.</p>
-<p>When examining the way agentic AIs frameworks contribute core architectural features and capabilities, Akka’s feature set includes all of the critical tooling required to build modern agentic AI systems.</p>
+<p>What separates a framework from a platform is what happens after the prototype works: whether durability, scale, failover, and governance are properties of the runtime, or work the team takes on. On Akka they are properties of the runtime, so what it costs to run the system does not grow with each capability added to it. <a href="https://akka.io/efficiency">Efficiency decides which enterprises scale AI</a> sets out that argument, and the <a href="https://akka.io/guides">engineering guides</a> answer the questions that come up once an agent is going to production.</p>
 <p>With built in orchestration, short and long term memory, wide LLM support, and easy agent creation, <a href="https://akka.io/">Akka</a> is built in with all of the agentic tools required to build reasoning agents. Akka supports vertical agents, where one agent guides others, as well as horizontal, where all the agents work together to solve tasks.</p>
 <p>Akka's session replay, human-in-the-loop, and full observability, means that debugging and testing agents is a straightforward process. Finally, Akka’s agentic framework is compliant with several compliance frameworks, and supports multi-region deployment — allowing for fast international use of agents.</p>
 <p>Perhaps most importantly for teams new to developing agentic AIs, <a href="https://doc.akka.io/?__hstc=45788219.7da309ff7ade2a7bb0b02cc2cc3c5853.1754601381311.1754601381311.1754601381311.1&amp;__hssc=45788219.1.1754601381311&amp;__hsfp=3863828579" rel="noopener" target="_blank">Akka’s documentation</a> is complete and easy to parse. Interestingly, of the agentic AIs reviewed, Akka’s docs is the only one with an agentic AI that provides answers and links to help developers quickly discover the solution to any question they might have.</p>
