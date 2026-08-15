@@ -24,6 +24,7 @@ from html import unescape
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from html_sanitizer import sanitize as _sanitize_html
+from table_balance import balance as _balance_tables
 
 if sys.stdout.encoding.lower() != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -445,6 +446,9 @@ def clean_body(body_html):
     # unwraps HubSpot widgets, normalizes code language classes, converts
     # class="note" to class="enote". Anything the template can't render
     # cleanly is removed at the source.
+    # Read the image dimensions before the sanitizer drops width/height —
+    # they are what separates a diagram from a section separator.
+    src_dims = _source_image_dims(body_html)
     body = _sanitize_html(body_html)
     # kill top-level meta blocks + byline paragraphs (which are extracted separately)
     for pat in [
@@ -472,9 +476,12 @@ def clean_body(body_html):
     # the wrappers the sanitizer emits for iframes/plates.)
     # Transform bare images into figure.viz + plate--flush structure so the
     # image auditor can size them (no editorial content injected)
-    body = _wrap_images_in_figures(body)
+    body = _wrap_images_in_figures(body, src_dims)
     # Apply .rtbl to tables + wrap in .wide breakout (structural only)
     body = _wrap_tables(body)
+    # Size columns from the text they hold, so the slack does not all land in
+    # whichever column has the longest header.
+    body = _balance_tables(body)
     # Section numbering ('Section I ·') is handled by CSS counter on .body h2,
     # so h2 text stays verbatim from source. No text modification here.
     # First paragraph gets lede class for the drop cap (styling, not text)
@@ -500,10 +507,33 @@ def _alt_to_title(alt):
     return t[0].upper() + t[1:] + '.'
 
 
-def _wrap_images_in_figures(body):
+def _source_image_dims(html):
+    """src → (width, height) as the source markup declares them."""
+    dims = {}
+    for m in re.finditer(r'<img\b[^>]*>', html):
+        tag = m.group(0)
+        src = re.search(r'src="([^"]+)"', tag)
+        w = re.search(r'\bwidth="(\d+)"', tag)
+        h = re.search(r'\bheight="(\d+)"', tag)
+        if src and w and h:
+            dims[src.group(1)] = (int(w.group(1)), int(h.group(1)))
+    return dims
+
+
+# A source image this short carries no diagram — it is a separator between
+# sections. Numbering one as a figure produces a caption and a figure number
+# over what reads as a fragment.
+DECORATIVE_MAX_H = 120
+
+
+def _wrap_images_in_figures(body, src_dims=None):
     """Wrap every <img> in the template figure shape, numbered with
-    'Figure N' kickers and h4 titles seeded from the img alt text."""
+    'Figure N' kickers and h4 titles seeded from the img alt text.
+
+    Separators pass through unnumbered, so the figure count matches the
+    diagrams a reader would cite."""
     counter = [0]
+    src_dims = src_dims or {}
 
     def wrap(m):
         img_tag = m.group(0)
@@ -513,6 +543,12 @@ def _wrap_images_in_figures(body):
         src = src_m.group(1) if src_m else ''
         if any(k in src.lower() for k in ('headshot', 'branding', 'wordmark', 'avatar', 'logo')):
             return ''  # drop entirely
+        width, height = src_dims.get(src, (0, 0))
+        if height and height <= DECORATIVE_MAX_H:
+            # Carry the source width back: the sanitizer drops it, and a
+            # separator sized by its intrinsic resolution lands smaller than
+            # the post published it.
+            return img_tag.replace('<img', f'<img class="deco" width="{width}"', 1)
         counter[0] += 1
         n = counter[0]
         # Every figure gets a caption. If the source alt is real prose, use it

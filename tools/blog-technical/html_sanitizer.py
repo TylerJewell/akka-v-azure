@@ -81,6 +81,56 @@ HUBSPOT_UNWRAP_DIV_CLASSES = {
     'anchor', 'framework-examples',
 }
 
+# Java, as it appears in these posts: whole classes, but more often a fragment
+# of a builder chain with no keyword in it at all.
+_JAVA_SIGNS = (
+    r'^\s*@[A-Z]\w*',                                    # annotation
+    r'\b(?:public|private|protected|class|interface|enum|void|import'
+    r'|package|final|static|new|var|return|throws|extends|implements)\b',
+    r'^\s*\.\w+\(',                                      # chained call, own line
+    r'\b\w+\.\w+\([^)]*\)\s*;',                          # statement call
+    r'->\s*[{\w]',                                       # lambda
+    r'\b[A-Z]\w+\.class\b',
+)
+# Shapes that would otherwise trip the chain and call patterns.
+_NOT_JAVA = (
+    r'^\s*[$#>]\s',            # shell prompt
+    r'^\s*(?:curl|npm|mvn|sbt|docker|kubectl|akka|git|cd|export)\s',
+    r'^\s*[{\[]\s*$',          # JSON / YAML document
+    r'^\s*<\?xml|^\s*<[a-z]+>',
+)
+
+
+# Prose about code uses the same words as code — "in the `com.example` package",
+# "Create a class named X". Punctuation is what separates them: across this
+# corpus prose blocks run under 0.025 and code blocks over 0.08.
+_CODE_PUNCT = ';{}()=.'
+_MIN_PUNCT_DENSITY = 0.05
+
+
+def looks_like_java(code):
+    if any(re.search(p, code, re.M) for p in _NOT_JAVA):
+        return False
+    density = sum(code.count(c) for c in _CODE_PUNCT) / max(len(code), 1)
+    if density < _MIN_PUNCT_DENSITY:
+        return False
+    return any(re.search(p, code, re.M) for p in _JAVA_SIGNS)
+
+
+def label_java_blocks(html):
+    """Relabel unlabelled code blocks that read as Java."""
+    def relabel(m):
+        opening, inner = m.group(1), m.group(2)
+        if 'language-text' not in inner:
+            return m.group(0)
+        from html import unescape
+        code = unescape(re.sub(r'<[^>]+>', '', inner))
+        if not looks_like_java(code):
+            return m.group(0)
+        return opening + inner.replace('language-text', 'language-java', 1) + '</pre>'
+    return re.sub(r'(<pre[^>]*>)(.*?)</pre>', relabel, html, flags=re.S)
+
+
 # Legacy code classes to swap for Prism language-*
 LEGACY_CODE_TO_LANG = {
     'prettyprint': 'text',           # generic — Prism autoloader falls through
@@ -153,6 +203,11 @@ def sanitize(html):
             return m.group(0)
         return f'{m.group(1)}<code class="language-text">{inner}</code></pre>'
     html = re.sub(r'(<pre[^>]*>)(.*?)</pre>', wrap_pre_content, html, flags=re.S)
+
+    # 4b. A block the source left unlabelled falls to language-text, which Prism
+    # renders flat. Most of them are Java — label the ones that read as Java so
+    # they highlight like the blocks the source did label.
+    html = label_java_blocks(html)
 
     # 5. Rewrite source callouts to the exemplar's pullquote design (top+
     # bottom hairlines, centered). `.enote` (thin left-rail note) is reserved

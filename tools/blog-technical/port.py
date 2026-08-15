@@ -46,6 +46,10 @@ WRAPPER_TEMPLATE = '''<!--
     {% if content.html_title %}<title>{{ content.html_title }}</title>{% endif %}
     <meta name="description" content="{{ content.meta_description }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- A preview is a second copy of a post that is already published at
+         /blog/<slug>. It self-canonicalises and robots.txt does not cover the
+         path, so without this it competes with the post it previews. -->
+    <meta name="robots" content="noindex,nofollow">
     <link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -222,6 +226,10 @@ _HEAD_CSS = re.compile(
     r'<link\b[^>]*\brel=["\']stylesheet["\'][^>]*>|<style[^>]*>(.*?)</style>',
     re.S | re.I)
 
+# The theme's variable block. Its presence in an inline <style> means the post
+# holds a copy of the theme rather than a link to it.
+_THEME_COPY = re.compile(r':root\s*\{[^}]*--paper\s*:', re.S)
+
 
 def collect_css(src, base_dir):
     """Return the post's CSS: linked local stylesheets and inline <style>, in
@@ -235,6 +243,10 @@ def collect_css(src, base_dir):
     parts = []
     for m in _HEAD_CSS.finditer(src):
         if m.group(1) is not None:
+            if _THEME_COPY.search(m.group(1)):
+                sys.exit('post carries its own copy of the theme: replace the <style> block '
+                         'with <link rel="stylesheet" href="../theme/base.css">. A copy stops '
+                         'tracking theme/base.css and drifts from the pages that link it.')
             parts.append(m.group(1))
             continue
         href = re.search(r'href=["\']([^"\']+)["\']', m.group(0), re.I)
@@ -298,6 +310,22 @@ def upload_body_partial(slug, body_path, token):
     return partial_path
 
 
+def push_live(page_id, token):
+    """Re-render the page.
+
+    The body partial is source code, and published source code is live at once —
+    but a page that already includes the partial keeps serving its cached render
+    until it is pushed. Without this a re-port reports success and shows the old
+    page. Returns HTTP 204 with an empty body.
+    """
+    subprocess.run(
+        ['curl', '-s', '-X', 'POST', '-H', f'Authorization: Bearer {token}',
+         f'https://api.hubapi.com/cms/v3/pages/site-pages/{page_id}/draft/push-live'],
+        capture_output=True,
+    )
+    print(f'  PUSH-LIVE id={page_id}')
+
+
 def create_or_update_page(slug, page_slug, html_title, meta_description, partial_path, token):
     """Create a CMS page or update an existing one at the given slug."""
     # Look up existing page by slug
@@ -343,6 +371,7 @@ def create_or_update_page(slug, page_slug, html_title, meta_description, partial
         )
         resp = json.loads(r.stdout) if r.stdout else {}
         print(f'  PATCH page id={page_id}  slug={resp.get("slug","?")}  state={resp.get("state","?")}')
+        push_live(page_id, token)
         return resp.get('url', '?')
     else:
         r = subprocess.run(
