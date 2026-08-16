@@ -15,14 +15,20 @@ import argparse
 import os
 import re
 import sys
-import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "sales-presentation" / "builder"))
 from hubspot import to_hubspot_fragment  # noqa: E402
 
-SOURCE = "https://tylerjewell.github.io/agentic-cost-calculator/"
+# /calculator serves the infrastructure-only variant: both columns show physical
+# infrastructure, so the build-it-yourself total carries no support or professional
+# services and the Akka figure carries no margin. index.html is the margin-bearing page
+# and is not what this publishes.
+#
+# Read from the calculator repo's working tree rather than its GitHub Pages URL, so a
+# port picks up edits that have not been committed and deployed yet.
+SOURCE = ROOT.parent / "calculator" / "physical.html"
 SCOPE = "calculator-content"
 TEMPLATE_PATH = "custom-templates/akka-calculator.html"
 OUT = ROOT / "scratchpad" / "hs-out"
@@ -56,6 +62,11 @@ PORT_CSS = """
 .calculator-content td, .calculator-content th { background-color: transparent !important; }
 .calculator-content td.akka, .calculator-content th.akka {
   background-color: rgba(255, 206, 74, .10) !important;
+}
+/* The API-vs-Akka table marks the row at the entered volume with a fill on the whole
+   row, which the transparent reset above would take with the rest. */
+.calculator-content #beTbl tr.cross td:not(.akka) {
+  background-color: rgba(255, 206, 74, .09) !important;
 }
 /* The first column is only sticky below 900px, and only then does it need a fill of its
    own to hide the columns scrolling under it. */
@@ -127,14 +138,11 @@ SHELL = """<!--
 """
 
 
-def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req) as r:
-        return r.read().decode("utf-8")
-
-
 def build():
-    fragment = to_hubspot_fragment(fetch(SOURCE), scope=SCOPE, label="cost calculator")
+    if not SOURCE.exists():
+        sys.exit(f"calculator source not found: {SOURCE}")
+    src = SOURCE.read_text(encoding="utf-8")
+    fragment = to_hubspot_fragment(src, scope=SCOPE, label="cost calculator")
 
     css = re.search(r"<style>(.*?)</style>", fragment, re.S).group(1)
     links = "\n".join(
