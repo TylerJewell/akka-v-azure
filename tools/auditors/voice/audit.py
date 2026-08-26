@@ -265,7 +265,11 @@ EXEMPT = re.compile(
     # property of Akka Optimize.
     r"|\b(?:third-party|agent|evaluation|test|coding|AI)\s+harness"
     r"|harness(?:es)?\s+(?:such as|like|that|the customer)"
-    r"|\b(?:model|gives|more|market)\s+leverage\b")
+    r"|\b(?:model|gives|more|market)\s+leverage\b"
+    # An all-caps LEVERAGE is a relationship code in a comparison table's label
+    # column, alongside OVERLAP, ENHANCE and NONE. Matched case-sensitively, so
+    # the ordinary verb still fails.
+    r"|\bLEVERAGE\b")
 FRAGMENT_ANSWER = re.compile(r"^(Partly|Rarely|Yes|No|Maybe|Sometimes|Memory|Both|Neither|Correct)\.?$", re.I)
 
 # A sentence closing on a bare auxiliary borrows its verb phrase from the

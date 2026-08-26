@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>Where Akka leverages, overlaps and enhances AWS | Akka</title>
+<meta name="description" content="A service-by-service map of the AWS AI, data, compute and security estate against the Akka Agentic AI Platform, marking where Akka runs on AWS, where it replaces an AWS service, and where AWS has no counterpart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── case-study.css (inlined for a self-contained, shareable single file) ── */
+:root{
+  --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+  --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+  --gold:#FFCE4A; --gold-deep:#E9B426;
+  --display:"Instrument Sans",system-ui,sans-serif;
+  --text:"Roboto",system-ui,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--text);font-size:18px;line-height:1.7;font-weight:400;
+  -webkit-font-smoothing:antialiased;}
+a{color:var(--ink);text-decoration:none}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+.hero{background:var(--black);color:#fff;padding:88px 0 72px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,206,74,.05) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 22px;
+  display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--gold)}
+.hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.025em;
+  font-size:clamp(34px,5.2vw,56px);line-height:1.05;margin:0 0 22px;color:#fff;
+  text-wrap:balance}
+.hero h1 .hl{color:var(--gold)}
+.subtitle{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.2vw,23px);
+  line-height:1.45;color:#C9C9CE;margin:0;max-width:44ch}
+.meta{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;
+  margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:#9A9AA2;text-transform:uppercase}
+.meta b{color:var(--gold);font-weight:500}
+.lead{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.4vw,25px);
+  line-height:1.5;color:var(--ink);margin:56px 0 8px}
+.lead .hl{background:linear-gradient(transparent 62%,rgba(255,206,74,.5) 62%);font-weight:500}
+section.body{padding:8px 0}
+.body h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(24px,3vw,32px);line-height:1.15;color:var(--ink);margin:52px 0 18px}
+.body p{margin:0 0 20px}
+.body p b, .body strong{color:var(--ink);font-weight:700}
+.num{font-family:var(--mono);font-weight:500;color:var(--ink);
+  background:rgba(255,206,74,.16);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.pullstat{margin:44px 0;padding:36px 32px;background:var(--black);color:#fff;border-radius:12px;
+  display:flex;align-items:baseline;gap:28px;flex-wrap:wrap}
+.pullstat .n{font-family:var(--display);font-weight:700;font-size:clamp(48px,8vw,76px);
+  line-height:.9;letter-spacing:-.04em;color:var(--gold)}
+.pullstat .t{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.4vw,22px);
+  line-height:1.35;color:#D8D8DC;max-width:32ch}
+.cta{background:var(--black);color:#fff;text-align:center;padding:72px 24px;margin-top:72px}
+.cta-kicker{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:12px;color:var(--gold);margin:0 0 16px}
+.cta h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(28px,4vw,42px);margin:0 0 14px;color:#fff}
+.cta-sub{font-family:var(--display);font-weight:400;font-size:clamp(17px,2.1vw,20px);
+  line-height:1.45;color:#C9C9CE;margin:0 auto 30px;max-width:40ch}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;
+  font-size:16px;background:var(--gold);color:#111;padding:15px 30px;border-radius:8px;
+  transition:transform .15s ease,background .15s ease}
+.btn:hover{background:#fff;transform:translateY(-1px)}
+.btn .arw{transition:transform .15s ease}
+.btn:hover .arw{transform:translateX(3px)}
+@media(max-width:680px){
+  body{font-size:17px}
+  .hero{padding:64px 0 52px}
+  .pullstat{gap:14px}
+}
+</style>
+<style>
+  /* ── Paper extensions ── */
+  .wrap{max-width:900px}
+  .tbl{overflow-x:auto;margin:8px 0 28px;
+    scrollbar-width:thin;scrollbar-color:#C9C9CE var(--wash)}
+  .tbl::-webkit-scrollbar{height:10px}
+  .tbl::-webkit-scrollbar-track{background:var(--wash)}
+  .tbl::-webkit-scrollbar-thumb{background:#C9C9CE;border-radius:0}
+  .tbl::-webkit-scrollbar-thumb:hover{background:var(--gold-deep)}
+  .tbl table{width:100%;border-collapse:collapse;font-size:15px;min-width:760px}
+  .tbl th{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px 12px;
+    border-bottom:2px solid var(--line);vertical-align:bottom}
+  .tbl th:first-child{color:var(--ink)}
+  .tbl td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;
+    line-height:1.5;color:var(--body)}
+  .tbl td.row-h{font-family:var(--display);font-weight:600;color:var(--ink)}
+  .tbl td.rel{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--ink);
+    white-space:nowrap}
+  .tbl tbody tr:hover{background:var(--wash)}
+  .tbl col.c-svc{width:20%}
+  .tbl col.c-aws{width:26%}
+  .tbl col.c-rel{width:13%}
+  .body h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em;
+    color:var(--ink);margin:32px 0 10px}
+  .lead-in{margin:0 0 10px}
+  @media print{
+    /* Keep the on-screen design. Print the backgrounds, bleed the dark bands
+       left to right, and break pages between blocks rather than inside them. */
+    @page{margin:13mm 0}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{font-size:10pt;line-height:1.55}
+    .wrap{max-width:none;padding:0 14mm}
+    .hero{padding:15mm 0 13mm}
+    .hero h1{font-size:27pt}
+    .subtitle{font-size:12.5pt}
+    .lead{font-size:13.5pt;margin:11mm 0 3mm}
+    .body h2{font-size:16pt;margin:9mm 0 4mm}
+    .body h3{font-size:12pt;margin:7mm 0 2mm}
+    .tbl{overflow-x:visible}
+    .tbl table{font-size:8.6pt;min-width:0}
+    .tbl td{padding:8px 8px}
+    .cta{padding:14mm 17mm;margin-top:13mm}
+    .pullstat,.cta,.meta,.lead{break-inside:avoid}
+    .body h2,.body h3,.lead-in{break-after:avoid}
+    .tbl,.tbl table{break-inside:auto}
+    .tbl thead{display:table-header-group}
+    .tbl tr{break-inside:avoid}
+    .body p{orphans:3;widows:3}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Amazon Web Services · Capability map</p>
+    <h1>Where Akka <span class="hl">leverages, overlaps and enhances</span> AWS</h1>
+    <p class="subtitle">A service-by-service map of the AWS AI, data, compute and security estate
+      against the Akka Agentic AI Platform.</p>
+    <p class="meta">
+      <span>Cloud <b>AWS</b></span>
+      <span>Offering <b>Akka Agentic AI Platform</b></span>
+      <span>Deployment <b>Customer VPC on EKS</b></span>
+    </p>
+  </div>
+</header>
+
+<section class="body">
+  <div class="wrap">
+
+    <p class="lead">The Akka Agentic AI Platform runs inside AWS. Akka installs it on EKS in the
+      customer's VPC, calls Amazon Bedrock for model inference, and writes tracing, audit records
+      and policy artifacts to Amazon S3. <span class="hl">Where AWS sells an agent service, Akka
+      delivers the same capability on one runtime under a 99.9999% SLA Akka owns.</span></p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>Relationship</th><th>What it means</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">LEVERAGE</td><td>Akka runs on the AWS service and calls it.</td></tr>
+          <tr><td class="row-h">OVERLAP</td><td>AWS and Akka each provide the capability. Akka provides it inside the runtime, so the customer does not wire the AWS service in.</td></tr>
+          <tr><td class="row-h">ENHANCE</td><td>Akka adds capability on top of the AWS service.</td></tr>
+          <tr><td class="row-h">NONE</td><td>AWS provides it and Akka has no equivalent.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Models, inference, and capacity</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Amazon Bedrock (inference)</td>
+            <td>Serverless token-metered access to Anthropic, Meta, Mistral, Amazon Nova, Cohere</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Bedrock is a configured model provider. Akka provides semantic routing to these models.</td></tr>
+          <tr><td class="row-h">Bedrock Provisioned Throughput</td>
+            <td>Reserved model units at a committed hourly rate</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka routes to the provisioned endpoint. Commitment stays with AWS.</td></tr>
+          <tr><td class="row-h">Bedrock Intelligent Prompt Routing</td>
+            <td>Routes between two models in one family on predicted quality</td>
+            <td class="rel">OVERLAP</td>
+            <td>Akka Optimize routes each request across vendors and families under customer policy, reserving frontier models for requests that need them.</td></tr>
+          <tr><td class="row-h">Bedrock Marketplace / SageMaker JumpStart</td>
+            <td>Hosting for Hugging Face and third-party weights</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka Optimize uses Bedrock's models and weights for training SLMs.</td></tr>
+          <tr><td class="row-h">SageMaker Inference endpoints</td>
+            <td>Customer-managed model serving on EC2 or Inferentia</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka calls the endpoint and reuses SageMaker models.</td></tr>
+          <tr><td class="row-h">EC2 Capacity Blocks for ML, UltraClusters, Trainium/Inferentia, SageMaker HyperPod</td>
+            <td>Reserved and on-demand GPU and accelerator capacity</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka contracts the capacity with AWS and provides an inference layer for self-hosting models, lowering the cost against token-metered Bedrock.</td></tr>
+          <tr><td class="row-h">Bedrock Model Distillation</td>
+            <td>Distills a teacher model into a smaller student on customer prompts</td>
+            <td class="rel">OVERLAP</td>
+            <td>Akka Optimize grades live production traffic and trains smaller specialized models on the customer's proprietary data, owned by the customer and run in their environment.</td></tr>
+          <tr><td class="row-h">SageMaker Training, Pipelines, Feature Store, Ground Truth, Clarify, Model Monitor</td>
+            <td>General ML lifecycle</td>
+            <td class="rel">NONE</td>
+            <td>Akka provides no general ML platform.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Agent frameworks and runtime</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">AgentCore Runtime</td>
+            <td>Session-isolated agent hosting, per-vCPU-hour and per-GB-hour</td>
+            <td class="rel">OVERLAP</td>
+            <td>Agent, Workflow, Entity, View, Timer, and Endpoint components on one runtime with a 99.9999% platform SLA Akka owns.</td></tr>
+          <tr><td class="row-h">AgentCore Memory</td>
+            <td>Short- and long-term agent memory, separately billed</td>
+            <td class="rel">OVERLAP</td>
+            <td>Durable in-memory state built into the runtime, 4ms reads and sub-10ms writes, replicated active-active.</td></tr>
+          <tr><td class="row-h">AgentCore Gateway</td>
+            <td>Converts APIs and Lambdas into MCP tools</td>
+            <td class="rel">OVERLAP</td>
+            <td>HTTP, gRPC, and MCP endpoints are first-class components.</td></tr>
+          <tr><td class="row-h">AgentCore Identity</td>
+            <td>Agent identity and OAuth token vending to tools</td>
+            <td class="rel">OVERLAP</td>
+            <td>Identity and authorization built into endpoints. Customers federate AWS IAM into Akka.</td></tr>
+          <tr><td class="row-h">AgentCore Observability</td>
+            <td>Agent traces into CloudWatch</td>
+            <td class="rel">OVERLAP + ENHANCE</td>
+            <td>Interaction logging, causal logging, and evaluations in the platform, exported over OTEL to CloudWatch or any collector.</td></tr>
+          <tr><td class="row-h">AgentCore Policy</td>
+            <td>Tool-access rules at the agent-to-tool boundary, GA June 2026</td>
+            <td class="rel">OVERLAP</td>
+            <td>Inline guardrails, policies, LLM-as-judge, sanitizers, HITL/HOTL, atomic PII scrub-with-explain.</td></tr>
+          <tr><td class="row-h">AgentCore Evaluations</td>
+            <td>Agent trajectory and outcome scoring, GA March 2026</td>
+            <td class="rel">OVERLAP</td>
+            <td>Continuous evaluation on production traffic, grading agents running in Akka or in third-party harnesses. Akka also provides red teaming.</td></tr>
+          <tr><td class="row-h">AgentCore Code Interpreter</td>
+            <td>Sandboxed code execution for agents</td>
+            <td class="rel">NONE</td>
+            <td>Akka has no equivalent and calls it as a tool.</td></tr>
+          <tr><td class="row-h">AgentCore Browser</td>
+            <td>Managed headless browser for agents</td>
+            <td class="rel">NONE</td>
+            <td>Akka has no equivalent and calls it as a tool.</td></tr>
+          <tr><td class="row-h">Strands Agents SDK</td>
+            <td>Open-source Python agent SDK</td>
+            <td class="rel">OVERLAP</td>
+            <td>Akka SDK in Java, with durable execution, supervision, and clustering as SDK primitives.</td></tr>
+          <tr><td class="row-h">Bedrock Flows</td>
+            <td>Visual prompt-and-Lambda chaining</td>
+            <td class="rel">OVERLAP</td>
+            <td>Workflows with durable execution, automatic retries, and step-level observability. Akka Specify accepts any visual design as a specification.</td></tr>
+          <tr><td class="row-h">Bedrock Prompt Management</td>
+            <td>Versioned prompt store</td>
+            <td class="rel">OVERLAP</td>
+            <td>Prompts versioned inside the agent component and covered by the build lifecycle in Akka Specify.</td></tr>
+          <tr><td class="row-h">AWS Step Functions</td>
+            <td>Managed state-machine orchestration</td>
+            <td class="rel">OVERLAP</td>
+            <td>Akka Workflows hold state in the runtime. The agent calls out to no external state machine.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pullstat">
+      <div class="n">99.9999%</div>
+      <div class="t">availability across orchestration, agents, memory, streaming, APIs and governance, backed by contractual indemnities</div>
+    </div>
+
+    <h2>Knowledge, retrieval, and data</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Bedrock Knowledge Bases</td>
+            <td>Managed RAG: ingestion, chunking, embedding, retrieval</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka has no equivalent and integrates with it.</td></tr>
+          <tr><td class="row-h">Neptune Analytics GraphRAG</td>
+            <td>Graph-backed retrieval under Knowledge Bases</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka has no equivalent and integrates with it.</td></tr>
+          <tr><td class="row-h">OpenSearch Serverless vector engine, Aurora pgvector, MemoryDB vector</td>
+            <td>Vector indexes</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka has no equivalent and integrates with them.</td></tr>
+          <tr><td class="row-h">Amazon Kendra</td>
+            <td>Enterprise search with connectors</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka has no equivalent and integrates with it.</td></tr>
+          <tr><td class="row-h">Bedrock Data Automation, Textract, Comprehend</td>
+            <td>Document extraction and NLP over unstructured input</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka has no equivalent and integrates with them.</td></tr>
+          <tr><td class="row-h">Glue, Lake Formation, Athena, Redshift</td>
+            <td>ETL, catalog, query, warehouse</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka publishes events and evidence downstream.</td></tr>
+          <tr><td class="row-h">Amazon S3</td>
+            <td>Object storage</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka uses Amazon S3 as the backing store for AI tracing, audit records, evidence, and policy artifacts.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Safety and applied AI</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Bedrock Guardrails</td>
+            <td>Content filters, denied topics, PII redaction, contextual grounding at the inference boundary</td>
+            <td class="rel">OVERLAP + ENHANCE</td>
+            <td>Akka supplies the guardrail framework — inline guardrails, sanitizers, judges, and halts at every step of the agent lifecycle. Most customers run third-party specialty safety models inside that framework, and Bedrock Guardrails is one of them.</td></tr>
+          <tr><td class="row-h">Transcribe, Polly, Rekognition, Translate, Lex, Connect</td>
+            <td>Speech, vision, translation, contact centre</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Called as tools. Akka carries the streaming and session state around them.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>State, eventing, and streaming</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Aurora, RDS, DynamoDB</td>
+            <td>Managed databases the customer wires into the agent framework</td>
+            <td class="rel">OVERLAP</td>
+            <td>Event-sourced entities, key-value entities, durable workflow state, and AI memory inside the platform, with no integration to build.</td></tr>
+          <tr><td class="row-h">ElastiCache, MemoryDB</td>
+            <td>Managed cache</td>
+            <td class="rel">OVERLAP</td>
+            <td>Durable in-memory state is the primary store.</td></tr>
+          <tr><td class="row-h">Kinesis, MSK, SQS, SNS, EventBridge</td>
+            <td>Managed streaming and messaging</td>
+            <td class="rel">OVERLAP + LEVERAGE</td>
+            <td>Streaming built into the runtime, backpressured, petabyte-scale, with no external broker (Tubi: 5B tokens/sec). Akka consumes and publishes to these where they carry enterprise traffic.</td></tr>
+          <tr><td class="row-h">Kinesis Data Analytics, Managed Flink</td>
+            <td>Stream processing</td>
+            <td class="rel">OVERLAP</td>
+            <td>CQRS Views project entity events into queryable read models.</td></tr>
+          <tr><td class="row-h">EventBridge Scheduler</td>
+            <td>Cron and one-off scheduling</td>
+            <td class="rel">OVERLAP</td>
+            <td>Timers bound to components, durable across restart.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Compute, network, and security</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col class="c-svc"><col class="c-aws"><col class="c-rel"><col></colgroup>
+        <thead>
+          <tr><th>AWS service</th><th>What AWS provides</th><th>Rel</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">EKS, EC2</td>
+            <td>Kubernetes and instances</td>
+            <td class="rel">LEVERAGE</td>
+            <td>EKS is the runtime backbone for the platform in the customer VPC.</td></tr>
+          <tr><td class="row-h">Lambda, Fargate</td>
+            <td>Serverless compute</td>
+            <td class="rel">OVERLAP</td>
+            <td>Akka components are long-lived and stateful. Lambdas remain reachable as tools.</td></tr>
+          <tr><td class="row-h">API Gateway, ALB</td>
+            <td>Managed API front door</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka HTTP and gRPC endpoints are components that AWS API Gateway can manage. Customers front them with API Gateway where an existing gateway policy requires it.</td></tr>
+          <tr><td class="row-h">IAM, KMS, Secrets Manager</td>
+            <td>Identity, keys, secrets</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Customers federate IAM into Akka. KMS holds the keys.</td></tr>
+          <tr><td class="row-h">PrivateLink, VPC, Route 53</td>
+            <td>Private connectivity</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Customer VPC is the default deployment. PrivateLink reaches enterprise data when the platform runs in Akka's account.</td></tr>
+          <tr><td class="row-h">CloudWatch, X-Ray, Managed Prometheus</td>
+            <td>Metrics, traces, logs</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka exports OTEL to CloudWatch or any collector the customer chooses.</td></tr>
+          <tr><td class="row-h">CloudTrail, Config, Audit Manager, Security Hub</td>
+            <td>Control-plane audit and posture</td>
+            <td class="rel">LEVERAGE</td>
+            <td>These record AWS API calls. Akka records agent decisions in a hash-chained evidence ledger. The customer keeps both records.</td></tr>
+          <tr><td class="row-h">AWS Marketplace</td>
+            <td>Procurement and committed-spend drawdown</td>
+            <td class="rel">LEVERAGE</td>
+            <td>Akka transacts through Marketplace against the customer's AWS commit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>No AWS counterpart</h2>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:28%"><col></colgroup>
+        <thead>
+          <tr><th>Capability</th><th>What it is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Akka Specify</td>
+            <td>Two independently versioned and tested lifecycles — a functional contract and a safeguard contract — generating, testing, and running one certified service. AWS offers no path for a product manager, domain expert, or risk officer to contribute.</td></tr>
+          <tr><td class="row-h">99.9999% platform SLA</td>
+            <td>The entire platform, backed by contractual indemnities, sub-1-minute RTO, zero-byte RPO, active-active across regions. Bedrock publishes 99.9% on API errors with service credits as the only remedy.</td></tr>
+          <tr><td class="row-h">Regulation and control repository</td>
+            <td>Pre-deployment classification against 190 regulations and 1,040 controls, 671 of which carry a financial penalty.</td></tr>
+          <tr><td class="row-h">Hash-chained evidence ledger and sealed Governance Posture Package</td>
+            <td>An immutable record of agent decisions and a sealed audit artifact.</td></tr>
+          <tr><td class="row-h">Akka Verify</td>
+            <td>Proves conformance from the running system against both contracts.</td></tr>
+          <tr><td class="row-h">Evalkit and redkit</td>
+            <td>Evaluation and red-team corpora run against the deployed system.</td></tr>
+          <tr><td class="row-h">Portability</td>
+            <td>The same platform runs on Azure, GCP, customer Kubernetes, on-prem, and sovereign cloud. AgentCore runs on AWS.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <p class="cta-kicker">Read more</p>
+    <h2>The Akka Agentic AI Platform</h2>
+    <p class="cta-sub">Installed and operated on AWS by Akka, with 24/7 SRE support, single- and
+      multi-region.</p>
+    <a class="btn" href="https://akka.io/platform/overview">akka.io/platform/overview <span class="arw">&rarr;</span></a>
+  </div>
+</section>
+
+</body>
+</html>
