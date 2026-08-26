@@ -11,6 +11,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
 <link rel="stylesheet" href="../theme/base.css">
+<style>
+.metrics-table { max-width: 640px; margin: 36px auto; }
+.metrics-table table { margin: 0 auto; }
+</style>
 </head>
 <body>
 
@@ -89,7 +93,7 @@
 
 <h2>Summary Metrics</h2>
 
-<div class="table-scroll">
+<div class="table-scroll metrics-table">
 <table>
 <thead>
 <tr>
@@ -98,19 +102,19 @@
 </tr>
 </thead>
 <tbody>
-<tr><td><strong>Total time</strong></td><td><strong>99.3 hours</strong> (2026-08-24 through 2026-08-26)</td></tr>
+<tr><td><strong>Total time</strong></td><td><strong>99.3 hours</strong></td></tr>
 <tr><td>Mean time per port</td><td>92 min (median 76)</td></tr>
-<tr><td>Fastest port</td><td>remark42 — 24 min (sonnet/low)</td></tr>
-<tr><td>Longest port</td><td>activepieces — 292 min (opus/high)</td></tr>
+<tr><td>Fastest port</td><td>umputun/remark42 — 24 min (sonnet/low)</td></tr>
+<tr><td>Longest port</td><td>activepieces/activepieces — 292 min (opus/high)</td></tr>
 <tr><td>Total tokens</td><td>9.41B (25.5M output; the rest cache read/write)</td></tr>
 <tr><td>Sonnet mean time per port</td><td>61 min (n=31, median 60)</td></tr>
 <tr><td>Opus mean time per port</td><td>120 min (n=34, median 96)</td></tr>
 <tr><td>Total starting LOC (scope-matched)</td><td>61,835 (64/65 projects)</td></tr>
 <tr><td>Total finished LOC (port scope)</td><td>43,737 (64/65 projects)</td></tr>
-<tr><td>Largest LOC reduction</td><td>agno — 0.08:1 (1,524 → 127)</td></tr>
-<tr><td>Largest LOC increase</td><td>redash — 2.17:1 (542 → 1,176)</td></tr>
-<tr><td>Largest performance increase</td><td>dify — 143,333× faster ⚠</td></tr>
-<tr><td>Largest performance degradation</td><td>metaflow — 0.01× (100× slower)</td></tr>
+<tr><td>Largest LOC reduction</td><td>arguflow/agno — 0.08:1 (1,524 → 127)</td></tr>
+<tr><td>Largest LOC increase</td><td>getredash/redash — 2.17:1 (542 → 1,176)</td></tr>
+<tr><td>Largest performance increase</td><td>langgenius/dify — 143,333× faster ⚠</td></tr>
+<tr><td>Largest performance degradation</td><td>Netflix/metaflow — 0.01× (100× slower)</td></tr>
 </tbody>
 </table>
 </div>
