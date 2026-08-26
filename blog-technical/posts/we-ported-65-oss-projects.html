@@ -150,6 +150,89 @@
 <li><strong>Improve:</strong> Record what failed in discovery or areas where the implementation had to deviate from the specification, and then speculate on techniques we can use to improve the discovery engine or specification standard for the next iteration.</li>
 </ol>
 
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:802px">
+  <p class="viz-title">Figure 1</p>
+  <h4>Improve feeds the next port's discovery</h4>
+  <div class="plot-wrap">
+    <svg viewBox="0 0 802 178" role="img" aria-label="The five harness steps run in order from Setup to Improve. A return path carries Improve's findings back into Discovery, revising the discovery engine and the specification standard before the next port begins.">
+      <style>
+        /* Custom properties inherit into inline SVG, so the diagram follows the
+           page theme. Declared as classes because var() in a presentation
+           attribute is not honoured everywhere. */
+        .hx line, .hx path, .hx circle { fill: none; stroke: var(--mute); stroke-width: 1.5; }
+        .hx .loop { stroke: var(--accent); }
+        .hx .back { stroke: var(--accent); stroke-dasharray: 5 4; }
+        .hx text { text-anchor: middle; }
+        .hx .num { font-family: var(--mono); font-size: 14px; font-weight: 600; fill: var(--ink); }
+        .hx .num.loop { fill: var(--accent); stroke: none; }
+        .hx .name { font-family: var(--display); font-size: 14px; font-weight: 700; fill: var(--ink); }
+        .hx .gloss { font-family: var(--text); font-size: 11.5px; fill: var(--mute); }
+        .hx .backlabel { font-family: var(--text); font-size: 12px; fill: var(--accent); }
+        .hx .head-fwd { fill: var(--mute); stroke: none; }
+        .hx .head-back { fill: var(--accent); stroke: none; }
+      </style>
+      <defs>
+        <marker id="hx-fwd" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="head-fwd" d="M0 0 L8 4 L0 8 z"/>
+        </marker>
+        <marker id="hx-back" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path class="head-back" d="M0 0 L8 4 L0 8 z"/>
+        </marker>
+      </defs>
+
+      <g class="hx">
+        <!-- Return path runs above the row: the band below every node is
+             occupied by that step's name and gloss. -->
+        <path class="back" d="M721 54 V 44 Q 721 32 709 32 H 253 Q 241 32 241 44 V 50"
+              marker-end="url(#hx-back)"/>
+        <text class="backlabel" x="481" y="21">Improve revises the discovery engine and the specification standard for the next port</text>
+
+        <g marker-end="url(#hx-fwd)">
+          <line x1="104" y1="76" x2="212" y2="76"/>
+          <line x1="264" y1="76" x2="372" y2="76"/>
+          <line x1="424" y1="76" x2="532" y2="76"/>
+          <line x1="584" y1="76" x2="692" y2="76"/>
+        </g>
+
+        <circle cx="81" cy="76" r="22"/>
+        <circle cx="241" cy="76" r="22" class="loop"/>
+        <circle cx="401" cy="76" r="22"/>
+        <circle cx="561" cy="76" r="22"/>
+        <circle cx="721" cy="76" r="22" class="loop"/>
+
+        <text class="num" x="81" y="81">1</text>
+        <text class="num loop" x="241" y="81">2</text>
+        <text class="num" x="401" y="81">3</text>
+        <text class="num" x="561" y="81">4</text>
+        <text class="num loop" x="721" y="81">5</text>
+
+        <text class="name" x="81" y="124">Setup</text>
+        <text class="name" x="241" y="124">Discovery</text>
+        <text class="name" x="401" y="124">Port</text>
+        <text class="name" x="561" y="124">Benchmark</text>
+        <text class="name" x="721" y="124">Improve</text>
+
+        <text class="gloss" x="81" y="143">repository, observability,</text>
+        <text class="gloss" x="81" y="158">build tooling</text>
+        <text class="gloss" x="241" y="143">code, domain, schema,</text>
+        <text class="gloss" x="241" y="158">runtime interrogation</text>
+        <text class="gloss" x="401" y="143">exit conditions, build,</text>
+        <text class="gloss" x="401" y="158">test, review</text>
+        <text class="gloss" x="561" y="143">run both systems,</text>
+        <text class="gloss" x="561" y="158">measure and publish</text>
+        <text class="gloss" x="721" y="143">record what failed,</text>
+        <text class="gloss" x="721" y="158">and where it deviated</text>
+      </g>
+    </svg>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+
 <p>We would rewrite any API, CLI, and MCP surface adhering to the original's design as closely as possible. For any project with a Web GUI, we brought that GUI over wholesale, but modified the way the GUI accesses endpoints to take advantage of Akka's server-side events and other streaming capabilities. We did not port mobile, Slack, WhatsApp, or other types of app interfaces that would require human configuration to properly test for validity.</p>
 
 <p>After completing a detailed discovery phase, AI would generate a detailed specification and implementation plan. Claude was required to use Akka Specify for the implementation leveraging Akka's components with a focus on:</p>
@@ -203,7 +286,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 1</p>
+  <p class="viz-title">Figure 2</p>
   <h4>Benchmark answer parity vs. LOC ratio</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark answer parity vs. LOC ratio">
@@ -225,7 +308,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 2</p>
+  <p class="viz-title">Figure 3</p>
   <h4>Efficiency by model and effort</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/06-efficiency-model-effort.png" alt="Efficiency by model and effort">
@@ -241,7 +324,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 3</p>
+  <p class="viz-title">Figure 4</p>
   <h4>Tokens per port by model and effort</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/07-tokens-model-effort.png" alt="Tokens per port by model and effort">
@@ -259,7 +342,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 4</p>
+  <p class="viz-title">Figure 5</p>
   <h4>Complexity-adjusted efficiency vs. size of the ported slice</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/08-complexity-adjusted.png" alt="Complexity-adjusted efficiency vs. size of the ported slice">
@@ -306,7 +389,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 5</p>
+  <p class="viz-title">Figure 6</p>
   <h4>The aggregate cost of adding guardrails</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/09-guardrail-cost.png" alt="The aggregate cost of adding guardrails">
@@ -324,7 +407,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 6</p>
+  <p class="viz-title">Figure 7</p>
   <h4>Tokens used vs. steps taken</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/05-tokens-vs-steps.png" alt="Tokens used vs. steps taken">
@@ -344,7 +427,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 7</p>
+  <p class="viz-title">Figure 8</p>
   <h4>LOC ratio vs. size of the ported slice</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/01-loc-ratio-vs-size.png" alt="LOC ratio vs. size of the ported slice">
@@ -485,7 +568,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 8</p>
+  <p class="viz-title">Figure 9</p>
   <h4>Tokens used vs. lines of code saved</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens used vs. lines of code saved">
@@ -568,7 +651,7 @@
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 9</p>
+  <p class="viz-title">Figure 10</p>
   <h4>Performance ratio vs. LOC ratio</h4>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
