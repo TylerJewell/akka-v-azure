@@ -42,7 +42,7 @@
 
 <div class="body col">
 
-<p class="lede">We see a potential for AI to write and maintain entire systems without human involvement. In March, we released Akka Specify, a spec-driven delivery toolkit for creating new systems with Akka's SDK. Akka's SDK takes an opinionated approach to defining and implementing an AI system—inclusive of APIs, orchestration, agents, streaming data, and stateful memory.</p>
+<p class="lede">We see a potential for AI to write and maintain entire systems without human involvement. In March, we released Akka Specify, a spec-driven delivery toolkit for creating new systems with the Akka SDK. It takes an opinionated approach to defining and implementing an AI system—inclusive of APIs, orchestration, agents, streaming data, and stateful memory.</p>
 
 <p>We observed a few things after the release of Akka Specify:</p>
 
@@ -53,9 +53,9 @@
 <li>We redesigned a legacy RAG system with 200K lines of code generating 64% eval accuracy reimplementing it in 48 hours shrinking the LOC to 9K while improving eval accuracy to 95%.</li>
 </ol>
 
-<p>We attributed these gains to the dramatic improvement in intelligence with frontier models, the improved reasoning structure that comes with AI harnesses, and structural constraints baked into Akka's SDK.</p>
+<p>We attributed these gains to the dramatic improvement in intelligence with frontier models, the improved reasoning structure that comes with AI harnesses, and structural constraints baked into the Akka SDK.</p>
 
-<p>Akka's SDK has an opinionated structure that imposes one way, and only one way, to do each thing, such as how one service should reliably invoke another regardless of its location. These restrictions enable us to provide a guarantee that if the AI system compiles and passes tests locally, then it's production-ready without further code modifications. Akka embeds its clustering, elasticity, and resilience runtime on every build, producing a full-stack system while not intermingling resilience and scalability concerns within application code. These SDK opinions have made Akka particularly well-suited to leveraging AI to rapidly generate complex, production-ready backend systems.</p>
+<p>The Akka SDK has an opinionated structure that imposes one way, and only one way, to do each thing, such as how one service should reliably invoke another regardless of its location. These restrictions enable us to provide a guarantee that if the AI system compiles and passes tests locally, then it's production-ready without further code modifications. Akka embeds its clustering, elasticity, and resilience runtime on every build, producing a full-stack system while not intermingling resilience and scalability concerns within application code. These SDK opinions have made Akka particularly well-suited to leveraging AI to rapidly generate complex, production-ready backend systems.</p>
 
 <p>In a world where the hyperscalers, Palantir, C3.ai, and the frontier model providers are building sizable Forward Deployed Engineer (FDE) armies, we wondered: why can't AI write and maintain entire systems without human involvement?</p>
 
@@ -82,9 +82,9 @@
 
 <ol>
 <li><strong>Specification structure:</strong> Akka Specify takes a specification as its input. We wanted to explore whether specifications should have a structure, schema, and maybe even typed behavior so that systems can more reliably be first-pass generated.</li>
-<li><strong>Context file gaps:</strong> Akka Specify uses Akka's context files for creating a design and guiding an implementation. We wanted to identify (and hopefully close) gaps within those files that cause faulty initial implementations of greenfield systems.</li>
+<li><strong>Context file gaps:</strong> Akka Specify uses the Akka context files for creating a design and guiding an implementation. We wanted to identify (and hopefully close) gaps within those files that cause faulty initial implementations of greenfield systems.</li>
 <li><strong>Exit Conditions:</strong> Delivering a "system" into production is more than code. It's also the harnesses, testing, and organizational requirements that must be satisfied. Akka Specify can enforce Exit Conditions that must be proven by pre-release auditors. We wanted to incorporate best practices from different OSS projects into our list of Exit Conditions and auditors.</li>
-<li><strong>Runtime performance:</strong> We wanted to see if Akka's runtime could improve the performance of various OSS projects, and whether Akka's embedded durable execution could create higher forms of resilience for some projects.</li>
+<li><strong>Runtime performance:</strong> We wanted to see if the Akka runtime could improve the performance of various OSS projects, and whether embedded durable execution in Akka could create higher forms of resilience for some projects.</li>
 <li><strong>Model and effort impact:</strong> Whether there was a significant impact in terms of time to complete, accuracy, and token cost when switching between different Anthropic models and levels of effort.</li>
 </ol>
 
@@ -147,7 +147,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 1</p>
-  <h4>Akka's delivery harness</h4>
+  <h4>The Akka delivery harness</h4>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 178" role="img" aria-label="The five harness steps run in order from Setup to Improve. A return path carries Improve's findings back into Discovery, revising the discovery engine and the specification standard before the next port begins.">
       <style>
@@ -230,21 +230,21 @@
 <ol>
 <li><strong>Setup:</strong> Create a new repository, setup observability, and ensure all discovery and build tooling is installed.</li>
 <li><strong>Discovery:</strong> Execute code analysis, domain model analysis, schema analysis, and runtime interrogation of the existing system in order to generate a series of specifications that define the behavior and conditions of the system itself.</li>
-<li><strong>Port:</strong> Define a series of exit conditions derived from the specification and then leverage Akka Specify's planning, tasking, implementation, building, and testing capabilities to author the system with Akka best practices, and then execute Akka's review to ensure that it matches the design standard expected.</li>
+<li><strong>Port:</strong> Define a series of exit conditions derived from the specification and then leverage the Akka Specify planning, tasking, implementation, building, and testing capabilities to author the system with Akka best practices, and then execute the Akka review to ensure that it matches the design standard expected.</li>
 <li><strong>Benchmark:</strong> Execute both systems with a single runner that measures successful execution of all test suites, counts lines of code and assess end user latency performance. Draft a README and push up to the GitHub repository.</li>
 <li><strong>Improve:</strong> Record what failed in discovery or areas where the implementation had to deviate from the specification, and then speculate on techniques we can use to improve the discovery engine or specification standard for the next iteration.</li>
 </ol>
 
-<p>We would rewrite any API, CLI, and MCP surface adhering to the original's design as closely as possible. For any project with a Web GUI, we brought that GUI over wholesale, but modified the way the GUI accesses endpoints to take advantage of Akka's server-side events and other streaming capabilities. We did not port mobile, Slack, WhatsApp, or other types of app interfaces that would require human configuration to properly test for validity.</p>
+<p>We would rewrite any API, CLI, and MCP surface adhering to the original's design as closely as possible. For any project with a Web GUI, we brought that GUI over wholesale, but modified the way the GUI accesses endpoints to take advantage of Akka server-side events and other streaming capabilities. We did not port mobile, Slack, WhatsApp, or other types of app interfaces that would require human configuration to properly test for validity.</p>
 
-<p>After completing a detailed discovery phase, AI would generate a detailed specification and implementation plan. Claude was required to use Akka Specify for the implementation leveraging Akka's components with a focus on:</p>
+<p>After completing a detailed discovery phase, AI would generate a detailed specification and implementation plan. Claude was required to use Akka Specify for the implementation leveraging Akka components with a focus on:</p>
 
 <ol>
 <li>Minimizing total LOC.</li>
 <li>Eliminating functional redundancies.</li>
 <li>Avoiding non-determinism when unnecessary (ie, an agent for the sake of an agent should be avoided).</li>
 <li>Optimizing for performance (such as using CQRS to separate writes from reads).</li>
-<li>Leveraging Akka's embedded persistence layer of event-sourced entities and key-value entities, workflow for orchestration, views for read models, and durable state replicated across nodes before attempting to import an external database, graph store, or vector store. We were pleased to find that after all ports had finished, none of the projects needed to import an external persistence engine.</li>
+<li>Leveraging the embedded Akka persistence layer of event-sourced entities and key-value entities, workflow for orchestration, views for read models, and durable state replicated across nodes before attempting to import an external database, graph store, or vector store. We were pleased to find that after all ports had finished, none of the projects needed to import an external persistence engine.</li>
 </ol>
 
 <p>The port was only considered complete and successful if the source system's unit and integration tests would pass when run against the new Akka system. Additionally, Claude was required to run <code>/akka:review</code> after every port which executes a variety of design, performance, and code structure auditors. Claude was required to resolve every identified issue:</p>
@@ -356,7 +356,7 @@
 
 <h3>LOC and Performance by Project Category</h3>
 
-<p>It seems that the type of application that was ported was a predictor of whether Akka could improve its LOC and its performance. Big SAAS applications and large complex frameworks saw significant performance boosts due to Akka's event-sourced entities, embedded durable execution, and in-memory durable data.</p>
+<p>It seems that the type of application that was ported was a predictor of whether Akka could improve its LOC and its performance. Big SAAS applications and large complex frameworks saw significant performance boosts due to Akka event-sourced entities, embedded durable execution, and in-memory durable data.</p>
 
 </div>
 
@@ -421,9 +421,9 @@
 
 <h3>Performance Outcomes</h3>
 
-<p>We had hoped to show that Akka's runtime and durable execution engine introduce significant performance gains for each project. That happened in quite a few places, but there were significant degradations in others.</p>
+<p>We had hoped to show that the Akka runtime and durable execution engine introduce significant performance gains for each project. That happened in quite a few places, but there were significant degradations in others.</p>
 
-<p>We expected to see Akka's abstractions create smaller code bases, but we were surprised to find that the amount of shrinkage could be predicted based upon a project's original LOC size.</p>
+<p>We expected to see Akka abstractions create smaller code bases, but we were surprised to find that the amount of shrinkage could be predicted based upon a project's original LOC size.</p>
 
 </div>
 
@@ -641,7 +641,7 @@
 <ul>
 <li><strong>Your data is in-memory and durable, persisted transparently without a developer coding database semantics.</strong> Most projects hit a database on every request—issue a SQL query, wait for the disk, parse the result, close the connection. In Akka, the "row" you'd query is an in-memory object called an entity. A request that reads or updates one entity is a plain field access. That single change turns a millisecond-per-query database call into a microsecond field read. Most of the biggest speedups in the data—1,000×, 350×, 240×—are this: the source was hitting SQLite or Postgres per request, whereas Akka was reading from memory.</li>
 <li><strong>Writes are durable without being slow.</strong> Every change is recorded to an append-only event log so nothing survives a crash gets lost—but the recording happens asynchronously and batched, off the request path. The caller gets its answer while the durability write happens behind the scenes. You get "safe" for the price of "fast."</li>
-<li><strong>No locks or contention.</strong> Each entity is single-threaded: only one message at a time, in order, no shared mutable state between requests. Most fast-looking Python and Node code has hidden costs from asyncio.Lock, Mutex, and defensive "check-then-act" guards. Akka's single-writer entities make all of those unnecessary.</li>
+<li><strong>No locks or contention.</strong> Each entity is single-threaded: only one message at a time, in order, no shared mutable state between requests. Most fast-looking Python and Node code has hidden costs from asyncio.Lock, Mutex, and defensive "check-then-act" guards. Akka single-writer entities make all of those unnecessary.</li>
 <li><strong>Streaming is back-pressured and non-blocking end to end.</strong> Data flows through the system without buffering and without threads blocking on each other. Throughput is limited by the slowest stage rather than contention.</li>
 <li><strong>Services are clustered from within.</strong> When you scale from one node to a hundred, the same code runs—messages route to whichever node holds the entity, and there's no database in between coordinating anything. Most projects reach for Redis or an external message queue to scale; Akka has that inside the runtime.</li>
 <li><strong>JVM JIT.</strong> After a warmup pass the hot paths run at essentially native speed. Interpreted Python and Node can't catch up on tight inner loops.</li>
@@ -675,9 +675,9 @@
 
 <p>The rework cost of the second kind is measurable. The most expensive ports in the run—the ones that spent 250+ minutes and burned 400M+ tokens—were disproportionately ports whose early specs left decisions implicit. We added a rule that "any claim about a class needs a list" midway through the conversions and every port after that paid slightly more per iteration but had fewer turns before getting to accuracy and compliance.</p>
 
-<h3>2. Akka's Context Files Have Gaps</h3>
+<h3>2. The Akka Context Files Have Gaps</h3>
 
-<p>Across all ports, the model's initial implementation choices were high-quality on the components Akka's context describes in detail—entities, workflows, endpoints, views—and low-quality on the choices between them. Which effect goes in which component, whether a workflow should orchestrate or a consumer should react, when a KVE is enough and when an event-sourced entity is required—these are the questions where first-pass code was most often rebuilt in the review step.</p>
+<p>Across all ports, the model's initial implementation choices were high-quality on the components the Akka context files describe in detail—entities, workflows, endpoints, views—and low-quality on the choices between them. Which effect goes in which component, whether a workflow should orchestrate or a consumer should react, when a KVE is enough and when an event-sourced entity is required—these are the questions where first-pass code was most often rebuilt in the review step.</p>
 
 <h3>3. Exit Conditions Capture What "Shipping" Means</h3>
 
@@ -687,7 +687,7 @@
 
 <p>This reinforces our thinking around providing an enforced mode for Akka Specify where we allow enterprises to define exit conditions from across a variety of different dimensions, integrate the auditors with internal tooling that knows how to measure these conditions, and to enforce them as part of the project's build and test cycle.</p>
 
-<h3>4. Akka's Runtime Delivers on Performance and Resilience</h3>
+<h3>4. The Akka Runtime Delivers on Performance and Resilience</h3>
 
 <p>Across the ports where we could time the same slice of work on both sides, the port is dramatically faster whenever the original relied on a database, a language interpreter, defensive locking, or hand-rolled scaffolding—which is most of them. In-memory entities beat SQL queries. Single-threaded actor mailboxes beat locks. Async journal writes give durability without paying for it on the request path. The measured range—from ~1.3× on already-fast Java originals to 1,000×+ on database-bound or event-loop-bound originals—is entirely explained by how much plumbing the original was carrying that the port doesn't need.</p>
 
