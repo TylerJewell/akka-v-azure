@@ -95,8 +95,7 @@
 <h2>Summary Metrics</h2>
 
 <div class="table-scroll tight">
-<table style="table-layout:fixed;--ind:3px"><colgroup><col style="width:42.7%"><col style="width:57.3%"></colgroup>
-<thead>
+<table style="table-layout:fixed;--ind:3px"><colgroup><col style="width:42.7%"><col style="width:57.3%"></colgroup><thead>
 <tr>
 <th class="ind">Metric</th>
 <th class="ind">Value</th>
@@ -659,6 +658,91 @@
     <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
   </div></div>
 </figure>
+</div>
+
+<div class="body col">
+
+<h2>About Spec-Driven Delivery</h2>
+
+<p>Spec-driven delivery (SDD) is the process of using specifications to define a system and use it as a foundation for its delivery. A side-effect of SDD is the avoidance of technical debt and loss from tribal knowledge migration. When implemented with appropriate guardrails, an SDD system can ensure that it maintains itself against all current best practices, avoiding the introduction of technical debt, and further, no project tribal knowledge is lost when a team member migrates to another project or someone new who is unfamiliar with the project starts to engage. If the specifications are complete and the engine which generates systems from them comprehensive, then knowledge is captured and system maintenance is (mostly) automatic.</p>
+
+<p>There are a number of spec-driven development open source toolkits available. Akka Specify is based upon speckit. We've extended it by:</p>
+
+<h3>Structured Projects</h3>
+
+<p>We impose an opinionated way that every project must be structured. This structure incorporates everything needed to manage code, tests, evaluations, red teaming, documentation, specifications, and harness configuration.</p>
+
+<h3>Environment Validation</h3>
+
+<p>A development environment has pre-requisites that need to be installed and properly configured. Some of those are Akka dependencies, and others are defined by an organization. We provide setup and configuration that is AI-aware so that any laptop can be readied for any kind of project.</p>
+
+<h3>Build &amp; Deploy</h3>
+
+<p>Build, test, and deployment are Akka-aware. This includes an understanding of the build tooling, dependencies analysis, running unit and integration test harnesses, and executing microservices locally within clusters. It automates the setup of any remote dependencies or mocks that may be needed such as calling into 3rd party APIs or other microservices that are running in a staging environment rather than locally. And, if you are not tied into CI/CD, it knows how to authenticate against an Akka platform environment, package a service as a Docker image, deploy it, set up routes, and validate that it's accepting traffic.</p>
+
+<h3>Self-Documenting</h3>
+
+<p>Akka documents the domain model, interaction model, entity model, schemas, and component hierarchy.</p>
+
+<h3>Akka Context</h3>
+
+<p>Akka Context is a local, offline mirror of the Akka documentation, core concepts, and principles including theory tied to distributed systems, real-time streaming, brokerless reliable messaging, operations concerns, production readiness, and architecture design considerations.</p>
+
+<h3>Exit Conditions &amp; Auditors</h3>
+
+<p>Akka Specify can optionally be executed in an enforced mode, which maps every rule or requirement in a specification to an auditor that executes within an AI harness and must successfully pass before returning to the user. Exit conditions can enable a higher level of guarantee on quality, but adding more exit conditions leads to more auditors which can extend build cycles. Exit conditions have to be satisfied as part of the initial build, before a project is review ready, or before a project is releasable. Enterprises can enforce their own exit conditions, and finding the right balance of conditions that must be satisfied on every build vs. satisfied before the final release is challenging. We have built a large repository of conditions that we use on various projects.</p>
+
+<div class="table-scroll">
+<table style="table-layout:fixed;--ind:8px"><colgroup><col style="width:28.0%"><col style="width:35.1%"><col style="width:36.9%"></colgroup>
+<thead>
+<tr><th class="ind">EC type</th><th class="ind">Category</th><th class="ind">What it asks</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="7" class="ind"><strong>Product</strong><br>does it work?</td><td class="ind">Functional</td><td class="ind">Does the software work?</td></tr>
+<tr><td class="ind">Data integrity</td><td class="ind">Is data consistent and correct?</td></tr>
+<tr><td class="ind">Reliability</td><td class="ind">Is it dependable and fault-tolerant?</td></tr>
+<tr><td class="ind">Performance</td><td class="ind">Is it fast and resource-efficient?</td></tr>
+<tr><td class="ind">Security &amp; compliance</td><td class="ind">Is it protected and regulation-conformant?</td></tr>
+<tr><td class="ind">Operability</td><td class="ind">Can it be run, observed and managed?</td></tr>
+<tr><td class="ind">Experience</td><td class="ind">Is it usable and satisfying?</td></tr>
+<tr><td rowspan="7" class="ind"><strong>Project</strong><br>is the codebase healthy?</td><td class="ind">Documentation &amp; training</td><td class="ind">Can knowledge transfer to others?</td></tr>
+<tr><td class="ind">Repository hygiene</td><td class="ind">Is the codebase clean and organised?</td></tr>
+<tr><td class="ind">Pipeline &amp; scanning</td><td class="ind">Do CI/CD and automated checks pass?</td></tr>
+<tr><td class="ind">Code &amp; test health</td><td class="ind">Quality metrics and test coverage</td></tr>
+<tr><td class="ind">Environment &amp; dependencies</td><td class="ind">Config and library management</td></tr>
+<tr><td class="ind">Enterprise integration</td><td class="ind">System interoperability</td></tr>
+<tr><td class="ind">Infrastructure &amp; deployment</td><td class="ind">How it is provisioned and shipped</td></tr>
+<tr><td rowspan="4" class="ind"><strong>Process</strong><br>was the build honest?</td><td class="ind">Process integrity</td><td class="ind">Did the AI build stay honest and transparent?</td></tr>
+<tr><td class="ind">Build efficiency</td><td class="ind">Development speed and resource use</td></tr>
+<tr><td class="ind">Content &amp; brand governance</td><td class="ind">Standards compliance</td></tr>
+<tr><td class="ind">Agentic AI safety</td><td class="ind">Safe autonomous agent behaviour</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>A Specification Standard</h3>
+
+<p>Most spec-driven development toolkits are indifferent to the structure of the specification. We've extended speckit to accept an Akka Specification which has a structure that leads to better requirements creation and faster authoring. The more structure we give to a specification, the faster a delivery cycle can complete.</p>
+
+<div class="table-scroll">
+<table style="table-layout:fixed"><colgroup><col style="width:4.4%"><col style="width:18.8%"><col style="width:76.8%"></colgroup>
+<thead>
+<tr><th>§</th><th>Section</th><th>What it holds</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>Scope</td><td>What the rebuild covers and what it explicitly excludes, each exclusion with a reason</td></tr>
+<tr><td>2</td><td>Domain model</td><td>The nouns and their relationships. opal splits this into Policy, Data, Identity/scopes, Fleet</td></tr>
+<tr><td>3</td><td>Deterministic contract</td><td>The numbered rules, grouped by capability</td></tr>
+<tr><td>4</td><td>Open decisions</td><td>Places the original has no settled answer or gives two; the port picks one and says so</td></tr>
+<tr><td>5</td><td>Conformance</td><td>A table binding every rule to source and test</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Discovery</h3>
+
+<p>Most systems, even though being ideated from scratch, are based upon an existing system. Being able to understand an existing system and derive specifications that AI can understand accelerates delivery. No single technique is sufficient for discovery. It is a collection of techniques that span deep analysis of the existing system, identifying entry points, finding dead code, tracing imports and their usage, comparing ported systems with original systems, chaos engines, adversarial testing, code analysis, schema analysis, file analysis, delivery ordering, evaluation, input analysis, temporal analysis, experimentation, and so on. This effort was, in part, designed to help us advance the intelligence of our discovery tooling.</p>
+
 </div>
 
 <div class="body col">
