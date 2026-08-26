@@ -421,9 +421,9 @@
 
 <h3>Performance Outcomes</h3>
 
-<p>We had hoped to show that Akka's runtime and durable execution engine created a simpler code base while introducing significant performance gains for each project. That happened in quite a few places, but there were some significant degradations in others.</p>
+<p>We had hoped to show that Akka's runtime and durable execution engine introduce significant performance gains for each project. That happened in quite a few places, but there were significant degradations in others.</p>
 
-<p>We were surprised to see how Akka's abstractions lead to smaller code bases that could be predicted based upon their original LOC size.</p>
+<p>We expected to see Akka's abstractions create smaller code bases, but we were surprised to find that the amount of shrinkage could be predicted based upon a project's original LOC size.</p>
 
 </div>
 
@@ -636,7 +636,7 @@
 
 <div class="body col">
 
-<p>We believe that these elements cause Akka to offer a performance increase:</p>
+<p>We believe that these elements cause Akka to offer a performance improvement:</p>
 
 <ul>
 <li><strong>Your data is in-memory and durable, persisted transparently without a developer coding database semantics.</strong> Most projects hit a database on every request—issue a SQL query, wait for the disk, parse the result, close the connection. In Akka, the "row" you'd query is an in-memory object called an entity. A request that reads or updates one entity is a plain field access. That single change turns a millisecond-per-query database call into a microsecond field read. Most of the biggest speedups in the data—1,000×, 350×, 240×—are this: the source was hitting SQLite or Postgres per request, whereas Akka was reading from memory.</li>
