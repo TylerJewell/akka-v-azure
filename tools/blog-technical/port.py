@@ -272,7 +272,54 @@ def collect_css(src, base_dir):
     return '\n'.join(parts)
 
 
-def build_body(slug):
+def upload_file(local, folder, token):
+    """Upload one asset to the File Manager and return its hosted URL."""
+    r = subprocess.run(
+        ['curl', '-s', '-X', 'POST',
+         '-H', f'Authorization: Bearer {token}',
+         '-F', f'file=@{local}',
+         '-F', f'folderPath={folder}',
+         '-F', 'options={"access":"PUBLIC_NOT_INDEXABLE","overwrite":true}',
+         'https://api.hubapi.com/files/v3/files'],
+        capture_output=True, text=True,
+    )
+    import json
+    try:
+        return json.loads(r.stdout).get('url')
+    except Exception:
+        return None
+
+
+def absolutise_images(body, base_dir, slug, token):
+    """Host every locally-referenced image and rewrite its src.
+
+    A relative src resolves against the CMS page's own path once ported, where
+    nothing is served, so each asset has to move with the post.
+    """
+    folder = f'/website/blog-technical/{slug}'
+    cache = {}
+
+    def repl(m):
+        src = m.group(1)
+        if re.match(r'(https?:)?//|data:', src):
+            return m.group(0)
+        if src not in cache:
+            local = os.path.normpath(os.path.join(base_dir, src))
+            if not os.path.exists(local):
+                print(f'  MISSING  {src}')
+                return m.group(0)
+            url = upload_file(local, folder, token)
+            if not url:
+                print(f'  FAILED   {src}')
+                return m.group(0)
+            cache[src] = url
+            print(f'  hosted   {src}')
+        return m.group(0).replace(f'"{src}"', f'"{cache[src]}"')
+
+    return re.sub(r'<img[^>]*\bsrc="([^"]+)"', repl, body)
+
+
+def build_body(slug, token=None):
     # Prefer blog-technical/posts/<slug>.html (scaffolded from live URL) before
     # blog-technical/<slug>.html (hand-authored template render)
     candidate = os.path.join(ROOT, 'blog-technical', 'posts', f'{slug}.html')
@@ -293,6 +340,8 @@ def build_body(slug):
     body = re.sub(r'<div class="progress"[^>]*></div>\s*', '', body, flags=re.S)
     # Strip <script> tags — Prism is loaded from the wrapper
     body = re.sub(r'<script[^>]*>.*?</script>', '', body, flags=re.S)
+    if token:
+        body = absolutise_images(body, os.path.dirname(candidate), slug, token)
     scope = 'blog-technical'
     scoped_css = scope_css(css, scope)
     out = (
@@ -339,7 +388,8 @@ def push_live(page_id, token):
     print(f'  PUSH-LIVE id={page_id}')
 
 
-def create_or_update_page(slug, page_slug, html_title, meta_description, partial_path, token):
+def create_or_update_page(slug, page_slug, html_title, meta_description, partial_path, token,
+                          password=None):
     """Create a CMS page or update an existing one at the given slug."""
     # Look up existing page by slug
     lookup = subprocess.run(
@@ -370,6 +420,13 @@ def create_or_update_page(slug, page_slug, html_title, meta_description, partial
             }
         }
     }
+    # A noindex meta does not keep a page private: the nine preview pages
+    # audited in _internal/seo-audit-2026-08.md carried one and still reached
+    # sitemap.xml. A password is what gates the page. It is its own property —
+    # publicAccessRulesEnabled covers membership and SSO, and rejects a
+    # PASSWORD rule type.
+    if password:
+        payload['password'] = password
     payload_bytes = json.dumps(payload).encode('utf-8')
 
     if results:
@@ -421,6 +478,8 @@ def main():
     ap.add_argument('slug', help='blog-technical/<slug>.html basename')
     ap.add_argument('--preview', default=None,
                     help='CMS URL slug (default: blog-preview/<slug>)')
+    ap.add_argument('--password', default=None,
+                    help='gate the page behind this password (private staging)')
     args = ap.parse_args()
 
     token = get_token()
@@ -435,16 +494,19 @@ def main():
     upload_wrapper(token)
 
     print('\n[2/3] Build + upload body partial')
-    body_path = build_body(args.slug)
+    body_path = build_body(args.slug, token)
     partial_path = upload_body_partial(args.slug, body_path, token)
 
     print('\n[3/3] Create/update CMS page')
     # ASCII-only for API safety
     title_ascii = title.encode('ascii', 'ignore').decode('ascii')
     desc_ascii = desc.encode('ascii', 'ignore').decode('ascii')
-    url = create_or_update_page(args.slug, page_slug, title_ascii, desc_ascii, partial_path, token)
+    url = create_or_update_page(args.slug, page_slug, title_ascii, desc_ascii, partial_path, token,
+                                password=args.password)
 
     print(f'\n=== Published: {url} ===')
+    if args.password:
+        print('    Password-gated. Anyone without the password gets a prompt.')
 
 
 if __name__ == '__main__':
