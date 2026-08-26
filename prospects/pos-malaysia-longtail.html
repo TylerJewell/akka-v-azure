@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>The long-tail book at POS Malaysia | Akka</title>
+<meta name="description" content="POS Malaysia's 10,444 small shipping accounts bill RM 21.7 million a year. Over five and a half months that figure fell 15% on an annual basis. Holding that run-rate and growing it is worth RM 2.07 million a year at the base case, priced entirely from POS Malaysia's own parcel records.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── case-study.css, dense variant (inlined for a self-contained file) ── */
+:root{
+  --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+  --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+  --gold:#FFCE4A; --gold-deep:#E9B426;
+  --loss:#B3261E; --gain:#1E6B3A;
+  --display:"Instrument Sans",system-ui,sans-serif;
+  --text:"Roboto",system-ui,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--text);font-size:16px;line-height:1.55;font-weight:400;
+  -webkit-font-smoothing:antialiased;}
+a{color:var(--ink);text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px}
+.hero{background:var(--black);color:#fff;padding:64px 0 52px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,206,74,.05) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.eyebrow{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:11px;color:var(--gold);margin:0 0 18px;
+  display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--gold)}
+.hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.025em;
+  font-size:clamp(30px,4.6vw,48px);line-height:1.05;margin:0 0 18px;color:#fff;
+  text-wrap:balance;max-width:20ch}
+.hero h1 .hl{color:var(--gold)}
+.subtitle{font-family:var(--display);font-weight:400;font-size:clamp(17px,2vw,21px);
+  line-height:1.4;color:#C9C9CE;margin:0;max-width:52ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;
+  margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);
+  font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:#9A9AA2;text-transform:uppercase}
+.meta b{color:var(--gold);font-weight:500}
+
+/* headline number strip under the hero */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 4px}
+.strip div{background:var(--paper);padding:18px 16px}
+.strip .n{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);
+  line-height:1;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+.strip .k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);margin-top:7px;line-height:1.35}
+
+.lead{font-family:var(--display);font-weight:400;font-size:clamp(18px,2.1vw,22px);
+  line-height:1.45;color:var(--ink);margin:38px 0 6px;max-width:64ch}
+.lead .hl{background:linear-gradient(transparent 62%,rgba(255,206,74,.5) 62%);font-weight:500}
+section.body{padding:8px 0 0}
+.body h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(21px,2.5vw,27px);line-height:1.15;color:var(--ink);
+  margin:44px 0 12px;padding-top:16px;border-top:2px solid var(--ink);max-width:34ch}
+.body h3{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em;
+  color:var(--ink);margin:26px 0 8px}
+.body p{margin:0 0 14px;max-width:72ch}
+.body p b, .body strong{color:var(--ink);font-weight:700}
+.num{font-family:var(--mono);font-weight:500;color:var(--ink);
+  background:rgba(255,206,74,.16);padding:0 5px;border-radius:3px;white-space:nowrap}
+.lead-in{font-family:var(--display);font-weight:600;color:var(--ink);margin:24px 0 6px !important}
+
+/* dense tables */
+.tbl{overflow-x:auto;margin:6px 0 22px;scrollbar-width:thin}
+.tbl table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px;
+  font-variant-numeric:tabular-nums}
+.tbl caption{font-family:var(--display);font-weight:600;font-size:13px;color:var(--ink);
+  text-align:left;padding:0 0 7px}
+.tbl th{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 8px;
+  border-bottom:2px solid var(--line);vertical-align:bottom;line-height:1.3}
+.tbl th:first-child{color:var(--ink)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top;
+  line-height:1.45;color:var(--body)}
+.tbl td.row-h{font-family:var(--display);font-weight:600;color:var(--ink);white-space:nowrap}
+.tbl td.n,.tbl th.n{font-family:var(--mono);text-align:right;color:var(--ink);white-space:nowrap}
+.tbl th.n{font-family:var(--display)}
+.tbl td.neg{color:var(--loss)}
+.tbl td.pos{color:var(--gain)}
+.tbl tr.total td{border-top:2px solid var(--ink);border-bottom:none;
+  font-weight:700;color:var(--ink)}
+.tbl tbody tr:hover{background:var(--wash)}
+.tbl td.note{font-size:13px;color:var(--muted);line-height:1.4}
+
+/* label/statement rows — the sanctioned alternative to cards */
+.rows{margin:6px 0 22px;padding:0;list-style:none}
+.rows li{display:grid;grid-template-columns:190px 1fr;gap:20px;
+  padding:11px 0;border-top:1px solid var(--line)}
+.rows li:first-child{border-top:2px solid var(--line)}
+.rows .k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink);line-height:1.5;padding-top:2px}
+.rows .v{margin:0;font-size:15px;line-height:1.5}
+@media(max-width:680px){
+  .rows li{grid-template-columns:1fr;gap:3px}
+  .strip{grid-template-columns:repeat(2,1fr)}
+  body{font-size:15.5px}
+  .hero{padding:48px 0 40px}
+}
+
+.close{background:var(--black);color:#fff;padding:52px 0 56px;margin-top:56px}
+.close .k{font-family:var(--display);font-weight:600;text-transform:uppercase;
+  letter-spacing:.22em;font-size:11px;color:var(--gold);margin:0 0 14px}
+.close h2{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(23px,3vw,32px);margin:0 0 14px;color:#fff;max-width:26ch}
+.close p{color:#C9C9CE;margin:0 0 12px;max-width:68ch;font-size:16px;line-height:1.55}
+.close b{color:var(--gold);font-weight:500}
+
+@media print{
+  @page{margin:12mm 0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:9.4pt;line-height:1.45}
+  .wrap{max-width:none;padding:0 15mm}
+  .hero{padding:13mm 0 11mm}
+  .hero h1{font-size:24pt}
+  .subtitle{font-size:11.5pt}
+  .lead{font-size:12.5pt;margin:8mm 0 2mm}
+  .body h2{font-size:14.5pt;margin:8mm 0 3mm}
+  .body h3{font-size:11pt;margin:5mm 0 2mm}
+  .tbl table{font-size:8.4pt}
+  .strip .n{font-size:16pt}
+  .close{padding:11mm 0;margin-top:10mm}
+  .strip,.rows li,.close,.meta,.lead{break-inside:avoid}
+  .body h2,.body h3,.lead-in,.tbl caption{break-after:avoid}
+  .tbl,.tbl table{break-inside:auto}
+  .tbl thead{display:table-header-group}
+  .tbl tr{break-inside:avoid}
+  .body p{orphans:3;widows:3}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Postal and courier · Malaysia</p>
+    <h1>The long-tail book is shrinking by <span class="hl">15% a year</span></h1>
+    <p class="subtitle">POS Malaysia's 10,444 smallest shipping accounts bill RM 21.7 million a
+      year. Holding that run-rate and growing it is worth RM 2.07 million a year.</p>
+    <p class="meta">
+      <span>Source <b>AXIS, ARPI, Lookup_Customer</b></span>
+      <span>Period <b>January to June 2026</b></span>
+      <span>Prepared for <b>POS Malaysia</b></span>
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="strip">
+    <div><p class="n">RM 21.7M</p><p class="k">Billed a year by the long-tail book</p></div>
+    <div><p class="n">10,444</p><p class="k">Long-tail accounts priced</p></div>
+    <div><p class="n">RM 1.68M</p><p class="k">Annual run-rate lost over 5.5 months</p></div>
+    <div><p class="n">RM 2.07M</p><p class="k">Base-case annual benefit of the programme</p></div>
+  </div>
+</div>
+
+<section class="body">
+  <div class="wrap">
+
+    <p class="lead">The pricing runs off POS Malaysia's own parcel records.
+      <span class="hl">23,790,551 parcels across 170 days</span> were joined to the July 2026
+      revenue-per-item extract and the customer master file, then grouped into 28-day windows so
+      that each account can be compared with itself and with the network around it.</p>
+
+    <p>The long-tail book holds every account shipping 50 parcels a month or fewer. It bills
+      <span class="num">RM 21,673,649</span> a year. Across the most recent eight weeks the total
+      barely moves. Across the full five and a half months the same accounts give up
+      <span class="num">RM 1,684,949</span> of annual run-rate, a fall of 15% a year.</p>
+
+    <p>Underneath the total, two large amounts of money move in opposite directions.
+      <span class="num">RM 6,965,534</span> of annual run-rate leaves accounts that shipped less, and
+      <span class="num">RM 7,944,196</span> arrives from accounts that shipped more. Neither
+      movement appears on a monthly revenue report, and no one is acting on either one. The initiatives
+      set out below work on those two movements.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Annual benefit at each rate assumption</caption>
+        <thead>
+          <tr><th>Case</th><th class="n">Annual benefit</th><th class="n">Share of book</th><th>What it assumes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Conservative</td><td class="n">RM 1,202,492</td><td class="n">5.5%</td>
+            <td class="note">Every initiative performs at the bottom of its range</td></tr>
+          <tr><td class="row-h">Base case</td><td class="n">RM 2,071,827</td><td class="n">9.6%</td>
+            <td class="note">Every initiative performs at the middle of its range. Recommended for planning</td></tr>
+          <tr><td class="row-h">Target</td><td class="n">RM 3,479,948</td><td class="n">16.1%</td>
+            <td class="note">Every initiative performs at the top of its range at the same time</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The cases use identical arithmetic. Only the recovery rate assumed for each initiative
+      changes. Every account is assigned to one initiative or to none, so no ringgit is counted
+      twice.</p>
+
+    <h2>What we propose</h2>
+
+    <p>POS Malaysia works each account according to the movement its own shipping records show. An
+      account that drops a volume band is contacted in the same 28 days it drops. An account that
+      grows is asked for more. An account that outgrows the long tail is handed to a person. None of
+      these accounts receives any of that today.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>What we propose, at the base case</caption>
+        <thead>
+          <tr><th>Initiative</th><th>What POS Malaysia does</th><th class="n">Accounts</th><th class="n">Base case RM/yr</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Catch slides early</td>
+            <td class="note">Contact an account in the same 28-day window it drops a volume band, with a service conversation aimed at the cause the shipping pattern points to</td>
+            <td class="n">1,493</td><td class="n">916,182</td></tr>
+          <tr><td class="row-h">Rank up to a person</td>
+            <td class="note">Hand each account that outgrew the long tail to a named relationship manager, with a one-page briefing on its shipping history and product mix</td>
+            <td class="n">315</td><td class="n">497,141</td></tr>
+          <tr><td class="row-h">Ask growers for more</td>
+            <td class="note">Approach accounts that gained a band under their own momentum with added services, a revised rate card or adjacent routes</td>
+            <td class="n">2,231</td><td class="n">444,628</td></tr>
+          <tr><td class="row-h">Campaign the sparse</td>
+            <td class="note">Run grouped campaigns at accounts shipping 1 to 5 parcels per 28 days, aimed at moving them to 10</td>
+            <td class="n">2,207</td><td class="n">134,712</td></tr>
+          <tr><td class="row-h">Win back the silent</td>
+            <td class="note">Run a recovery cadence of three contacts at accounts that stopped shipping, and record why each one left</td>
+            <td class="n">1,008</td><td class="n">79,164</td></tr>
+          <tr class="total"><td class="row-h">Total</td><td class="note">&nbsp;</td>
+            <td class="n">7,254</td><td class="n">2,071,827</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Catch slides early and rank up to a person carry <span class="num">RM 1,413,323</span> of the
+      RM 2,071,827, which is 68% of the base case. Both run on lists of a few hundred accounts, and
+      both are worked by relationship managers POS Malaysia already employs. Ask growers for more and
+      win back the silent run account by account under automation. Campaign the sparse runs by
+      group.</p>
+
+    <p>Software prepares every one of these. It reads the account records each morning, works out
+      which accounts moved, states the likely cause, drafts the message, and holds it for a person to
+      approve before anything is sent.</p>
+
+    <p>The benefit is annual run-rate, not booked revenue. It is what the accounts would bill in a
+      year if they held the volume the initiative aims at. Whether the intervention moves that
+      volume is settled by holding a matched set of accounts back and leaving them alone, and
+      comparing the two sets after two windows. That comparison is what replaces the assumed
+      recovery rates with rates measured on POS Malaysia's own book.</p>
+
+    <h2>Definitions</h2>
+
+    <ul class="rows">
+      <li><p class="k">Parcel</p><p class="v">One consignment in the AXIS records. Volume throughout
+        this pricing is a count of parcels, not a count of orders or shipments.</p></li>
+      <li><p class="k">ARPI</p><p class="v">Average revenue per item. The average ringgit POS
+        Malaysia bills a given account for one parcel. Every revenue figure is a parcel count multiplied
+        by that account's own ARPI.</p></li>
+      <li><p class="k">Run-rate</p><p class="v">What an account would bill in a year if it kept
+        shipping at the rate it shipped in the last 28 days. It makes a 28-day count comparable to
+        an annual budget.</p></li>
+      <li><p class="k">Volume band</p><p class="v">A bracket of parcels per 28 days. Lost is zero,
+        Minimal is 1 to 5, Low is 6 to 15, Mid is 16 to 46, High is 47 or more. An account moving
+        between two bands is the event the programme acts on.</p></li>
+      <li><p class="k">Window</p><p class="v">A block of 28 days. The extract holds six consecutive
+        windows. The three most recent are named P1, P2 and P3, with P3 ending 30 June 2026.</p></li>
+      <li><p class="k">The long tail</p><p class="v">Every account shipping 50 parcels a month or
+        fewer. POS Malaysia has 14,843 accounts shipping anything at all, and 11,733 of them fall
+        inside that ceiling.</p></li>
+    </ul>
+
+    <h2>Revenue is concentrated in a few hundred accounts</h2>
+
+    <p>The phrase "long tail" suggests a large number of small accounts that resemble each other.
+      This book does not behave that way. The median account bills <span class="num">RM 680</span> a
+      year and the mean account bills <span class="num">RM 2,075</span>, a gap of three times.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Which accounts hold the revenue</caption>
+        <thead>
+          <tr><th>Largest accounts</th><th class="n">Share of accounts</th><th class="n">Revenue RM/yr</th><th class="n">Share of book</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Top 100</td><td class="n">1%</td><td class="n">4,894,569</td><td class="n">23%</td></tr>
+          <tr><td class="row-h">Top 250</td><td class="n">2%</td><td class="n">7,214,256</td><td class="n">33%</td></tr>
+          <tr><td class="row-h">Top 500</td><td class="n">5%</td><td class="n">9,572,935</td><td class="n">44%</td></tr>
+          <tr><td class="row-h">Top 1,000</td><td class="n">10%</td><td class="n">12,473,144</td><td class="n">58%</td></tr>
+          <tr><td class="row-h">Top 2,500</td><td class="n">24%</td><td class="n">17,121,564</td><td class="n">79%</td></tr>
+          <tr class="total"><td class="row-h">All 10,444</td><td class="n">100%</td><td class="n">21,673,649</td><td class="n">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>One account in ten holds 58% of the book. A programme that has to reach all 10,444 accounts
+      to pay for itself is expensive to run. A programme that starts with a few hundred accounts and
+      still addresses most of the money is affordable.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>From every shipping account to the accounts priced here</caption>
+        <thead>
+          <tr><th>Group</th><th class="n">Accounts</th><th>Treatment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Shipping anything at all</td><td class="n">14,843</td><td class="note">Starting population</td></tr>
+          <tr><td class="row-h">Above the long-tail ceiling</td><td class="n">3,110</td><td class="note">More than 50 parcels a month. Not priced here. The same approach applies to them at larger scale</td></tr>
+          <tr><td class="row-h">Long-tail accounts</td><td class="n">11,733</td><td class="note">50 parcels a month or fewer</td></tr>
+          <tr><td class="row-h">No revenue-per-item on file</td><td class="n">302</td><td class="note">Cannot be priced. A refreshed customer master file returns them to scope</td></tr>
+          <tr><td class="row-h">Silent across every recent window</td><td class="n">987</td><td class="note">Shipped nothing in the last 84 days. Dormant rather than declining</td></tr>
+          <tr class="total"><td class="row-h">Priced</td><td class="n">10,444</td><td class="note">89.0% of the long-tail book</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Two large flows cancel each other out</h2>
+
+    <p>Each account's most recent 28 days is compared with the same account 56 days earlier, priced
+      at that account's own revenue per item and stated as an annual run-rate.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>What moved between P1 and P3</caption>
+        <thead>
+          <tr><th>Direction</th><th class="n">Accounts</th><th class="n">Annual run-rate RM</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Shipping less</td><td class="n">4,511</td><td class="n neg">−6,965,534</td></tr>
+          <tr><td class="row-h">Shipping more</td><td class="n">4,495</td><td class="n pos">+7,944,196</td></tr>
+          <tr><td class="row-h">Unchanged</td><td class="n">1,438</td><td class="n">0</td></tr>
+          <tr class="total"><td class="row-h">Net</td><td class="n">10,444</td><td class="n">+978,662</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The two flows are within a few percent of each other, so the total barely moves from one
+      period to the next. A monthly revenue report shows the net figure of RM 978,662 and surfaces
+      no problem. The programme works on the two gross flows instead. Accounts that are declining
+      receive nothing today, and accounts that are growing are not being asked for more volume.</p>
+
+    <p>Not all of the RM 6.97 million decline can be acted on. Some accounts are leaving the
+      network. Others are showing ordinary variation, shipping 12 parcels in one window, 8 in the
+      next and 12 again in the third. <span class="num">RM 3,406,216</span> of the decline cannot be
+      told apart from that ordinary variation and is left out of every figure in the pricing.</p>
+
+    <h2>Most of the money leaves while the customer is still a customer</h2>
+
+    <p>A small shipper rarely stops in one step. The usual pattern runs from high volume to low
+      volume, then a stretch of low volume, and only then silence. Treating a customer as either
+      active or gone misses most of the money.</p>
+
+    <p>Of the <span class="num">8,981</span> accounts shipping at the start of the window,
+      <span class="num">2,501</span> dropped at least one volume band, giving up
+      <span class="num">RM 5,483,872</span> of annual run-rate. <b>Customers who left account for
+      24% of that leak. Customers who stayed and shipped less account for 76%.</b></p>
+
+    <div class="tbl">
+      <table>
+        <caption>Every downward step, largest leak first</caption>
+        <thead>
+          <tr><th>Move</th><th class="n">Accounts</th><th class="n">Annual run-rate lost RM</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">High to Low</td><td class="n">29</td><td class="n neg">1,299,685</td></tr>
+          <tr><td class="row-h">Mid to Low</td><td class="n">517</td><td class="n neg">1,014,509</td></tr>
+          <tr><td class="row-h">High to Mid</td><td class="n">152</td><td class="n neg">768,316</td></tr>
+          <tr><td class="row-h">Low to Minimal</td><td class="n">684</td><td class="n neg">664,156</td></tr>
+          <tr><td class="row-h">Minimal to Lost</td><td class="n">812</td><td class="n neg">426,526</td></tr>
+          <tr><td class="row-h">Mid to Lost</td><td class="n">56</td><td class="n neg">376,370</td></tr>
+          <tr><td class="row-h">Mid to Minimal</td><td class="n">99</td><td class="n neg">299,602</td></tr>
+          <tr><td class="row-h">Low to Lost</td><td class="n">114</td><td class="n neg">261,296</td></tr>
+          <tr><td class="row-h">High to Lost</td><td class="n">26</td><td class="n neg">255,216</td></tr>
+          <tr><td class="row-h">High to Minimal</td><td class="n">12</td><td class="n neg">118,198</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The largest single leak in the book is 29 accounts sliding from High to Low, worth
+      RM 1,299,685 a year. Those 29 accounts are still shipping, so a win-back campaign never
+      reaches them. Watching each account's volume against its own recent baseline catches the slide
+      in the window it happens in.</p>
+
+    <p>The recommended action changes with the step. An account drifting from High to Mid gets a
+      service conversation. An account moving from Minimal to Lost gets a win-back offer.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Where the book sat at the start of the window</caption>
+        <thead>
+          <tr><th>Volume band</th><th class="n">Parcels per 28 days</th><th class="n">Accounts</th><th class="n">Revenue RM/yr</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Lost</td><td class="n">0</td><td class="n">1,463</td><td class="n">0</td></tr>
+          <tr><td class="row-h">Minimal</td><td class="n">1 to 5</td><td class="n">3,776</td><td class="n">1,978,704</td></tr>
+          <tr><td class="row-h">Low</td><td class="n">6 to 15</td><td class="n">2,687</td><td class="n">4,627,994</td></tr>
+          <tr><td class="row-h">Mid</td><td class="n">16 to 46</td><td class="n">2,249</td><td class="n">10,037,456</td></tr>
+          <tr><td class="row-h">High</td><td class="n">47 or more</td><td class="n">269</td><td class="n">4,050,834</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The test claims 51% of the decline</h2>
+
+    <p>Shipping volumes wobble on their own. To separate a real drop from a wobble, each account is
+      first compared with the network. If the whole network shipped 3% less this window, every
+      account is expected to ship 3% less, and an account is only flagged when it falls further than
+      that. The size of the gap is then weighed against how large the account's numbers are. A fall
+      from 200 parcels to 150 is large enough to flag. A fall from 4 parcels to 3 sits inside
+      ordinary variation. An account is flagged only when a gap that size would happen by chance
+      less than once in twenty times.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>How the book divides once the test is applied</caption>
+        <thead>
+          <tr><th>Group</th><th class="n">Accounts</th><th class="n">Book RM/yr</th><th class="n">Net change RM/yr</th><th>What it means</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Down-trading</td><td class="n">845</td><td class="n">2,783,645</td><td class="n neg">−2,239,911</td>
+            <td class="note">Shipping clearly below its own baseline once the network is allowed for</td></tr>
+          <tr><td class="row-h">Lost</td><td class="n">1,328</td><td class="n">0</td><td class="n neg">−1,319,407</td>
+            <td class="note">Shipped nothing at all in the last 28 days</td></tr>
+          <tr><td class="row-h">Up-trading</td><td class="n">512</td><td class="n">4,883,265</td><td class="n pos">+2,718,587</td>
+            <td class="note">Shipping clearly above its own baseline</td></tr>
+          <tr><td class="row-h">Ranked-up</td><td class="n">54</td><td class="n">418,863</td><td class="n pos">+263,740</td>
+            <td class="note">Grew in both windows from a real starting base, and has outgrown the long tail</td></tr>
+          <tr><td class="row-h">Stable</td><td class="n">1,776</td><td class="n">7,944,619</td><td class="n pos">+1,227,201</td>
+            <td class="note">Moving, within what ordinary variation explains</td></tr>
+          <tr><td class="row-h">Insufficient signal</td><td class="n">5,929</td><td class="n">5,643,257</td><td class="n pos">+328,451</td>
+            <td class="note">Too few parcels for any statement about direction</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The test claims <span class="num">RM 3,559,318</span> of the RM 6,965,534 gross decline as
+      addressable, which is 51%. The remaining <span class="num">RM 3,406,216</span> cannot be told
+      apart from ordinary variation in a shipper's business and is left out of every figure in the
+      pricing. The 5,929 accounts with insufficient signal never trigger a per-account action, whatever
+      their headcount looks like. They are worked through campaigns instead.</p>
+
+    <h2>Safeguarding the revenue already on the book</h2>
+
+    <p>Catch slides early and win back the silent protect revenue that already exists. They are priced separately
+      because they behave differently. An account that dropped a band while still shipping is
+      reachable and still transacting, and the action is a service conversation. An account that has
+      stopped shipping is harder, slower and less often recovered, so its recovery range is lower and
+      wider.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Safeguard initiatives, priced</caption>
+        <thead>
+          <tr><th>Action</th><th class="n">Accounts</th><th class="n">Base RM/yr</th><th class="n">Success range</th><th class="n">Conservative</th><th class="n">Base case</th><th class="n">Target</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Catch slides early</td><td class="n">1,493</td><td class="n">4,164,465</td><td class="n">15 / 22 / 30%</td><td class="n">624,670</td><td class="n">916,182</td><td class="n">1,249,340</td></tr>
+          <tr><td class="row-h">Win back the silent</td><td class="n">1,008</td><td class="n">1,319,407</td><td class="n">3 / 6 / 9%</td><td class="n">39,582</td><td class="n">79,164</td><td class="n">118,747</td></tr>
+          <tr class="total"><td class="row-h">Total</td><td class="n">2,501</td><td class="n">5,483,872</td><td class="n">—</td><td class="n">664,252</td><td class="n">995,347</td><td class="n">1,368,086</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Catch slides early is priced on the annual run-rate those 1,493 accounts have already given
+      up. Win back the silent is priced on the annual run-rate the 1,008 silent accounts billed
+      before they stopped. Win-back rates of 3%, 6% and 9% are the lowest in the model. Published business-to-
+      business experience is consistent that most customers who go silent do not come back.</p>
+
+    <p>The slide population is larger than the 845 down-trading accounts in the table above, because
+      a change of volume band does not have to pass a statistical test. An account moving from Mid to
+      Low shipped fewer parcels. That is a business fact whether or not the gap is large enough to
+      flag.</p>
+
+    <h2>Growing the accounts that are already moving</h2>
+
+    <p>Ask growers for more, rank up to a person and campaign the sparse work the revenue side of the
+      same book. Some accounts are already
+      growing without any help, and no one is asking them for more.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Growth initiatives, priced</caption>
+        <thead>
+          <tr><th>Action</th><th class="n">Accounts</th><th class="n">Base RM/yr</th><th class="n">Success range</th><th class="n">Conservative</th><th class="n">Base case</th><th class="n">Target</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Ask growers for more</td><td class="n">2,231</td><td class="n">4,446,276</td><td class="n">5 / 10 / 15%</td><td class="n">222,314</td><td class="n">444,628</td><td class="n">666,941</td></tr>
+          <tr><td class="row-h">Rank up to a person</td><td class="n">315</td><td class="n">4,971,406</td><td class="n">5 / 10 / 25%</td><td class="n">248,570</td><td class="n">497,141</td><td class="n">1,242,852</td></tr>
+          <tr><td class="row-h">Campaign the sparse</td><td class="n">2,207</td><td class="n">3,367,810</td><td class="n">2 / 4 / 6%</td><td class="n">67,356</td><td class="n">134,712</td><td class="n">202,069</td></tr>
+          <tr class="total"><td class="row-h">Total</td><td class="n">4,753</td><td class="n">12,785,492</td><td class="n">—</td><td class="n">538,240</td><td class="n">1,076,481</td><td class="n">2,111,862</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Rank up to a person is the largest single initiative</h3>
+    <p>315 accounts ended the window in the High band, shipping 47 parcels or more per 28 days, and
+      they average <span class="num">RM 15,782</span> a year each. They receive no dedicated account
+      management. They sit inside the long-tail automation with everyone else. Moving them to a named
+      relationship manager takes this initiative from RM 497,141 at the base case to RM 1,242,852 at
+      target, which is the widest range in the model.</p>
+
+    <h3>Ask growers for more reaches accounts already growing</h3>
+    <p>2,231 accounts gained a volume band under their own momentum. Their existing growth is not
+      counted as a benefit of the programme. The modelled uplift of 5%, 10% or 15% sits on top of
+      what those accounts produce on their own.</p>
+
+    <h3>Campaign the sparse works by group, not by account</h3>
+    <p>2,207 accounts sit in the Minimal band, shipping 1 to 5 parcels per 28 days. The base is the
+      distance from where each one is now to 10 parcels, the middle of the Low band, priced at that
+      account's own revenue per item. The base per account is small, and across 2,207 accounts it
+      reaches RM 134,712 a year at the base case.</p>
+
+    <h2>Where to start</h2>
+
+    <p>Ranking the accounts by how much money each one puts at stake produces a contact list. The
+      concentration seen in the book as a whole is sharper in the flows the programme changes.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>What a starting list buys</caption>
+        <thead>
+          <tr><th>Starting list</th><th class="n">Accounts contacted</th><th class="n">Safeguard base RM/yr</th><th class="n">Share</th><th class="n">Growth base RM/yr</th><th class="n">Share</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Top 50 of each</td><td class="n">100</td><td class="n">2,219,454</td><td class="n">40%</td><td class="n">3,357,274</td><td class="n">26%</td></tr>
+          <tr><td class="row-h">Top 100 of each</td><td class="n">200</td><td class="n">2,721,003</td><td class="n">50%</td><td class="n">4,336,863</td><td class="n">34%</td></tr>
+          <tr><td class="row-h">Top 200 of each</td><td class="n">400</td><td class="n">3,332,677</td><td class="n">61%</td><td class="n">5,640,379</td><td class="n">44%</td></tr>
+          <tr><td class="row-h">Top 500 of each</td><td class="n">1,000</td><td class="n">4,267,720</td><td class="n">78%</td><td class="n">7,796,240</td><td class="n">61%</td></tr>
+          <tr class="total"><td class="row-h">Everything flagged</td><td class="n">7,254</td><td class="n">5,483,872</td><td class="n">100%</td><td class="n">12,785,492</td><td class="n">100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Contacting 200 accounts reaches half of the safeguard base and a third of the growth base.
+      Working the full flagged population of 7,254 accounts costs 36 times the contact volume for the
+      remaining half. Two relationship managers can work a list of 200, and a genuine effect on either
+      base shows up inside a tranche that size.</p>
+
+    <p>The list is ranked by money at stake rather than by risk of loss. An account at critical risk
+      with RM 300 a year at stake sits below an account at medium risk with RM 40,000. A pure
+      risk model would order these two the other way round.</p>
+
+    <h2>The combined case</h2>
+
+    <div class="tbl">
+      <table>
+        <caption>What each initiative contributes at each rate</caption>
+        <thead>
+          <tr><th>Action</th><th class="n">Conservative rate</th><th class="n">Conservative RM/yr</th><th class="n">Base rate</th><th class="n">Base RM/yr</th><th class="n">Target rate</th><th class="n">Target RM/yr</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Catch slides early</td><td class="n">15%</td><td class="n">624,670</td><td class="n">22%</td><td class="n">916,182</td><td class="n">30%</td><td class="n">1,249,340</td></tr>
+          <tr><td class="row-h">Rank up to a person</td><td class="n">5%</td><td class="n">248,570</td><td class="n">10%</td><td class="n">497,141</td><td class="n">25%</td><td class="n">1,242,852</td></tr>
+          <tr><td class="row-h">Ask growers for more</td><td class="n">5%</td><td class="n">222,314</td><td class="n">10%</td><td class="n">444,628</td><td class="n">15%</td><td class="n">666,941</td></tr>
+          <tr><td class="row-h">Campaign the sparse</td><td class="n">2%</td><td class="n">67,356</td><td class="n">4%</td><td class="n">134,712</td><td class="n">6%</td><td class="n">202,069</td></tr>
+          <tr><td class="row-h">Win back the silent</td><td class="n">3%</td><td class="n">39,582</td><td class="n">6%</td><td class="n">79,164</td><td class="n">9%</td><td class="n">118,747</td></tr>
+          <tr class="total"><td class="row-h">Total</td><td class="n">—</td><td class="n">1,202,492</td><td class="n">—</td><td class="n">2,071,827</td><td class="n">—</td><td class="n">3,479,948</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>RM 2,071,827 a year is the recommended planning figure. It is 9.6% of the long-tail book.</p>
+
+    <p class="lead-in">Value that sits outside these figures:</p>
+
+    <ul class="rows">
+      <li><p class="k">3,110 accounts</p><p class="v">Above the long-tail ceiling, shipping more than
+        50 parcels a month. The same approach applies to them at larger scale.</p></li>
+      <li><p class="k">987 accounts</p><p class="v">Silent across every recent window. A refreshed
+        customer master file returns them to scope.</p></li>
+      <li><p class="k">302 accounts</p><p class="v">No revenue-per-item figure on file, so they
+        cannot be priced today.</p></li>
+    </ul>
+
+    <p>Widening scope is the direct route to a larger base case. The recovery rates stay inside their
+      evidence-based ranges.</p>
+
+    <h2>Assumptions that would need to be revisited</h2>
+
+    <ul class="rows">
+      <li><p class="k">Band changes near a threshold</p><p class="v">An account shipping 16 parcels in
+        one window and 15 in the next crosses from Mid to Low on a single parcel. Some share of band
+        changes is threshold noise of this kind. The pilot's control group is what separates the
+        genuine effect from it.</p></li>
+      <li><p class="k">The success rates</p><p class="v">The rates come from published
+        business-to-business retention practice, not from measurement on a postal and courier long
+        tail. The ordering of the initiatives against each other is well supported. The specific percentages are
+        directional and are labelled as such. No unattributed benchmark is used
+        anywhere in the pricing.</p></li>
+      <li><p class="k">The customer master file</p><p class="v">Lookup_Customer is dated 16 February
+        2022 and is applied to 2026 transactions. 7.9% of parcels in the AXIS extract map to no
+        master account, and roughly half of active accounts carry no CRM attributes. A refreshed
+        extract is the single most valuable input POS Malaysia could supply.</p></li>
+      <li><p class="k">Revenue per item</p><p class="v">A single July 2026 figure is applied across
+        every window, so price is held flat and every trend reported here is driven by volume. A
+        declining account that is also being discounted is worse than shown. Monthly history would
+        separate the two effects.</p></li>
+      <li><p class="k">Six months of history</p><p class="v">The windows include Chinese New Year and
+        Hari Raya. Seasonality is handled by measuring each account against the network rather than
+        against its own past. A full year would allow that adjustment to be verified directly.</p></li>
+    </ul>
+
+    <h2>How the programme is built</h2>
+
+    <p>Each initiative is served by its own piece of software. Each one reads the account
+      records, decides what to do, drafts the message in words, and waits for a person to approve it
+      before anything is sent. They share one set of foundations, so account history, daily
+      work queues and outcome tracking are built once.</p>
+
+    <h3>Built once and shared</h3>
+
+    <ul class="rows">
+      <li><p class="k">Daily refresh</p><p class="v">Runs the pipeline behind these figures once a day and
+        publishes the band movements and risk scores every other part reads.</p></li>
+      <li><p class="k">Account record</p><p class="v">One record per account holding band history,
+        contact history, what was tried, what happened, and who owns the account today. Every change
+        is appended in order rather than overwritten, so the account's full history can be replayed
+        at any date.</p></li>
+      <li><p class="k">Message drafter</p><p class="v">Takes the chosen play and the account's own
+        history and writes the outreach. The software reads the account's shipping pattern and
+        produces a message that refers to it, in the way a person would if they had time to read
+        every account.</p></li>
+      <li><p class="k">Approval queue</p><p class="v">Holds any message above a value threshold until
+        a person approves it. One queue covers every initiative, so an approver sees a single list.</p></li>
+      <li><p class="k">Outcome tracker</p><p class="v">Watches the following windows and records
+        whether the account recovered or grew. Those results are what replace the assumed recovery rates
+        with measured ones.</p></li>
+      <li><p class="k">Work queue screen</p><p class="v">The screen a relationship manager opens each
+        morning, listing the day's accounts with the reason each one appeared and the recommended
+        action.</p></li>
+    </ul>
+
+    <h3>Rank up to a person</h3>
+    <p>Triggers when an account reaches the High band. It reads the shipping history, rhythm,
+      revenue per item, product mix, industry and any recorded service events, and writes a one-page
+      handover briefing. A fixed rule assigns the account to a relationship manager by territory,
+      industry and current workload. The manager is notified, accepts, receives the briefing, and
+      first contact is tracked. Nothing is sent to the customer here. The work is to make
+      the relationship manager useful on day one.</p>
+
+    <h3>Catch slides early</h3>
+    <p>Triggers on any downward band move where the account is still shipping. It reads the shape of
+      the decline, whether the gaps between shipments are widening, whether the drop was sudden or
+      steady, whether the routes changed, and how many days the account was active, and states the
+      most likely cause. A fixed rule then picks one of four plays: a service check-in, a retention
+      offer, a rate-card review, or a short questionnaire. The message is drafted against the chosen
+      play and the account's own volume history. High-value accounts go to a person for approval.
+      Low-value accounts send directly within pre-approved wording. The next window's volume decides
+      whether the account is closed as recovered or escalated to a person.</p>
+
+    <h3>Ask growers for more</h3>
+    <p>Triggers on any upward band move short of High, which routes to rank up to a person instead. It compares
+      the account with similar accounts that grew further and suggests what to offer: additional
+      services, a better rate card, adjacent routes, or a vehicle wrap for accounts on dedicated
+      pickup. It drafts an approach that opens on the growth the account has already shown. Opens,
+      clicks and replies are tracked, and strong engagement escalates to a person. An account
+      approaching High-band volumes hands off to rank up to a person.</p>
+
+    <h3>Campaign the sparse</h3>
+    <p>Groups the 2,207 sparse accounts by industry, location and service tier. It picks the group,
+      the angle and the offer based on how earlier campaigns performed, then sends to hundreds of
+      accounts at once. Some accounts in each group are deliberately left out and not contacted.
+      Comparing the two sets afterwards shows what the campaign did rather than what the market did.
+      Any sparse account that climbs a band moves into the ask-growers queue. Approval works
+      differently here: a campaign is approved once and then runs at scale, rather than message by
+      message.</p>
+
+    <h3>Win back the silent</h3>
+    <p>Triggers when an account reaches the Lost band from a band above it, with a minimum silence
+      before it fires so that a quiet season does not set it off. It reads the pattern before the
+      silence and any CRM context and states a likely cause: a service problem, a competitor win, a
+      closure, or a project that ended. Contact runs on a fixed cadence of an initial approach, a
+      follow-up at two weeks and a final at six weeks, after which the account is closed as
+      confirmed lost. Each touch takes a different angle, and open-text replies are turned into
+      structured feedback for service and product. Win back the silent carries the tightest approval
+      controls, because the message goes to a customer who has already stopped buying.</p>
+
+    <h3>What it runs on</h3>
+    <p>The programme is built on the Akka Agentic AI Platform. Each initiative is a sequence of steps
+      that the platform remembers, so a step that fails resumes where it stopped rather than starting
+      over. Account records, work queues and the integrations into the relationship-manager
+      application and the campaign tool are platform components. A separate architecture document
+      covers the component design.</p>
+
+    <h2>Appendix A. How the numbers are derived</h2>
+
+    <h3>Windows of 28 days rather than calendar months</h3>
+    <p>Volume in this book depends heavily on the day of the week. Monday runs about 5.6 times
+      Sunday. A period that is not a whole number of weeks holds a different mix of weekdays from
+      the period beside it, and that difference is larger than most real trends. 28 days is the
+      shortest period holding every weekday the same number of times, so the day mix cannot distort
+      a comparison. Six of them cover 168 days, about five and a half months.</p>
+
+    <h3>Days removed from the extract</h3>
+    <p>Ten days in the six-month AXIS extract contain between 1 and 29 parcels network-wide, and one
+      day is missing entirely. An ordinary working day carries about 145,000 parcels. A public
+      holiday depresses volume and still leaves thousands: Chinese New Year registered about 3,700.
+      Single-digit days are failed extracts. Any day below 15% of the trailing median is masked
+      rather than deleted, recorded in the coverage log, and removed from its window's day count.
+      Every window is then normalised back to 28 clean days. Reading a failed extract as real demand
+      would drive a network-wide false decline and trigger retention contact against the entire
+      book.</p>
+
+    <h3>The test that flags an account</h3>
+    <p>An account's expected volume for the current window is its previous window scaled by how the
+      network moved. Observed volume is compared with that expectation using a standard method for
+      counting data that stays reliable when the counts are small. The threshold is set at the point
+      where a gap that size would occur by chance about once in twenty times.</p>
+
+    <ul class="rows">
+      <li><p class="k">Falling back a window</p><p class="v">An account that collapsed from a large
+        base, 242 parcels to 4 to 7, has too little recent volume to test. The baseline then falls
+        back one window further. Without that fallback the account is filed as insufficient signal
+        and sent to campaign nurture while it is plainly leaving. The collapse is the signal.</p></li>
+      <li><p class="k">Guarding rank-up</p><p class="v">Growth is only treated as sustained when it
+        rises across both windows and the starting window held at least 10 parcels. Without that
+        guard, an account going 0 to 1 to 233 parcels passes the rising test while being a first
+        order rather than a trend.</p></li>
+    </ul>
+
+    <h3>The test and the initiatives count different populations</h3>
+    <p>The test and the initiatives divide the same book by different rules, so their account counts
+      differ, and both divisions are used.</p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>&nbsp;</th><th>Divided by the test</th><th>Divided by initiative</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Divides by</td><td class="note">Whether the change passes the test</td><td class="note">Movement between volume bands</td></tr>
+          <tr><td class="row-h">Needs a baseline of 25 parcels</td><td class="note">Yes</td><td class="note">No</td></tr>
+          <tr><td class="row-h">Lost / win back the silent</td><td class="n">894</td><td class="n">1,008</td></tr>
+          <tr><td class="row-h">Ranked-up / rank up to a person</td><td class="n">54</td><td class="n">315</td></tr>
+          <tr><td class="row-h">Down-trading / catch slides early</td><td class="n">854</td><td class="n">1,493</td></tr>
+          <tr><td class="row-h">Up-trading / ask growers for more</td><td class="n">512</td><td class="n">2,231</td></tr>
+          <tr><td class="row-h">Sparse</td><td class="note">Held inside insufficient signal</td><td class="n">2,207</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The initiative view is more inclusive because a change of volume band is a business event that
+      needs no statistical test to be worth acting on. That inclusiveness is what takes the base case
+      to RM 2,071,827 rather than the smaller figure a group-based sizing produces.</p>
+
+    <h3>The daily risk score</h3>
+    <p>Each account carries a risk score built from four inputs: how long it has been since the last
+      shipment compared with that account's usual gap, which way its volume is moving, how recently
+      it shipped at all, and how many days it was active. The four inputs carry weights of 40, 30, 20
+      and 10. Tested against history, the riskiest tenth and second tenth of the book together
+      contain 74 of every 100 accounts that went on to stop shipping, and one in three accounts
+      flagged did stop. The score drives the daily work queue. The initiatives are priced on band
+      movement, not on the score.</p>
+
+    <h2>Appendix B. The longer view</h2>
+
+    <p>The eight-week comparison matches the frame the daily system works in, and it is a short
+      frame. Measured across all six windows, the same book falls from RM 23,358,596 to
+      RM 21,673,647 of annual run-rate.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Annual run-rate in each 28-day window</caption>
+        <thead>
+          <tr><th>Window</th><th class="n">W1</th><th class="n">W2</th><th class="n">W3</th><th class="n">W4</th><th class="n">W5</th><th class="n">W6</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">RM per year</td><td class="n">23,358,596</td><td class="n">19,898,945</td><td class="n">18,858,843</td><td class="n">20,694,986</td><td class="n">20,283,242</td><td class="n">21,673,647</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>That is a fall of 7.2% across 168 days, which is 15.0% a year, or
+      <span class="num">RM 1,684,949</span> of annual run-rate. The five-and-a-half-month reading
+      carries twice as many data points as the eight-week reading and is less exposed to a single
+      window landing on a seasonal peak or trough.</p>
+
+    <p>The initiatives are priced against the shorter frame, which understates the underlying
+      decline. The RM 3,479,948 target therefore has more room in it than the arithmetic alone
+      shows.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Where the money moved across 5.5 months</caption>
+        <thead>
+          <tr><th>Bucket</th><th class="n">Accounts</th><th class="n">RM per year</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Run-rate at W1</td><td class="n">—</td><td class="n">23,358,596</td></tr>
+          <tr><td class="row-h">Exits, went to zero</td><td class="n">759</td><td class="n neg">−2,644,508</td></tr>
+          <tr><td class="row-h">Declines, still shipping less</td><td class="n">3,904</td><td class="n neg">−7,277,838</td></tr>
+          <tr><td class="row-h">Flat</td><td class="n">821</td><td class="n">0</td></tr>
+          <tr><td class="row-h">Growth</td><td class="n">2,936</td><td class="n pos">+4,373,035</td></tr>
+          <tr><td class="row-h">Entrants, from zero</td><td class="n">1,455</td><td class="n pos">+3,864,363</td></tr>
+          <tr class="total"><td class="row-h">Run-rate at W6</td><td class="n">—</td><td class="n">21,673,647</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The buckets reconcile to the ringgit. Exits and declines together are the safeguard
+      opportunity, and they carry RM 9,922,346 of the movement.</p>
+
+    <h3>A ringgit figure for each percentage point</h3>
+    <p>One percentage point means the programme changes the outcome for one account in every hundred
+      it works on.</p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>Action group</th><th class="n">Accounts a year</th><th class="n">RM per account</th><th class="n">RM per percentage point</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Preventing loss</td><td class="n">10,131</td><td class="n">2,128</td><td class="n">215,575</td></tr>
+          <tr><td class="row-h">Accelerating growth</td><td class="n">9,540</td><td class="n">1,876</td><td class="n">178,967</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Ten percentage points of loss prevention with five points of growth acceleration is
+      RM 3,050,584 a year. The population is the same one the initiatives are priced on, measured in a
+      different unit.</p>
+
+    <h3>The group left alone</h3>
+    <p>The book moves on its own, so a treated set of accounts that grows has demonstrated nothing by
+      itself. Holding a set of accounts back and leaving them alone is the only way to separate the
+      programme's effect from market movement and seasonality without both parties having to agree on
+      a model first. Account-level annual change has a mean of −RM 659 and a spread of RM 9,775,
+      which is what sets the sample sizes.</p>
+
+    <div class="tbl">
+      <table>
+        <caption>Accounts needed in each set to see an effect</caption>
+        <thead>
+          <tr><th>Effect to detect</th><th class="n">RM per account</th><th class="n">Accounts per set</th><th class="n">Share of book</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">2 percentage points</td><td class="n">43</td><td class="n">827,269</td><td class="n">15,842%</td></tr>
+          <tr><td class="row-h">5 percentage points</td><td class="n">106</td><td class="n">132,364</td><td class="n">2,535%</td></tr>
+          <tr><td class="row-h">10 percentage points</td><td class="n">213</td><td class="n">33,091</td><td class="n">634%</td></tr>
+          <tr><td class="row-h">15 percentage points</td><td class="n">319</td><td class="n">14,708</td><td class="n">282%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Every one of those sample sizes is larger than the book. A small effect spread across all
+      10,444 accounts cannot be measured at this scale. The pilot is therefore designed to detect a
+      large effect on the concentrated starting list of 200 accounts.</p>
+
+  </div>
+</section>
+
+<section class="close">
+  <div class="wrap">
+    <p class="k">Next step</p>
+    <h2>A controlled pilot on the first 200 accounts</h2>
+    <p>The top 100 accounts on each list carry <b>RM 2,721,003</b> of the safeguard base and
+      <b>RM 4,336,863</b> of the growth base. Working them is a contact volume two relationship
+      managers can absorb.</p>
+    <p>A matched set of accounts is held back and left alone. The difference between the two sets
+      after two windows is what replaces the assumed recovery rates with rates measured on POS
+      Malaysia's own book.</p>
+    <p>A refreshed <b>Lookup_Customer</b> extract returns 302 accounts to pricing and restores the
+      CRM attributes missing on roughly half of active accounts. <b>Monthly revenue-per-item
+      history</b> separates a volume decline from a price decline. Either one widens the case.</p>
+  </div>
+</section>
+
+</body>
+</html>

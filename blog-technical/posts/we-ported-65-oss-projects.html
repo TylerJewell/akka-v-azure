@@ -180,9 +180,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>We expected Opus to be quicker as it should get more of the analysis right on the first pass. But what we found was that effort was a better barometer of speed. Since we added guardrails over time, we could ensure that there was adequate output accuracy (ie, the project wasn't done until all unit tests passed) regardless of model and effort.</p>
 
-<figure>
+<figure class="tbl">
   <img src="charts/06-model-effort-tokens.png" alt="Efficiency by Model and Effort">
-  <figcaption>Efficiency score by model and effort level. Cube root of (turns ÷ median) × (time ÷ median) × (tokens ÷ median). Lower is more efficient.</figcaption>
 </figure>
 
 <p>When taking into account efficiency (an aggregate score of total round trips to the model, total wall clock time to complete, and total tokens consumed), both Opus and Sonnet showed similar efficiency until they hit xhigh effort.</p>
@@ -221,9 +220,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>It wasn't obvious to us before running the experiment, but after looking at the data, it does seem intuitive that younger, smaller models need more round trips ("turns") to go through all of its analysis and work before it signs off on the final outcome. You can see from the data that, generally, sonnet needed a lot more turns than opus, and these extra turns typically led to more tokens being consumed in aggregate. Since the cost per token is cheaper in sonnet vs. opus, this may be a moot point in terms of total cost of a port, but for those who are hosting their own models with spare GPU to execute more inference, the extra turns of a smaller weight model may be worth the cost.</p>
 
-<figure>
+<figure class="tbl">
   <img src="charts/05-tokens-vs-steps.png" alt="Tokens Used vs Steps Taken">
-  <figcaption>Linear relationship between conversation turns and total tokens consumed. Sonnet requires more turns; Opus consumes more tokens per step.</figcaption>
 </figure>
 
 </div>
@@ -236,9 +234,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>We were surprised to see how Akka's abstractions lead to smaller code bases that could be predicted based upon their original LOC size.</p>
 
-<figure>
+<figure class="tbl">
   <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance Ratio vs LOC Ratio">
-  <figcaption>Performance quadrants: ports that achieved both smaller code AND faster performance (lower left) vs. those that grew larger, and performance losses.</figcaption>
 </figure>
 
 </div>
@@ -262,9 +259,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>Akka asks you to be explicit about a few things that little scripting languages let you fudge. In other words, Akka depends upon Java which is strongly typed (and you can see a long history of writings from different vendors on the benefits and consequences of typing). In a small Python or JavaScript project you write one line that mutates an object and it just works. In Akka you write a <code>SomethingHappened</code> record, a <code>SomethingCommanded</code> record, a <code>SomethingState</code> record, and a bit of code that says "when this thing happens, the state goes from A to B." For big projects that's a rounding error; for tiny projects that structure ends up as a lot of unnecessary overhead.</p>
 
-<figure>
+<figure class="tbl">
   <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens Used vs Lines of Code Saved">
-  <figcaption>Positive X-axis means the port shrunk the codebase. Larger ports with significant savings didn't necessarily consume more tokens.</figcaption>
 </figure>
 
 </div>
@@ -284,9 +280,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 <li><strong>JVM JIT.</strong> After a warmup pass the hot paths run at essentially native speed. Interpreted Python and Node can't catch up on tight inner loops.</li>
 </ul>
 
-<figure>
+<figure class="tbl">
   <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark Answer Parity vs LOC Ratio">
-  <figcaption>The green band at the top shows ports matching the original's output on 100% of test cases. Lower ports show partial parity.</figcaption>
 </figure>
 
 </div>
