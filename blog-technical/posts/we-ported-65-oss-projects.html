@@ -13,9 +13,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
 <link rel="stylesheet" href="../theme/base.css">
 <style>
-/* Two-column key/value table: the rows want far less than the wide measure. */
-.metrics-table{max-width:640px;margin:36px auto}
-.metrics-table table{margin:0 auto}
 /* Mirrors .rtbl td.win for the losing side of a gains/losses pair. */
 .rtbl tbody td.lose{color:var(--bad);font-weight:600}
 </style>
@@ -97,28 +94,28 @@
 
 <h2>Summary Metrics</h2>
 
-<div class="table-scroll metrics-table">
-<table>
+<div class="table-scroll tight">
+<table style="table-layout:fixed;--ind:3px"><colgroup><col style="width:42.7%"><col style="width:57.3%"></colgroup>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
+<th class="ind">Metric</th>
+<th class="ind">Value</th>
 </tr>
 </thead>
 <tbody>
-<tr><td><strong>Total time</strong></td><td><strong>99.3 hours</strong></td></tr>
-<tr><td>Mean time per port</td><td>92 min (median 76)</td></tr>
-<tr><td>Fastest port</td><td>umputun/remark42 — 24 min (sonnet/low)</td></tr>
-<tr><td>Longest port</td><td>activepieces/activepieces — 292 min (opus/high)</td></tr>
-<tr><td>Total tokens</td><td>9.41B (25.5M output; the rest cache read/write)</td></tr>
-<tr><td>Sonnet mean time per port</td><td>61 min (n=31, median 60)</td></tr>
-<tr><td>Opus mean time per port</td><td>120 min (n=34, median 96)</td></tr>
-<tr><td>Total starting LOC (scope-matched)</td><td>61,835 (64/65 projects)</td></tr>
-<tr><td>Total finished LOC (port scope)</td><td>43,737 (64/65 projects)</td></tr>
-<tr><td>Largest LOC reduction</td><td>agno-agi/agno — 0.08:1 (1,524 → 127)</td></tr>
-<tr><td>Largest LOC increase</td><td>getredash/redash — 2.17:1 (542 → 1,176)</td></tr>
-<tr><td>Largest performance increase</td><td>langgenius/dify — 143,333× faster ⚠</td></tr>
-<tr><td>Largest performance degradation</td><td>Netflix/metaflow — 0.01× (100× slower)</td></tr>
+<tr><td class="ind"><strong>Total time</strong></td><td class="ind"><strong>99.3 hours</strong></td></tr>
+<tr><td class="ind">Mean time per port</td><td class="ind">92 min (median 76)</td></tr>
+<tr><td class="ind">Fastest port</td><td class="ind">umputun/remark42 — 24 min (sonnet/low)</td></tr>
+<tr><td class="ind">Longest port</td><td class="ind">activepieces/activepieces — 292 min (opus/high)</td></tr>
+<tr><td class="ind">Total tokens</td><td class="ind">9.41B (25.5M output; the rest cache read/write)</td></tr>
+<tr><td class="ind">Sonnet mean time per port</td><td class="ind">61 min (n=31, median 60)</td></tr>
+<tr><td class="ind">Opus mean time per port</td><td class="ind">120 min (n=34, median 96)</td></tr>
+<tr><td class="ind">Total starting LOC (scope-matched)</td><td class="ind">61,835 (64/65 projects)</td></tr>
+<tr><td class="ind">Total finished LOC (port scope)</td><td class="ind">43,737 (64/65 projects)</td></tr>
+<tr><td class="ind">Largest LOC reduction</td><td class="ind">agno-agi/agno — 0.08:1 (1,524 → 127)</td></tr>
+<tr><td class="ind">Largest LOC increase</td><td class="ind">getredash/redash — 2.17:1 (542 → 1,176)</td></tr>
+<tr><td class="ind">Largest performance increase</td><td class="ind">langgenius/dify — 143,333× faster ⚠</td></tr>
+<tr><td class="ind">Largest performance degradation</td><td class="ind">Netflix/metaflow — 0.01× (100× slower)</td></tr>
 </tbody>
 </table>
 </div>
@@ -168,7 +165,7 @@
 <p>The port was only considered complete and successful if the source system's unit and integration tests would pass when run against the new Akka system. Additionally, Claude was required to run <code>/akka:review</code> after every port which executes a variety of design, performance, and code structure auditors. Claude was required to resolve every identified issue:</p>
 
 <div class="table-scroll">
-<table>
+<table style="table-layout:fixed"><colgroup><col style="width:12.1%"><col style="width:87.9%"></colgroup>
 <thead>
 <tr><th>Auditor</th><th>What it checks</th></tr>
 </thead>
@@ -205,7 +202,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 1</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark answer parity vs. LOC ratio">
@@ -226,7 +223,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 2</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/06-efficiency-model-effort.png" alt="Efficiency by model and effort">
@@ -241,7 +238,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 3</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/07-tokens-model-effort.png" alt="Tokens per port by model and effort">
@@ -258,7 +255,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 4</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/08-complexity-adjusted.png" alt="Complexity-adjusted efficiency vs. size of the ported slice">
@@ -304,7 +301,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 5</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/09-guardrail-cost.png" alt="The aggregate cost of adding guardrails">
@@ -321,7 +318,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 6</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/05-tokens-vs-steps.png" alt="Tokens used vs. steps taken">
@@ -340,7 +337,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 7</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/01-loc-ratio-vs-size.png" alt="LOC ratio vs. size of the ported slice">
@@ -480,7 +477,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 8</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens used vs. lines of code saved">
@@ -562,7 +559,7 @@
 </div>
 
 <div class="wide">
-<figure class="viz" style="--fig-w:842px">
+<figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 9</p>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
