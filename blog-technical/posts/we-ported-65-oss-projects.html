@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>We Ported 65 OSS Projects In 4 Days With AI — Akka</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,15 +13,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
 <link rel="stylesheet" href="../theme/base.css">
 <style>
-.metrics-table { max-width: 640px; margin: 36px auto; }
-.metrics-table table { margin: 0 auto; }
-.body.col > figure.tbl { width: min(940px, calc(100vw - 40px)); margin-left: calc(320px - min(470px, 50vw - 20px)); margin-right: auto; margin-top: 52px; margin-bottom: 52px; display: flex; justify-content: center; }
-figure.tbl img { width: auto; height: auto; display: block; }
-figure.tbl > figcaption dl { margin: 0; font-size: 13px; line-height: 1.5; }
-figure.tbl > figcaption dt { font-weight: 600; color: var(--ink); display: inline; margin: 0; padding: 0; }
-figure.tbl > figcaption dd { display: inline; margin: 0; padding: 0; }
-figure.tbl > figcaption dt + dd + dt { margin-top: 12px; display: block; }
-figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
+/* Two-column key/value table: the rows want far less than the wide measure. */
+.metrics-table{max-width:640px;margin:36px auto}
+.metrics-table table{margin:0 auto}
+/* Mirrors .rtbl td.win for the losing side of a gains/losses pair. */
+.rtbl tbody td.lose{color:var(--bad);font-weight:600}
 </style>
 </head>
 <body>
@@ -118,7 +115,7 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 <tr><td>Opus mean time per port</td><td>120 min (n=34, median 96)</td></tr>
 <tr><td>Total starting LOC (scope-matched)</td><td>61,835 (64/65 projects)</td></tr>
 <tr><td>Total finished LOC (port scope)</td><td>43,737 (64/65 projects)</td></tr>
-<tr><td>Largest LOC reduction</td><td>arguflow/agno — 0.08:1 (1,524 → 127)</td></tr>
+<tr><td>Largest LOC reduction</td><td>agno-agi/agno — 0.08:1 (1,524 → 127)</td></tr>
 <tr><td>Largest LOC increase</td><td>getredash/redash — 2.17:1 (542 → 1,176)</td></tr>
 <tr><td>Largest performance increase</td><td>langgenius/dify — 143,333× faster ⚠</td></tr>
 <tr><td>Largest performance degradation</td><td>Netflix/metaflow — 0.01× (100× slower)</td></tr>
@@ -168,8 +165,52 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 <li>Leveraging Akka's embedded persistence layer of event-sourced entities and key-value entities, workflow for orchestration, views for read models, and durable state replicated across nodes before attempting to import an external database, graph store, or vector store. We were pleased to find that after all ports had finished, none of the projects needed to import an external persistence engine.</li>
 </ol>
 
-<p>The port was only considered complete and successful if the source system's unit and integration tests would pass when run against the new Akka system. Additionally, Claude was required to run <code>/akka:review</code> after every port which executes a variety of design, performance, and code structure auditors. Claude was required to resolve every identified issue.</p>
+<p>The port was only considered complete and successful if the source system's unit and integration tests would pass when run against the new Akka system. Additionally, Claude was required to run <code>/akka:review</code> after every port which executes a variety of design, performance, and code structure auditors. Claude was required to resolve every identified issue:</p>
 
+<div class="table-scroll">
+<table>
+<thead>
+<tr><th>Auditor</th><th>What it checks</th></tr>
+</thead>
+<tbody>
+<tr><td>Serialization &amp; state integrity</td><td>Ensures persisted data can always be read back correctly across restarts and deployments. Covers stable type-name labels, pure event-replay functions, and safe entity initialization.</td></tr>
+<tr><td>Endpoints &amp; security</td><td>Confirms endpoints are declared correctly and don't leak sensitive operations to the public internet. Access-control rules must be present and not overly permissive.</td></tr>
+<tr><td>Workflows</td><td>Checks that workflows use the current APIs, keep step vs. command return types straight, and give AI steps enough time to finish. Prevents silent breakage and constant 5-second timeouts.</td></tr>
+<tr><td>Agents</td><td>Agents must be stateless so concurrent requests don't corrupt each other. No fields holding data between calls.</td></tr>
+<tr><td>Views</td><td>Verifies read-model wiring: right annotation placement, right handler for the source type, correctly wrapped list results, and no null fields. Wrong wiring means the view silently never populates.</td></tr>
+<tr><td>Error handling</td><td>Errors must use the framework's supported types so they can travel across nodes cleanly. Custom exception classes must be static to serialize.</td></tr>
+<tr><td>Payload &amp; state size</td><td>Enforces 1 MB limits on payloads, state, and events, plus 1 KB on timer inputs. Bigger data breaks replication and stalls the entity — store large assets externally by reference.</td></tr>
+<tr><td>Code quality &amp; safety</td><td>Bans blocking I/O in handlers, shared mutable state between components, and hardcoded secrets. Each causes stalls, race conditions, or leaks.</td></tr>
+<tr><td>PII &amp; data sanitization</td><td>Personal data must not appear raw in logs, error messages, endpoint responses, or LLM prompts. Sanitize or omit before it leaves the entity.</td></tr>
+<tr><td>Serialization conventions</td><td>Sensible defaults for serialized types: name sealed-interface variants, use Optional for missing fields, return new records for state changes, and declare all Protobuf event types. Keeps schemas evolvable and readable.</td></tr>
+<tr><td>Architecture conventions</td><td>Enforces a clean 3-layer DDD structure with framework-free domain code, business logic in domain objects, and standard naming for entities, commands, events, and views.</td></tr>
+<tr><td>Endpoint conventions</td><td>Every endpoint declares access rules, returns API-specific types (not raw domain), and uses the sync <code>.invoke()</code> style with the HttpResponses helpers. Access context comes from <code>requestContext()</code>.</td></tr>
+<tr><td>Workflow &amp; agent conventions</td><td>Failing steps have compensations, AI steps have retry caps and long-enough timeouts, transitions use method references, and each agent has an intentional model, memory, and error-fallback choice. Keeps workflows predictable and AI costs under control.</td></tr>
+<tr><td>Consumer &amp; idempotency</td><td>Ensures duplicate deliveries and retries don't cause double-effects: dedupe tokens on mutating commands, bounded dedupe state, deterministic tokens on external calls, and infallible compensations. Also: no fat events, load big assets just-in-time, enable sanitization when PII is present.</td></tr>
+<tr><td>Testing conventions</td><td>Uses the right testkit per component type, Awaitility for async view projections, httpClient for endpoint integration tests, and TestModelProvider to avoid real LLM calls. Integration test class names end in IntegrationTest.</td></tr>
+<tr><td>Error handling conventions</td><td>Return values from component calls aren't silently discarded, CommandException is caught and mapped to proper HTTP responses, and unexpected exceptions are handled instead of leaking as bare 500s.</td></tr>
+<tr><td>Design review</td><td>Higher-level design observations: no hot/god entities, right entity granularity, bounded state, right-sized events, parallel workflow steps, appropriate use of workflows and views, no deep sync call chains or circular dependencies, and clear aggregate boundaries.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The conversion must run human unattended. During the analysis phase of any source system, if there was any ambiguous functionality or behavior AI was instructed to get clarity by running the source system's integration tests. Eventually, in trial runs, Claude invented a form of adversarial testing that it would use to determine whether ambiguous behavior could be deterministically applied, or whether it was indefinitely non-deterministic.</p>
+
+<p>Claude was instructed to vary its choice of models and efforts randomly. After a few of the initial runs consumed a lot of time on Opus xhigh, we removed xhigh from the consideration list for the remaining runs.</p>
+
+<p>Each resulting port was placed into a GitHub repository and given a detailed README with instructions on how to use it, how to re-run the unit and integration tests, and how to rebuild it from scratch using Akka Specify. The full list of projects we converted is in the Appendix.</p>
+
+<p>Answer parity measures how often the port returned the same result as the original on the same input. Ports cluster at 100%, and the ports below it are the ones whose remaining gap is recorded in the port's own benchmark report.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 1</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark answer parity vs. LOC ratio">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
@@ -180,14 +221,32 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>We expected Opus to be quicker as it should get more of the analysis right on the first pass. But what we found was that effort was a better barometer of speed. Since we added guardrails over time, we could ensure that there was adequate output accuracy (ie, the project wasn't done until all unit tests passed) regardless of model and effort.</p>
 
-<figure class="tbl">
-  <img src="charts/06-model-effort-tokens.png" alt="Efficiency by Model and Effort">
-</figure>
-
 <p>When taking into account efficiency (an aggregate score of total round trips to the model, total wall clock time to complete, and total tokens consumed), both Opus and Sonnet showed similar efficiency until they hit xhigh effort.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 2</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/06-efficiency-model-effort.png" alt="Efficiency by model and effort">
+  </div></div>
+</figure>
+</div>
+
+<div class="body col">
 
 <p>But, while they were largely the same efficiency, you still paid more total tokens for higher efforts than you did for lower efforts.</p>
 
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 3</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/07-tokens-model-effort.png" alt="Tokens per port by model and effort">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
@@ -198,16 +257,42 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 </div>
 
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 4</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/08-complexity-adjusted.png" alt="Complexity-adjusted efficiency vs. size of the ported slice">
+  </div></div>
+</figure>
+</div>
+
 <div class="body col">
 
 <h3>LOC and Performance by Project Category</h3>
 
 <p>It seems that the type of application that was ported was a predictor of whether Akka could improve its LOC and its performance. Big SAAS applications and large complex frameworks saw significant performance boosts due to Akka's event-sourced entities, embedded durable execution, and in-memory durable data.</p>
 
-<figure class="tbl">
-  <img src="charts/01-loc-ratio-vs-size.png" alt="LOC Ratio vs Size of Ported Slice">
-</figure>
+</div>
 
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 1</p>
+  <h4>Median LOC and performance change, grouped by what the project is</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:19%"><col style="width:9%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:14%"><col style="width:12%"></colgroup>
+    <thead>
+      <tr><th>Category</th><th>Ports</th><th>Median LOC ratio</th><th>LOC change</th><th>Median perf. ratio</th><th>Perf. change</th><th>Mean parity</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">Application</td><td>32</td><td>1.00×</td><td>+0%</td><td>5.60×</td><td class="win">+460%</td><td>96.80%</td></tr>
+      <tr><td class="prop">Framework</td><td>11</td><td>0.57×</td><td class="win">−43%</td><td>6.30×</td><td class="win">+530%</td><td>98.05%</td></tr>
+      <tr><td class="prop">Library</td><td>14</td><td>1.06×</td><td>+6%</td><td>3.10×</td><td class="win">+210%</td><td>98.82%</td></tr>
+      <tr><td class="prop">Infrastructure</td><td>6</td><td>0.74×</td><td class="win">−26%</td><td>0.53×</td><td class="lose">−47%</td><td>97.56%</td></tr>
+      <tr><td class="prop">Tool/CLI</td><td>2</td><td>0.75×</td><td class="win">−25%</td><td>0.53×</td><td class="lose">−47%</td><td>100.00%</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>LOC ratio.</b> Port lines divided by the lines of the source slice it replaced; below 1.00× the port is smaller. <b>Performance ratio.</b> Source latency divided by port latency; above 1.00× the port is faster. <b>Parity.</b> Share of benchmark cases where the port returned the same answer as the original.</figcaption>
+</figure>
 </div>
 
 <div class="body col">
@@ -216,14 +301,32 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>Over time, after each port was completed, the engine would self-assess whether there were additional checks that it should do when working on the next port. These would show up as additional auditors and guardrails. And, as you'd expect, as you add more exit conditions, auditors, and guardrails, the ports become less efficient.</p>
 
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 5</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/09-guardrail-cost.png" alt="The aggregate cost of adding guardrails">
+  </div></div>
+</figure>
+</div>
+
+<div class="body col">
+
 <h3>Steps vs. Tokens</h3>
 
 <p>It wasn't obvious to us before running the experiment, but after looking at the data, it does seem intuitive that younger, smaller models need more round trips ("turns") to go through all of its analysis and work before it signs off on the final outcome. You can see from the data that, generally, sonnet needed a lot more turns than opus, and these extra turns typically led to more tokens being consumed in aggregate. Since the cost per token is cheaper in sonnet vs. opus, this may be a moot point in terms of total cost of a port, but for those who are hosting their own models with spare GPU to execute more inference, the extra turns of a smaller weight model may be worth the cost.</p>
 
-<figure class="tbl">
-  <img src="charts/05-tokens-vs-steps.png" alt="Tokens Used vs Steps Taken">
-</figure>
+</div>
 
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 6</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/05-tokens-vs-steps.png" alt="Tokens used vs. steps taken">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
@@ -234,13 +337,128 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>We were surprised to see how Akka's abstractions lead to smaller code bases that could be predicted based upon their original LOC size.</p>
 
-<figure class="tbl">
-  <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance Ratio vs LOC Ratio">
-</figure>
+</div>
 
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 7</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/01-loc-ratio-vs-size.png" alt="LOC ratio vs. size of the ported slice">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
+
+<p>Residual is the gap between what a port cost and what its original size predicted it would cost. These ports came in furthest under that prediction, and every one of them ran on sonnet at low effort.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 2</p>
+  <h4>Ports that came in furthest under their predicted cost</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">omnigent</td><td>sonnet / low</td><td class="win">−0.74</td><td>0.57</td><td>1.4k</td><td>323</td><td>34.2</td><td>66.66M</td></tr>
+      <tr><td class="prop">agno</td><td>sonnet / low</td><td class="win">−0.67</td><td>0.65</td><td>1.5k</td><td>394</td><td>39.9</td><td>68.89M</td></tr>
+      <tr><td class="prop">crawlee</td><td>sonnet / low</td><td class="win">−0.64</td><td>0.61</td><td>984</td><td>373</td><td>34.2</td><td>69.89M</td></tr>
+      <tr><td class="prop">remark42</td><td>sonnet / low</td><td class="win">−0.64</td><td>0.43</td><td>324</td><td>281</td><td>24.5</td><td>44.31M</td></tr>
+      <tr><td class="prop">gpt-researcher</td><td>sonnet / low</td><td class="win">−0.63</td><td>0.54</td><td>591</td><td>335</td><td>31.9</td><td>57.81M</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Efficiency score.</b> Geometric mean of the port's turns divided by the median turns across all ports, its active wall-clock minutes divided by the median minutes, and its tokens divided by the median tokens. Unitless. A score of 1.0 is an average port; lower is more efficient.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<p>These ports ran furthest over the cost their original size predicted. Four of the five ran on opus, and the two most expensive ran at high effort.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 3</p>
+  <h4>Ports that ran furthest over their predicted cost</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">activepieces</td><td>opus / high</td><td class="lose">+2.07</td><td>3.27</td><td>692</td><td>1239</td><td>291.8</td><td>381.58M</td></tr>
+      <tr><td class="prop">memos</td><td>opus / high</td><td class="lose">+1.80</td><td>3.00</td><td>734</td><td>1249</td><td>216.4</td><td>397.04M</td></tr>
+      <tr><td class="prop">uptime-kuma</td><td>opus / medium</td><td class="lose">+1.31</td><td>2.32</td><td>234</td><td>1006</td><td>212.0</td><td>232.80M</td></tr>
+      <tr><td class="prop">teable</td><td>opus / low</td><td class="lose">+0.96</td><td>2.50</td><td>5.5k</td><td>917</td><td>262.4</td><td>256.11M</td></tr>
+      <tr><td class="prop">deepwiki-open</td><td>sonnet / medium</td><td class="lose">+0.96</td><td>2.28</td><td>1.5k</td><td>944</td><td>126.7</td><td>392.23M</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Residual.</b> The port's efficiency score minus the score an ordinary least-squares fit predicts from the original slice size. A positive residual is a port that cost more than its size accounts for.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<p>The ports that shed the most code all replaced source that carried its own orchestration, persistence, or transport layer.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 4</p>
+  <h4>Ports that reduced LOC the most</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">voltagent</td><td>sonnet / medium</td><td class="win">+5.1k</td><td>5.6k</td><td>535</td><td class="win">0.10×</td></tr>
+      <tr><td class="prop">teable</td><td>opus / low</td><td class="win">+3.8k</td><td>5.5k</td><td>1.6k</td><td class="win">0.30×</td></tr>
+      <tr><td class="prop">honcho</td><td>sonnet / medium</td><td class="win">+1.8k</td><td>2.3k</td><td>462</td><td class="win">0.20×</td></tr>
+      <tr><td class="prop">opal</td><td>opus / xhigh</td><td class="win">+1.4k</td><td>2.2k</td><td>815</td><td class="win">0.36×</td></tr>
+      <tr><td class="prop">agno</td><td>sonnet / low</td><td class="win">+1.4k</td><td>1.5k</td><td>127</td><td class="win">0.08×</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Source slice LOC.</b> Lines in the part of the original the port reproduces, rather than lines in the whole project. Pairing a port against a whole project reads as a claim the ratio never made.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<p>The ports that grew all replaced small source slices, where the record and state declarations Akka requires are a larger share of the total.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 5</p>
+  <h4>Ports that increased LOC the most</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">redash</td><td>opus / high</td><td class="lose">−634</td><td>542</td><td>1.2k</td><td class="lose">2.17×</td></tr>
+      <tr><td class="prop">novu</td><td>sonnet / high</td><td class="lose">−627</td><td>706</td><td>1.3k</td><td class="lose">1.89×</td></tr>
+      <tr><td class="prop">ragflow</td><td>sonnet / high</td><td class="lose">−585</td><td>591</td><td>1.2k</td><td class="lose">1.99×</td></tr>
+      <tr><td class="prop">glance</td><td>opus / medium</td><td class="lose">−546</td><td>690</td><td>1.2k</td><td class="lose">1.79×</td></tr>
+      <tr><td class="prop">linkwarden</td><td>opus / low</td><td class="lose">−481</td><td>778</td><td>1.3k</td><td class="lose">1.62×</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>LOC saved.</b> Source slice lines minus port lines. A negative figure is a port that is larger than the slice it replaced.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<p>When you rebuild a program on Akka, two things happen at the same time, pushing the LOC count into different directions.</p>
 
 <h3>Why LOC Shrinks With Akka</h3>
 
@@ -259,15 +477,74 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>Akka asks you to be explicit about a few things that little scripting languages let you fudge. In other words, Akka depends upon Java which is strongly typed (and you can see a long history of writings from different vendors on the benefits and consequences of typing). In a small Python or JavaScript project you write one line that mutates an object and it just works. In Akka you write a <code>SomethingHappened</code> record, a <code>SomethingCommanded</code> record, a <code>SomethingState</code> record, and a bit of code that says "when this thing happens, the state goes from A to B." For big projects that's a rounding error; for tiny projects that structure ends up as a lot of unnecessary overhead.</p>
 
-<figure class="tbl">
-  <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens Used vs Lines of Code Saved">
-</figure>
+</div>
 
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 8</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens used vs. lines of code saved">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
 
 <h3>Performance Gains</h3>
+
+<p>The ports that gained the most speed all replaced source that reached a database or an event loop on every request.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 6</p>
+  <h4>Ports that improved performance the most</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">dify</td><td>sonnet / high</td><td class="win">143,333.00×</td></tr>
+      <tr><td class="prop">opal</td><td>opus / xhigh</td><td class="win">1,078.00×</td></tr>
+      <tr><td class="prop">new-api</td><td>opus / low</td><td class="win">488.00×</td></tr>
+      <tr><td class="prop">pocketbase</td><td>opus / medium</td><td class="win">362.00×</td></tr>
+      <tr><td class="prop">linkwarden</td><td>opus / low</td><td class="win">337.00×</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Performance ratio.</b> Source latency divided by port latency on the same benchmark. <b>dify.</b> The 143,333× figure compares a cached in-memory read against a source path that re-ran an LLM call, so it measures two different amounts of work.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
+<p>The ports that lost the most speed all ship something the source did not: durability, an HTTP surface, or a boundary between components that the original crossed in-process.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 7</p>
+  <h4>Ports that worsened performance the most</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prop">metaflow</td><td>opus / medium</td><td class="lose">0.01×</td></tr>
+      <tr><td class="prop">listmonk</td><td>sonnet / high</td><td class="lose">0.01×</td></tr>
+      <tr><td class="prop">openstatus</td><td>sonnet / medium</td><td class="lose">0.04×</td></tr>
+      <tr><td class="prop">ragflow</td><td>sonnet / high</td><td class="lose">0.08×</td></tr>
+      <tr><td class="prop">deepstream-io</td><td>opus / medium</td><td class="lose">0.11×</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Performance ratio.</b> Below 1.00× the port is slower than the original. A ratio of 0.01× is a port that takes 100 times as long.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
 
 <p>We believe that these elements cause Akka to offer a performance increase:</p>
 
@@ -280,17 +557,28 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 <li><strong>JVM JIT.</strong> After a warmup pass the hot paths run at essentially native speed. Interpreted Python and Node can't catch up on tight inner loops.</li>
 </ul>
 
-<figure class="tbl">
-  <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark Answer Parity vs LOC Ratio">
-</figure>
+<p>And there doesn't seem to be any correlation to whether improving LOC would cause a performance increase or not.</p>
 
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:842px">
+  <p class="viz-title">Figure 9</p>
+  <div class="plot-wrap"><div class="plate plate--flush">
+    <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
+  </div></div>
+</figure>
 </div>
 
 <div class="body col">
 
 <h2>Lessons Learned</h2>
 
+<p>We had a few goals when we set out on this experiment. Here is what we found.</p>
+
 <h3>1. Specifications Must Be Structured Data</h3>
+
+<p>Specifications should have structure, schema, and typed behavior, unambiguously.</p>
 
 <p>Every port that ran through the harness produced a spec before writing any code. What we watched across all iterations is that the structure of the specification determined whether a first-pass implementation was correct. Ports whose specs enumerated their claims, cited them to evidence, and typed their answers (this input produces that output; this state transitions to that state) generated code that matched behavior on the first pass. Ports whose specs were prose—"the system should handle X gracefully"—generated code that was plausible and wrong, and the errors surfaced two to four steps downstream when the port was already committed to a design or a structure.</p>
 
@@ -301,6 +589,8 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 <p>Across all ports, the model's initial implementation choices were high-quality on the components Akka's context describes in detail—entities, workflows, endpoints, views—and low-quality on the choices between them. Which effect goes in which component, whether a workflow should orchestrate or a consumer should react, when a KVE is enough and when an event-sourced entity is required—these are the questions where first-pass code was most often rebuilt in the review step.</p>
 
 <h3>3. Exit Conditions Capture What "Shipping" Means</h3>
+
+<p>Exit Conditions do capture what shipping a system means, and a structured harness can act as the record of what those conditions ought to be.</p>
 
 <p>The eight-step pipeline that we generated that standardized how a port should work—pick, start, work out what it does, rebuild, measure, publish, write up, fix the method—is the closest thing we have to a portable definition of "system delivered." Every guardrail we added mid-run (sweep leftover processes, refuse an empty screen, close the rendering gate, warn on a hung tool at four heartbeats) turned into an Exit Condition that needed to be audited on a future project.</p>
 
@@ -330,6 +620,85 @@ figure.tbl > figcaption b { font-weight: 700; color: var(--body); }
 
 <p>We've started to see Akka Specify as intelligence that can execute an AI-assisted delivery lifecycle without human intervention—not just single systems, but the infrastructure and audit layer that makes them production-ready.</p>
 
+</div>
+
+<div class="body col">
+
+<h2>Appendix: The Ported Projects</h2>
+
+<p>Each port has its own repository, with a README covering how to run it, how to re-run the unit and integration tests, and how to rebuild it from scratch using Akka Specify.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 8</p>
+  <h4>Source project, GitHub stars at the time of the port, and the port's repository</h4>
+  <table class="rtbl">
+    <colgroup><col style="width:5%"><col style="width:21%"><col style="width:29%"><col style="width:12%"><col style="width:33%"></colgroup>
+    <thead>
+      <tr><th>#</th><th>Port</th><th>Source</th><th>Stars</th><th>Repository</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="prop">opal</td><td>permitio/opal</td><td>5,503</td><td><a href="https://github.com/TylerJewell/opal-akka">TylerJewell/opal-akka</a></td></tr>
+      <tr><td>2</td><td class="prop">vanna</td><td>vanna-ai/vanna</td><td>23,820</td><td><a href="https://github.com/TylerJewell/vanna-akka">TylerJewell/vanna-akka</a></td></tr>
+      <tr><td>3</td><td class="prop">deepstream-io</td><td>deepstreamIO/deepstream.io</td><td>7,188</td><td><a href="https://github.com/TylerJewell/deepstream-io-akka">TylerJewell/deepstream-io-akka</a></td></tr>
+      <tr><td>4</td><td class="prop">dtm</td><td>dtm-labs/dtm</td><td>10,911</td><td><a href="https://github.com/TylerJewell/dtm-akka">TylerJewell/dtm-akka</a></td></tr>
+      <tr><td>5</td><td class="prop">nsq</td><td>nsqio/nsq</td><td>25,773</td><td><a href="https://github.com/TylerJewell/nsq-akka">TylerJewell/nsq-akka</a></td></tr>
+      <tr><td>6</td><td class="prop">intentkit</td><td>crestalnetwork/intentkit</td><td>6,507</td><td><a href="https://github.com/TylerJewell/intentkit-akka">TylerJewell/intentkit-akka</a></td></tr>
+      <tr><td>7</td><td class="prop">honcho</td><td>plastic-labs/honcho</td><td>6,809</td><td><a href="https://github.com/TylerJewell/honcho-akka">TylerJewell/honcho-akka</a></td></tr>
+      <tr><td>8</td><td class="prop">hive</td><td>aden-hive/hive</td><td>10,955</td><td><a href="https://github.com/TylerJewell/hive-akka">TylerJewell/hive-akka</a></td></tr>
+      <tr><td>9</td><td class="prop">pageindex</td><td>VectifyAI/PageIndex</td><td>35,313</td><td><a href="https://github.com/TylerJewell/pageindex-akka">TylerJewell/pageindex-akka</a></td></tr>
+      <tr><td>10</td><td class="prop">archon</td><td>coleam00/Archon</td><td>23,266</td><td><a href="https://github.com/TylerJewell/archon-akka">TylerJewell/archon-akka</a></td></tr>
+      <tr><td>11</td><td class="prop">voltagent</td><td>VoltAgent/voltagent</td><td>10,409</td><td><a href="https://github.com/TylerJewell/voltagent-akka">TylerJewell/voltagent-akka</a></td></tr>
+      <tr><td>12</td><td class="prop">browser-use</td><td>browser-use/browser-use</td><td>110,339</td><td><a href="https://github.com/TylerJewell/browser-use-akka">TylerJewell/browser-use-akka</a></td></tr>
+      <tr><td>13</td><td class="prop">remark42</td><td>umputun/remark42</td><td>5,587</td><td><a href="https://github.com/TylerJewell/remark42-akka">TylerJewell/remark42-akka</a></td></tr>
+      <tr><td>14</td><td class="prop">changedetection-io</td><td>dgtlmoon/changedetection.io</td><td>33,325</td><td><a href="https://github.com/TylerJewell/changedetection-io-akka">TylerJewell/changedetection-io-akka</a></td></tr>
+      <tr><td>15</td><td class="prop">jaeger</td><td>jaegertracing/jaeger</td><td>23,134</td><td><a href="https://github.com/TylerJewell/jaeger-akka">TylerJewell/jaeger-akka</a></td></tr>
+      <tr><td>16</td><td class="prop">higress</td><td>higress-group/higress</td><td>9,177</td><td><a href="https://github.com/TylerJewell/higress-akka">TylerJewell/higress-akka</a></td></tr>
+      <tr><td>17</td><td class="prop">gpt-researcher</td><td>assafelovic/gpt-researcher</td><td>29,133</td><td><a href="https://github.com/TylerJewell/gpt-researcher-akka">TylerJewell/gpt-researcher-akka</a></td></tr>
+      <tr><td>18</td><td class="prop">metaflow</td><td>Netflix/metaflow</td><td>10,236</td><td><a href="https://github.com/TylerJewell/metaflow-akka">TylerJewell/metaflow-akka</a></td></tr>
+      <tr><td>19</td><td class="prop">listmonk</td><td>knadh/listmonk</td><td>23,093</td><td><a href="https://github.com/TylerJewell/listmonk-akka">TylerJewell/listmonk-akka</a></td></tr>
+      <tr><td>20</td><td class="prop">hyperdx</td><td>hyperdxio/hyperdx</td><td>9,860</td><td><a href="https://github.com/TylerJewell/hyperdx-akka">TylerJewell/hyperdx-akka</a></td></tr>
+      <tr><td>21</td><td class="prop">alertmanager</td><td>prometheus/alertmanager</td><td>8,593</td><td><a href="https://github.com/TylerJewell/alertmanager-akka">TylerJewell/alertmanager-akka</a></td></tr>
+      <tr><td>22</td><td class="prop">memos</td><td>MemTensor/MemOS</td><td>10,951</td><td><a href="https://github.com/TylerJewell/memos-akka">TylerJewell/memos-akka</a></td></tr>
+      <tr><td>23</td><td class="prop">mem0</td><td>mem0ai/mem0</td><td>63,956</td><td><a href="https://github.com/TylerJewell/mem0-akka">TylerJewell/mem0-akka</a></td></tr>
+      <tr><td>24</td><td class="prop">openllmetry</td><td>traceloop/openllmetry</td><td>7,396</td><td><a href="https://github.com/TylerJewell/openllmetry-akka">TylerJewell/openllmetry-akka</a></td></tr>
+      <tr><td>25</td><td class="prop">new-api</td><td>QuantumNous/new-api</td><td>46,125</td><td><a href="https://github.com/TylerJewell/new-api-akka">TylerJewell/new-api-akka</a></td></tr>
+      <tr><td>26</td><td class="prop">coroot</td><td>coroot/coroot</td><td>7,887</td><td><a href="https://github.com/TylerJewell/coroot-akka">TylerJewell/coroot-akka</a></td></tr>
+      <tr><td>27</td><td class="prop">pocket-id</td><td>pocket-id/pocket-id</td><td>9,008</td><td><a href="https://github.com/TylerJewell/pocket-id-akka">TylerJewell/pocket-id-akka</a></td></tr>
+      <tr><td>28</td><td class="prop">authelia</td><td>authelia/authelia</td><td>28,677</td><td><a href="https://github.com/TylerJewell/authelia-akka">TylerJewell/authelia-akka</a></td></tr>
+      <tr><td>29</td><td class="prop">localai</td><td>mudler/LocalAI</td><td>48,656</td><td><a href="https://github.com/TylerJewell/localai-akka">TylerJewell/localai-akka</a></td></tr>
+      <tr><td>30</td><td class="prop">lightrag</td><td>HKUDS/LightRAG</td><td>39,142</td><td><a href="https://github.com/TylerJewell/lightrag-akka">TylerJewell/lightrag-akka</a></td></tr>
+      <tr><td>31</td><td class="prop">openstatus</td><td>openstatusHQ/openstatus</td><td>9,012</td><td><a href="https://github.com/TylerJewell/openstatus-akka">TylerJewell/openstatus-akka</a></td></tr>
+      <tr><td>32</td><td class="prop">deepseek-harness</td><td>deepseek-ai/deepseek-harness</td><td>191,454</td><td><a href="https://github.com/TylerJewell/deepseek-harness-akka">TylerJewell/deepseek-harness-akka</a></td></tr>
+      <tr><td>33</td><td class="prop">omnigent</td><td>omnigent-ai/omnigent</td><td>9,228</td><td><a href="https://github.com/TylerJewell/omnigent-akka">TylerJewell/omnigent-akka</a></td></tr>
+      <tr><td>34</td><td class="prop">pocketbase</td><td>pocketbase/pocketbase</td><td>60,792</td><td><a href="https://github.com/TylerJewell/pocketbase-akka">TylerJewell/pocketbase-akka</a></td></tr>
+      <tr><td>35</td><td class="prop">ragflow</td><td>infiniflow/ragflow</td><td>89,156</td><td><a href="https://github.com/TylerJewell/ragflow-akka">TylerJewell/ragflow-akka</a></td></tr>
+      <tr><td>36</td><td class="prop">temporal</td><td>temporalio/temporal</td><td>22,501</td><td><a href="https://github.com/TylerJewell/temporal-akka">TylerJewell/temporal-akka</a></td></tr>
+      <tr><td>37</td><td class="prop">crawlee</td><td>apify/crawlee</td><td>25,485</td><td><a href="https://github.com/TylerJewell/crawlee-akka">TylerJewell/crawlee-akka</a></td></tr>
+      <tr><td>38</td><td class="prop">graphrag</td><td>microsoft/graphrag</td><td>35,657</td><td><a href="https://github.com/TylerJewell/graphrag-akka">TylerJewell/graphrag-akka</a></td></tr>
+      <tr><td>39</td><td class="prop">supermemory</td><td>supermemoryai/supermemory</td><td>29,034</td><td><a href="https://github.com/TylerJewell/supermemory-akka">TylerJewell/supermemory-akka</a></td></tr>
+      <tr><td>40</td><td class="prop">prefect</td><td>PrefectHQ/prefect</td><td>23,667</td><td><a href="https://github.com/TylerJewell/prefect-akka">TylerJewell/prefect-akka</a></td></tr>
+      <tr><td>41</td><td class="prop">haystack</td><td>deepset-ai/haystack</td><td>26,304</td><td><a href="https://github.com/TylerJewell/haystack-akka">TylerJewell/haystack-akka</a></td></tr>
+      <tr><td>42</td><td class="prop">crewai</td><td>crewAIInc/crewAI</td><td>57,560</td><td><a href="https://github.com/TylerJewell/crewai-akka">TylerJewell/crewai-akka</a></td></tr>
+      <tr><td>43</td><td class="prop">agno</td><td>agno-agi/agno</td><td>41,887</td><td><a href="https://github.com/TylerJewell/agno-akka">TylerJewell/agno-akka</a></td></tr>
+      <tr><td>44</td><td class="prop">novu</td><td>novuhq/novu</td><td>39,660</td><td><a href="https://github.com/TylerJewell/novu-akka">TylerJewell/novu-akka</a></td></tr>
+      <tr><td>45</td><td class="prop">dify</td><td>langgenius/dify</td><td>153,379</td><td><a href="https://github.com/TylerJewell/dify-akka">TylerJewell/dify-akka</a></td></tr>
+      <tr><td>46</td><td class="prop">langgraph</td><td>langchain-ai/langgraph</td><td>40,362</td><td><a href="https://github.com/TylerJewell/langgraph-akka">TylerJewell/langgraph-akka</a></td></tr>
+      <tr><td>47</td><td class="prop">sim</td><td>simstudioai/sim</td><td>29,469</td><td><a href="https://github.com/TylerJewell/sim-akka">TylerJewell/sim-akka</a></td></tr>
+      <tr><td>48</td><td class="prop">activepieces</td><td>activepieces/activepieces</td><td>24,025</td><td><a href="https://github.com/TylerJewell/activepieces-akka">TylerJewell/activepieces-akka</a></td></tr>
+      <tr><td>49</td><td class="prop">promptfoo</td><td>promptfoo/promptfoo</td><td>24,536</td><td><a href="https://github.com/TylerJewell/promptfoo-akka">TylerJewell/promptfoo-akka</a></td></tr>
+      <tr><td>50</td><td class="prop">activitywatch</td><td>ActivityWatch/activitywatch</td><td>18,692</td><td><a href="https://github.com/TylerJewell/activitywatch-akka">TylerJewell/activitywatch-akka</a></td></tr>
+      <tr><td>51</td><td class="prop">deepwiki-open</td><td>AsyncFuncAI/deepwiki-open</td><td>17,752</td><td><a href="https://github.com/TylerJewell/deepwiki-open-akka">TylerJewell/deepwiki-open-akka</a></td></tr>
+      <tr><td>52</td><td class="prop">docmost</td><td>docmost/docmost</td><td>21,453</td><td><a href="https://github.com/TylerJewell/docmost-akka">TylerJewell/docmost-akka</a></td></tr>
+      <tr><td>53</td><td class="prop">cobalt</td><td>imputnet/cobalt</td><td>42,240</td><td><a href="https://github.com/TylerJewell/cobalt-akka">TylerJewell/cobalt-akka</a></td></tr>
+      <tr><td>54</td><td class="prop">glance</td><td>glanceapp/glance</td><td>36,570</td><td><a href="https://github.com/TylerJewell/glance-akka">TylerJewell/glance-akka</a></td></tr>
+      <tr><td>55</td><td class="prop">open-notebook</td><td>lfnovo/open-notebook</td><td>37,531</td><td><a href="https://github.com/TylerJewell/open-notebook-akka">TylerJewell/open-notebook-akka</a></td></tr>
+      <tr><td>56</td><td class="prop">uptime-kuma</td><td>louislam/uptime-kuma</td><td>90,561</td><td><a href="https://github.com/TylerJewell/uptime-kuma-akka">TylerJewell/uptime-kuma-akka</a></td></tr>
+    </tbody>
+  </table>
+</figure>
 </div>
 
 </article>
