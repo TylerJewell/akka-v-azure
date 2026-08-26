@@ -140,22 +140,14 @@
 
 <h2>The Delivery Harness</h2>
 
-<p>We created a delivery harness that would run in a self-improvement loop:</p>
-
-<ol>
-<li><strong>Setup:</strong> Create a new repository, setup observability, and ensure all discovery and build tooling is installed.</li>
-<li><strong>Discovery:</strong> Execute code analysis, domain model analysis, schema analysis, and runtime interrogation of the existing system in order to generate a series of specifications that define the behavior and conditions of the system itself.</li>
-<li><strong>Port:</strong> Define a series of exit conditions derived from the specification and then leverage Akka Specify's planning, tasking, implementation, building, and testing capabilities to author the system with Akka best practices, and then execute Akka's review to ensure that it matches the design standard expected.</li>
-<li><strong>Benchmark:</strong> Execute both systems with a single runner that measures successful execution of all test suites, counts lines of code and assess end user latency performance. Draft a README and push up to the GitHub repository.</li>
-<li><strong>Improve:</strong> Record what failed in discovery or areas where the implementation had to deviate from the specification, and then speculate on techniques we can use to improve the discovery engine or specification standard for the next iteration.</li>
-</ol>
+<p>We created a delivery harness that would run in a self-improvement loop.</p>
 
 </div>
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 1</p>
-  <h4>Improve feeds the next port's discovery</h4>
+  <h4>Akka's delivery harness</h4>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 178" role="img" aria-label="The five harness steps run in order from Setup to Improve. A return path carries Improve's findings back into Discovery, revising the discovery engine and the specification standard before the next port begins.">
       <style>
@@ -174,16 +166,18 @@
         .hx .head-fwd { fill: var(--mute); stroke: none; }
         .hx .head-back { fill: var(--accent); stroke: none; }
       </style>
-      <defs>
-        <marker id="hx-fwd" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
-          <path class="head-fwd" d="M0 0 L8 4 L0 8 z"/>
-        </marker>
-        <marker id="hx-back" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
-          <path class="head-back" d="M0 0 L8 4 L0 8 z"/>
-        </marker>
-      </defs>
-
       <g class="hx">
+        <!-- Inside the group: a marker outside it is not matched by the .hx
+             rules above and paints with the SVG default fill. -->
+        <defs>
+          <marker id="hx-fwd" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="head-fwd" d="M0 0 L8 4 L0 8 z"/>
+          </marker>
+          <marker id="hx-back" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="head-back" d="M0 0 L8 4 L0 8 z"/>
+          </marker>
+        </defs>
+
         <!-- Return path runs above the row: the band below every node is
              occupied by that step's name and gloss. -->
         <path class="back" d="M721 54 V 44 Q 721 32 709 32 H 253 Q 241 32 241 44 V 50"
@@ -232,6 +226,14 @@
 </div>
 
 <div class="body col">
+
+<ol>
+<li><strong>Setup:</strong> Create a new repository, setup observability, and ensure all discovery and build tooling is installed.</li>
+<li><strong>Discovery:</strong> Execute code analysis, domain model analysis, schema analysis, and runtime interrogation of the existing system in order to generate a series of specifications that define the behavior and conditions of the system itself.</li>
+<li><strong>Port:</strong> Define a series of exit conditions derived from the specification and then leverage Akka Specify's planning, tasking, implementation, building, and testing capabilities to author the system with Akka best practices, and then execute Akka's review to ensure that it matches the design standard expected.</li>
+<li><strong>Benchmark:</strong> Execute both systems with a single runner that measures successful execution of all test suites, counts lines of code and assess end user latency performance. Draft a README and push up to the GitHub repository.</li>
+<li><strong>Improve:</strong> Record what failed in discovery or areas where the implementation had to deviate from the specification, and then speculate on techniques we can use to improve the discovery engine or specification standard for the next iteration.</li>
+</ol>
 
 <p>We would rewrite any API, CLI, and MCP surface adhering to the original's design as closely as possible. For any project with a Web GUI, we brought that GUI over wholesale, but modified the way the GUI accesses endpoints to take advantage of Akka's server-side events and other streaming capabilities. We did not port mobile, Slack, WhatsApp, or other types of app interfaces that would require human configuration to properly test for validity.</p>
 
