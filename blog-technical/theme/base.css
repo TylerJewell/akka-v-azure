@@ -129,7 +129,9 @@ article{counter-reset:section}
    the column they land in, so the embed is sized here and holds 16:9. */
 figure.viz iframe,.body iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0}
 
-figure.viz{margin:52px 0}
+/* 40px is twice the 20px a paragraph leaves after itself. At 52 a figure
+   opened 2.6x the body rhythm, against the 2.0x Anthropic's posts hold. */
+figure.viz{margin:40px 0}
 figure.viz > .viz-title,
 figure.viz > h4,
 figure.viz > figcaption,
@@ -183,7 +185,7 @@ figure.viz figcaption b{color:var(--body);font-weight:600}
 /* figure.tbl mirrors figure.viz — same viz-title kicker + h4 header + caption
    pattern. Title and caption align with body prose (640px column); the table
    itself can widen to the full .wide breakout (940px). */
-figure.tbl{margin:52px 0}
+figure.tbl{margin:40px 0}
 figure.tbl > figcaption{font-family:var(--text);font-size:13px;line-height:1.5;color:var(--mute);margin-top:12px;letter-spacing:0.01em}
 figure.tbl > figcaption b{color:var(--body);font-weight:700;letter-spacing:0.02em}
 .rtbl{width:100%;margin:0;border-collapse:collapse;table-layout:fixed;font-family:var(--text);font-size:13px;line-height:1.35}

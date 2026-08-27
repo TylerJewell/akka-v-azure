@@ -19,6 +19,12 @@
    the 20px of the h3 they sit under; as an h5 the title reads as belonging to
    the figure rather than competing with the section heading. The centring the
    theme applies to figure.viz > h4 is repeated here because h5 is not in it. */
+/* Sized from measured content by scratchpad/balance-rtbl.js. A column gets its
+   content plus an equal share of the leftover; half that share is taken as a
+   left indent so each column's text sits centred in its own width rather than
+   against its left edge. table_balance.py does the same for prose tables but
+   skips anything carrying a colgroup, so it never reaches an rtbl. */
+.rtbl[style*="--ind"] thead th,.rtbl[style*="--ind"] tbody td{padding-left:calc(12px + var(--ind,0px))}
 figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:left;
   font-family:var(--display);font-size:16px;line-height:1.3;font-weight:700;
   color:var(--ink);text-wrap:balance;letter-spacing:-0.004em}
@@ -107,27 +113,27 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 1</p>
   <h5>Totals and extremes across the run</h5>
-  <table class="rtbl">
-      <colgroup><col style="width:34%"><col style="width:66%"></colgroup><thead>
+  <table class="rtbl" style="--ind:80px">
+      <colgroup><col style="width:42.4%"><col style="width:57.6%"></colgroup><thead class="ind">
   <tr>
-  <th>Metric</th>
-  <th>Value</th>
+  <th class="ind">Metric</th>
+  <th class="ind">Value</th>
   </tr>
   </thead>
   <tbody>
-  <tr><td class="prop"><strong>Total time</strong></td><td><strong>99.3 hours</strong></td></tr>
-  <tr><td class="prop">Mean time per port</td><td>92 min (median 76)</td></tr>
-  <tr><td class="prop">Fastest port</td><td><a href="https://github.com/TylerJewell/remark42-akka">umputun/remark42</a> — 24 min (sonnet/low)</td></tr>
-  <tr><td class="prop">Longest port</td><td><a href="https://github.com/TylerJewell/activepieces-akka">activepieces/activepieces</a> — 292 min (opus/high)</td></tr>
-  <tr><td class="prop">Total tokens</td><td>9.41B (25.5M output; the rest cache read/write)</td></tr>
-  <tr><td class="prop">Sonnet mean time per port</td><td>61 min (n=31, median 60)</td></tr>
-  <tr><td class="prop">Opus mean time per port</td><td>120 min (n=34, median 96)</td></tr>
-  <tr><td class="prop">Total starting LOC (scope-matched)</td><td>61,835 (64/65 projects)</td></tr>
-  <tr><td class="prop">Total finished LOC (port scope)</td><td>43,737 (64/65 projects)</td></tr>
-  <tr><td class="prop">Largest LOC reduction</td><td><a href="https://github.com/TylerJewell/agno-akka">agno-agi/agno</a> — 0.08:1 (1,524 → 127)</td></tr>
-  <tr><td class="prop">Largest LOC increase</td><td><a href="https://github.com/TylerJewell/redash-akka">getredash/redash</a> — 2.17:1 (542 → 1,176)</td></tr>
-  <tr><td class="prop">Largest performance increase</td><td><a href="https://github.com/TylerJewell/dify-akka">langgenius/dify</a> — 143,333× faster ⚠</td></tr>
-  <tr><td class="prop">Largest performance degradation</td><td><a href="https://github.com/TylerJewell/metaflow-akka">Netflix/metaflow</a> — 0.01× (100× slower)</td></tr>
+  <tr><td class="prop"><strong>Total time</strong></td><td class="ind"><strong>99.3 hours</strong></td></tr>
+  <tr><td class="prop">Mean time per port</td><td class="ind">92 min (median 76)</td></tr>
+  <tr><td class="prop">Fastest port</td><td class="ind"><a href="https://github.com/TylerJewell/remark42-akka">umputun/remark42</a> — 24 min (sonnet/low)</td></tr>
+  <tr><td class="prop">Longest port</td><td class="ind"><a href="https://github.com/TylerJewell/activepieces-akka">activepieces/activepieces</a> — 292 min (opus/high)</td></tr>
+  <tr><td class="prop">Total tokens</td><td class="ind">9.41B (25.5M output; the rest cache read/write)</td></tr>
+  <tr><td class="prop">Sonnet mean time per port</td><td class="ind">61 min (n=31, median 60)</td></tr>
+  <tr><td class="prop">Opus mean time per port</td><td class="ind">120 min (n=34, median 96)</td></tr>
+  <tr><td class="prop">Total starting LOC (scope-matched)</td><td class="ind">61,835 (64/65 projects)</td></tr>
+  <tr><td class="prop">Total finished LOC (port scope)</td><td class="ind">43,737 (64/65 projects)</td></tr>
+  <tr><td class="prop">Largest LOC reduction</td><td class="ind"><a href="https://github.com/TylerJewell/agno-akka">agno-agi/agno</a> — 0.08:1 (1,524 → 127)</td></tr>
+  <tr><td class="prop">Largest LOC increase</td><td class="ind"><a href="https://github.com/TylerJewell/redash-akka">getredash/redash</a> — 2.17:1 (542 → 1,176)</td></tr>
+  <tr><td class="prop">Largest performance increase</td><td class="ind"><a href="https://github.com/TylerJewell/dify-akka">langgenius/dify</a> — 143,333× faster ⚠</td></tr>
+  <tr><td class="prop">Largest performance degradation</td><td class="ind"><a href="https://github.com/TylerJewell/metaflow-akka">Netflix/metaflow</a> — 0.01× (100× slower)</td></tr>
   </tbody>
   </table>
 </figure>
@@ -267,7 +273,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="viz-title">Table 2</p>
   <h5>The auditors every port had to pass</h5>
   <table class="rtbl">
-      <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
+      <colgroup><col style="width:17.9%"><col style="width:82.1%"></colgroup>
   <thead>
   <tr><th>Auditor</th><th>What it checks</th></tr>
   </thead>
@@ -385,17 +391,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 3</p>
   <h5>Median LOC and performance change, grouped by what the project is</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:19%"><col style="width:9%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:14%"><col style="width:12%"></colgroup>
-    <thead>
-      <tr><th>Category</th><th>Ports</th><th>Median LOC ratio</th><th>LOC change</th><th>Median perf. ratio</th><th>Perf. change</th><th>Mean parity</th></tr>
+  <table class="rtbl" style="--ind:15px">
+    <colgroup><col style="width:14.4%"><col style="width:10.9%"><col style="width:15.1%"><col style="width:15.4%"><col style="width:16.1%"><col style="width:16.5%"><col style="width:11.7%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Category</th><th class="ind">Ports</th><th class="ind">Median LOC ratio</th><th class="ind">LOC change</th><th class="ind">Median perf. ratio</th><th class="ind">Perf. change</th><th class="ind">Mean parity</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">Application</td><td>32</td><td>1.00×</td><td>+0%</td><td>5.60×</td><td class="win">+460%</td><td>96.80%</td></tr>
-      <tr><td class="prop">Framework</td><td>11</td><td>0.57×</td><td class="win">−43%</td><td>6.30×</td><td class="win">+530%</td><td>98.05%</td></tr>
-      <tr><td class="prop">Library</td><td>14</td><td>1.06×</td><td>+6%</td><td>3.10×</td><td class="win">+210%</td><td>98.82%</td></tr>
-      <tr><td class="prop">Infrastructure</td><td>6</td><td>0.74×</td><td class="win">−26%</td><td>0.53×</td><td class="lose">−47%</td><td>97.56%</td></tr>
-      <tr><td class="prop">Tool/CLI</td><td>2</td><td>0.75×</td><td class="win">−25%</td><td>0.53×</td><td class="lose">−47%</td><td>100.00%</td></tr>
+      <tr><td class="prop">Application</td><td class="ind">32</td><td class="ind">1.00×</td><td class="ind">+0%</td><td class="ind">5.60×</td><td class="win">+460%</td><td class="ind">96.80%</td></tr>
+      <tr><td class="prop">Framework</td><td class="ind">11</td><td class="ind">0.57×</td><td class="win">−43%</td><td class="ind">6.30×</td><td class="win">+530%</td><td class="ind">98.05%</td></tr>
+      <tr><td class="prop">Library</td><td class="ind">14</td><td class="ind">1.06×</td><td class="ind">+6%</td><td class="ind">3.10×</td><td class="win">+210%</td><td class="ind">98.82%</td></tr>
+      <tr><td class="prop">Infrastructure</td><td class="ind">6</td><td class="ind">0.74×</td><td class="win">−26%</td><td class="ind">0.53×</td><td class="lose">−47%</td><td class="ind">97.56%</td></tr>
+      <tr><td class="prop">Tool/CLI</td><td class="ind">2</td><td class="ind">0.75×</td><td class="win">−25%</td><td class="ind">0.53×</td><td class="lose">−47%</td><td class="ind">100.00%</td></tr>
     </tbody>
   </table>
   <figcaption><b>LOC ratio.</b> Port lines divided by the lines of the source slice it replaced; below 1.00× the port is smaller. <b>Performance ratio.</b> Source latency divided by port latency; above 1.00× the port is faster. <b>Parity.</b> Share of benchmark cases where the port returned the same answer as the original.</figcaption>
@@ -468,17 +474,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 4</p>
   <h5>Ports that came in furthest under their predicted cost</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
+  <table class="rtbl" style="--ind:8px">
+    <colgroup><col style="width:13.4%"><col style="width:16.6%"><col style="width:11.6%"><col style="width:13%"><col style="width:14.7%"><col style="width:9.4%"><col style="width:11%"><col style="width:10.4%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">Residual</th><th class="ind">Efficiency</th><th class="ind">Original LOC</th><th class="ind">Turns</th><th class="ind">Minutes</th><th class="ind">Tokens</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">omnigent</td><td>sonnet / low</td><td class="win">−0.74</td><td>0.57</td><td>1.4k</td><td>323</td><td>34.2</td><td>66.66M</td></tr>
-      <tr><td class="prop">agno</td><td>sonnet / low</td><td class="win">−0.67</td><td>0.65</td><td>1.5k</td><td>394</td><td>39.9</td><td>68.89M</td></tr>
-      <tr><td class="prop">crawlee</td><td>sonnet / low</td><td class="win">−0.64</td><td>0.61</td><td>984</td><td>373</td><td>34.2</td><td>69.89M</td></tr>
-      <tr><td class="prop">remark42</td><td>sonnet / low</td><td class="win">−0.64</td><td>0.43</td><td>324</td><td>281</td><td>24.5</td><td>44.31M</td></tr>
-      <tr><td class="prop">gpt-researcher</td><td>sonnet / low</td><td class="win">−0.63</td><td>0.54</td><td>591</td><td>335</td><td>31.9</td><td>57.81M</td></tr>
+      <tr><td class="prop">omnigent</td><td class="ind">sonnet / low</td><td class="win">−0.74</td><td class="ind">0.57</td><td class="ind">1.4k</td><td class="ind">323</td><td class="ind">34.2</td><td class="ind">66.66M</td></tr>
+      <tr><td class="prop">agno</td><td class="ind">sonnet / low</td><td class="win">−0.67</td><td class="ind">0.65</td><td class="ind">1.5k</td><td class="ind">394</td><td class="ind">39.9</td><td class="ind">68.89M</td></tr>
+      <tr><td class="prop">crawlee</td><td class="ind">sonnet / low</td><td class="win">−0.64</td><td class="ind">0.61</td><td class="ind">984</td><td class="ind">373</td><td class="ind">34.2</td><td class="ind">69.89M</td></tr>
+      <tr><td class="prop">remark42</td><td class="ind">sonnet / low</td><td class="win">−0.64</td><td class="ind">0.43</td><td class="ind">324</td><td class="ind">281</td><td class="ind">24.5</td><td class="ind">44.31M</td></tr>
+      <tr><td class="prop">gpt-researcher</td><td class="ind">sonnet / low</td><td class="win">−0.63</td><td class="ind">0.54</td><td class="ind">591</td><td class="ind">335</td><td class="ind">31.9</td><td class="ind">57.81M</td></tr>
     </tbody>
   </table>
   <figcaption><b>Efficiency score.</b> Geometric mean of the port's turns divided by the median turns across all ports, its active wall-clock minutes divided by the median minutes, and its tokens divided by the median tokens. Unitless. A score of 1.0 is an average port; lower is more efficient.</figcaption>
@@ -495,17 +501,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 5</p>
   <h5>Ports that ran furthest over their predicted cost</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
+  <table class="rtbl" style="--ind:8px">
+    <colgroup><col style="width:13.3%"><col style="width:16.6%"><col style="width:11.6%"><col style="width:13%"><col style="width:14.7%"><col style="width:9.4%"><col style="width:11%"><col style="width:10.4%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">Residual</th><th class="ind">Efficiency</th><th class="ind">Original LOC</th><th class="ind">Turns</th><th class="ind">Minutes</th><th class="ind">Tokens</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">activepieces</td><td>opus / high</td><td class="lose">+2.07</td><td>3.27</td><td>692</td><td>1239</td><td>291.8</td><td>381.58M</td></tr>
-      <tr><td class="prop">memos</td><td>opus / high</td><td class="lose">+1.80</td><td>3.00</td><td>734</td><td>1249</td><td>216.4</td><td>397.04M</td></tr>
-      <tr><td class="prop">uptime-kuma</td><td>opus / medium</td><td class="lose">+1.31</td><td>2.32</td><td>234</td><td>1006</td><td>212.0</td><td>232.80M</td></tr>
-      <tr><td class="prop">teable</td><td>opus / low</td><td class="lose">+0.96</td><td>2.50</td><td>5.5k</td><td>917</td><td>262.4</td><td>256.11M</td></tr>
-      <tr><td class="prop">deepwiki-open</td><td>sonnet / medium</td><td class="lose">+0.96</td><td>2.28</td><td>1.5k</td><td>944</td><td>126.7</td><td>392.23M</td></tr>
+      <tr><td class="prop">activepieces</td><td class="ind">opus / high</td><td class="lose">+2.07</td><td class="ind">3.27</td><td class="ind">692</td><td class="ind">1239</td><td class="ind">291.8</td><td class="ind">381.58M</td></tr>
+      <tr><td class="prop">memos</td><td class="ind">opus / high</td><td class="lose">+1.80</td><td class="ind">3.00</td><td class="ind">734</td><td class="ind">1249</td><td class="ind">216.4</td><td class="ind">397.04M</td></tr>
+      <tr><td class="prop">uptime-kuma</td><td class="ind">opus / medium</td><td class="lose">+1.31</td><td class="ind">2.32</td><td class="ind">234</td><td class="ind">1006</td><td class="ind">212.0</td><td class="ind">232.80M</td></tr>
+      <tr><td class="prop">teable</td><td class="ind">opus / low</td><td class="lose">+0.96</td><td class="ind">2.50</td><td class="ind">5.5k</td><td class="ind">917</td><td class="ind">262.4</td><td class="ind">256.11M</td></tr>
+      <tr><td class="prop">deepwiki-open</td><td class="ind">sonnet / medium</td><td class="lose">+0.96</td><td class="ind">2.28</td><td class="ind">1.5k</td><td class="ind">944</td><td class="ind">126.7</td><td class="ind">392.23M</td></tr>
     </tbody>
   </table>
   <figcaption><b>Residual.</b> The port's efficiency score minus the score an ordinary least-squares fit predicts from the original slice size. A positive residual is a port that cost more than its size accounts for.</figcaption>
@@ -522,17 +528,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 6</p>
   <h5>Ports that reduced LOC the most</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
+  <table class="rtbl" style="--ind:22px">
+    <colgroup><col style="width:13.3%"><col style="width:19.7%"><col style="width:15.7%"><col style="width:21.3%"><col style="width:14.8%"><col style="width:15.3%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">LOC saved</th><th class="ind">Source slice LOC</th><th class="ind">Port LOC</th><th class="ind">LOC ratio</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">voltagent</td><td>sonnet / medium</td><td class="win">+5.1k</td><td>5.6k</td><td>535</td><td class="win">0.10×</td></tr>
-      <tr><td class="prop">teable</td><td>opus / low</td><td class="win">+3.8k</td><td>5.5k</td><td>1.6k</td><td class="win">0.30×</td></tr>
-      <tr><td class="prop">honcho</td><td>sonnet / medium</td><td class="win">+1.8k</td><td>2.3k</td><td>462</td><td class="win">0.20×</td></tr>
-      <tr><td class="prop">opal</td><td>opus / xhigh</td><td class="win">+1.4k</td><td>2.2k</td><td>815</td><td class="win">0.36×</td></tr>
-      <tr><td class="prop">agno</td><td>sonnet / low</td><td class="win">+1.4k</td><td>1.5k</td><td>127</td><td class="win">0.08×</td></tr>
+      <tr><td class="prop">voltagent</td><td class="ind">sonnet / medium</td><td class="win">+5.1k</td><td class="ind">5.6k</td><td class="ind">535</td><td class="win">0.10×</td></tr>
+      <tr><td class="prop">teable</td><td class="ind">opus / low</td><td class="win">+3.8k</td><td class="ind">5.5k</td><td class="ind">1.6k</td><td class="win">0.30×</td></tr>
+      <tr><td class="prop">honcho</td><td class="ind">sonnet / medium</td><td class="win">+1.8k</td><td class="ind">2.3k</td><td class="ind">462</td><td class="win">0.20×</td></tr>
+      <tr><td class="prop">opal</td><td class="ind">opus / xhigh</td><td class="win">+1.4k</td><td class="ind">2.2k</td><td class="ind">815</td><td class="win">0.36×</td></tr>
+      <tr><td class="prop">agno</td><td class="ind">sonnet / low</td><td class="win">+1.4k</td><td class="ind">1.5k</td><td class="ind">127</td><td class="win">0.08×</td></tr>
     </tbody>
   </table>
   <figcaption><b>Source slice LOC.</b> Lines in the part of the original the port reproduces, rather than lines in the whole project. Pairing a port against a whole project reads as a claim the ratio never made.</figcaption>
@@ -549,17 +555,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 7</p>
   <h5>Ports that increased LOC the most</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
+  <table class="rtbl" style="--ind:21px">
+    <colgroup><col style="width:14.1%"><col style="width:19.5%"><col style="width:15.5%"><col style="width:21.1%"><col style="width:14.7%"><col style="width:15.1%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">LOC saved</th><th class="ind">Source slice LOC</th><th class="ind">Port LOC</th><th class="ind">LOC ratio</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">redash</td><td>opus / high</td><td class="lose">−634</td><td>542</td><td>1.2k</td><td class="lose">2.17×</td></tr>
-      <tr><td class="prop">novu</td><td>sonnet / high</td><td class="lose">−627</td><td>706</td><td>1.3k</td><td class="lose">1.89×</td></tr>
-      <tr><td class="prop">ragflow</td><td>sonnet / high</td><td class="lose">−585</td><td>591</td><td>1.2k</td><td class="lose">1.99×</td></tr>
-      <tr><td class="prop">glance</td><td>opus / medium</td><td class="lose">−546</td><td>690</td><td>1.2k</td><td class="lose">1.79×</td></tr>
-      <tr><td class="prop">linkwarden</td><td>opus / low</td><td class="lose">−481</td><td>778</td><td>1.3k</td><td class="lose">1.62×</td></tr>
+      <tr><td class="prop">redash</td><td class="ind">opus / high</td><td class="lose">−634</td><td class="ind">542</td><td class="ind">1.2k</td><td class="lose">2.17×</td></tr>
+      <tr><td class="prop">novu</td><td class="ind">sonnet / high</td><td class="lose">−627</td><td class="ind">706</td><td class="ind">1.3k</td><td class="lose">1.89×</td></tr>
+      <tr><td class="prop">ragflow</td><td class="ind">sonnet / high</td><td class="lose">−585</td><td class="ind">591</td><td class="ind">1.2k</td><td class="lose">1.99×</td></tr>
+      <tr><td class="prop">glance</td><td class="ind">opus / medium</td><td class="lose">−546</td><td class="ind">690</td><td class="ind">1.2k</td><td class="lose">1.79×</td></tr>
+      <tr><td class="prop">linkwarden</td><td class="ind">opus / low</td><td class="lose">−481</td><td class="ind">778</td><td class="ind">1.3k</td><td class="lose">1.62×</td></tr>
     </tbody>
   </table>
   <figcaption><b>LOC saved.</b> Source slice lines minus port lines. A negative figure is a port that is larger than the slice it replaced.</figcaption>
@@ -611,17 +617,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 8</p>
   <h5>Ports that improved performance the most</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
+  <table class="rtbl" style="--ind:85px">
+    <colgroup><col style="width:28.9%"><col style="width:33.8%"><col style="width:37.3%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">Performance ratio</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">dify</td><td>sonnet / high</td><td class="win">143,333.00×</td></tr>
-      <tr><td class="prop">opal</td><td>opus / xhigh</td><td class="win">1,078.00×</td></tr>
-      <tr><td class="prop">new-api</td><td>opus / low</td><td class="win">488.00×</td></tr>
-      <tr><td class="prop">pocketbase</td><td>opus / medium</td><td class="win">362.00×</td></tr>
-      <tr><td class="prop">linkwarden</td><td>opus / low</td><td class="win">337.00×</td></tr>
+      <tr><td class="prop">dify</td><td class="ind">sonnet / high</td><td class="win">143,333.00×</td></tr>
+      <tr><td class="prop">opal</td><td class="ind">opus / xhigh</td><td class="win">1,078.00×</td></tr>
+      <tr><td class="prop">new-api</td><td class="ind">opus / low</td><td class="win">488.00×</td></tr>
+      <tr><td class="prop">pocketbase</td><td class="ind">opus / medium</td><td class="win">362.00×</td></tr>
+      <tr><td class="prop">linkwarden</td><td class="ind">opus / low</td><td class="win">337.00×</td></tr>
     </tbody>
   </table>
   <figcaption><b>Performance ratio.</b> Source latency divided by port latency on the same benchmark. <b>dify.</b> The 143,333× figure compares a cached in-memory read against a source path that re-ran an LLM call, so it measures two different amounts of work.</figcaption>
@@ -638,17 +644,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 9</p>
   <h5>Ports that worsened performance the most</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
-    <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
+  <table class="rtbl" style="--ind:82px">
+    <colgroup><col style="width:30%"><col style="width:33.3%"><col style="width:36.7%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">Port</th><th class="ind">Model / effort</th><th class="ind">Performance ratio</th></tr>
     </thead>
     <tbody>
-      <tr><td class="prop">metaflow</td><td>opus / medium</td><td class="lose">0.01×</td></tr>
-      <tr><td class="prop">listmonk</td><td>sonnet / high</td><td class="lose">0.01×</td></tr>
-      <tr><td class="prop">openstatus</td><td>sonnet / medium</td><td class="lose">0.04×</td></tr>
-      <tr><td class="prop">ragflow</td><td>sonnet / high</td><td class="lose">0.08×</td></tr>
-      <tr><td class="prop">deepstream-io</td><td>opus / medium</td><td class="lose">0.11×</td></tr>
+      <tr><td class="prop">metaflow</td><td class="ind">opus / medium</td><td class="lose">0.01×</td></tr>
+      <tr><td class="prop">listmonk</td><td class="ind">sonnet / high</td><td class="lose">0.01×</td></tr>
+      <tr><td class="prop">openstatus</td><td class="ind">sonnet / medium</td><td class="lose">0.04×</td></tr>
+      <tr><td class="prop">ragflow</td><td class="ind">sonnet / high</td><td class="lose">0.08×</td></tr>
+      <tr><td class="prop">deepstream-io</td><td class="ind">opus / medium</td><td class="lose">0.11×</td></tr>
     </tbody>
   </table>
   <figcaption><b>Performance ratio.</b> Below 1.00× the port is slower than the original. A ratio of 0.01× is a port that takes 100 times as long.</figcaption>
@@ -782,10 +788,10 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 10</p>
   <h5>Exit conditions by type and category</h5>
-  <table class="rtbl">
-      <colgroup><col style="width:20%"><col style="width:24%"><col style="width:56%"></colgroup>
-  <thead>
-  <tr><th>EC type</th><th>Category</th><th>What it asks</th></tr>
+  <table class="rtbl" style="--ind:48px">
+      <colgroup><col style="width:28.4%"><col style="width:31.1%"><col style="width:40.5%"></colgroup>
+  <thead class="ind">
+  <tr><th class="ind">EC type</th><th class="ind">Category</th><th class="ind">What it asks</th></tr>
   </thead>
   <tbody>
   <tr><td rowspan="7" class="prop"><strong>Product</strong><br>does it work?</td><td class="prop">Functional</td><td class="prop">Does the software work?</td></tr>
@@ -824,17 +830,17 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 11</p>
   <h5>The sections of an Akka Specification</h5>
-  <table class="rtbl">
-      <colgroup><col style="width:5%"><col style="width:20%"><col style="width:75%"></colgroup>
-  <thead>
-  <tr><th>§</th><th>Section</th><th>What it holds</th></tr>
+  <table class="rtbl" style="--ind:36px">
+      <colgroup><col style="width:11.7%"><col style="width:24.3%"><col style="width:64%"></colgroup>
+  <thead class="ind">
+  <tr><th class="ind">§</th><th class="ind">Section</th><th class="ind">What it holds</th></tr>
   </thead>
   <tbody>
-  <tr><td>1</td><td class="prop">Scope</td><td class="prop">What the rebuild covers and what it explicitly excludes, each exclusion with a reason</td></tr>
-  <tr><td>2</td><td class="prop">Domain model</td><td class="prop">The nouns and their relationships. opal splits this into Policy, Data, Identity/scopes, Fleet</td></tr>
-  <tr><td>3</td><td class="prop">Deterministic contract</td><td class="prop">The numbered rules, grouped by capability</td></tr>
-  <tr><td>4</td><td class="prop">Open decisions</td><td class="prop">Places the original has no settled answer or gives two; the port picks one and says so</td></tr>
-  <tr><td>5</td><td class="prop">Conformance</td><td class="prop">A table binding every rule to source and test</td></tr>
+  <tr><td class="ind">1</td><td class="prop">Scope</td><td class="prop">What the rebuild covers and what it explicitly excludes, each exclusion with a reason</td></tr>
+  <tr><td class="ind">2</td><td class="prop">Domain model</td><td class="prop">The nouns and their relationships. opal splits this into Policy, Data, Identity/scopes, Fleet</td></tr>
+  <tr><td class="ind">3</td><td class="prop">Deterministic contract</td><td class="prop">The numbered rules, grouped by capability</td></tr>
+  <tr><td class="ind">4</td><td class="prop">Open decisions</td><td class="prop">Places the original has no settled answer or gives two; the port picks one and says so</td></tr>
+  <tr><td class="ind">5</td><td class="prop">Conformance</td><td class="prop">A table binding every rule to source and test</td></tr>
   </tbody>
   </table>
 </figure>
@@ -913,68 +919,68 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 12</p>
   <h5>Source project, GitHub stars at the time of the port, and the port's repository</h5>
-  <table class="rtbl">
-    <colgroup><col style="width:5%"><col style="width:21%"><col style="width:29%"><col style="width:12%"><col style="width:33%"></colgroup>
-    <thead>
-      <tr><th>#</th><th>Port</th><th>Source</th><th>Stars</th><th>Repository</th></tr>
+  <table class="rtbl" style="--ind:16px">
+    <colgroup><col style="width:8%"><col style="width:18%"><col style="width:28.3%"><col style="width:11.9%"><col style="width:33.8%"></colgroup>
+    <thead class="ind">
+      <tr><th class="ind">#</th><th class="ind">Port</th><th class="ind">Source</th><th class="ind">Stars</th><th class="ind">Repository</th></tr>
     </thead>
     <tbody>
-      <tr><td>1</td><td class="prop">opal</td><td>permitio/opal</td><td>5,503</td><td><a href="https://github.com/TylerJewell/opal-akka">TylerJewell/opal-akka</a></td></tr>
-      <tr><td>2</td><td class="prop">vanna</td><td>vanna-ai/vanna</td><td>23,820</td><td><a href="https://github.com/TylerJewell/vanna-akka">TylerJewell/vanna-akka</a></td></tr>
-      <tr><td>3</td><td class="prop">deepstream-io</td><td>deepstreamIO/deepstream.io</td><td>7,188</td><td><a href="https://github.com/TylerJewell/deepstream-io-akka">TylerJewell/deepstream-io-akka</a></td></tr>
-      <tr><td>4</td><td class="prop">dtm</td><td>dtm-labs/dtm</td><td>10,911</td><td><a href="https://github.com/TylerJewell/dtm-akka">TylerJewell/dtm-akka</a></td></tr>
-      <tr><td>5</td><td class="prop">nsq</td><td>nsqio/nsq</td><td>25,773</td><td><a href="https://github.com/TylerJewell/nsq-akka">TylerJewell/nsq-akka</a></td></tr>
-      <tr><td>6</td><td class="prop">intentkit</td><td>crestalnetwork/intentkit</td><td>6,507</td><td><a href="https://github.com/TylerJewell/intentkit-akka">TylerJewell/intentkit-akka</a></td></tr>
-      <tr><td>7</td><td class="prop">honcho</td><td>plastic-labs/honcho</td><td>6,809</td><td><a href="https://github.com/TylerJewell/honcho-akka">TylerJewell/honcho-akka</a></td></tr>
-      <tr><td>8</td><td class="prop">hive</td><td>aden-hive/hive</td><td>10,955</td><td><a href="https://github.com/TylerJewell/hive-akka">TylerJewell/hive-akka</a></td></tr>
-      <tr><td>9</td><td class="prop">pageindex</td><td>VectifyAI/PageIndex</td><td>35,313</td><td><a href="https://github.com/TylerJewell/pageindex-akka">TylerJewell/pageindex-akka</a></td></tr>
-      <tr><td>10</td><td class="prop">archon</td><td>coleam00/Archon</td><td>23,266</td><td><a href="https://github.com/TylerJewell/archon-akka">TylerJewell/archon-akka</a></td></tr>
-      <tr><td>11</td><td class="prop">voltagent</td><td>VoltAgent/voltagent</td><td>10,409</td><td><a href="https://github.com/TylerJewell/voltagent-akka">TylerJewell/voltagent-akka</a></td></tr>
-      <tr><td>12</td><td class="prop">browser-use</td><td>browser-use/browser-use</td><td>110,339</td><td><a href="https://github.com/TylerJewell/browser-use-akka">TylerJewell/browser-use-akka</a></td></tr>
-      <tr><td>13</td><td class="prop">remark42</td><td>umputun/remark42</td><td>5,587</td><td><a href="https://github.com/TylerJewell/remark42-akka">TylerJewell/remark42-akka</a></td></tr>
-      <tr><td>14</td><td class="prop">changedetection-io</td><td>dgtlmoon/changedetection.io</td><td>33,325</td><td><a href="https://github.com/TylerJewell/changedetection-io-akka">TylerJewell/changedetection-io-akka</a></td></tr>
-      <tr><td>15</td><td class="prop">jaeger</td><td>jaegertracing/jaeger</td><td>23,134</td><td><a href="https://github.com/TylerJewell/jaeger-akka">TylerJewell/jaeger-akka</a></td></tr>
-      <tr><td>16</td><td class="prop">higress</td><td>higress-group/higress</td><td>9,177</td><td><a href="https://github.com/TylerJewell/higress-akka">TylerJewell/higress-akka</a></td></tr>
-      <tr><td>17</td><td class="prop">gpt-researcher</td><td>assafelovic/gpt-researcher</td><td>29,133</td><td><a href="https://github.com/TylerJewell/gpt-researcher-akka">TylerJewell/gpt-researcher-akka</a></td></tr>
-      <tr><td>18</td><td class="prop">metaflow</td><td>Netflix/metaflow</td><td>10,236</td><td><a href="https://github.com/TylerJewell/metaflow-akka">TylerJewell/metaflow-akka</a></td></tr>
-      <tr><td>19</td><td class="prop">listmonk</td><td>knadh/listmonk</td><td>23,093</td><td><a href="https://github.com/TylerJewell/listmonk-akka">TylerJewell/listmonk-akka</a></td></tr>
-      <tr><td>20</td><td class="prop">hyperdx</td><td>hyperdxio/hyperdx</td><td>9,860</td><td><a href="https://github.com/TylerJewell/hyperdx-akka">TylerJewell/hyperdx-akka</a></td></tr>
-      <tr><td>21</td><td class="prop">alertmanager</td><td>prometheus/alertmanager</td><td>8,593</td><td><a href="https://github.com/TylerJewell/alertmanager-akka">TylerJewell/alertmanager-akka</a></td></tr>
-      <tr><td>22</td><td class="prop">memos</td><td>MemTensor/MemOS</td><td>10,951</td><td><a href="https://github.com/TylerJewell/memos-akka">TylerJewell/memos-akka</a></td></tr>
-      <tr><td>23</td><td class="prop">mem0</td><td>mem0ai/mem0</td><td>63,956</td><td><a href="https://github.com/TylerJewell/mem0-akka">TylerJewell/mem0-akka</a></td></tr>
-      <tr><td>24</td><td class="prop">openllmetry</td><td>traceloop/openllmetry</td><td>7,396</td><td><a href="https://github.com/TylerJewell/openllmetry-akka">TylerJewell/openllmetry-akka</a></td></tr>
-      <tr><td>25</td><td class="prop">new-api</td><td>QuantumNous/new-api</td><td>46,125</td><td><a href="https://github.com/TylerJewell/new-api-akka">TylerJewell/new-api-akka</a></td></tr>
-      <tr><td>26</td><td class="prop">coroot</td><td>coroot/coroot</td><td>7,887</td><td><a href="https://github.com/TylerJewell/coroot-akka">TylerJewell/coroot-akka</a></td></tr>
-      <tr><td>27</td><td class="prop">pocket-id</td><td>pocket-id/pocket-id</td><td>9,008</td><td><a href="https://github.com/TylerJewell/pocket-id-akka">TylerJewell/pocket-id-akka</a></td></tr>
-      <tr><td>28</td><td class="prop">authelia</td><td>authelia/authelia</td><td>28,677</td><td><a href="https://github.com/TylerJewell/authelia-akka">TylerJewell/authelia-akka</a></td></tr>
-      <tr><td>29</td><td class="prop">localai</td><td>mudler/LocalAI</td><td>48,656</td><td><a href="https://github.com/TylerJewell/localai-akka">TylerJewell/localai-akka</a></td></tr>
-      <tr><td>30</td><td class="prop">lightrag</td><td>HKUDS/LightRAG</td><td>39,142</td><td><a href="https://github.com/TylerJewell/lightrag-akka">TylerJewell/lightrag-akka</a></td></tr>
-      <tr><td>31</td><td class="prop">openstatus</td><td>openstatusHQ/openstatus</td><td>9,012</td><td><a href="https://github.com/TylerJewell/openstatus-akka">TylerJewell/openstatus-akka</a></td></tr>
-      <tr><td>32</td><td class="prop">deepseek-harness</td><td>deepseek-ai/deepseek-harness</td><td>191,454</td><td><a href="https://github.com/TylerJewell/deepseek-harness-akka">TylerJewell/deepseek-harness-akka</a></td></tr>
-      <tr><td>33</td><td class="prop">omnigent</td><td>omnigent-ai/omnigent</td><td>9,228</td><td><a href="https://github.com/TylerJewell/omnigent-akka">TylerJewell/omnigent-akka</a></td></tr>
-      <tr><td>34</td><td class="prop">pocketbase</td><td>pocketbase/pocketbase</td><td>60,792</td><td><a href="https://github.com/TylerJewell/pocketbase-akka">TylerJewell/pocketbase-akka</a></td></tr>
-      <tr><td>35</td><td class="prop">ragflow</td><td>infiniflow/ragflow</td><td>89,156</td><td><a href="https://github.com/TylerJewell/ragflow-akka">TylerJewell/ragflow-akka</a></td></tr>
-      <tr><td>36</td><td class="prop">temporal</td><td>temporalio/temporal</td><td>22,501</td><td><a href="https://github.com/TylerJewell/temporal-akka">TylerJewell/temporal-akka</a></td></tr>
-      <tr><td>37</td><td class="prop">crawlee</td><td>apify/crawlee</td><td>25,485</td><td><a href="https://github.com/TylerJewell/crawlee-akka">TylerJewell/crawlee-akka</a></td></tr>
-      <tr><td>38</td><td class="prop">graphrag</td><td>microsoft/graphrag</td><td>35,657</td><td><a href="https://github.com/TylerJewell/graphrag-akka">TylerJewell/graphrag-akka</a></td></tr>
-      <tr><td>39</td><td class="prop">supermemory</td><td>supermemoryai/supermemory</td><td>29,034</td><td><a href="https://github.com/TylerJewell/supermemory-akka">TylerJewell/supermemory-akka</a></td></tr>
-      <tr><td>40</td><td class="prop">prefect</td><td>PrefectHQ/prefect</td><td>23,667</td><td><a href="https://github.com/TylerJewell/prefect-akka">TylerJewell/prefect-akka</a></td></tr>
-      <tr><td>41</td><td class="prop">haystack</td><td>deepset-ai/haystack</td><td>26,304</td><td><a href="https://github.com/TylerJewell/haystack-akka">TylerJewell/haystack-akka</a></td></tr>
-      <tr><td>42</td><td class="prop">crewai</td><td>crewAIInc/crewAI</td><td>57,560</td><td><a href="https://github.com/TylerJewell/crewai-akka">TylerJewell/crewai-akka</a></td></tr>
-      <tr><td>43</td><td class="prop">agno</td><td>agno-agi/agno</td><td>41,887</td><td><a href="https://github.com/TylerJewell/agno-akka">TylerJewell/agno-akka</a></td></tr>
-      <tr><td>44</td><td class="prop">novu</td><td>novuhq/novu</td><td>39,660</td><td><a href="https://github.com/TylerJewell/novu-akka">TylerJewell/novu-akka</a></td></tr>
-      <tr><td>45</td><td class="prop">dify</td><td>langgenius/dify</td><td>153,379</td><td><a href="https://github.com/TylerJewell/dify-akka">TylerJewell/dify-akka</a></td></tr>
-      <tr><td>46</td><td class="prop">langgraph</td><td>langchain-ai/langgraph</td><td>40,362</td><td><a href="https://github.com/TylerJewell/langgraph-akka">TylerJewell/langgraph-akka</a></td></tr>
-      <tr><td>47</td><td class="prop">sim</td><td>simstudioai/sim</td><td>29,469</td><td><a href="https://github.com/TylerJewell/sim-akka">TylerJewell/sim-akka</a></td></tr>
-      <tr><td>48</td><td class="prop">activepieces</td><td>activepieces/activepieces</td><td>24,025</td><td><a href="https://github.com/TylerJewell/activepieces-akka">TylerJewell/activepieces-akka</a></td></tr>
-      <tr><td>49</td><td class="prop">promptfoo</td><td>promptfoo/promptfoo</td><td>24,536</td><td><a href="https://github.com/TylerJewell/promptfoo-akka">TylerJewell/promptfoo-akka</a></td></tr>
-      <tr><td>50</td><td class="prop">activitywatch</td><td>ActivityWatch/activitywatch</td><td>18,692</td><td><a href="https://github.com/TylerJewell/activitywatch-akka">TylerJewell/activitywatch-akka</a></td></tr>
-      <tr><td>51</td><td class="prop">deepwiki-open</td><td>AsyncFuncAI/deepwiki-open</td><td>17,752</td><td><a href="https://github.com/TylerJewell/deepwiki-open-akka">TylerJewell/deepwiki-open-akka</a></td></tr>
-      <tr><td>52</td><td class="prop">docmost</td><td>docmost/docmost</td><td>21,453</td><td><a href="https://github.com/TylerJewell/docmost-akka">TylerJewell/docmost-akka</a></td></tr>
-      <tr><td>53</td><td class="prop">cobalt</td><td>imputnet/cobalt</td><td>42,240</td><td><a href="https://github.com/TylerJewell/cobalt-akka">TylerJewell/cobalt-akka</a></td></tr>
-      <tr><td>54</td><td class="prop">glance</td><td>glanceapp/glance</td><td>36,570</td><td><a href="https://github.com/TylerJewell/glance-akka">TylerJewell/glance-akka</a></td></tr>
-      <tr><td>55</td><td class="prop">open-notebook</td><td>lfnovo/open-notebook</td><td>37,531</td><td><a href="https://github.com/TylerJewell/open-notebook-akka">TylerJewell/open-notebook-akka</a></td></tr>
-      <tr><td>56</td><td class="prop">uptime-kuma</td><td>louislam/uptime-kuma</td><td>90,561</td><td><a href="https://github.com/TylerJewell/uptime-kuma-akka">TylerJewell/uptime-kuma-akka</a></td></tr>
+      <tr><td class="ind">1</td><td class="prop">opal</td><td class="ind">permitio/opal</td><td class="ind">5,503</td><td class="ind"><a href="https://github.com/TylerJewell/opal-akka">TylerJewell/opal-akka</a></td></tr>
+      <tr><td class="ind">2</td><td class="prop">vanna</td><td class="ind">vanna-ai/vanna</td><td class="ind">23,820</td><td class="ind"><a href="https://github.com/TylerJewell/vanna-akka">TylerJewell/vanna-akka</a></td></tr>
+      <tr><td class="ind">3</td><td class="prop">deepstream-io</td><td class="ind">deepstreamIO/deepstream.io</td><td class="ind">7,188</td><td class="ind"><a href="https://github.com/TylerJewell/deepstream-io-akka">TylerJewell/deepstream-io-akka</a></td></tr>
+      <tr><td class="ind">4</td><td class="prop">dtm</td><td class="ind">dtm-labs/dtm</td><td class="ind">10,911</td><td class="ind"><a href="https://github.com/TylerJewell/dtm-akka">TylerJewell/dtm-akka</a></td></tr>
+      <tr><td class="ind">5</td><td class="prop">nsq</td><td class="ind">nsqio/nsq</td><td class="ind">25,773</td><td class="ind"><a href="https://github.com/TylerJewell/nsq-akka">TylerJewell/nsq-akka</a></td></tr>
+      <tr><td class="ind">6</td><td class="prop">intentkit</td><td class="ind">crestalnetwork/intentkit</td><td class="ind">6,507</td><td class="ind"><a href="https://github.com/TylerJewell/intentkit-akka">TylerJewell/intentkit-akka</a></td></tr>
+      <tr><td class="ind">7</td><td class="prop">honcho</td><td class="ind">plastic-labs/honcho</td><td class="ind">6,809</td><td class="ind"><a href="https://github.com/TylerJewell/honcho-akka">TylerJewell/honcho-akka</a></td></tr>
+      <tr><td class="ind">8</td><td class="prop">hive</td><td class="ind">aden-hive/hive</td><td class="ind">10,955</td><td class="ind"><a href="https://github.com/TylerJewell/hive-akka">TylerJewell/hive-akka</a></td></tr>
+      <tr><td class="ind">9</td><td class="prop">pageindex</td><td class="ind">VectifyAI/PageIndex</td><td class="ind">35,313</td><td class="ind"><a href="https://github.com/TylerJewell/pageindex-akka">TylerJewell/pageindex-akka</a></td></tr>
+      <tr><td class="ind">10</td><td class="prop">archon</td><td class="ind">coleam00/Archon</td><td class="ind">23,266</td><td class="ind"><a href="https://github.com/TylerJewell/archon-akka">TylerJewell/archon-akka</a></td></tr>
+      <tr><td class="ind">11</td><td class="prop">voltagent</td><td class="ind">VoltAgent/voltagent</td><td class="ind">10,409</td><td class="ind"><a href="https://github.com/TylerJewell/voltagent-akka">TylerJewell/voltagent-akka</a></td></tr>
+      <tr><td class="ind">12</td><td class="prop">browser-use</td><td class="ind">browser-use/browser-use</td><td class="ind">110,339</td><td class="ind"><a href="https://github.com/TylerJewell/browser-use-akka">TylerJewell/browser-use-akka</a></td></tr>
+      <tr><td class="ind">13</td><td class="prop">remark42</td><td class="ind">umputun/remark42</td><td class="ind">5,587</td><td class="ind"><a href="https://github.com/TylerJewell/remark42-akka">TylerJewell/remark42-akka</a></td></tr>
+      <tr><td class="ind">14</td><td class="prop">changedetection-io</td><td class="ind">dgtlmoon/changedetection.io</td><td class="ind">33,325</td><td class="ind"><a href="https://github.com/TylerJewell/changedetection-io-akka">TylerJewell/changedetection-io-akka</a></td></tr>
+      <tr><td class="ind">15</td><td class="prop">jaeger</td><td class="ind">jaegertracing/jaeger</td><td class="ind">23,134</td><td class="ind"><a href="https://github.com/TylerJewell/jaeger-akka">TylerJewell/jaeger-akka</a></td></tr>
+      <tr><td class="ind">16</td><td class="prop">higress</td><td class="ind">higress-group/higress</td><td class="ind">9,177</td><td class="ind"><a href="https://github.com/TylerJewell/higress-akka">TylerJewell/higress-akka</a></td></tr>
+      <tr><td class="ind">17</td><td class="prop">gpt-researcher</td><td class="ind">assafelovic/gpt-researcher</td><td class="ind">29,133</td><td class="ind"><a href="https://github.com/TylerJewell/gpt-researcher-akka">TylerJewell/gpt-researcher-akka</a></td></tr>
+      <tr><td class="ind">18</td><td class="prop">metaflow</td><td class="ind">Netflix/metaflow</td><td class="ind">10,236</td><td class="ind"><a href="https://github.com/TylerJewell/metaflow-akka">TylerJewell/metaflow-akka</a></td></tr>
+      <tr><td class="ind">19</td><td class="prop">listmonk</td><td class="ind">knadh/listmonk</td><td class="ind">23,093</td><td class="ind"><a href="https://github.com/TylerJewell/listmonk-akka">TylerJewell/listmonk-akka</a></td></tr>
+      <tr><td class="ind">20</td><td class="prop">hyperdx</td><td class="ind">hyperdxio/hyperdx</td><td class="ind">9,860</td><td class="ind"><a href="https://github.com/TylerJewell/hyperdx-akka">TylerJewell/hyperdx-akka</a></td></tr>
+      <tr><td class="ind">21</td><td class="prop">alertmanager</td><td class="ind">prometheus/alertmanager</td><td class="ind">8,593</td><td class="ind"><a href="https://github.com/TylerJewell/alertmanager-akka">TylerJewell/alertmanager-akka</a></td></tr>
+      <tr><td class="ind">22</td><td class="prop">memos</td><td class="ind">MemTensor/MemOS</td><td class="ind">10,951</td><td class="ind"><a href="https://github.com/TylerJewell/memos-akka">TylerJewell/memos-akka</a></td></tr>
+      <tr><td class="ind">23</td><td class="prop">mem0</td><td class="ind">mem0ai/mem0</td><td class="ind">63,956</td><td class="ind"><a href="https://github.com/TylerJewell/mem0-akka">TylerJewell/mem0-akka</a></td></tr>
+      <tr><td class="ind">24</td><td class="prop">openllmetry</td><td class="ind">traceloop/openllmetry</td><td class="ind">7,396</td><td class="ind"><a href="https://github.com/TylerJewell/openllmetry-akka">TylerJewell/openllmetry-akka</a></td></tr>
+      <tr><td class="ind">25</td><td class="prop">new-api</td><td class="ind">QuantumNous/new-api</td><td class="ind">46,125</td><td class="ind"><a href="https://github.com/TylerJewell/new-api-akka">TylerJewell/new-api-akka</a></td></tr>
+      <tr><td class="ind">26</td><td class="prop">coroot</td><td class="ind">coroot/coroot</td><td class="ind">7,887</td><td class="ind"><a href="https://github.com/TylerJewell/coroot-akka">TylerJewell/coroot-akka</a></td></tr>
+      <tr><td class="ind">27</td><td class="prop">pocket-id</td><td class="ind">pocket-id/pocket-id</td><td class="ind">9,008</td><td class="ind"><a href="https://github.com/TylerJewell/pocket-id-akka">TylerJewell/pocket-id-akka</a></td></tr>
+      <tr><td class="ind">28</td><td class="prop">authelia</td><td class="ind">authelia/authelia</td><td class="ind">28,677</td><td class="ind"><a href="https://github.com/TylerJewell/authelia-akka">TylerJewell/authelia-akka</a></td></tr>
+      <tr><td class="ind">29</td><td class="prop">localai</td><td class="ind">mudler/LocalAI</td><td class="ind">48,656</td><td class="ind"><a href="https://github.com/TylerJewell/localai-akka">TylerJewell/localai-akka</a></td></tr>
+      <tr><td class="ind">30</td><td class="prop">lightrag</td><td class="ind">HKUDS/LightRAG</td><td class="ind">39,142</td><td class="ind"><a href="https://github.com/TylerJewell/lightrag-akka">TylerJewell/lightrag-akka</a></td></tr>
+      <tr><td class="ind">31</td><td class="prop">openstatus</td><td class="ind">openstatusHQ/openstatus</td><td class="ind">9,012</td><td class="ind"><a href="https://github.com/TylerJewell/openstatus-akka">TylerJewell/openstatus-akka</a></td></tr>
+      <tr><td class="ind">32</td><td class="prop">deepseek-harness</td><td class="ind">deepseek-ai/deepseek-harness</td><td class="ind">191,454</td><td class="ind"><a href="https://github.com/TylerJewell/deepseek-harness-akka">TylerJewell/deepseek-harness-akka</a></td></tr>
+      <tr><td class="ind">33</td><td class="prop">omnigent</td><td class="ind">omnigent-ai/omnigent</td><td class="ind">9,228</td><td class="ind"><a href="https://github.com/TylerJewell/omnigent-akka">TylerJewell/omnigent-akka</a></td></tr>
+      <tr><td class="ind">34</td><td class="prop">pocketbase</td><td class="ind">pocketbase/pocketbase</td><td class="ind">60,792</td><td class="ind"><a href="https://github.com/TylerJewell/pocketbase-akka">TylerJewell/pocketbase-akka</a></td></tr>
+      <tr><td class="ind">35</td><td class="prop">ragflow</td><td class="ind">infiniflow/ragflow</td><td class="ind">89,156</td><td class="ind"><a href="https://github.com/TylerJewell/ragflow-akka">TylerJewell/ragflow-akka</a></td></tr>
+      <tr><td class="ind">36</td><td class="prop">temporal</td><td class="ind">temporalio/temporal</td><td class="ind">22,501</td><td class="ind"><a href="https://github.com/TylerJewell/temporal-akka">TylerJewell/temporal-akka</a></td></tr>
+      <tr><td class="ind">37</td><td class="prop">crawlee</td><td class="ind">apify/crawlee</td><td class="ind">25,485</td><td class="ind"><a href="https://github.com/TylerJewell/crawlee-akka">TylerJewell/crawlee-akka</a></td></tr>
+      <tr><td class="ind">38</td><td class="prop">graphrag</td><td class="ind">microsoft/graphrag</td><td class="ind">35,657</td><td class="ind"><a href="https://github.com/TylerJewell/graphrag-akka">TylerJewell/graphrag-akka</a></td></tr>
+      <tr><td class="ind">39</td><td class="prop">supermemory</td><td class="ind">supermemoryai/supermemory</td><td class="ind">29,034</td><td class="ind"><a href="https://github.com/TylerJewell/supermemory-akka">TylerJewell/supermemory-akka</a></td></tr>
+      <tr><td class="ind">40</td><td class="prop">prefect</td><td class="ind">PrefectHQ/prefect</td><td class="ind">23,667</td><td class="ind"><a href="https://github.com/TylerJewell/prefect-akka">TylerJewell/prefect-akka</a></td></tr>
+      <tr><td class="ind">41</td><td class="prop">haystack</td><td class="ind">deepset-ai/haystack</td><td class="ind">26,304</td><td class="ind"><a href="https://github.com/TylerJewell/haystack-akka">TylerJewell/haystack-akka</a></td></tr>
+      <tr><td class="ind">42</td><td class="prop">crewai</td><td class="ind">crewAIInc/crewAI</td><td class="ind">57,560</td><td class="ind"><a href="https://github.com/TylerJewell/crewai-akka">TylerJewell/crewai-akka</a></td></tr>
+      <tr><td class="ind">43</td><td class="prop">agno</td><td class="ind">agno-agi/agno</td><td class="ind">41,887</td><td class="ind"><a href="https://github.com/TylerJewell/agno-akka">TylerJewell/agno-akka</a></td></tr>
+      <tr><td class="ind">44</td><td class="prop">novu</td><td class="ind">novuhq/novu</td><td class="ind">39,660</td><td class="ind"><a href="https://github.com/TylerJewell/novu-akka">TylerJewell/novu-akka</a></td></tr>
+      <tr><td class="ind">45</td><td class="prop">dify</td><td class="ind">langgenius/dify</td><td class="ind">153,379</td><td class="ind"><a href="https://github.com/TylerJewell/dify-akka">TylerJewell/dify-akka</a></td></tr>
+      <tr><td class="ind">46</td><td class="prop">langgraph</td><td class="ind">langchain-ai/langgraph</td><td class="ind">40,362</td><td class="ind"><a href="https://github.com/TylerJewell/langgraph-akka">TylerJewell/langgraph-akka</a></td></tr>
+      <tr><td class="ind">47</td><td class="prop">sim</td><td class="ind">simstudioai/sim</td><td class="ind">29,469</td><td class="ind"><a href="https://github.com/TylerJewell/sim-akka">TylerJewell/sim-akka</a></td></tr>
+      <tr><td class="ind">48</td><td class="prop">activepieces</td><td class="ind">activepieces/activepieces</td><td class="ind">24,025</td><td class="ind"><a href="https://github.com/TylerJewell/activepieces-akka">TylerJewell/activepieces-akka</a></td></tr>
+      <tr><td class="ind">49</td><td class="prop">promptfoo</td><td class="ind">promptfoo/promptfoo</td><td class="ind">24,536</td><td class="ind"><a href="https://github.com/TylerJewell/promptfoo-akka">TylerJewell/promptfoo-akka</a></td></tr>
+      <tr><td class="ind">50</td><td class="prop">activitywatch</td><td class="ind">ActivityWatch/activitywatch</td><td class="ind">18,692</td><td class="ind"><a href="https://github.com/TylerJewell/activitywatch-akka">TylerJewell/activitywatch-akka</a></td></tr>
+      <tr><td class="ind">51</td><td class="prop">deepwiki-open</td><td class="ind">AsyncFuncAI/deepwiki-open</td><td class="ind">17,752</td><td class="ind"><a href="https://github.com/TylerJewell/deepwiki-open-akka">TylerJewell/deepwiki-open-akka</a></td></tr>
+      <tr><td class="ind">52</td><td class="prop">docmost</td><td class="ind">docmost/docmost</td><td class="ind">21,453</td><td class="ind"><a href="https://github.com/TylerJewell/docmost-akka">TylerJewell/docmost-akka</a></td></tr>
+      <tr><td class="ind">53</td><td class="prop">cobalt</td><td class="ind">imputnet/cobalt</td><td class="ind">42,240</td><td class="ind"><a href="https://github.com/TylerJewell/cobalt-akka">TylerJewell/cobalt-akka</a></td></tr>
+      <tr><td class="ind">54</td><td class="prop">glance</td><td class="ind">glanceapp/glance</td><td class="ind">36,570</td><td class="ind"><a href="https://github.com/TylerJewell/glance-akka">TylerJewell/glance-akka</a></td></tr>
+      <tr><td class="ind">55</td><td class="prop">open-notebook</td><td class="ind">lfnovo/open-notebook</td><td class="ind">37,531</td><td class="ind"><a href="https://github.com/TylerJewell/open-notebook-akka">TylerJewell/open-notebook-akka</a></td></tr>
+      <tr><td class="ind">56</td><td class="prop">uptime-kuma</td><td class="ind">louislam/uptime-kuma</td><td class="ind">90,561</td><td class="ind"><a href="https://github.com/TylerJewell/uptime-kuma-akka">TylerJewell/uptime-kuma-akka</a></td></tr>
     </tbody>
   </table>
 </figure>
