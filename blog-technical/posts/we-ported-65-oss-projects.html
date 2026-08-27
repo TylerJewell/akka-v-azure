@@ -141,6 +141,37 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
+<p>The figures above cover the span across all 65 projects. The deep dives that followed rebuilt every capability area of the projects below, rather than the slice the span pass covered.</p>
+
+</div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 2</p>
+  <h5>Summary of the 10 fully implemented ports</h5>
+  <table class="rtbl">
+    <colgroup><col style="width:24.1%"><col style="width:14.71%"><col style="width:8.71%"><col style="width:7.58%"><col style="width:9.84%"><col style="width:7.69%"><col style="width:7.24%"><col style="width:11.54%"><col style="width:10.86%"><col style="width:7.69%"></colgroup>
+    <thead>
+      <tr><th>Port</th><th>Model / effort</th><th>Tokens</th><th>Steps</th><th>LOC original</th><th>LOC port</th><th>LOC ratio</th><th>Perf original</th><th>Perf port</th><th>Perf ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ActivityWatch/activitywatch</td><td>opus / high</td><td>755 M</td><td>1,744</td><td>8,898</td><td>8,019</td><td class="win">0.90×</td><td>56.43 ms</td><td>12.36 ms</td><td class="win">4.57×</td></tr>
+      <tr><td>dgtlmoon/changedetection.io</td><td>opus / medium</td><td>1,153 M</td><td>2,543</td><td>53,667</td><td>36,577</td><td class="win">0.68×</td><td>1,745.75 us</td><td>166.27 us</td><td class="win">10.50×</td></tr>
+      <tr><td>glanceapp/glance</td><td>opus / medium</td><td>769 M</td><td>2,080</td><td>9,713</td><td>13,999</td><td class="lose">1.44×</td><td>389.0 us</td><td>561.6 us</td><td class="lose">0.69×</td></tr>
+      <tr><td>linkwarden/linkwarden</td><td>opus / low</td><td>802 M</td><td>2,056</td><td>19,225</td><td>8,556</td><td class="win">0.45×</td><td>88,530 us</td><td>15,147 us</td><td class="win">5.84×</td></tr>
+      <tr><td>permitio/opal</td><td>opus / xhigh</td><td>2,148 M</td><td>4,895</td><td>16,783</td><td>19,101</td><td class="lose">1.14×</td><td>10,015.3 us</td><td>1,328.3 us</td><td class="win">7.54×</td></tr>
+      <tr><td>lfnovo/open-notebook ⚠</td><td>sonnet / high</td><td>420 M</td><td>1,422</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>pocket-id/pocket-id ⚠</td><td>sonnet / medium</td><td>235 M</td><td>1,033</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td>umami-software/umami</td><td>opus / high</td><td>1,287 M</td><td>3,720</td><td>23,383</td><td>14,118</td><td class="win">0.60×</td><td>15.2 ms</td><td>31.0 ms</td><td class="lose">0.49×</td></tr>
+      <tr><td>louislam/uptime-kuma</td><td>opus / medium</td><td>1,219 M</td><td>3,150</td><td>20,770</td><td>19,192</td><td class="win">0.92×</td><td>100.1 ns</td><td>20.4 ns</td><td class="win">4.91×</td></tr>
+    </tbody>
+  </table>
+  <figcaption><b>Tokens and steps.</b> Lifetime totals across every attempt, including abandoned ones, taken from the preserved session transcripts. <b>LOC ratio.</b> Port divided by original, scope-matched; below 1× the rebuild shipped fewer lines for the same behaviour. <b>Perf ratio.</b> Original divided by port, in each report's own units, so a row is self-consistent but two rows are not comparable; above 1× the rebuild is faster. <b>⚠ open-notebook and pocket-id.</b> Their benchmarks were written against the earlier slice and are being re-run. Every figure derived from them is withheld rather than shown, so those rows keep the cost of the work and carry a dash everywhere a stale benchmark would have supplied a number.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
+
 <h2>The Methodology</h2>
 
 <p>We ported 65 OSS projects that were considered popular (large numbers of GitHub stars, strong community interaction online, and had a backend). We picked OSS projects in three different flavors:</p>
@@ -270,7 +301,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 2</p>
+  <p class="viz-title">Table 3</p>
   <h5>The auditors every port had to pass</h5>
   <table class="rtbl">
       <colgroup><col style="width:18.1%"><col style="width:82.24%"></colgroup>
@@ -389,10 +420,10 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 3</p>
+  <p class="viz-title">Table 4</p>
   <h5>Median LOC and performance change, grouped by what the project is</h5>
-  <table class="rtbl" style="--ind:99px">
-    <colgroup><col style="width:22.4%"><col style="width:7.69%"><col style="width:11.88%"><col style="width:12.22%"><col style="width:12.9%"><col style="width:13.24%"><col style="width:19.68%"></colgroup>
+  <table class="rtbl" style="--ind:81px">
+    <colgroup><col style="width:20.31%"><col style="width:7.69%"><col style="width:11.88%"><col style="width:12.22%"><col style="width:12.9%"><col style="width:13.24%"><col style="width:21.78%"></colgroup>
     <thead>
       <tr><th class="pad0">Category</th><th>Ports</th><th>Median LOC ratio</th><th>LOC change</th><th>Median perf. ratio</th><th>Perf. change</th><th>Mean parity</th></tr>
     </thead>
@@ -472,7 +503,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 4</p>
+  <p class="viz-title">Table 5</p>
   <h5>Ports that came in furthest under their predicted cost</h5>
   <table class="rtbl" style="--ind:58px">
     <colgroup><col style="width:18.33%"><col style="width:14.93%"><col style="width:9.95%"><col style="width:11.31%"><col style="width:13.12%"><col style="width:7.81%"><col style="width:9.28%"><col style="width:15.27%"></colgroup>
@@ -499,7 +530,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 5</p>
+  <p class="viz-title">Table 6</p>
   <h5>Ports that ran furthest over their predicted cost</h5>
   <table class="rtbl" style="--ind:58px">
     <colgroup><col style="width:18.33%"><col style="width:14.93%"><col style="width:9.95%"><col style="width:11.31%"><col style="width:13.12%"><col style="width:7.81%"><col style="width:9.28%"><col style="width:15.27%"></colgroup>
@@ -526,7 +557,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 6</p>
+  <p class="viz-title">Table 7</p>
   <h5>Ports that reduced LOC the most</h5>
   <table class="rtbl" style="--ind:125px">
     <colgroup><col style="width:22.68%"><col style="width:14.93%"><col style="width:10.97%"><col style="width:16.63%"><col style="width:10.18%"><col style="width:24.6%"></colgroup>
@@ -553,7 +584,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 7</p>
+  <p class="viz-title">Table 8</p>
   <h5>Ports that increased LOC the most</h5>
   <table class="rtbl" style="--ind:121px">
     <colgroup><col style="width:23.13%"><col style="width:14.93%"><col style="width:10.97%"><col style="width:16.63%"><col style="width:10.18%"><col style="width:24.15%"></colgroup>
@@ -615,7 +646,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 8</p>
+  <p class="viz-title">Table 9</p>
   <h5>Ports that improved performance the most</h5>
   <table class="rtbl" style="--ind:251px">
     <colgroup><col style="width:38.29%"><col style="width:14.93%"><col style="width:46.78%"></colgroup>
@@ -642,7 +673,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 9</p>
+  <p class="viz-title">Table 10</p>
   <h5>Ports that worsened performance the most</h5>
   <table class="rtbl" style="--ind:243px">
     <colgroup><col style="width:39.14%"><col style="width:14.93%"><col style="width:45.93%"></colgroup>
@@ -786,7 +817,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 10</p>
+  <p class="viz-title">Table 11</p>
   <h5>Exit conditions by type and category</h5>
   <table class="rtbl" style="--ind:141px">
       <colgroup><col style="width:33.77%"><col style="width:20.48%"><col style="width:45.76%"></colgroup>
@@ -828,7 +859,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 11</p>
+  <p class="viz-title">Table 12</p>
   <h5>The sections of an Akka Specification</h5>
   <table class="rtbl" style="--ind:106px">
       <colgroup><col style="width:15.67%"><col style="width:16.4%"><col style="width:67.93%"></colgroup>
@@ -917,7 +948,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 12</p>
+  <p class="viz-title">Table 13</p>
   <h5>Source project, GitHub stars at the time of the port, and the port's repository</h5>
   <table class="rtbl" style="--ind:76px">
     <colgroup><col style="width:13.12%"><col style="width:14.59%"><col style="width:24.89%"><col style="width:8.48%"><col style="width:38.91%"></colgroup>
