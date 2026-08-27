@@ -15,6 +15,13 @@
 <style>
 /* Mirrors .rtbl td.win for the losing side of a gains/losses pair. */
 .rtbl tbody td.lose{color:var(--bad);font-weight:600}
+/* Figure and table titles. The theme styles them as h4 at 22px, which is above
+   the 20px of the h3 they sit under; as an h5 the title reads as belonging to
+   the figure rather than competing with the section heading. The centring the
+   theme applies to figure.viz > h4 is repeated here because h5 is not in it. */
+figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:left;
+  font-family:var(--display);font-size:16px;line-height:1.3;font-weight:700;
+  color:var(--ink);text-wrap:balance;letter-spacing:-0.004em}
 </style>
 </head>
 <body>
@@ -99,7 +106,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 1</p>
-  <h4>Totals and extremes across the run</h4>
+  <h5>Totals and extremes across the run</h5>
   <table class="rtbl">
       <colgroup><col style="width:34%"><col style="width:66%"></colgroup><thead>
   <tr>
@@ -151,7 +158,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 1</p>
-  <h4>The Akka delivery harness</h4>
+  <h5>The Akka delivery harness</h5>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 178" role="img" aria-label="The five harness steps run in order from Setup to Improve. A return path carries Improve's findings back into Discovery, revising the discovery engine and the specification standard before the next port begins.">
       <style>
@@ -258,7 +265,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 2</p>
-  <h4>The auditors every port had to pass</h4>
+  <h5>The auditors every port had to pass</h5>
   <table class="rtbl">
       <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
   <thead>
@@ -303,7 +310,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 2</p>
-  <h4>Benchmark answer parity vs. LOC ratio</h4>
+  <h5>Benchmark answer parity vs. LOC ratio</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark answer parity vs. LOC ratio">
   </div></div>
@@ -325,7 +332,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 3</p>
-  <h4>Efficiency by model and effort</h4>
+  <h5>Efficiency by model and effort</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/06-efficiency-model-effort.png" alt="Efficiency by model and effort">
   </div></div>
@@ -341,7 +348,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 4</p>
-  <h4>Tokens per port by model and effort</h4>
+  <h5>Tokens per port by model and effort</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/07-tokens-model-effort.png" alt="Tokens per port by model and effort">
   </div></div>
@@ -359,7 +366,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 5</p>
-  <h4>Complexity-adjusted efficiency vs. size of the ported slice</h4>
+  <h5>Complexity-adjusted efficiency vs. size of the ported slice</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/08-complexity-adjusted.png" alt="Complexity-adjusted efficiency vs. size of the ported slice">
   </div></div>
@@ -377,7 +384,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 3</p>
-  <h4>Median LOC and performance change, grouped by what the project is</h4>
+  <h5>Median LOC and performance change, grouped by what the project is</h5>
   <table class="rtbl">
     <colgroup><col style="width:19%"><col style="width:9%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:14%"><col style="width:12%"></colgroup>
     <thead>
@@ -406,7 +413,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 6</p>
-  <h4>The aggregate cost of adding guardrails</h4>
+  <h5>The aggregate cost of adding guardrails</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/09-guardrail-cost.png" alt="The aggregate cost of adding guardrails">
   </div></div>
@@ -424,7 +431,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 7</p>
-  <h4>Tokens used vs. steps taken</h4>
+  <h5>Tokens used vs. steps taken</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/05-tokens-vs-steps.png" alt="Tokens used vs. steps taken">
   </div></div>
@@ -444,7 +451,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 8</p>
-  <h4>LOC ratio vs. size of the ported slice</h4>
+  <h5>LOC ratio vs. size of the ported slice</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/01-loc-ratio-vs-size.png" alt="LOC ratio vs. size of the ported slice">
   </div></div>
@@ -460,7 +467,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 4</p>
-  <h4>Ports that came in furthest under their predicted cost</h4>
+  <h5>Ports that came in furthest under their predicted cost</h5>
   <table class="rtbl">
     <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
     <thead>
@@ -487,7 +494,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 5</p>
-  <h4>Ports that ran furthest over their predicted cost</h4>
+  <h5>Ports that ran furthest over their predicted cost</h5>
   <table class="rtbl">
     <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
     <thead>
@@ -514,7 +521,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 6</p>
-  <h4>Ports that reduced LOC the most</h4>
+  <h5>Ports that reduced LOC the most</h5>
   <table class="rtbl">
     <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
     <thead>
@@ -541,7 +548,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 7</p>
-  <h4>Ports that increased LOC the most</h4>
+  <h5>Ports that increased LOC the most</h5>
   <table class="rtbl">
     <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
     <thead>
@@ -585,7 +592,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 9</p>
-  <h4>Tokens used vs. lines of code saved</h4>
+  <h5>Tokens used vs. lines of code saved</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens used vs. lines of code saved">
   </div></div>
@@ -603,7 +610,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 8</p>
-  <h4>Ports that improved performance the most</h4>
+  <h5>Ports that improved performance the most</h5>
   <table class="rtbl">
     <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
     <thead>
@@ -630,7 +637,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 9</p>
-  <h4>Ports that worsened performance the most</h4>
+  <h5>Ports that worsened performance the most</h5>
   <table class="rtbl">
     <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
     <thead>
@@ -668,7 +675,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 10</p>
-  <h4>Performance ratio vs. LOC ratio</h4>
+  <h5>Performance ratio vs. LOC ratio</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
   </div></div>
@@ -712,7 +719,7 @@
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
   <p class="viz-title">Figure 11</p>
-  <h4>An exit condition is checked at the build, before review, or before release</h4>
+  <h5>An exit condition is checked at the build, before review, or before release</h5>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 190" role="img" aria-label="A project passes three gates in order: the build gate, the review-ready gate, and the releasable gate. A condition placed at the build gate is paid on every iteration. A condition placed at the release gate is paid once.">
       <style>
@@ -774,7 +781,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 10</p>
-  <h4>Exit conditions by type and category</h4>
+  <h5>Exit conditions by type and category</h5>
   <table class="rtbl">
       <colgroup><col style="width:20%"><col style="width:24%"><col style="width:56%"></colgroup>
   <thead>
@@ -816,7 +823,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 11</p>
-  <h4>The sections of an Akka Specification</h4>
+  <h5>The sections of an Akka Specification</h5>
   <table class="rtbl">
       <colgroup><col style="width:5%"><col style="width:20%"><col style="width:75%"></colgroup>
   <thead>
@@ -905,7 +912,7 @@
 <div class="wide">
 <figure class="tbl">
   <p class="viz-title">Table 12</p>
-  <h4>Source project, GitHub stars at the time of the port, and the port's repository</h4>
+  <h5>Source project, GitHub stars at the time of the port, and the port's repository</h5>
   <table class="rtbl">
     <colgroup><col style="width:5%"><col style="width:21%"><col style="width:29%"><col style="width:12%"><col style="width:33%"></colgroup>
     <thead>
