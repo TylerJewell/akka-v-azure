@@ -692,6 +692,66 @@
 
 <p>Akka Specify can optionally be executed in an enforced mode, which maps every rule or requirement in a specification to an auditor that executes within an AI harness and must successfully pass before returning to the user. Exit conditions can enable a higher level of guarantee on quality, but adding more exit conditions leads to more auditors which can extend build cycles. Exit conditions have to be satisfied as part of the initial build, before a project is review ready, or before a project is releasable. Enterprises can enforce their own exit conditions, and finding the right balance of conditions that must be satisfied on every build vs. satisfied before the final release is challenging. We have built a large repository of conditions that we use on various projects.</p>
 
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:802px">
+  <p class="viz-title">Figure 11</p>
+  <h4>An exit condition is checked at the build, before review, or before release</h4>
+  <div class="plot-wrap">
+    <svg viewBox="0 0 802 190" role="img" aria-label="A project passes three gates in order: the build gate, the review-ready gate, and the releasable gate. A condition placed at the build gate is paid on every iteration. A condition placed at the release gate is paid once.">
+      <style>
+        /* Prefixed .gt because inline SVG styles are document-scoped and the
+           harness diagram above already claims .hx. */
+        .gt line, .gt path, .gt rect { fill: none; stroke: var(--mute); stroke-width: 1.5; }
+        .gt .gate { stroke: var(--accent); stroke-width: 2; fill: var(--paper); }
+        .gt text { text-anchor: middle; }
+        .gt .name { font-family: var(--display); font-size: 15px; font-weight: 700; fill: var(--ink); }
+        .gt .when { font-family: var(--text); font-size: 11.5px; fill: var(--mute); }
+        .gt .cost { font-family: var(--text); font-size: 11.5px; fill: var(--accent); }
+        .gt .end { font-family: var(--display); font-size: 13px; font-weight: 700;
+                   fill: var(--ink); text-anchor: start; }
+        .gt .head { fill: var(--mute); stroke: none; }
+      </style>
+
+      <g class="gt">
+        <defs>
+          <marker id="gt-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="head" d="M0 0 L8 4 L0 8 z"/>
+          </marker>
+        </defs>
+
+        <g marker-end="url(#gt-arrow)">
+          <line x1="44"  y1="96" x2="130" y2="96"/>
+          <line x1="164" y1="96" x2="381" y2="96"/>
+          <line x1="415" y1="96" x2="632" y2="96"/>
+          <line x1="666" y1="96" x2="700" y2="96"/>
+        </g>
+
+        <rect class="gate" x="145" y="68" width="9" height="56" rx="4"/>
+        <rect class="gate" x="396" y="68" width="9" height="56" rx="4"/>
+        <rect class="gate" x="647" y="68" width="9" height="56" rx="4"/>
+
+        <text class="name" x="150" y="52">Build</text>
+        <text class="name" x="401" y="52">Review ready</text>
+        <text class="name" x="652" y="52">Releasable</text>
+
+        <text class="when" x="150" y="148">runs on every build</text>
+        <text class="when" x="401" y="148">runs before review</text>
+        <text class="when" x="652" y="148">runs before release</text>
+
+        <text class="cost" x="150" y="166">cost paid each iteration</text>
+        <text class="cost" x="652" y="166">cost paid once</text>
+
+        <text class="end" x="710" y="101">Release</text>
+      </g>
+    </svg>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
+
 <div class="table-scroll">
 <table style="table-layout:fixed;--ind:8px"><colgroup><col style="width:28.0%"><col style="width:35.1%"><col style="width:36.9%"></colgroup>
 <thead>
