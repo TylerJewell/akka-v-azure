@@ -62,7 +62,6 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <li>Low effort models were often times more efficient than high effort models.</li>
 <li>The delivery harness and its structure had a bigger impact on consistency than model capability.</li>
 </ul>
-Unless stated otherwise, all tables and graphs reflect the 65 initial ports done as a slice.
 </div>
 
 <p class="lede">We see a potential for AI to write and maintain entire systems without human involvement. In March, we released <a href="https://doc.akka.io/reference/specify/index.html">Akka Specify</a>, a spec-driven delivery toolkit for creating new systems with the <a href="https://doc.akka.io/sdk/index.html">Akka SDK</a>. It takes an opinionated approach to defining and implementing an AI system—inclusive of APIs, orchestration, agents, streaming data, and stateful memory.</p>
@@ -96,6 +95,8 @@ Unless stated otherwise, all tables and graphs reflect the 65 initial ports done
 <li><strong>Span:</strong> A pass across all 65 projects that would create a fully mapped specification and implement a slice of up to 10% of the project's surface area. We did this on OSS projects that were both well-suited to an Akka port and those that were not (Go libraries, Rust modules, systems that didn't have a need for backend services).</li>
 <li><strong>Deep dives:</strong> Complete implementation of all of the project's use cases for those projects where we identified places where Akka could have a significant positive impact: systems with a Python backend, limited persistence, orchestration, scheduling, streaming or distributed fundamentals, feasible scope, and a baseline of a quality that could be adequately measured before/after.</li>
 </ol>
+
+<p>Unless stated otherwise, all tables and graphs reflect the 65 initial ports done as a slice.</p>
 
 </div>
 
