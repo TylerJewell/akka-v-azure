@@ -94,31 +94,36 @@
 
 <h2>Summary Metrics</h2>
 
-<div class="table-scroll tight">
-<table style="table-layout:fixed;--ind:3px"><colgroup><col style="width:42.7%"><col style="width:57.3%"></colgroup><thead>
-<tr>
-<th class="ind">Metric</th>
-<th class="ind">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr><td class="ind"><strong>Total time</strong></td><td class="ind"><strong>99.3 hours</strong></td></tr>
-<tr><td class="ind">Mean time per port</td><td class="ind">92 min (median 76)</td></tr>
-<tr><td class="ind">Fastest port</td><td class="ind"><a href="https://github.com/TylerJewell/remark42-akka">umputun/remark42</a> — 24 min (sonnet/low)</td></tr>
-<tr><td class="ind">Longest port</td><td class="ind"><a href="https://github.com/TylerJewell/activepieces-akka">activepieces/activepieces</a> — 292 min (opus/high)</td></tr>
-<tr><td class="ind">Total tokens</td><td class="ind">9.41B (25.5M output; the rest cache read/write)</td></tr>
-<tr><td class="ind">Sonnet mean time per port</td><td class="ind">61 min (n=31, median 60)</td></tr>
-<tr><td class="ind">Opus mean time per port</td><td class="ind">120 min (n=34, median 96)</td></tr>
-<tr><td class="ind">Total starting LOC (scope-matched)</td><td class="ind">61,835 (64/65 projects)</td></tr>
-<tr><td class="ind">Total finished LOC (port scope)</td><td class="ind">43,737 (64/65 projects)</td></tr>
-<tr><td class="ind">Largest LOC reduction</td><td class="ind"><a href="https://github.com/TylerJewell/agno-akka">agno-agi/agno</a> — 0.08:1 (1,524 → 127)</td></tr>
-<tr><td class="ind">Largest LOC increase</td><td class="ind"><a href="https://github.com/TylerJewell/redash-akka">getredash/redash</a> — 2.17:1 (542 → 1,176)</td></tr>
-<tr><td class="ind">Largest performance increase</td><td class="ind"><a href="https://github.com/TylerJewell/dify-akka">langgenius/dify</a> — 143,333× faster ⚠</td></tr>
-<tr><td class="ind">Largest performance degradation</td><td class="ind"><a href="https://github.com/TylerJewell/metaflow-akka">Netflix/metaflow</a> — 0.01× (100× slower)</td></tr>
-</tbody>
-</table>
 </div>
 
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 1</p>
+  <h4>Totals and extremes across the run</h4>
+  <table class="rtbl">
+      <colgroup><col style="width:34%"><col style="width:66%"></colgroup><thead>
+  <tr>
+  <th>Metric</th>
+  <th>Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr><td class="prop"><strong>Total time</strong></td><td><strong>99.3 hours</strong></td></tr>
+  <tr><td class="prop">Mean time per port</td><td>92 min (median 76)</td></tr>
+  <tr><td class="prop">Fastest port</td><td><a href="https://github.com/TylerJewell/remark42-akka">umputun/remark42</a> — 24 min (sonnet/low)</td></tr>
+  <tr><td class="prop">Longest port</td><td><a href="https://github.com/TylerJewell/activepieces-akka">activepieces/activepieces</a> — 292 min (opus/high)</td></tr>
+  <tr><td class="prop">Total tokens</td><td>9.41B (25.5M output; the rest cache read/write)</td></tr>
+  <tr><td class="prop">Sonnet mean time per port</td><td>61 min (n=31, median 60)</td></tr>
+  <tr><td class="prop">Opus mean time per port</td><td>120 min (n=34, median 96)</td></tr>
+  <tr><td class="prop">Total starting LOC (scope-matched)</td><td>61,835 (64/65 projects)</td></tr>
+  <tr><td class="prop">Total finished LOC (port scope)</td><td>43,737 (64/65 projects)</td></tr>
+  <tr><td class="prop">Largest LOC reduction</td><td><a href="https://github.com/TylerJewell/agno-akka">agno-agi/agno</a> — 0.08:1 (1,524 → 127)</td></tr>
+  <tr><td class="prop">Largest LOC increase</td><td><a href="https://github.com/TylerJewell/redash-akka">getredash/redash</a> — 2.17:1 (542 → 1,176)</td></tr>
+  <tr><td class="prop">Largest performance increase</td><td><a href="https://github.com/TylerJewell/dify-akka">langgenius/dify</a> — 143,333× faster ⚠</td></tr>
+  <tr><td class="prop">Largest performance degradation</td><td><a href="https://github.com/TylerJewell/metaflow-akka">Netflix/metaflow</a> — 0.01× (100× slower)</td></tr>
+  </tbody>
+  </table>
+</figure>
 </div>
 
 <div class="body col">
@@ -248,32 +253,42 @@
 
 <p>The port was only considered complete and successful if the source system's unit and integration tests would pass when run against the new Akka system. Additionally, Claude was required to run <code>/akka:review</code> after every port which executes a variety of design, performance, and code structure auditors. Claude was required to resolve every identified issue:</p>
 
-<div class="table-scroll">
-<table style="table-layout:fixed"><colgroup><col style="width:18%"><col style="width:82%"></colgroup>
-<thead>
-<tr><th>Auditor</th><th>What it checks</th></tr>
-</thead>
-<tbody>
-<tr><td>Serialization &amp; state integrity</td><td>Ensures persisted data can always be read back correctly across restarts and deployments. Covers stable type-name labels, pure event-replay functions, and safe entity initialization.</td></tr>
-<tr><td>Endpoints &amp; security</td><td>Confirms endpoints are declared correctly and don't leak sensitive operations to the public internet. Access-control rules must be present and not overly permissive.</td></tr>
-<tr><td>Workflows</td><td>Checks that workflows use the current APIs, keep step vs. command return types straight, and give AI steps enough time to finish. Prevents silent breakage and constant 5-second timeouts.</td></tr>
-<tr><td>Agents</td><td>Agents must be stateless so concurrent requests don't corrupt each other. No fields holding data between calls.</td></tr>
-<tr><td>Views</td><td>Verifies read-model wiring: right annotation placement, right handler for the source type, correctly wrapped list results, and no null fields. Wrong wiring means the view silently never populates.</td></tr>
-<tr><td>Error handling</td><td>Errors must use the framework's supported types so they can travel across nodes cleanly. Custom exception classes must be static to serialize.</td></tr>
-<tr><td>Payload &amp; state size</td><td>Enforces 1 MB limits on payloads, state, and events, plus 1 KB on timer inputs. Bigger data breaks replication and stalls the entity — store large assets externally by reference.</td></tr>
-<tr><td>Code quality &amp; safety</td><td>Bans blocking I/O in handlers, shared mutable state between components, and hardcoded secrets. Each causes stalls, race conditions, or leaks.</td></tr>
-<tr><td>PII &amp; data sanitization</td><td>Personal data must not appear raw in logs, error messages, endpoint responses, or LLM prompts. Sanitize or omit before it leaves the entity.</td></tr>
-<tr><td>Serialization conventions</td><td>Sensible defaults for serialized types: name sealed-interface variants, use Optional for missing fields, return new records for state changes, and declare all Protobuf event types. Keeps schemas evolvable and readable.</td></tr>
-<tr><td>Architecture conventions</td><td>Enforces a clean 3-layer DDD structure with framework-free domain code, business logic in domain objects, and standard naming for entities, commands, events, and views.</td></tr>
-<tr><td>Endpoint conventions</td><td>Every endpoint declares access rules, returns API-specific types (not raw domain), and uses the sync <code>.invoke()</code> style with the HttpResponses helpers. Access context comes from <code>requestContext()</code>.</td></tr>
-<tr><td>Workflow &amp; agent conventions</td><td>Failing steps have compensations, AI steps have retry caps and long-enough timeouts, transitions use method references, and each agent has an intentional model, memory, and error-fallback choice. Keeps workflows predictable and AI costs under control.</td></tr>
-<tr><td>Consumer &amp; idempotency</td><td>Ensures duplicate deliveries and retries don't cause double-effects: dedupe tokens on mutating commands, bounded dedupe state, deterministic tokens on external calls, and infallible compensations. Also: no fat events, load big assets just-in-time, enable sanitization when PII is present.</td></tr>
-<tr><td>Testing conventions</td><td>Uses the right testkit per component type, Awaitility for async view projections, httpClient for endpoint integration tests, and TestModelProvider to avoid real LLM calls. Integration test class names end in IntegrationTest.</td></tr>
-<tr><td>Error handling conventions</td><td>Return values from component calls aren't silently discarded, CommandException is caught and mapped to proper HTTP responses, and unexpected exceptions are handled instead of leaking as bare 500s.</td></tr>
-<tr><td>Design review</td><td>Higher-level design observations: no hot/god entities, right entity granularity, bounded state, right-sized events, parallel workflow steps, appropriate use of workflows and views, no deep sync call chains or circular dependencies, and clear aggregate boundaries.</td></tr>
-</tbody>
-</table>
 </div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 2</p>
+  <h4>The auditors every port had to pass</h4>
+  <table class="rtbl">
+      <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
+  <thead>
+  <tr><th>Auditor</th><th>What it checks</th></tr>
+  </thead>
+  <tbody>
+  <tr><td class="prop">Serialization &amp; state integrity</td><td class="prop">Ensures persisted data can always be read back correctly across restarts and deployments. Covers stable type-name labels, pure event-replay functions, and safe entity initialization.</td></tr>
+  <tr><td class="prop">Endpoints &amp; security</td><td class="prop">Confirms endpoints are declared correctly and don't leak sensitive operations to the public internet. Access-control rules must be present and not overly permissive.</td></tr>
+  <tr><td class="prop">Workflows</td><td class="prop">Checks that workflows use the current APIs, keep step vs. command return types straight, and give AI steps enough time to finish. Prevents silent breakage and constant 5-second timeouts.</td></tr>
+  <tr><td class="prop">Agents</td><td class="prop">Agents must be stateless so concurrent requests don't corrupt each other. No fields holding data between calls.</td></tr>
+  <tr><td class="prop">Views</td><td class="prop">Verifies read-model wiring: right annotation placement, right handler for the source type, correctly wrapped list results, and no null fields. Wrong wiring means the view silently never populates.</td></tr>
+  <tr><td class="prop">Error handling</td><td class="prop">Errors must use the framework's supported types so they can travel across nodes cleanly. Custom exception classes must be static to serialize.</td></tr>
+  <tr><td class="prop">Payload &amp; state size</td><td class="prop">Enforces 1 MB limits on payloads, state, and events, plus 1 KB on timer inputs. Bigger data breaks replication and stalls the entity — store large assets externally by reference.</td></tr>
+  <tr><td class="prop">Code quality &amp; safety</td><td class="prop">Bans blocking I/O in handlers, shared mutable state between components, and hardcoded secrets. Each causes stalls, race conditions, or leaks.</td></tr>
+  <tr><td class="prop">PII &amp; data sanitization</td><td class="prop">Personal data must not appear raw in logs, error messages, endpoint responses, or LLM prompts. Sanitize or omit before it leaves the entity.</td></tr>
+  <tr><td class="prop">Serialization conventions</td><td class="prop">Sensible defaults for serialized types: name sealed-interface variants, use Optional for missing fields, return new records for state changes, and declare all Protobuf event types. Keeps schemas evolvable and readable.</td></tr>
+  <tr><td class="prop">Architecture conventions</td><td class="prop">Enforces a clean 3-layer DDD structure with framework-free domain code, business logic in domain objects, and standard naming for entities, commands, events, and views.</td></tr>
+  <tr><td class="prop">Endpoint conventions</td><td class="prop">Every endpoint declares access rules, returns API-specific types (not raw domain), and uses the sync <code>.invoke()</code> style with the HttpResponses helpers. Access context comes from <code>requestContext()</code>.</td></tr>
+  <tr><td class="prop">Workflow &amp; agent conventions</td><td class="prop">Failing steps have compensations, AI steps have retry caps and long-enough timeouts, transitions use method references, and each agent has an intentional model, memory, and error-fallback choice. Keeps workflows predictable and AI costs under control.</td></tr>
+  <tr><td class="prop">Consumer &amp; idempotency</td><td class="prop">Ensures duplicate deliveries and retries don't cause double-effects: dedupe tokens on mutating commands, bounded dedupe state, deterministic tokens on external calls, and infallible compensations. Also: no fat events, load big assets just-in-time, enable sanitization when PII is present.</td></tr>
+  <tr><td class="prop">Testing conventions</td><td class="prop">Uses the right testkit per component type, Awaitility for async view projections, httpClient for endpoint integration tests, and TestModelProvider to avoid real LLM calls. Integration test class names end in IntegrationTest.</td></tr>
+  <tr><td class="prop">Error handling conventions</td><td class="prop">Return values from component calls aren't silently discarded, CommandException is caught and mapped to proper HTTP responses, and unexpected exceptions are handled instead of leaking as bare 500s.</td></tr>
+  <tr><td class="prop">Design review</td><td class="prop">Higher-level design observations: no hot/god entities, right entity granularity, bounded state, right-sized events, parallel workflow steps, appropriate use of workflows and views, no deep sync call chains or circular dependencies, and clear aggregate boundaries.</td></tr>
+  </tbody>
+  </table>
+</figure>
+</div>
+
+<div class="body col">
+
 
 <p>The conversion must run human unattended. During the analysis phase of any source system, if there was any ambiguous functionality or behavior AI was instructed to get clarity by running the source system's integration tests. Eventually, in trial runs, Claude invented a form of adversarial testing that it would use to determine whether ambiguous behavior could be deterministically applied, or whether it was indefinitely non-deterministic.</p>
 
@@ -361,7 +376,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 1</p>
+  <p class="viz-title">Table 3</p>
   <h4>Median LOC and performance change, grouped by what the project is</h4>
   <table class="rtbl">
     <colgroup><col style="width:19%"><col style="width:9%"><col style="width:15%"><col style="width:14%"><col style="width:17%"><col style="width:14%"><col style="width:12%"></colgroup>
@@ -444,7 +459,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 2</p>
+  <p class="viz-title">Table 4</p>
   <h4>Ports that came in furthest under their predicted cost</h4>
   <table class="rtbl">
     <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
@@ -471,7 +486,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 3</p>
+  <p class="viz-title">Table 5</p>
   <h4>Ports that ran furthest over their predicted cost</h4>
   <table class="rtbl">
     <colgroup><col style="width:17%"><col style="width:17%"><col style="width:11%"><col style="width:12%"><col style="width:13%"><col style="width:9%"><col style="width:10%"><col style="width:11%"></colgroup>
@@ -498,7 +513,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 4</p>
+  <p class="viz-title">Table 6</p>
   <h4>Ports that reduced LOC the most</h4>
   <table class="rtbl">
     <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
@@ -525,7 +540,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 5</p>
+  <p class="viz-title">Table 7</p>
   <h4>Ports that increased LOC the most</h4>
   <table class="rtbl">
     <colgroup><col style="width:20%"><col style="width:20%"><col style="width:14%"><col style="width:18%"><col style="width:14%"><col style="width:14%"></colgroup>
@@ -587,7 +602,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 6</p>
+  <p class="viz-title">Table 8</p>
   <h4>Ports that improved performance the most</h4>
   <table class="rtbl">
     <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
@@ -614,7 +629,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 7</p>
+  <p class="viz-title">Table 9</p>
   <h4>Ports that worsened performance the most</h4>
   <table class="rtbl">
     <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
@@ -750,54 +765,70 @@
 </figure>
 </div>
 
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 10</p>
+  <h4>Exit conditions by type and category</h4>
+  <table class="rtbl">
+      <colgroup><col style="width:20%"><col style="width:24%"><col style="width:56%"></colgroup>
+  <thead>
+  <tr><th>EC type</th><th>Category</th><th>What it asks</th></tr>
+  </thead>
+  <tbody>
+  <tr><td rowspan="7" class="prop"><strong>Product</strong><br>does it work?</td><td class="prop">Functional</td><td class="prop">Does the software work?</td></tr>
+  <tr><td class="prop">Data integrity</td><td class="prop">Is data consistent and correct?</td></tr>
+  <tr><td class="prop">Reliability</td><td class="prop">Is it dependable and fault-tolerant?</td></tr>
+  <tr><td class="prop">Performance</td><td class="prop">Is it fast and resource-efficient?</td></tr>
+  <tr><td class="prop">Security &amp; compliance</td><td class="prop">Is it protected and regulation-conformant?</td></tr>
+  <tr><td class="prop">Operability</td><td class="prop">Can it be run, observed and managed?</td></tr>
+  <tr><td class="prop">Experience</td><td class="prop">Is it usable and satisfying?</td></tr>
+  <tr><td rowspan="7" class="prop"><strong>Project</strong><br>is the codebase healthy?</td><td class="prop">Documentation &amp; training</td><td class="prop">Can knowledge transfer to others?</td></tr>
+  <tr><td class="prop">Repository hygiene</td><td class="prop">Is the codebase clean and organised?</td></tr>
+  <tr><td class="prop">Pipeline &amp; scanning</td><td class="prop">Do CI/CD and automated checks pass?</td></tr>
+  <tr><td class="prop">Code &amp; test health</td><td class="prop">Quality metrics and test coverage</td></tr>
+  <tr><td class="prop">Environment &amp; dependencies</td><td class="prop">Config and library management</td></tr>
+  <tr><td class="prop">Enterprise integration</td><td class="prop">System interoperability</td></tr>
+  <tr><td class="prop">Infrastructure &amp; deployment</td><td class="prop">How it is provisioned and shipped</td></tr>
+  <tr><td rowspan="4" class="prop"><strong>Process</strong><br>was the build honest?</td><td class="prop">Process integrity</td><td class="prop">Did the AI build stay honest and transparent?</td></tr>
+  <tr><td class="prop">Build efficiency</td><td class="prop">Development speed and resource use</td></tr>
+  <tr><td class="prop">Content &amp; brand governance</td><td class="prop">Standards compliance</td></tr>
+  <tr><td class="prop">Agentic AI safety</td><td class="prop">Safe autonomous agent behaviour</td></tr>
+  </tbody>
+  </table>
+</figure>
+</div>
+
 <div class="body col">
 
-<div class="table-scroll">
-<table style="table-layout:fixed;--ind:8px"><colgroup><col style="width:28.0%"><col style="width:35.1%"><col style="width:36.9%"></colgroup>
-<thead>
-<tr><th class="ind">EC type</th><th class="ind">Category</th><th class="ind">What it asks</th></tr>
-</thead>
-<tbody>
-<tr><td rowspan="7" class="ind"><strong>Product</strong><br>does it work?</td><td class="ind">Functional</td><td class="ind">Does the software work?</td></tr>
-<tr><td class="ind">Data integrity</td><td class="ind">Is data consistent and correct?</td></tr>
-<tr><td class="ind">Reliability</td><td class="ind">Is it dependable and fault-tolerant?</td></tr>
-<tr><td class="ind">Performance</td><td class="ind">Is it fast and resource-efficient?</td></tr>
-<tr><td class="ind">Security &amp; compliance</td><td class="ind">Is it protected and regulation-conformant?</td></tr>
-<tr><td class="ind">Operability</td><td class="ind">Can it be run, observed and managed?</td></tr>
-<tr><td class="ind">Experience</td><td class="ind">Is it usable and satisfying?</td></tr>
-<tr><td rowspan="7" class="ind"><strong>Project</strong><br>is the codebase healthy?</td><td class="ind">Documentation &amp; training</td><td class="ind">Can knowledge transfer to others?</td></tr>
-<tr><td class="ind">Repository hygiene</td><td class="ind">Is the codebase clean and organised?</td></tr>
-<tr><td class="ind">Pipeline &amp; scanning</td><td class="ind">Do CI/CD and automated checks pass?</td></tr>
-<tr><td class="ind">Code &amp; test health</td><td class="ind">Quality metrics and test coverage</td></tr>
-<tr><td class="ind">Environment &amp; dependencies</td><td class="ind">Config and library management</td></tr>
-<tr><td class="ind">Enterprise integration</td><td class="ind">System interoperability</td></tr>
-<tr><td class="ind">Infrastructure &amp; deployment</td><td class="ind">How it is provisioned and shipped</td></tr>
-<tr><td rowspan="4" class="ind"><strong>Process</strong><br>was the build honest?</td><td class="ind">Process integrity</td><td class="ind">Did the AI build stay honest and transparent?</td></tr>
-<tr><td class="ind">Build efficiency</td><td class="ind">Development speed and resource use</td></tr>
-<tr><td class="ind">Content &amp; brand governance</td><td class="ind">Standards compliance</td></tr>
-<tr><td class="ind">Agentic AI safety</td><td class="ind">Safe autonomous agent behaviour</td></tr>
-</tbody>
-</table>
-</div>
 
 <h3>A Specification Standard</h3>
 
 <p>Most spec-driven development toolkits are indifferent to the structure of the specification. We've extended speckit to accept an Akka Specification which has a structure that leads to better requirements creation and faster authoring. The more structure we give to a specification, the faster a delivery cycle can complete.</p>
 
-<div class="table-scroll">
-<table style="table-layout:fixed"><colgroup><col style="width:4.4%"><col style="width:18.8%"><col style="width:76.8%"></colgroup>
-<thead>
-<tr><th>§</th><th>Section</th><th>What it holds</th></tr>
-</thead>
-<tbody>
-<tr><td>1</td><td>Scope</td><td>What the rebuild covers and what it explicitly excludes, each exclusion with a reason</td></tr>
-<tr><td>2</td><td>Domain model</td><td>The nouns and their relationships. opal splits this into Policy, Data, Identity/scopes, Fleet</td></tr>
-<tr><td>3</td><td>Deterministic contract</td><td>The numbered rules, grouped by capability</td></tr>
-<tr><td>4</td><td>Open decisions</td><td>Places the original has no settled answer or gives two; the port picks one and says so</td></tr>
-<tr><td>5</td><td>Conformance</td><td>A table binding every rule to source and test</td></tr>
-</tbody>
-</table>
 </div>
+
+<div class="wide">
+<figure class="tbl">
+  <p class="viz-title">Table 11</p>
+  <h4>The sections of an Akka Specification</h4>
+  <table class="rtbl">
+      <colgroup><col style="width:5%"><col style="width:20%"><col style="width:75%"></colgroup>
+  <thead>
+  <tr><th>§</th><th>Section</th><th>What it holds</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>1</td><td class="prop">Scope</td><td class="prop">What the rebuild covers and what it explicitly excludes, each exclusion with a reason</td></tr>
+  <tr><td>2</td><td class="prop">Domain model</td><td class="prop">The nouns and their relationships. opal splits this into Policy, Data, Identity/scopes, Fleet</td></tr>
+  <tr><td>3</td><td class="prop">Deterministic contract</td><td class="prop">The numbered rules, grouped by capability</td></tr>
+  <tr><td>4</td><td class="prop">Open decisions</td><td class="prop">Places the original has no settled answer or gives two; the port picks one and says so</td></tr>
+  <tr><td>5</td><td class="prop">Conformance</td><td class="prop">A table binding every rule to source and test</td></tr>
+  </tbody>
+  </table>
+</figure>
+</div>
+
+<div class="body col">
+
 
 <h3>Discovery</h3>
 
@@ -867,7 +898,7 @@
 
 <div class="wide">
 <figure class="tbl">
-  <p class="viz-title">Table 8</p>
+  <p class="viz-title">Table 12</p>
   <h4>Source project, GitHub stars at the time of the port, and the port's repository</h4>
   <table class="rtbl">
     <colgroup><col style="width:5%"><col style="width:21%"><col style="width:29%"><col style="width:12%"><col style="width:33%"></colgroup>
