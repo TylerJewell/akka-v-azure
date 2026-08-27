@@ -13,6 +13,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
 <link rel="stylesheet" href="../theme/base.css">
 <style>
+/* Section index. No theme pattern exists for one: this post runs 6,595 words
+   across ten sections, where the next longest in the corpus is 2,362 with no
+   subsections. Links take ink so ten of them do not read as a block of blue,
+   and River Blue on hover, which is how the brand signals interactive. */
+nav.toc{margin:0 0 34px}
+nav.toc ul{list-style:none;margin:0;padding:0;column-gap:32px}
+nav.toc li{margin:0;padding:5px 0;border-bottom:1px solid var(--rule)}
+nav.toc li:last-child{border-bottom:0}
+nav.toc a{color:var(--ink);font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:-0.004em}
+nav.toc a:hover{color:var(--link);text-decoration:none}
+/* The site header overlays an anchored heading without this. */
+.body h2{scroll-margin-top:90px}
 /* Mirrors .rtbl td.win for the losing side of a gains/losses pair. */
 .rtbl tbody td.lose{color:var(--bad);font-weight:600}
 /* Figure and table titles. The theme styles them as h4 at 22px, which is above
@@ -65,6 +77,21 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 </ul>
 </div>
 
+<nav class="toc">
+<ul>
+<li><a href="#the-two-tranche-approach">The Two-Tranche Approach</a></li>
+<li><a href="#our-experimental-goals">Our Experimental Goals</a></li>
+<li><a href="#summary-metrics">Summary Metrics</a></li>
+<li><a href="#the-methodology">The Methodology</a></li>
+<li><a href="#the-delivery-harness">The Delivery Harness</a></li>
+<li><a href="#analysis">Analysis</a></li>
+<li><a href="#about-spec-driven-delivery">About Spec-Driven Delivery</a></li>
+<li><a href="#lessons-learned">Lessons Learned</a></li>
+<li><a href="#one-overall-finding">One Overall Finding</a></li>
+<li><a href="#appendix-the-ported-projects">Appendix: The Ported Projects</a></li>
+</ul>
+</nav>
+
 <p class="lede">We see a potential for AI to write and maintain entire systems without human involvement. In March, we released <a href="https://doc.akka.io/reference/specify/index.html">Akka Specify</a>, a spec-driven delivery toolkit for creating new systems with the <a href="https://doc.akka.io/sdk/index.html">Akka SDK</a>. It takes an opinionated approach to defining and implementing an AI system—inclusive of APIs, orchestration, agents, streaming data, and stateful memory.</p>
 
 <p>We observed a few things after the release of Akka Specify:</p>
@@ -88,7 +115,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>The Two-Tranche Approach</h2>
+<h2 id="the-two-tranche-approach">The Two-Tranche Approach</h2>
 
 <p>We did this in two tranches:</p>
 
@@ -103,7 +130,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>Our Experimental Goals</h2>
+<h2 id="our-experimental-goals">Our Experimental Goals</h2>
 
 <ol>
 <li><strong>Specification structure:</strong> Akka Specify takes a specification as its input. We wanted to explore whether specifications should have a structure, schema, and maybe even typed behavior so that systems can more reliably be first-pass generated.</li>
@@ -117,7 +144,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>Summary Metrics</h2>
+<h2 id="summary-metrics">Summary Metrics</h2>
 
 </div>
 
@@ -178,7 +205,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>The Methodology</h2>
+<h2 id="the-methodology">The Methodology</h2>
 
 <p>We ported 65 OSS projects that were considered popular (large numbers of GitHub stars, strong community interaction online, and had a backend). We picked OSS projects in three different flavors:</p>
 
@@ -192,7 +219,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>The Delivery Harness</h2>
+<h2 id="the-delivery-harness">The Delivery Harness</h2>
 
 <p>We created a delivery harness that would run in a self-improvement loop.</p>
 
@@ -362,7 +389,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>Analysis</h2>
+<h2 id="analysis">Analysis</h2>
 
 <h3>Model and Effort Performance</h3>
 
@@ -727,7 +754,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>About Spec-Driven Delivery</h2>
+<h2 id="about-spec-driven-delivery">About Spec-Driven Delivery</h2>
 
 <p>Spec-driven delivery (SDD) is the process of using specifications to define a system and use it as a foundation for its delivery. A side-effect of SDD is the avoidance of technical debt and loss from tribal knowledge migration. When implemented with appropriate guardrails, an SDD system can ensure that it maintains itself against all current best practices, avoiding the introduction of technical debt, and further, no project tribal knowledge is lost when a team member migrates to another project or someone new who is unfamiliar with the project starts to engage. If the specifications are complete and the engine which generates systems from them comprehensive, then knowledge is captured and system maintenance is (mostly) automatic.</p>
 
@@ -894,7 +921,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>Lessons Learned</h2>
+<h2 id="lessons-learned">Lessons Learned</h2>
 
 <p>We had a few goals when we set out on this experiment. Here is what we found.</p>
 
@@ -936,7 +963,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>One Overall Finding</h2>
+<h2 id="one-overall-finding">One Overall Finding</h2>
 
 <p>If there is a single thing to take from 65 ports, it is that the interesting variable in this system is not the model, not the effort, and not the runtime—it is the discipline of the specification and the auditors. The ports that failed did so because the spec left decisions implicit or the auditors weren't yet strict enough to catch a class of mistake. The ports that succeeded did so because the spec forced enumeration and the auditors refused to sign off on anything less. The platform's biggest lever going forward is upstream of the model: it's in making the spec a data structure and the Exit Conditions a versioned, category-aware library.</p>
 
@@ -946,7 +973,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2>Appendix: The Ported Projects</h2>
+<h2 id="appendix-the-ported-projects">Appendix: The Ported Projects</h2>
 
 <p>Each port has its own repository, with a README covering how to run it, how to re-run the unit and integration tests, and how to rebuild it from scratch using Akka Specify.</p>
 
