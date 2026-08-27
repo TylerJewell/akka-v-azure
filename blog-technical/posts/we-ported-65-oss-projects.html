@@ -18,11 +18,19 @@
    subsections. Links take ink so ten of them do not read as a block of blue,
    and River Blue on hover, which is how the brand signals interactive. */
 nav.toc{margin:0 0 34px}
-nav.toc ul{list-style:none;margin:0;padding:0;column-gap:32px}
-nav.toc li{margin:0;padding:5px 0;border-bottom:1px solid var(--rule)}
-nav.toc li:last-child{border-bottom:0}
-nav.toc a{color:var(--ink);font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:-0.004em}
-nav.toc a:hover{color:var(--link);text-decoration:none}
+nav.toc .toc-label{font-family:var(--display);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--accent);margin:0 0 10px}
+nav.toc ul{list-style:none;margin:0;padding:0}
+nav.toc li{margin:0}
+/* Row is the link: numeral, title indented off it, leader, position. */
+nav.toc a{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);color:var(--ink);text-decoration:none}
+nav.toc li:last-child a{border-bottom:0}
+nav.toc a:hover{color:var(--link)}
+nav.toc a:hover .dots{border-bottom-color:var(--link)}
+nav.toc .num{flex:0 0 32px;font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--mute);font-variant-numeric:tabular-nums}
+nav.toc .ttl{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:-0.004em}
+/* The leader sits on the baseline, so it is nudged up to the x-height gap. */
+nav.toc .dots{flex:1 1 auto;min-width:18px;border-bottom:1px dotted var(--faint);transform:translateY(-4px)}
+nav.toc .min{flex:0 0 auto;font-family:var(--mono);font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
 /* The site header overlays an anchored heading without this. */
 .body h2{scroll-margin-top:90px}
 /* Mirrors .rtbl td.win for the losing side of a gains/losses pair. */
@@ -78,17 +86,18 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 </div>
 
 <nav class="toc">
+<p class="toc-label">Sections</p>
 <ul>
-<li><a href="#the-two-tranche-approach">The Two-Tranche Approach</a></li>
-<li><a href="#our-experimental-goals">Our Experimental Goals</a></li>
-<li><a href="#summary-metrics">Summary Metrics</a></li>
-<li><a href="#the-methodology">The Methodology</a></li>
-<li><a href="#the-delivery-harness">The Delivery Harness</a></li>
-<li><a href="#analysis">Analysis</a></li>
-<li><a href="#about-spec-driven-delivery">About Spec-Driven Delivery</a></li>
-<li><a href="#lessons-learned">Lessons Learned</a></li>
-<li><a href="#one-overall-finding">One Overall Finding</a></li>
-<li><a href="#appendix-the-ported-projects">Appendix: The Ported Projects</a></li>
+<li><a href="#the-two-tranche-approach"><span class="num">I</span><span class="ttl">The Two-Tranche Approach</span><span class="dots"></span><span class="min">3 min</span></a></li>
+<li><a href="#our-experimental-goals"><span class="num">II</span><span class="ttl">Our Experimental Goals</span><span class="dots"></span><span class="min">4 min</span></a></li>
+<li><a href="#summary-metrics"><span class="num">III</span><span class="ttl">Summary Metrics</span><span class="dots"></span><span class="min">5 min</span></a></li>
+<li><a href="#the-methodology"><span class="num">IV</span><span class="ttl">The Methodology</span><span class="dots"></span><span class="min">7 min</span></a></li>
+<li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">8 min</span></a></li>
+<li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">16 min</span></a></li>
+<li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">29 min</span></a></li>
+<li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">35 min</span></a></li>
+<li><a href="#one-overall-finding"><span class="num">IX</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">40 min</span></a></li>
+<li><a href="#appendix-the-ported-projects"><span class="num">X</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">41 min</span></a></li>
 </ul>
 </nav>
 
