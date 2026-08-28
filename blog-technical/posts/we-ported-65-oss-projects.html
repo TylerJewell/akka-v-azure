@@ -973,7 +973,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <p>Exit Conditions do capture what shipping a system means, and a structured harness can act as the record of what those conditions ought to be.</p>
 
-<p>The eight-step pipeline that we generated that standardized how a port should work—pick, start, work out what it does, rebuild, measure, publish, write up, fix the method—is the closest thing we have to a portable definition of "system delivered." Every guardrail we added mid-run (sweep leftover processes, refuse an empty screen, close the rendering gate, warn on a hung tool at four heartbeats) turned into an Exit Condition that needed to be audited on a future project.</p>
+<p>The delivery harness that we generated that standardized how a port should work—setup, discovery, port, benchmark, improve—is the closest thing we have to a portable definition of "system delivered." Every guardrail we added mid-run (sweep leftover processes, refuse an empty screen, close the rendering gate, warn on a hung tool at four heartbeats) turned into an Exit Condition that needed to be audited on a future project.</p>
 
 <p>This reinforces our thinking around providing an enforced mode for Akka Specify where we allow enterprises to define exit conditions from across a variety of different dimensions, integrate the auditors with internal tooling that knows how to measure these conditions, and to enforce them as part of the project's build and test cycle.</p>
 
