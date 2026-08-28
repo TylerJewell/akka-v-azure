@@ -103,6 +103,8 @@ section.body{padding:8px 0}
   .tbl col.c-svc{width:20%}
   .tbl col.c-aws{width:26%}
   .tbl col.c-rel{width:13%}
+  code{font-family:var(--mono);font-size:.86em;color:var(--ink);
+    background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
   .body h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em;
     color:var(--ink);margin:32px 0 10px}
   .lead-in{margin:0 0 10px}
@@ -451,6 +453,392 @@ section.body{padding:8px 0}
         </tbody>
       </table>
     </div>
+
+    <h2>AgentCore and the Akka SDK in detail</h2>
+
+    <p class="lead-in">A production agent on AgentCore is assembled from separately provisioned
+      services: Runtime, Memory, Gateway, Identity, Observability, Policy, Evaluations, and the
+      managed harness that wires them together. Akka provides the same capabilities as components inside one
+      deployable service on one runtime. AgentCore hosts an agent written in any framework and any
+      language; the Akka SDK is Java.</p>
+
+    <p>Every AgentCore figure below is an AWS-published default taken from the AgentCore quota
+      documentation on 28 August 2026. AWS marks some quotas adjustable through Service Quotas and the rest fixed.</p>
+
+    <h3>Execution and session lifetime</h3>
+
+    <p>AgentCore Runtime places each user session in a dedicated microVM with isolated CPU, memory
+      and filesystem, then terminates the microVM and sanitizes its memory when the session ends. A
+      session is capped at 2 vCPU and 8 GB. The Instances compute type runs agents on EC2 in the
+      customer's own account and raises the session ceiling to 14 days.</p>
+
+    <p>Akka addresses an agent instance by identity. The runtime routes each
+      request to whichever cluster node currently owns that instance's state, and relocates the state
+      as nodes join and leave. A run that waits on a human for three days holds no compute while it
+      waits and resumes on whichever node is available when the human answers.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Unit of isolation</td>
+            <td>One microVM per user session, terminated at session end</td>
+            <td>One actor per agent or entity instance, single-owner sharded across the cluster and relocated while the system serves traffic</td></tr>
+          <tr><td class="row-h">Hardware per unit</td>
+            <td>2 vCPU and 8 GB per session, fixed</td>
+            <td>Instances share node capacity, and a single core holds 200 million actors</td></tr>
+          <tr><td class="row-h">Session duration</td>
+            <td>8 hours on microVMs, adjustable through <code>maxLifetime</code>; 14 days on Instances</td>
+            <td>No ceiling. A workflow suspends across crashes, deployments and days, then resumes at the step it stopped on</td></tr>
+          <tr><td class="row-h">Synchronous request</td>
+            <td>15 minutes, fixed</td>
+            <td>Long work runs as workflow steps, each with a timeout the developer sets and a default of 5 seconds</td></tr>
+          <tr><td class="row-h">Idle behaviour</td>
+            <td>15 minutes of inactivity terminates the execution environment, and a new one is created for the session</td>
+            <td>Idle state leaves memory and is rebuilt from its snapshot and journal on the next request</td></tr>
+          <tr><td class="row-h">Streaming</td>
+            <td>60-minute maximum connection, 64 KB WebSocket frames, 250 frames per second per connection, all fixed</td>
+            <td>Token-by-token model output over SSE and gRPC, backpressured end to end, with no external broker</td></tr>
+          <tr><td class="row-h">Payload</td>
+            <td>100 MB per request or response, fixed, with 10 MB streaming chunks</td>
+            <td>Set in service configuration</td></tr>
+          <tr><td class="row-h">Concurrency ceiling</td>
+            <td>5,000 active session workloads per account in N. Virginia and Oregon, 2,500 in other Regions, adjustable</td>
+            <td>Set by cluster size. Akka adds nodes as demand rises and scales to zero when a service goes idle</td></tr>
+          <tr><td class="row-h">Admission rate</td>
+            <td>25 new sessions per second and 1,000 data-plane requests per second per account, both adjustable</td>
+            <td>Akka applies no account-level admission quota, and backpressure propagates to the producer</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Agent state and memory</h3>
+
+    <p>AgentCore Memory is a regional service the agent calls across the network. <code>CreateEvent</code> writes conversation turns and <code>RetrieveMemoryRecords</code> reads them back. Long-term records are produced asynchronously by extraction strategies running against a token budget.
+      Each memory resource holds at most six strategies, and events expire between 7 and 365 days.</p>
+
+    <p>Akka session memory is an event-sourced entity in the same runtime as the agent, identified by
+      a session id and shared by every agent that uses that id. Reads complete in 4ms and writes in
+      under 10ms because the state is already in memory on the node handling the request. The journal
+      behind it is the same journal that restores the agent after a node failure.</p>
+
+    <p>A View projects entity events, workflow state changes, topic messages, or another Akka
+      service's event stream into a read model that answers the queries an entity id cannot. Queries
+      are declared on the view with <code>@Query</code> and reached over HTTP or gRPC. One view holds
+      several tables and joins across them. A view is eventually consistent with the component that
+      feeds it, and its queries run on compute that scales independently of the write side.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Where memory lives</td>
+            <td>A separate managed service, reached over the network</td>
+            <td>An event-sourced entity on the same runtime, held in memory on the node that owns it</td></tr>
+          <tr><td class="row-h">Write path</td>
+            <td><code>CreateEvent</code>, capped at 100 messages and 10 MB per event, 100 KB per message, and 5 calls per second per actor per session</td>
+            <td>The agent writes the user message and the model response automatically as events on the session entity</td></tr>
+          <tr><td class="row-h">Read shaping</td>
+            <td>Retrieval of extracted records by namespace</td>
+            <td><code>MemoryProvider.limitedWindow().readLast(n)</code>, read-only and write-only modes, and <code>MemoryFilter</code> to include or exclude messages by agent component id or agent role</td></tr>
+          <tr><td class="row-h">Long-term knowledge</td>
+            <td>Built-in extraction strategies, 6 per memory resource, capped at 150,000 tokens per minute per account and 50,000 per session for episodic extraction</td>
+            <td>Durable memory in entities and views, with compaction that summarizes older context while the detail stays in the journal</td></tr>
+          <tr><td class="row-h">Context window control</td>
+            <td>Extraction and summarization strategies</td>
+            <td>A 156 KiB history window by default, compaction, and a per-call limit on how many messages reach the model</td></tr>
+          <tr><td class="row-h">Retention</td>
+            <td>Event expiration between 7 and 365 days</td>
+            <td>The journal is retained for the life of the service, and the interaction log is retained on the schedule the regulation sets</td></tr>
+          <tr><td class="row-h">External store</td>
+            <td>AgentCore Memory, or a database the customer wires in</td>
+            <td><code>MemoryProvider.custom()</code> implements the <code>SessionMemory</code> interface against any store</td></tr>
+          <tr><td class="row-h">Query across instances</td>
+            <td>Retrieval from Memory by namespace, or a database the customer wires in and keeps updated</td>
+            <td>A View built from entity events, workflow state, topics or another service's stream, queried with <code>@Query</code></td></tr>
+          <tr><td class="row-h">Live query results</td>
+            <td>Polling the Memory or database API</td>
+            <td><code>@Query(streamUpdates = true)</code> holds the result open and pushes matching updates as server-sent events, resuming from the last seen event id after a reconnect</td></tr>
+          <tr><td class="row-h">Read-side scaling</td>
+            <td><code>RetrieveMemoryRecords</code> at 30 requests per second per account, adjustable</td>
+            <td>Read-side queries run on compute that scales separately from the write side</td></tr>
+          <tr><td class="row-h">Multi-region</td>
+            <td>A regional resource</td>
+            <td>Entities and workflows replicate across regions, with writes routed to a primary region and reads served locally</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Multi-step orchestration</h3>
+
+    <p>The managed agent harness in AgentCore runs the model-and-tool loop and takes per-invocation caps on iterations,
+      timeout and tokens. Durable multi-step execution comes from AWS Step Functions, which calls the agent harness through an <code>InvokeHarness</code> state and holds the position of the run outside the
+      agent. Session storage persists the files an agent wrote across a stop and resume, and where the
+      reasoning had reached is reconstructed from Memory events or from the state machine.</p>
+
+    <p>The Akka Workflow component is the durable execution engine, and it runs on the same runtime as
+      the agent. A step returns a <code>StepEffect</code> that updates state and transitions to the next
+      step, and each transition is persisted before the next step begins, so a restart resumes at the last completed step boundary.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Durable execution</td>
+            <td>Step Functions runs the state machine outside the agent</td>
+            <td>The Workflow component stores its state in the runtime and persists every step transition as an event</td></tr>
+          <tr><td class="row-h">Retries</td>
+            <td>Configured on the Step Functions state and on the agent harness invocation</td>
+            <td><code>RecoverStrategy.maxRetries(n).failoverTo(step)</code>, set per workflow and overridden per step</td></tr>
+          <tr><td class="row-h">Timeouts</td>
+            <td>15 minutes for a synchronous invocation and 8 hours for an asynchronous job</td>
+            <td><code>WorkflowSettings</code> carries a workflow timeout, a default step timeout, and per-step overrides</td></tr>
+          <tr><td class="row-h">Undoing partial work</td>
+            <td>Written by the customer in the state machine</td>
+            <td>Compensation handlers reverse completed steps when a later step fails, which is the saga pattern inside the component</td></tr>
+          <tr><td class="row-h">Human in the loop</td>
+            <td>An external queue and a state machine wait state</td>
+            <td>The workflow durably suspends and resumes, holds no compute while it waits, and emits <code>HumanDecisionRecorded</code></td></tr>
+          <tr><td class="row-h">Regional failover</td>
+            <td>Regional resources, replicated by the customer</td>
+            <td>Workflows run active-active across regions, and failover preserves progress and prevents duplicate side effects</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Tools and the protocol surface</h3>
+
+    <p>AgentCore Gateway converts OpenAPI, Smithy and Lambda targets into MCP tools, fronts other
+      agents over A2A, routes inference across model providers, and searches a large tool catalogue
+      semantically so the prompt carries fewer tool definitions.</p>
+
+    <p>In Akka a tool is a Java method annotated with <code>@FunctionTool</code>, defined on the agent
+      itself, on an interface implemented elsewhere in the service, or on the command handler of an
+      entity, workflow or view. Remote MCP servers are registered by URL with header and tool filters.
+      The runtime executes the tool-call loop and stops it at
+      <code>akka.javasdk.agent.max-tool-call-steps</code>, which defaults to 100 steps per request.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Tool definition</td>
+            <td>An OpenAPI, Smithy or Lambda target registered on a gateway</td>
+            <td>A method annotated <code>@FunctionTool</code>, including a command handler on a stateful component</td></tr>
+          <tr><td class="row-h">Catalogue size</td>
+            <td>100 targets per gateway and 1,000 tools per target, both adjustable</td>
+            <td>Set by the service. Tool schemas are held in memory alongside the agent</td></tr>
+          <tr><td class="row-h">Tool discovery</td>
+            <td>Semantic tool search, capped at 25 searches per minute</td>
+            <td>Tools are registered on the agent, and MCP servers are filtered by tool name at registration</td></tr>
+          <tr><td class="row-h">Invocation limits</td>
+            <td>200 tool calls per second per gateway and per account, 6 MB payload, 15-minute timeout, all adjustable</td>
+            <td>100 tool-call steps per request and response cycle by default, set in configuration</td></tr>
+          <tr><td class="row-h">Publishing tools</td>
+            <td>Gateway exposes registered targets as MCP tools</td>
+            <td><code>@McpEndpoint</code> publishes the service's own tools, and <code>@HttpEndpoint</code> and <code>@GrpcEndpoint</code> expose the same agent to other clients</td></tr>
+          <tr><td class="row-h">Execution locality</td>
+            <td>The gateway invokes the target, and the agent reads the result over the network</td>
+            <td>The tool runs inside the runtime that owns the agent's state, so a guardrail decides before the call executes and the log records whether it executed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Endpoints and the API surface</h3>
+
+    <p>An agent on AgentCore implements the Runtime service contract, which fixes a port and a mount
+      path for each protocol: HTTP on port 8080 at <code>/invocations</code> with <code>/ws</code> for
+      WebSocket, MCP on port 8000 at <code>/mcp</code>, A2A on port 9000 at the root, and AG-UI on
+      port 8080. Callers reach the agent through <code>InvokeAgentRuntime</code> with SigV4 or OAuth
+      2.0. Each agent carries up to 10 endpoints, and an endpoint points at an immutable version, so a
+      rollback repoints the endpoint at the version that worked.</p>
+
+    <p>In Akka an endpoint is a component in the same service as the agent.
+      <code>@HttpEndpoint("/prefix")</code> classes expose typed HTTP methods,
+      <code>@GrpcEndpoint</code> classes serve a protobuf service definition, and
+      <code>@McpEndpoint</code> publishes tools, resources and prompt templates over the MCP
+      Streamable HTTP transport. <code>@Acl</code> sits on the class or the method and names the
+      principals allowed through. The same agent is reachable over HTTP, gRPC and MCP from one deployment.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Protocol surface</td>
+            <td>HTTP, MCP, A2A and AG-UI, each on the port and mount path the service contract fixes</td>
+            <td><code>@HttpEndpoint</code>, <code>@GrpcEndpoint</code> and <code>@McpEndpoint</code> classes in the service, with A2A for agent-to-agent traffic</td></tr>
+          <tr><td class="row-h">Inbound authentication</td>
+            <td>SigV4 or OAuth 2.0 at the runtime endpoint</td>
+            <td><code>@Acl</code> principals at class and method level: the internet, any Akka service, or a named service</td></tr>
+          <tr><td class="row-h">Versioned entry points</td>
+            <td>10 endpoints per agent, adjustable, each pointing at an immutable version</td>
+            <td>Routes map hostnames and path prefixes to services, and rolling updates move traffic to the new version in waves</td></tr>
+          <tr><td class="row-h">Public front door</td>
+            <td>API Gateway or an ALB in front of the runtime endpoint</td>
+            <td>Endpoints serve traffic directly, and customers front them with API Gateway where a gateway policy requires it</td></tr>
+          <tr><td class="row-h">Calls between components</td>
+            <td>The agent calls another agent over A2A or through the gateway</td>
+            <td>The ComponentClient calls another component in the same service, and service-to-service calls carry the caller's identity</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Streaming and event flow</h3>
+
+    <p>AgentCore streams a model response to the caller over server-sent events and holds a
+      bidirectional WebSocket for interactive sessions, capped at 60 minutes with 64 KB frames and 250
+      frames per second. Kinesis, MSK, EventBridge and Managed Flink provide event ingestion and stream processing, and the customer connects them to the agent.</p>
+
+    <p>Akka Streaming runs in the same runtime as the agent. A Consumer subscribes with
+      <code>@Consume.FromEventSourcedEntity</code>, <code>@Consume.FromKeyValueEntity</code>,
+      <code>@Consume.FromWorkflow</code>, <code>@Consume.FromTopic</code> or
+      <code>@Consume.FromServiceStream</code>, and publishes with <code>@Produce.ToTopic</code> or
+      <code>@Produce.ServiceStream</code>. Delivery is at least once, so a consumer is written to
+      tolerate a duplicate. Event streams between Akka services need no broker and are backpressured
+      from consumer to producer, and Tubi runs 5 billion tokens per second through that path.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Response streaming</td>
+            <td>Server-sent events from <code>/invocations</code>, and WebSocket for bidirectional sessions</td>
+            <td>Token-by-token model output to an HTTP endpoint as server-sent events, or over a gRPC stream</td></tr>
+          <tr><td class="row-h">Event ingestion</td>
+            <td>Kinesis, MSK or EventBridge, wired to the agent by the customer</td>
+            <td>Consumers subscribe to entity journals, workflow state changes, broker topics, and event streams published by other Akka services</td></tr>
+          <tr><td class="row-h">Stream processing</td>
+            <td>Managed Flink or Kinesis Data Analytics</td>
+            <td>Consumers and views process the stream inside the runtime that owns the state</td></tr>
+          <tr><td class="row-h">Flow control</td>
+            <td>Frame size and frame rate caps per connection</td>
+            <td>Backpressure reaches the producer, so a slow consumer slows the source and no work is dropped</td></tr>
+          <tr><td class="row-h">Delivery guarantee</td>
+            <td>Set by the service the customer wires in</td>
+            <td>At least once, with duplicate handling in the consumer</td></tr>
+          <tr><td class="row-h">External brokers</td>
+            <td>Kinesis, MSK, SQS, SNS and EventBridge</td>
+            <td>Kafka on Confluent Cloud, AWS MSK, Aiven or a self-hosted cluster, and Google Cloud Pub/Sub</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Identity and authorization</h3>
+
+    <p>AgentCore Identity issues a workload identity to each agent, federates Okta, Microsoft Entra ID
+      and Amazon Cognito for inbound authentication, and vends OAuth tokens and API keys to tools from
+      a credential vault. An account holds 11,000 workload identities and 50 credential providers of
+      each type.</p>
+
+    <p>Akka authorizes at the component boundary with <code>@Acl</code>, which names the principals
+      allowed to reach an endpoint or a method: the internet, any Akka service, or a named service.
+      The platform operates zero-trust with workload attestation. Every interaction-log event embeds
+      the SPIFFE workload identity, the delegation chain from human to agent to sub-agent to tool, the
+      effective permissions, the policy bindings and the governance version, all resolved at the
+      moment of execution.</p>
+
+    <h3>Guardrails and policy enforcement</h3>
+
+    <p>AgentCore Policy evaluates Cedar policies at the agent-to-tool boundary. A policy engine holds
+      1,000 policies of up to 10 KB each, 200 KB of policy per resource, and a Cedar schema of up to
+      400 KB generated from the tools across its gateways. AWS marks every one of those Policy limits fixed.</p>
+
+    <p>An Akka guardrail implements the <code>TextGuardrail</code> interface and is named in <code>application.conf</code>. The runtime applies it on every interaction, and no application code invokes it. Each entry binds to agents by component id or by agent role, declares a category,
+      and lists the boundaries it applies to: <code>model-request</code>, <code>model-response</code>,
+      <code>mcp-tool-request</code> and <code>mcp-tool-response</code>. A guardrail returns PASS, BLOCK
+      or ERROR while the runtime holds the call, required guardrails fail closed, and
+      <code>report-only</code> runs a new guardrail in observation before it starts blocking.</p>
+
+    <div class="tbl">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col></colgroup>
+        <thead>
+          <tr><th>Mechanism</th><th>AWS AgentCore</th><th>Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-h">Enforcement point</td>
+            <td>The agent-to-tool boundary at the gateway</td>
+            <td>The model request, the model response, the tool request and the tool response</td></tr>
+          <tr><td class="row-h">Policy language</td>
+            <td>Cedar, with policies generated from observed traffic</td>
+            <td>Java implementations of <code>TextGuardrail</code>, bound by configuration and owned by the compliance policy matrix</td></tr>
+          <tr><td class="row-h">Failure mode</td>
+            <td>Set by the policy engine</td>
+            <td>Required guardrails fail closed, so a timeout or an error stops the action</td></tr>
+          <tr><td class="row-h">Sensitive data</td>
+            <td>Bedrock Guardrails redacts PII at the inference boundary</td>
+            <td>Sanitizers redact, mask or reshape content at any step, and PII scrub-with-explain keeps the decision explainable after the attribute is removed</td></tr>
+          <tr><td class="row-h">Human control</td>
+            <td>Built by the customer</td>
+            <td>HITL boundaries, durable workflow pause and resume, and a kill switch that halts in-flight and future tool and model calls and moves the system to a defined safe state</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Evaluation</h3>
+
+    <p>AgentCore Evaluations scores spans after a run completes. Online evaluation samples sessions and
+      reads up to 1,000 spans from each sampled session. Built-in evaluators are capped at 100 evaluations and 200,000 input tokens per minute. An on-demand evaluation runs one evaluator and an online configuration runs ten. A batch job covers 500 sessions, with five running at once. A/B testing allows one test per gateway with two treatments.</p>
+
+    <p>An Akka evaluator is an Agent whose result implements <code>EvaluationResult</code>, which
+      carries a pass or fail and the explanation behind it, and both land in metrics and traces.
+      Observing mode reads runs after they complete. Inline mode runs in the transactional path as a guardrail. Inline mode stops, re-prompts or escalates before a response is emitted, and records the action, the verdict and the audit entry in one transaction. Akka Optimize grades production traffic continuously on the same records, including
+      traffic from agents running in third-party harnesses.</p>
+
+    <h3>Interaction records and observability</h3>
+
+    <p>AgentCore emits agent traces over OpenTelemetry into CloudWatch GenAI Observability, and its
+      online evaluation reads a sample of sessions. Sampling is the cost control for a telemetry pipeline. A sampled record set contains the runs the sampler kept and omits the rest.</p>
+
+    <p>The Akka interaction log is non-sampled by contract and cryptographically hash-chained, in
+      petabyte-scale storage that is indexed and queryable. The record the auditor receives is the
+      record the runtime emitted. The same record feeds replay testing, conformance reconstruction,
+      drift detection, test-dataset generation, incident investigation, and the training loop in Akka
+      Optimize. Akka exports telemetry over OpenTelemetry, Prometheus remote write and Splunk HEC, so
+      CloudWatch continues to receive it.</p>
+
+    <h3>Cluster behaviour under failure</h3>
+
+    <p>Akka nodes form a self-organizing cluster with no primary node and no central coordinator.
+      Nodes communicate over brokerless encrypted gRPC, and built-in split-brain resolution keeps the
+      cluster consistent through a network partition. Shards rebalance as nodes join and leave, and
+      requests follow the state. Calls to external systems are guarded with circuit breakers, retries
+      with backoff and supervision, so a failing downstream stays isolated instead of cascading. The
+      state on a lost node is rebuilt by replaying its latest snapshot and the events after it.</p>
+
+    <p>Rolling updates proceed in waves across regions while the system serves traffic, and they carry
+      data-model changes without a maintenance window. Multi-region deployment is active-active, and each instance has a primary region that takes its writes. Routing is region-aware. Replication filters keep named records inside a geography for residency. Recovery targets are sub-1-minute RTO and
+      zero-byte RPO, under a 99.9999% availability SLA that Akka owns and backs with contractual
+      indemnities. AgentCore Runtime terminates the microVM at session end and sanitizes its memory,
+      and Bedrock publishes 99.9% on API errors with service credits as the remedy.</p>
+
+    <h3>What the customer provisions</h3>
+
+    <p>A production agent on AgentCore is provisioned as a Runtime agent, a Memory resource with its
+      strategies, a Gateway with its targets, workload identities and credential providers in Identity,
+      a policy engine in Policy, evaluation configurations, a Step Functions state machine, and a
+      database. Each is a separate resource with its own quota and its own IAM role, and each
+      account-level quota is a ceiling the whole estate shares.</p>
+
+    <p>An Akka service is one deployable unit. Agents, workflows, entities, views, timers, consumers and endpoints are classes in the same codebase. The components in that codebase share the runtime, the deployment, the identity model and the interaction log. The service runs on EKS in the customer's own VPC.</p>
 
   </div>
 </section>
