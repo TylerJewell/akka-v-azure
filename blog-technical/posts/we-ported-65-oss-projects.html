@@ -112,7 +112,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">17 min</span></a></li>
 <li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">30 min</span></a></li>
 <li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">36 min</span></a></li>
-<li><a href="#ideas-for-future-experiments"><span class="num">IX</span><span class="ttl">Ideas for Future Experiments</span><span class="dots"></span><span class="min">41 min</span></a></li>
+<li><a href="#future-experiments"><span class="num">IX</span><span class="ttl">Future Experiments</span><span class="dots"></span><span class="min">41 min</span></a></li>
 <li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">43 min</span></a></li>
 <li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">44 min</span></a></li>
 </ul>
@@ -993,15 +993,15 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="body col">
 
-<h2 id="ideas-for-future-experiments">Ideas for Future Experiments</h2>
+<h2 id="future-experiments">Future Experiments</h2>
 
 <p>These results give us a baseline for comparison. We want to run a few variations against it for additional insight.</p>
 
 <ol>
-<li><strong>The blind port:</strong> We run the same target at the same model and effort, in an empty session with no toolkit, so the agent has only the original and Akka. This measures what the discovery tooling contributes. We expect parity to fall before LOC does, because the tools that carry the most weight are the ones that refuse: <code>test_census</code>, <code>runtime_errors</code> and <code>mutation_probe</code>. Trying harder does not replace them.</li>
-<li><strong>The rival-platform port:</strong> We run the same target with the full toolkit against a platform that supplies neither durable execution nor entity persistence. The port has to hand-write what Akka provides, and the cost of writing it lands in the LOC count. That is the same mechanism that made glanceapp/glance 44% larger when it had to reproduce Go's template library. Running it puts a number on what the platform contributes.</li>
+<li><strong>The blind port:</strong> We run the same target at the same model and effort, in an empty session with no discovery tooling, so the agent has only the original and Akka. This measures what those tools contribute. We expect parity to fall before LOC does, because the tools that carry the most weight are the ones that refuse: <code>test_census</code>, <code>runtime_errors</code> and <code>mutation_probe</code>. Trying harder does not replace them.</li>
+<li><strong>The rival-platform port:</strong> We port the same target onto a platform that supplies neither durable execution nor entity persistence, using the full harness. The port has to hand-write what Akka provides, and the cost of writing it lands in the LOC count. That is the same mechanism that made glanceapp/glance 44% larger when it had to reproduce Go's template library. Running it puts a number on what the platform contributes.</li>
 <li><strong>Spec-only reproduction:</strong> We give a fresh agent SPEC-001 and nothing else, with no access to the original and no clone to read, and we run the same benchmark against what it builds. This measures specification quality directly. Nothing in this run does.</li>
-<li><strong>Seeded-defect control:</strong> We remove one rule from a specification and confirm that the method removes the corresponding code from both sides and nothing else. We planned this and never ran it. Without it there is no evidence that the measurement can move down.</li>
+<li><strong>Seeded-defect control:</strong> We remove one rule from a specification and confirm that the method removes the corresponding code from both sides and nothing else. Without it there is no evidence that the measurement can move down.</li>
 </ol>
 
 </div>
