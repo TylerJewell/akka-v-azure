@@ -85,7 +85,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="standfirst">We created a self-improving, spec-driven delivery harness to test whether frontier models can port complete systems.</p>
   <div class="byline">
     <div><span class='au'>Tyler Jewell</span></div>
-    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 44 min read</div>
+    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 47 min read</div>
   </div>
 </header>
 
@@ -106,14 +106,15 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <ul>
 <li><a href="#the-two-tranche-approach"><span class="num">I</span><span class="ttl">The Two-Tranche Approach</span><span class="dots"></span><span class="min">3 min</span></a></li>
 <li><a href="#our-experimental-goals"><span class="num">II</span><span class="ttl">Our Experimental Goals</span><span class="dots"></span><span class="min">4 min</span></a></li>
-<li><a href="#summary-metrics"><span class="num">III</span><span class="ttl">Summary Metrics</span><span class="dots"></span><span class="min">5 min</span></a></li>
-<li><a href="#the-methodology"><span class="num">IV</span><span class="ttl">The Methodology</span><span class="dots"></span><span class="min">7 min</span></a></li>
-<li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">8 min</span></a></li>
-<li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">16 min</span></a></li>
-<li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">29 min</span></a></li>
-<li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">35 min</span></a></li>
-<li><a href="#one-overall-finding"><span class="num">IX</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">40 min</span></a></li>
-<li><a href="#appendix-the-ported-projects"><span class="num">X</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">41 min</span></a></li>
+<li><a href="#summary-metrics"><span class="num">III</span><span class="ttl">Summary Metrics</span><span class="dots"></span><span class="min">6 min</span></a></li>
+<li><a href="#the-methodology"><span class="num">IV</span><span class="ttl">The Methodology</span><span class="dots"></span><span class="min">8 min</span></a></li>
+<li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">9 min</span></a></li>
+<li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">17 min</span></a></li>
+<li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">30 min</span></a></li>
+<li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">36 min</span></a></li>
+<li><a href="#ideas-for-future-experiments"><span class="num">IX</span><span class="ttl">Ideas for Future Experiments</span><span class="dots"></span><span class="min">41 min</span></a></li>
+<li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">42 min</span></a></li>
+<li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">43 min</span></a></li>
 </ul>
 </nav>
 
@@ -987,6 +988,21 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <p>Sonnet is roughly twice as fast (wall-clock) as Opus per port. Opus uses about 40% fewer tokens per port. Complexity-adjusted efficiency—our composite of steps, time, and tokens normalized to the median port—puts the two models within 8% of each other. Choosing the model is a latency-versus-token-cost tradeoff, not an efficiency-versus-inefficiency tradeoff.</p>
 
 <p>Effort matters more than model. Moving from low to high effort roughly doubles the composite efficiency score inside either model. That's a bigger swing than switching models at any effort level. The most efficient cells in the matrix—opus/low and sonnet/low, effectively tied—do the same-quality work at a fraction of the higher-effort cells' cost. In this run there is no evidence that higher-effort settings produced meaningfully more grounded ports; they just cost more.</p>
+
+</div>
+
+<div class="body col">
+
+<h2 id="ideas-for-future-experiments">Ideas for Future Experiments</h2>
+
+<p>These results give us a baseline for comparison. We want to run a few variations against it for additional insight.</p>
+
+<ol>
+<li><strong>The blind port.</strong> Same target, same model and effort, an empty session and no toolkit. The agent gets the original and Akka and nothing else. This measures what the discovery tooling contributes. We expect parity to fall before LOC does. The tools that carry the most weight are the ones that refuse: <code>test_census</code>, <code>runtime_errors</code> and <code>mutation_probe</code>. Trying harder does not replace them.</li>
+<li><strong>The rival-platform port.</strong> Full toolkit, same target, and a platform that supplies neither durable execution nor entity persistence. The port has to hand-write what Akka provides, and the cost of writing it lands in the LOC count. That is the same mechanism that made glanceapp/glance 44% larger when it had to reproduce Go's template library. Running it puts a number on what the platform contributes.</li>
+<li><strong>Spec-only reproduction.</strong> Give a fresh agent SPEC-001 and nothing else, with no access to the original and no clone to read, then run the same benchmark against what it builds. This measures specification quality directly. Nothing in this run does.</li>
+<li><strong>Seeded-defect control.</strong> Remove one rule from a specification and confirm that the method removes the corresponding code from both sides and nothing else. We planned this and never ran it. Without it there is no evidence that the measurement can move down.</li>
+</ol>
 
 </div>
 
