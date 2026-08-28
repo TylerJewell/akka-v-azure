@@ -177,8 +177,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 1</p>
   <h5>Totals and extremes of the 65 initial tranche</h5>
-  <table class="rtbl" style="--ind:61px">
-      <colgroup><col style="width:38.989%"><col style="width:61.011%"></colgroup><thead>
+  <table class="rtbl" style="--ind:65px">
+      <colgroup><col style="width:38.763%"><col style="width:61.237%"></colgroup><thead>
   <tr>
   <th>Metric</th>
   <th>Value</th>
@@ -208,7 +208,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="viz-title">Table 2</p>
   <h5>Summary of the 10 fully implemented ports</h5>
   <div class="rtbl-scroll"><table class="rtbl dense">
-    <colgroup><col style="width:20.311%"><col style="width:10.988%"><col style="width:8.546%"><col style="width:6.992%"><col style="width:6.992%"><col style="width:7.769%"><col style="width:7.769%"><col style="width:5.66%"><col style="width:9.656%"><col style="width:8.99%"><col style="width:6.326%"></colgroup>
+    <colgroup><col style="width:20.199%"><col style="width:10.927%"><col style="width:8.499%"><col style="width:6.954%"><col style="width:6.954%"><col style="width:7.726%"><col style="width:7.726%"><col style="width:6.181%"><col style="width:9.603%"><col style="width:8.94%"><col style="width:6.291%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Tokens</th><th>Steps</th><th>Time</th><th>LOC original</th><th>LOC port</th><th>LOC ratio</th><th>Perf original</th><th>Perf port</th><th>Perf ratio</th></tr>
     </thead>
@@ -225,7 +225,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
       <tr><td><a href="https://github.com/louislam/uptime-kuma">louislam/uptime-kuma</a></td><td>opus/medium</td><td>1,219 M</td><td>3,150</td><td>13.9 h</td><td>20,770</td><td>19,192</td><td class="win">0.92×</td><td>100.1 ns</td><td>20.4 ns</td><td class="win">4.91×</td></tr>
     </tbody>
     <tfoot class="totals">
-      <tr><td>Total</td><td></td><td>11,597 M</td><td>30,351</td><td>95.1 h</td><td>280,837</td><td>147,173</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Total</td><td></td><td>11,597 M</td><td>30,351</td><td>95.1 h</td><td>280,837</td><td>147,173</td><td class="win">0.52×</td><td></td><td></td><td></td></tr>
     </tfoot>
   </table></div>
   <figcaption><b>Steps.</b> The number of agent-LLM interactions in order to complete a port. <b>LOC ratio.</b> Port divided by original, scope-matched; below 1× the rebuild shipped fewer lines for the same behaviour. <b>Perf ratio.</b> Original divided by port, in each report's own units, so a row is self-consistent but two rows are not comparable; above 1× the rebuild is faster.</figcaption>
@@ -484,8 +484,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 4</p>
   <h5>Median LOC and performance change, grouped by what the project is</h5>
-  <table class="rtbl" style="--ind:10px">
-    <colgroup><col style="width:13.645%"><col style="width:10.139%"><col style="width:14.324%"><col style="width:14.663%"><col style="width:15.342%"><col style="width:15.682%"><col style="width:16.205%"></colgroup>
+  <table class="rtbl" style="--ind:11px">
+    <colgroup><col style="width:13.617%"><col style="width:10.11%"><col style="width:14.296%"><col style="width:14.635%"><col style="width:15.314%"><col style="width:15.653%"><col style="width:16.374%"></colgroup>
     <thead>
       <tr><th>Category</th><th>Ports</th><th>Median LOC ratio</th><th>LOC change</th><th>Median perf. ratio</th><th>Perf. change</th><th>Mean parity</th></tr>
     </thead>
@@ -567,8 +567,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 5</p>
   <h5>Ports that came in furthest under their predicted cost</h5>
-  <table class="rtbl" style="--ind:4px">
-    <colgroup><col style="width:18.137%"><col style="width:14.065%"><col style="width:11.689%"><col style="width:13.047%"><col style="width:11.576%"><col style="width:9.54%"><col style="width:11.011%"><col style="width:10.935%"></colgroup>
+  <table class="rtbl" style="--ind:11px">
+    <colgroup><col style="width:18.049%"><col style="width:13.977%"><col style="width:11.601%"><col style="width:12.959%"><col style="width:11.488%"><col style="width:9.452%"><col style="width:10.923%"><col style="width:11.551%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
     </thead>
@@ -594,8 +594,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 6</p>
   <h5>Ports that ran furthest over their predicted cost</h5>
-  <table class="rtbl" style="--ind:2px">
-    <colgroup><col style="width:19.822%"><col style="width:16.088%"><col style="width:11.111%"><col style="width:12.469%"><col style="width:10.998%"><col style="width:8.962%"><col style="width:10.432%"><col style="width:10.118%"></colgroup>
+  <table class="rtbl" style="--ind:8px">
+    <colgroup><col style="width:19.746%"><col style="width:16.013%"><col style="width:11.036%"><col style="width:12.393%"><col style="width:10.923%"><col style="width:8.886%"><col style="width:10.357%"><col style="width:10.646%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
     </thead>
@@ -621,8 +621,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 7</p>
   <h5>Ports that reduced LOC the most</h5>
-  <table class="rtbl" style="--ind:14px">
-    <colgroup><col style="width:19.037%"><col style="width:18.811%"><col style="width:14.851%"><col style="width:17.227%"><col style="width:14.059%"><col style="width:16.015%"></colgroup>
+  <table class="rtbl" style="--ind:19px">
+    <colgroup><col style="width:18.94%"><col style="width:18.714%"><col style="width:14.754%"><col style="width:17.13%"><col style="width:13.963%"><col style="width:16.5%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
     </thead>
@@ -648,8 +648,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 8</p>
   <h5>Ports that increased LOC the most</h5>
-  <table class="rtbl" style="--ind:13px">
-    <colgroup><col style="width:20.281%"><col style="width:18.584%"><col style="width:14.625%"><col style="width:17.001%"><col style="width:13.833%"><col style="width:15.676%"></colgroup>
+  <table class="rtbl" style="--ind:18px">
+    <colgroup><col style="width:20.184%"><col style="width:18.487%"><col style="width:14.528%"><col style="width:16.904%"><col style="width:13.736%"><col style="width:16.16%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
     </thead>
@@ -710,8 +710,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 9</p>
   <h5>Ports that improved performance the most</h5>
-  <table class="rtbl" style="--ind:56px">
-    <colgroup><col style="width:31.787%"><col style="width:29.186%"><col style="width:39.027%"></colgroup>
+  <table class="rtbl" style="--ind:67px">
+    <colgroup><col style="width:31.391%"><col style="width:28.79%"><col style="width:39.819%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
     </thead>
@@ -737,8 +737,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 10</p>
   <h5>Ports that worsened performance the most</h5>
-  <table class="rtbl" style="--ind:52px">
-    <colgroup><col style="width:34.05%"><col style="width:28.281%"><col style="width:37.67%"></colgroup>
+  <table class="rtbl" style="--ind:63px">
+    <colgroup><col style="width:33.654%"><col style="width:27.885%"><col style="width:38.462%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
     </thead>
@@ -881,8 +881,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 11</p>
   <h5>Exit conditions by type and category</h5>
-  <table class="rtbl" style="--ind:37px">
-      <colgroup><col style="width:27.064%"><col style="width:29.666%"><col style="width:43.269%"></colgroup>
+  <table class="rtbl" style="--ind:43px">
+      <colgroup><col style="width:26.867%"><col style="width:29.468%"><col style="width:43.665%"></colgroup>
   <thead>
   <tr><th>EC type</th><th>Category</th><th>What it asks</th></tr>
   </thead>
@@ -923,8 +923,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 12</p>
   <h5>The sections of an Akka Specification</h5>
-  <table class="rtbl" style="--ind:28px">
-      <colgroup><col style="width:10.633%"><col style="width:23.303%"><col style="width:66.063%"></colgroup>
+  <table class="rtbl" style="--ind:32px">
+      <colgroup><col style="width:10.492%"><col style="width:23.162%"><col style="width:66.346%"></colgroup>
   <thead>
   <tr><th>§</th><th>Section</th><th>What it holds</th></tr>
   </thead>
