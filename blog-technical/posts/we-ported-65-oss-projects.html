@@ -105,10 +105,10 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <p class="toc-label">Sections</p>
 <ul>
 <li><a href="#the-two-tranche-approach"><span class="num">I</span><span class="ttl">The Two-Tranche Approach</span><span class="dots"></span><span class="min">3 min</span></a></li>
-<li><a href="#our-experimental-goals"><span class="num">II</span><span class="ttl">Our Experimental Goals</span><span class="dots"></span><span class="min">4 min</span></a></li>
+<li><a href="#our-experimental-goals"><span class="num">II</span><span class="ttl">Our Experimental Goals</span><span class="dots"></span><span class="min">5 min</span></a></li>
 <li><a href="#summary-metrics"><span class="num">III</span><span class="ttl">Summary Metrics</span><span class="dots"></span><span class="min">6 min</span></a></li>
 <li><a href="#the-methodology"><span class="num">IV</span><span class="ttl">The Methodology</span><span class="dots"></span><span class="min">8 min</span></a></li>
-<li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">9 min</span></a></li>
+<li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">10 min</span></a></li>
 <li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">17 min</span></a></li>
 <li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">30 min</span></a></li>
 <li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">36 min</span></a></li>
@@ -149,6 +149,64 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <li><strong>Span:</strong> A pass across all 65 projects that would create a fully mapped specification and implement a slice of up to 10% of the project's surface area. We did this on OSS projects that were both well-suited to an Akka port and those that were not (Go libraries, Rust modules, systems that didn't have a need for backend services).</li>
 <li><strong>Deep dives:</strong> Complete implementation of all of the project's use cases for those projects where we identified places where Akka could have a significant positive impact: systems with a Python backend, limited persistence, orchestration, scheduling, streaming or distributed fundamentals, feasible scope, and a baseline of a quality that could be adequately measured before/after.</li>
 </ol>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:802px">
+  <p class="viz-title">Figure 1</p>
+  <h5>We did discovery on all 65 ports, and full implementation on 10</h5>
+  <div class="plot-wrap">
+    <svg viewBox="0 0 802 232" role="img" aria-label="The span pass rebuilt up to ten per cent of the surface area of all sixty-five projects. Ten of those projects were then rebuilt in full.">
+      <style>
+        .tt text{font-family:var(--text)}
+        .tt .lbl{font-family:var(--display);font-size:14px;font-weight:700;fill:var(--ink)}
+        .tt .cnt{font-family:var(--mono);font-size:11.5px;fill:var(--mute)}
+        .tt .cap{font-size:11.5px;fill:var(--mute)}
+        .tt .capa{font-size:11.5px;fill:var(--accent)}
+        .tt .track{fill:none;stroke:var(--rule-hi);stroke-width:1}
+        .tt .fillfaint{fill:rgba(255,255,255,0.05)}
+        .tt .fillacc{fill:var(--accent)}
+        .tt .tick{stroke:var(--mute);stroke-width:1}
+        .tt .arrow{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4}
+        .tt .head{fill:var(--accent);stroke:none}
+      </style>
+      <g class="tt">
+        <defs>
+          <marker id="a-arw" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path class="head" d="M0 0 L8 4 L0 8 z"/>
+          </marker>
+        </defs>
+
+        <text class="lbl" x="0" y="26">Span</text>
+        <text class="cnt" x="0" y="46">65 projects</text>
+        <rect class="fillfaint" x="150" y="14" width="600" height="34"/>
+        <rect class="fillacc" x="150" y="14" width="60" height="34"/>
+        <rect class="track" x="150" y="14" width="600" height="34"/>
+        <text class="capa" x="150" y="66">up to 10% of surface area</text>
+        <text class="cap" x="750" y="66" text-anchor="end">the remaining 90% untouched</text>
+
+        <path class="arrow" d="M180 78 V 112" marker-end="url(#a-arw)"/>
+        <text class="capa" x="196" y="102">10 projects selected</text>
+
+        <text class="lbl" x="0" y="152">Deep dives</text>
+        <text class="cnt" x="0" y="172">10 projects</text>
+        <rect class="fillacc" x="150" y="140" width="600" height="34"/>
+        <rect class="track" x="150" y="140" width="600" height="34"/>
+        <text class="capa" x="150" y="192">100% of surface area, all use cases implemented</text>
+
+        <line class="tick" x1="150" y1="212" x2="750" y2="212"/>
+        <text class="cap" x="150" y="228">0%</text>
+        <text class="cap" x="450" y="228" text-anchor="middle">50%</text>
+        <text class="cap" x="750" y="228" text-anchor="end">100%</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>A Web GUI was brought over wholesale rather than rebuilt, with only the way it reaches endpoints changed. Mobile, Slack and WhatsApp interfaces were not ported.</figcaption>
+</figure>
+</div>
+
+<div class="body col">
 
 <p>Unless stated otherwise, all tables and graphs are the results from the 65 initial ports done together and do not include the additional data from the 10 fully completed ports. While dramatically increasing the total tokens consumed, there were few places where the trends in the completed 10 differed from the trends in the intial tranche of 65 ports.</p>
 
@@ -259,7 +317,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 1</p>
+  <p class="viz-title">Figure 2</p>
   <h5>The Akka delivery harness</h5>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 178" role="img" aria-label="The five harness steps run in order from Setup to Improve. A return path carries Improve's findings back into Discovery, revising the discovery engine and the specification standard before the next port begins.">
@@ -411,7 +469,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 2</p>
+  <p class="viz-title">Figure 3</p>
   <h5>Benchmark answer parity vs. LOC ratio</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/02-parity-vs-loc-ratio.png" alt="Benchmark answer parity vs. LOC ratio">
@@ -433,7 +491,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 3</p>
+  <p class="viz-title">Figure 4</p>
   <h5>Efficiency by model and effort</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/06-efficiency-model-effort.png" alt="Efficiency by model and effort">
@@ -449,7 +507,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 4</p>
+  <p class="viz-title">Figure 5</p>
   <h5>Tokens per port by model and effort</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/07-tokens-model-effort.png" alt="Tokens per port by model and effort">
@@ -467,7 +525,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 5</p>
+  <p class="viz-title">Figure 6</p>
   <h5>Complexity-adjusted efficiency vs. size of the ported slice</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/08-complexity-adjusted.png" alt="Complexity-adjusted efficiency vs. size of the ported slice">
@@ -514,7 +572,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 6</p>
+  <p class="viz-title">Figure 7</p>
   <h5>The aggregate cost of adding guardrails</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/09-guardrail-cost.png" alt="The aggregate cost of adding guardrails">
@@ -532,7 +590,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 7</p>
+  <p class="viz-title">Figure 8</p>
   <h5>Tokens used vs. steps taken</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/05-tokens-vs-steps.png" alt="Tokens used vs. steps taken">
@@ -552,7 +610,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 8</p>
+  <p class="viz-title">Figure 9</p>
   <h5>LOC ratio vs. size of the ported slice</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/01-loc-ratio-vs-size.png" alt="LOC ratio vs. size of the ported slice">
@@ -693,7 +751,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 9</p>
+  <p class="viz-title">Figure 10</p>
   <h5>Tokens used vs. lines of code saved</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/04-tokens-vs-loc-saved.png" alt="Tokens used vs. lines of code saved">
@@ -776,7 +834,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 10</p>
+  <p class="viz-title">Figure 11</p>
   <h5>Performance ratio vs. LOC ratio</h5>
   <div class="plot-wrap"><div class="plate plate--flush">
     <img src="charts/03-performance-vs-loc-ratio.png" alt="Performance ratio vs. LOC ratio">
@@ -820,7 +878,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <div class="wide">
 <figure class="viz" style="--fig-w:802px">
-  <p class="viz-title">Figure 11</p>
+  <p class="viz-title">Figure 12</p>
   <h5>An exit condition is checked at the build, before review, or before release</h5>
   <div class="plot-wrap">
     <svg viewBox="0 0 802 190" role="img" aria-label="A project passes three gates in order: the build gate, the review-ready gate, and the releasable gate. A condition placed at the build gate is paid on every iteration. A condition placed at the release gate is paid once.">
@@ -962,6 +1020,78 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <p>Specifications should have structure, schema, and typed behavior, unambiguously.</p>
 
 <p>Every port that ran through the harness produced a spec before writing any code. What we watched across all iterations is that the structure of the specification determined whether a first-pass implementation was correct. Ports whose specs enumerated their claims, cited them to evidence, and typed their answers (this input produces that output; this state transitions to that state) generated code that matched behavior on the first pass. Ports whose specs were prose—"the system should handle X gracefully"—generated code that was plausible and wrong, and the errors surfaced two to four steps downstream when the port was already committed to a design or a structure.</p>
+
+</div>
+
+<div class="wide">
+<figure class="viz" style="--fig-w:802px">
+  <p class="viz-title">Figure 13</p>
+  <h5>The cost of a gap in a specification</h5>
+  <div class="plot-wrap">
+    <svg viewBox="0 0 802 232" role="img" aria-label="A single gap in a specification carries four costs in sequence: the time and tokens spent for the two to four steps before it is discovered, the confusion and work of identifying it, the change to the specification and to the code written around it, and the work of assessing why it happened and how to detect it next time.">
+      <style>
+        .gc text{font-family:var(--text);font-size:10.5px;fill:var(--mute)}
+        .gc .src{font-family:var(--display);font-size:12.5px;font-weight:700;fill:var(--bad)}
+        .gc .srcsub{font-size:11px;fill:var(--mute)}
+        .gc .num{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--accent)}
+        .gc .ttl{font-family:var(--display);font-size:13px;font-weight:700;fill:var(--ink)}
+        .gc .gl{font-size:10.5px;fill:var(--mute)}
+        .gc .panel{fill:rgba(255,255,255,0.022);stroke:var(--rule-hi);stroke-width:1}
+        .gc .brace{fill:none;stroke:var(--accent);stroke-width:1.5}
+        .gc .bl{font-family:var(--display);font-size:11px;font-weight:700;
+                text-transform:uppercase;letter-spacing:0.14em;fill:var(--accent)}
+        .gc .ring{fill:var(--paper);stroke:var(--bad);stroke-width:2}
+        .gc .feed{fill:none;stroke:var(--bad);stroke-width:1.5}
+        .gc .head{fill:var(--bad);stroke:none}
+        .gc .loop{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4}
+        .gc .lhead{fill:var(--accent);stroke:none}
+      </style>
+      <g class="gc">
+        <defs>
+          <marker id="g-h" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="head" d="M0 0 L8 4 L0 8 z"/></marker>
+          <marker id="g-l" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="lhead" d="M0 0 L8 4 L0 8 z"/></marker>
+        </defs>
+
+        <path class="brace" d="M150 44 V 34 H 788 V 44"/>
+        <text class="bl" x="469" y="24" text-anchor="middle">What one gap costs</text>
+
+        <circle class="ring" cx="14" cy="112" r="8"/>
+        <text class="src" x="30" y="108">One gap</text>
+        <text class="srcsub" x="30" y="126">in the specification</text>
+        <path class="feed" d="M30 140 H 138" marker-end="url(#g-h)"/>
+
+        <rect class="panel" x="150" y="62" width="152" height="116" rx="3"/>
+        <text class="num" x="162" y="84">1</text>
+        <text class="ttl" x="162" y="106">Work built on it</text>
+        <text class="gl" x="162" y="126">Time and tokens for the</text>
+        <text class="gl" x="162" y="141">two to four steps before</text>
+        <text class="gl" x="162" y="156">it is discovered</text>
+        <rect class="panel" x="312" y="62" width="152" height="116" rx="3"/>
+        <text class="num" x="324" y="84">2</text>
+        <text class="ttl" x="324" y="106">Finding it</text>
+        <text class="gl" x="324" y="126">Confusion, and the work</text>
+        <text class="gl" x="324" y="141">of identifying the gap</text>
+        <rect class="panel" x="474" y="62" width="152" height="116" rx="3"/>
+        <text class="num" x="486" y="84">3</text>
+        <text class="ttl" x="486" y="106">Closing it</text>
+        <text class="gl" x="486" y="126">The change to the</text>
+        <text class="gl" x="486" y="141">specification, and to the</text>
+        <text class="gl" x="486" y="156">code written around it</text>
+        <rect class="panel" x="636" y="62" width="152" height="116" rx="3"/>
+        <text class="num" x="648" y="84">4</text>
+        <text class="ttl" x="648" y="106">Preventing it</text>
+        <text class="gl" x="648" y="126">Why it happened, and how</text>
+        <text class="gl" x="648" y="141">to detect it next time</text>
+
+        <path class="loop" d="M712 182 V 206 H 14 V 128" marker-end="url(#g-l)"/>
+        <text class="gl" x="380" y="222" text-anchor="middle">The fourth is the only one that changes the next specification</text>
+      </g>
+    </svg>
+  </div>
+</figure>
+</div>
+
+<div class="body col">
 
 <p>The rework cost of the second kind is measurable. The most expensive ports in the run—the ones that spent 250+ minutes and burned 400M+ tokens—were disproportionately ports whose early specs left decisions implicit. We added a rule that "any claim about a class needs a list" midway through the conversions and every port after that paid slightly more per iteration but had fewer turns before getting to accuracy and compliance.</p>
 
