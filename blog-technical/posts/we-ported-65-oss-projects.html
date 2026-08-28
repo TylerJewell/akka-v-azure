@@ -85,7 +85,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="standfirst">We created a self-improving, spec-driven delivery harness to test whether frontier models can port complete systems.</p>
   <div class="byline">
     <div><span class='au'>Tyler Jewell</span></div>
-    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 47 min read</div>
+    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 49 min read</div>
   </div>
 </header>
 
@@ -111,10 +111,10 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <li><a href="#the-delivery-harness"><span class="num">V</span><span class="ttl">The Delivery Harness</span><span class="dots"></span><span class="min">10 min</span></a></li>
 <li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">17 min</span></a></li>
 <li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">30 min</span></a></li>
-<li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">36 min</span></a></li>
-<li><a href="#future-experiments"><span class="num">IX</span><span class="ttl">Future Experiments</span><span class="dots"></span><span class="min">41 min</span></a></li>
-<li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">43 min</span></a></li>
-<li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">44 min</span></a></li>
+<li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">38 min</span></a></li>
+<li><a href="#future-experiments"><span class="num">IX</span><span class="ttl">Future Experiments</span><span class="dots"></span><span class="min">43 min</span></a></li>
+<li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">45 min</span></a></li>
+<li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">46 min</span></a></li>
 </ul>
 </nav>
 
@@ -1006,6 +1006,16 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <h3>Discovery</h3>
 
 <p>Most systems, even though being ideated from scratch, are based upon an existing system. Being able to understand an existing system and derive specifications that AI can understand accelerates delivery. No single technique is sufficient for discovery. It is a collection of techniques that span deep analysis of the existing system, identifying entry points, finding dead code, tracing imports and their usage, comparing ported systems with original systems, chaos engines, adversarial testing, code analysis, schema analysis, file analysis, delivery ordering, evaluation, input analysis, temporal analysis, experimentation, and so on. This effort was, in part, designed to help us advance the intelligence of our discovery tooling.</p>
+
+<p>We studied all of the situations where the porting harness started looping due to mistakes or issues in the specification. Many improvements were automatically added into the harness by the harness itself. But, after discussing it internally, we identified five additional things that we will consider adding to our discovery engine to improve specification quality.</p>
+
+<ol>
+<li><strong>Interface enumeration.</strong> Extract the source system's complete interface — routes, flags, config keys, env vars, scheduled jobs, event types, migrations — into a manifest before specification begins, and require every entry to resolve to a spec rule or a recorded out-of-scope decision. It identifies interface surface the specification has not accounted for, in either direction.</li>
+<li><strong>Test-suite ingestion.</strong> Parse the source project's own test suite, plus its closed issues and release notes, and treat each assertion as a candidate rule requiring a mapping or an explicit rejection. It identifies behaviour the original's authors considered contractual that the specification does not state.</li>
+<li><strong>Copy-time provenance.</strong> Instrument the pipeline's copy path so that taking a file from the clone appends its destination, source, and content hash to the manifest as a side effect. It identifies reused material, and distinguishes files shipped byte-for-byte from files copied and then modified.</li>
+<li><strong>Differential oracle.</strong> Run the source system alongside the rebuild behind a proxy that sends each request to both and compares the responses, active throughout construction rather than only at measurement. It identifies behavioural divergence at the moment it is introduced, and — once fed generated inputs — the cases nobody thought to ask about.</li>
+<li><strong>Adverse-condition observation.</strong> Degrade the running original on purpose: withdraw its dependencies one at a time, control its clock, and issue concurrent conflicting writes. It identifies error handling, retry and scheduling semantics, and concurrency behaviour, none of which appear during normal operation.</li>
+</ol>
 
 </div>
 
