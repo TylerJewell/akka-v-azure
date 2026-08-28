@@ -56,9 +56,9 @@ nav.toc .min{flex:0 0 auto;font-family:var(--mono);font-size:11.5px;color:var(--
 .rtbl-scroll .rtbl{min-width:100%}
 /* This table carries ten columns where the others carry two to eight, so it
    sets type a point smaller to keep every column on screen. */
-.rtbl.dense thead th{font-size:9.5px;letter-spacing:0.1em}
-.rtbl.dense tbody td,.rtbl.dense tfoot td{font-size:10.5px}
-.rtbl.dense thead th,.rtbl.dense tbody td,.rtbl.dense tfoot td{padding-left:10px;padding-right:10px}
+.rtbl.dense thead th{font-size:9px;letter-spacing:0.08em}
+.rtbl.dense tbody td,.rtbl.dense tfoot td{font-size:10px}
+.rtbl.dense thead th,.rtbl.dense tbody td,.rtbl.dense tfoot td{padding-left:9px;padding-right:9px}
 /* Totals sit under a rule in the same tabular figures as the rows. */
 .rtbl tfoot.totals td{padding:6px 12px;border-top:1px solid var(--rule-hi);border-bottom:0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;font-weight:600;color:var(--ink);white-space:nowrap;text-align:left}
 figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:left;
@@ -177,8 +177,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 1</p>
   <h5>Totals and extremes of the 65 initial tranche</h5>
-  <table class="rtbl" style="--ind:51px">
-      <colgroup><col style="width:39.517%"><col style="width:60.483%"></colgroup><thead>
+  <table class="rtbl" style="--ind:67px">
+      <colgroup><col style="width:38.65%"><col style="width:61.35%"></colgroup><thead>
   <tr>
   <th>Metric</th>
   <th>Value</th>
@@ -208,24 +208,24 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="viz-title">Table 2</p>
   <h5>Summary of the 10 fully implemented ports</h5>
   <div class="rtbl-scroll"><table class="rtbl dense">
-    <colgroup><col style="width:21.54%"><col style="width:13.058%"><col style="width:8.817%"><col style="width:7.254%"><col style="width:8.482%"><col style="width:8.036%"><col style="width:6.25%"><col style="width:10.268%"><col style="width:9.598%"><col style="width:6.696%"></colgroup>
+    <colgroup><col style="width:20.311%"><col style="width:10.988%"><col style="width:8.546%"><col style="width:6.992%"><col style="width:6.992%"><col style="width:7.769%"><col style="width:7.769%"><col style="width:5.66%"><col style="width:9.656%"><col style="width:8.99%"><col style="width:6.326%"></colgroup>
     <thead>
-      <tr><th>Port</th><th>Model / effort</th><th>Tokens</th><th>Steps</th><th>LOC original</th><th>LOC port</th><th>LOC ratio</th><th>Perf original</th><th>Perf port</th><th>Perf ratio</th></tr>
+      <tr><th>Port</th><th>Model / effort</th><th>Tokens</th><th>Steps</th><th>Time</th><th>LOC original</th><th>LOC port</th><th>LOC ratio</th><th>Perf original</th><th>Perf port</th><th>Perf ratio</th></tr>
     </thead>
     <tbody>
-      <tr><td><a href="https://github.com/ActivityWatch/activitywatch">ActivityWatch/activitywatch</a></td><td>opus / high</td><td>755 M</td><td>1,744</td><td>8,898</td><td>8,019</td><td class="win">0.90×</td><td>56.43 ms</td><td>12.36 ms</td><td class="win">4.57×</td></tr>
-      <tr><td><a href="https://github.com/dgtlmoon/changedetection.io">dgtlmoon/changedetection.io</a></td><td>opus / medium</td><td>1,153 M</td><td>2,543</td><td>53,667</td><td>36,577</td><td class="win">0.68×</td><td>1,745.75 us</td><td>166.27 us</td><td class="win">10.50×</td></tr>
-      <tr><td><a href="https://github.com/glanceapp/glance">glanceapp/glance</a></td><td>opus / medium</td><td>769 M</td><td>2,080</td><td>9,713</td><td>13,999</td><td class="lose">1.44×</td><td>389.0 us</td><td>561.6 us</td><td class="lose">0.69×</td></tr>
-      <tr><td><a href="https://github.com/linkwarden/linkwarden">linkwarden/linkwarden</a></td><td>opus / low</td><td>802 M</td><td>2,056</td><td>19,225</td><td>8,556</td><td class="win">0.45×</td><td>88,530 us</td><td>15,147 us</td><td class="win">5.84×</td></tr>
-      <tr><td><a href="https://github.com/permitio/opal">permitio/opal</a></td><td>opus / xhigh</td><td>2,148 M</td><td>4,895</td><td>16,783</td><td>19,101</td><td class="lose">1.14×</td><td>10,015.3 us</td><td>1,328.3 us</td><td class="win">7.54×</td></tr>
-      <tr><td><a href="https://github.com/lfnovo/open-notebook">lfnovo/open-notebook</a></td><td>sonnet / high</td><td>1,233 M</td><td>3,871</td><td>63,053</td><td>6,511</td><td class="win">0.10×</td><td>0.676 s</td><td>0.130 s</td><td class="win">5.20×</td></tr>
-      <tr><td><a href="https://github.com/pocket-id/pocket-id">pocket-id/pocket-id</a></td><td>sonnet / medium</td><td>491 M</td><td>2,711</td><td>43,992</td><td>3,896</td><td class="win">0.09×</td><td>251.4 ms</td><td>250.5 ms</td><td>—</td></tr>
-      <tr><td><a href="https://github.com/getredash/redash">getredash/redash</a></td><td>opus / high</td><td>1,740 M</td><td>3,581</td><td>21,353</td><td>17,204</td><td class="win">0.81×</td><td>973.7 ns</td><td>10.4 ns</td><td class="win">93.62×</td></tr>
-      <tr><td><a href="https://github.com/umami-software/umami">umami-software/umami</a></td><td>opus / high</td><td>1,287 M</td><td>3,720</td><td>23,383</td><td>14,118</td><td class="win">0.60×</td><td>15.2 ms</td><td>31.0 ms</td><td class="lose">0.49×</td></tr>
-      <tr><td><a href="https://github.com/louislam/uptime-kuma">louislam/uptime-kuma</a></td><td>opus / medium</td><td>1,219 M</td><td>3,150</td><td>20,770</td><td>19,192</td><td class="win">0.92×</td><td>100.1 ns</td><td>20.4 ns</td><td class="win">4.91×</td></tr>
+      <tr><td><a href="https://github.com/ActivityWatch/activitywatch">ActivityWatch/activitywatch</a></td><td>opus/high</td><td>755 M</td><td>1,744</td><td>6.8 h</td><td>8,898</td><td>8,019</td><td class="win">0.90×</td><td>56.43 ms</td><td>12.36 ms</td><td class="win">4.57×</td></tr>
+      <tr><td><a href="https://github.com/dgtlmoon/changedetection.io">dgtlmoon/changedetection.io</a></td><td>opus/medium</td><td>1,153 M</td><td>2,543</td><td>8.0 h</td><td>53,667</td><td>36,577</td><td class="win">0.68×</td><td>1,745.75 us</td><td>166.27 us</td><td class="win">10.50×</td></tr>
+      <tr><td><a href="https://github.com/glanceapp/glance">glanceapp/glance</a></td><td>opus/medium</td><td>769 M</td><td>2,080</td><td>7.5 h</td><td>9,713</td><td>13,999</td><td class="lose">1.44×</td><td>389.0 us</td><td>561.6 us</td><td class="lose">0.69×</td></tr>
+      <tr><td><a href="https://github.com/linkwarden/linkwarden">linkwarden/linkwarden</a></td><td>opus/low</td><td>802 M</td><td>2,056</td><td>8.9 h</td><td>19,225</td><td>8,556</td><td class="win">0.45×</td><td>88,530 us</td><td>15,147 us</td><td class="win">5.84×</td></tr>
+      <tr><td><a href="https://github.com/permitio/opal">permitio/opal</a></td><td>opus/xhigh</td><td>2,148 M</td><td>4,895</td><td>16.2 h</td><td>16,783</td><td>19,101</td><td class="lose">1.14×</td><td>10,015.3 us</td><td>1,328.3 us</td><td class="win">7.54×</td></tr>
+      <tr><td><a href="https://github.com/lfnovo/open-notebook">lfnovo/open-notebook</a></td><td>sonnet/high</td><td>1,233 M</td><td>3,871</td><td>7.5 h</td><td>63,053</td><td>6,511</td><td class="win">0.10×</td><td>0.676 s</td><td>0.130 s</td><td class="win">5.20×</td></tr>
+      <tr><td><a href="https://github.com/pocket-id/pocket-id">pocket-id/pocket-id</a></td><td>sonnet/medium</td><td>491 M</td><td>2,711</td><td>4.5 h</td><td>43,992</td><td>3,896</td><td class="win">0.09×</td><td>251.4 ms</td><td>250.5 ms</td><td>—</td></tr>
+      <tr><td><a href="https://github.com/getredash/redash">getredash/redash</a></td><td>opus/high</td><td>1,740 M</td><td>3,581</td><td>11.5 h</td><td>21,353</td><td>17,204</td><td class="win">0.81×</td><td>973.7 ns</td><td>10.4 ns</td><td class="win">93.62×</td></tr>
+      <tr><td><a href="https://github.com/umami-software/umami">umami-software/umami</a></td><td>opus/high</td><td>1,287 M</td><td>3,720</td><td>10.3 h</td><td>23,383</td><td>14,118</td><td class="win">0.60×</td><td>15.2 ms</td><td>31.0 ms</td><td class="lose">0.49×</td></tr>
+      <tr><td><a href="https://github.com/louislam/uptime-kuma">louislam/uptime-kuma</a></td><td>opus/medium</td><td>1,219 M</td><td>3,150</td><td>13.9 h</td><td>20,770</td><td>19,192</td><td class="win">0.92×</td><td>100.1 ns</td><td>20.4 ns</td><td class="win">4.91×</td></tr>
     </tbody>
     <tfoot class="totals">
-      <tr><td>Total</td><td></td><td>11,597 M</td><td>30,351</td><td>280,837</td><td>147,173</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>Total</td><td></td><td>11,597 M</td><td>30,351</td><td>95.1 h</td><td>280,837</td><td>147,173</td><td></td><td></td><td></td><td></td></tr>
     </tfoot>
   </table></div>
   <figcaption><b>Tokens and steps.</b> Lifetime totals across every attempt, including abandoned ones, taken from the preserved session transcripts. <b>LOC ratio.</b> Port divided by original, scope-matched; below 1× the rebuild shipped fewer lines for the same behaviour. <b>Perf ratio.</b> Original divided by port, in each report's own units, so a row is self-consistent but two rows are not comparable; above 1× the rebuild is faster.</figcaption>
@@ -484,8 +484,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 4</p>
   <h5>Median LOC and performance change, grouped by what the project is</h5>
-  <table class="rtbl" style="--ind:8px">
-    <colgroup><col style="width:13.674%"><col style="width:10.167%"><col style="width:14.352%"><col style="width:14.692%"><col style="width:15.37%"><col style="width:15.71%"><col style="width:16.035%"></colgroup>
+  <table class="rtbl" style="--ind:12px">
+    <colgroup><col style="width:13.603%"><col style="width:10.096%"><col style="width:14.282%"><col style="width:14.621%"><col style="width:15.3%"><col style="width:15.639%"><col style="width:16.459%"></colgroup>
     <thead>
       <tr><th>Category</th><th>Ports</th><th>Median LOC ratio</th><th>LOC change</th><th>Median perf. ratio</th><th>Perf. change</th><th>Mean parity</th></tr>
     </thead>
@@ -567,8 +567,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 5</p>
   <h5>Ports that came in furthest under their predicted cost</h5>
-  <table class="rtbl" style="--ind:4px">
-    <colgroup><col style="width:18.137%"><col style="width:14.065%"><col style="width:11.689%"><col style="width:13.047%"><col style="width:11.576%"><col style="width:9.54%"><col style="width:11.011%"><col style="width:10.935%"></colgroup>
+  <table class="rtbl" style="--ind:11px">
+    <colgroup><col style="width:18.049%"><col style="width:13.977%"><col style="width:11.601%"><col style="width:12.959%"><col style="width:11.488%"><col style="width:9.452%"><col style="width:10.923%"><col style="width:11.551%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
     </thead>
@@ -594,8 +594,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 6</p>
   <h5>Ports that ran furthest over their predicted cost</h5>
-  <table class="rtbl" style="--ind:2px">
-    <colgroup><col style="width:19.822%"><col style="width:16.088%"><col style="width:11.111%"><col style="width:12.469%"><col style="width:10.998%"><col style="width:8.962%"><col style="width:10.432%"><col style="width:10.118%"></colgroup>
+  <table class="rtbl" style="--ind:8px">
+    <colgroup><col style="width:19.746%"><col style="width:16.013%"><col style="width:11.036%"><col style="width:12.393%"><col style="width:10.923%"><col style="width:8.886%"><col style="width:10.357%"><col style="width:10.646%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Residual</th><th>Efficiency</th><th>Original LOC</th><th>Turns</th><th>Minutes</th><th>Tokens</th></tr>
     </thead>
@@ -621,8 +621,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 7</p>
   <h5>Ports that reduced LOC the most</h5>
-  <table class="rtbl" style="--ind:11px">
-    <colgroup><col style="width:19.101%"><col style="width:18.875%"><col style="width:14.916%"><col style="width:17.292%"><col style="width:14.124%"><col style="width:15.692%"></colgroup>
+  <table class="rtbl" style="--ind:20px">
+    <colgroup><col style="width:18.924%"><col style="width:18.697%"><col style="width:14.738%"><col style="width:17.114%"><col style="width:13.946%"><col style="width:16.58%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
     </thead>
@@ -648,8 +648,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 8</p>
   <h5>Ports that increased LOC the most</h5>
-  <table class="rtbl" style="--ind:10px">
-    <colgroup><col style="width:20.346%"><col style="width:18.649%"><col style="width:14.69%"><col style="width:17.065%"><col style="width:13.898%"><col style="width:15.352%"></colgroup>
+  <table class="rtbl" style="--ind:19px">
+    <colgroup><col style="width:20.168%"><col style="width:18.471%"><col style="width:14.512%"><col style="width:16.888%"><col style="width:13.72%"><col style="width:16.241%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>LOC saved</th><th>Source slice LOC</th><th>Port LOC</th><th>LOC ratio</th></tr>
     </thead>
@@ -710,8 +710,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 9</p>
   <h5>Ports that improved performance the most</h5>
-  <table class="rtbl" style="--ind:44px">
-    <colgroup><col style="width:32.24%"><col style="width:29.638%"><col style="width:38.122%"></colgroup>
+  <table class="rtbl" style="--ind:70px">
+    <colgroup><col style="width:31.278%"><col style="width:28.676%"><col style="width:40.045%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
     </thead>
@@ -737,8 +737,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 10</p>
   <h5>Ports that worsened performance the most</h5>
-  <table class="rtbl" style="--ind:41px">
-    <colgroup><col style="width:34.474%"><col style="width:28.705%"><col style="width:36.821%"></colgroup>
+  <table class="rtbl" style="--ind:66px">
+    <colgroup><col style="width:33.541%"><col style="width:27.771%"><col style="width:38.688%"></colgroup>
     <thead>
       <tr><th>Port</th><th>Model / effort</th><th>Performance ratio</th></tr>
     </thead>
@@ -881,8 +881,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 11</p>
   <h5>Exit conditions by type and category</h5>
-  <table class="rtbl" style="--ind:31px">
-      <colgroup><col style="width:27.291%"><col style="width:29.893%"><col style="width:42.817%"></colgroup>
+  <table class="rtbl" style="--ind:44px">
+      <colgroup><col style="width:26.81%"><col style="width:29.412%"><col style="width:43.778%"></colgroup>
   <thead>
   <tr><th>EC type</th><th>Category</th><th>What it asks</th></tr>
   </thead>
@@ -923,8 +923,8 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <figure class="tbl">
   <p class="viz-title">Table 12</p>
   <h5>The sections of an Akka Specification</h5>
-  <table class="rtbl" style="--ind:24px">
-      <colgroup><col style="width:10.803%"><col style="width:23.473%"><col style="width:65.724%"></colgroup>
+  <table class="rtbl" style="--ind:33px">
+      <colgroup><col style="width:10.464%"><col style="width:23.133%"><col style="width:66.403%"></colgroup>
   <thead>
   <tr><th>§</th><th>Section</th><th>What it holds</th></tr>
   </thead>
