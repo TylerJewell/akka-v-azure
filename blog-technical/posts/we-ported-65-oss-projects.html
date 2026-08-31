@@ -85,7 +85,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <p class="standfirst">We created a self-improving, spec-driven delivery harness to test whether frontier models can port complete systems.</p>
   <div class="byline">
     <div><span class='au'>Tyler Jewell</span></div>
-    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 49 min read</div>
+    <div class="r"><time datetime="2026-08-26">August 26, 2026</time> · 50 min read</div>
   </div>
 </header>
 
@@ -112,9 +112,9 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <li><a href="#analysis"><span class="num">VI</span><span class="ttl">Analysis</span><span class="dots"></span><span class="min">17 min</span></a></li>
 <li><a href="#about-spec-driven-delivery"><span class="num">VII</span><span class="ttl">About Spec-Driven Delivery</span><span class="dots"></span><span class="min">30 min</span></a></li>
 <li><a href="#lessons-learned"><span class="num">VIII</span><span class="ttl">Lessons Learned</span><span class="dots"></span><span class="min">38 min</span></a></li>
-<li><a href="#future-experiments"><span class="num">IX</span><span class="ttl">Future Experiments</span><span class="dots"></span><span class="min">43 min</span></a></li>
-<li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">45 min</span></a></li>
-<li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">46 min</span></a></li>
+<li><a href="#future-experiments"><span class="num">IX</span><span class="ttl">Future Experiments</span><span class="dots"></span><span class="min">44 min</span></a></li>
+<li><a href="#one-overall-finding"><span class="num">X</span><span class="ttl">One Overall Finding</span><span class="dots"></span><span class="min">46 min</span></a></li>
+<li><a href="#appendix-the-ported-projects"><span class="num">XI</span><span class="ttl">Appendix: The Ported Projects</span><span class="dots"></span><span class="min">47 min</span></a></li>
 </ul>
 </nav>
 
@@ -1130,6 +1130,11 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 <p>Sonnet is roughly twice as fast (wall-clock) as Opus per port. Opus uses about 40% fewer tokens per port. Complexity-adjusted efficiency—our composite of steps, time, and tokens normalized to the median port—puts the two models within 8% of each other. Choosing the model is a latency-versus-token-cost tradeoff, not an efficiency-versus-inefficiency tradeoff.</p>
 
 <p>Effort matters more than model. Moving from low to high effort roughly doubles the composite efficiency score inside either model. That's a bigger swing than switching models at any effort level. The most efficient cells in the matrix—opus/low and sonnet/low, effectively tied—do the same-quality work at a fraction of the higher-effort cells' cost. In this run there is no evidence that higher-effort settings produced meaningfully more grounded ports; they just cost more.</p>
+
+<div class="enote">
+<b>Improvements to Akka Specify</b>
+Based upon our experience in executing these ports, we productized the project discovery and conversion process within Akka Specify. We created a <code>/akka:port</code> command that will execute a clarification and analysis cycle against an existing code base to generate a specification that Akka Specify will then create a new system from. You have the flexibility to choose between 15 different types of discovery probes and provide an indication of what level of depth the probes should execute against. After the system has been recreated, the analysis probes are rewritten as Exit Conditions that describe the system's behavior as invariants. After conversion, the system enters a state of maintenance, as if it were any other project and detaches itself from the definitions of the originating project. You can also write your own discovery probes that generate insights that can be captured within the spec. You can learn more about the discovery and porting mechanism in the <a href="https://doc.akka.io/reference/specify/index.html">Akka docs</a>.
+</div>
 
 </div>
 
