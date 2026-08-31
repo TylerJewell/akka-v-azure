@@ -80,6 +80,31 @@
   .maptable td:last-child{color:#e6e6e6}
   .maptable tr td:last-child b{color:var(--yellow);font-weight:600}
 
+  /* --- COST TABLE --- */
+  .costscroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+  .costscroll::-webkit-scrollbar{height:8px}
+  .costscroll::-webkit-scrollbar-track{background:transparent}
+  .costscroll::-webkit-scrollbar-thumb{background:var(--line-2)}
+  .costscroll::-webkit-scrollbar-thumb:hover{background:var(--yellow)}
+  .costtable{width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px;line-height:1.35;min-width:760px}
+  .costtable th,.costtable td{text-align:left;padding:5px 20px;vertical-align:middle;white-space:nowrap}
+  .costtable thead th{border-bottom:1px solid var(--line);padding-bottom:10px}
+  .costtable th.h-item{color:var(--dim);font-family:var(--mono);font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;width:34%}
+  .costtable th.h-cmp{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--white);width:34%}
+  .costtable th.h-with{color:var(--yellow);background:rgba(245,197,24,.06);
+    border-left:1px solid var(--line-2);width:32%}
+  .costtable td:first-child{color:var(--white);font-weight:600}
+  .costtable td.meter{color:var(--muted)}
+  .costtable td.na{color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:1px}
+  .costtable td.with{color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid var(--line-2)}
+  .costtable tr.infra td{border-top:1px solid var(--line)}
+  .costtable td.included{background:rgba(245,197,24,.12);border-left:1px solid var(--line-2);
+    text-align:center;vertical-align:middle;color:var(--yellow);font-size:24px;font-weight:700;
+    letter-spacing:-.02em}
+  .costnote{color:var(--muted);font-size:14px;line-height:1.65;max-width:74ch;margin:26px 0 0}
+  .costnote b{color:var(--white);font-weight:600}
+
   /* --- CUSTOMER PROOF --- */
   .proofbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
   .pcard{background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px}
@@ -197,8 +222,52 @@
     </div>
   </section>
 
-  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
   <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">What you pay for</div>
+        <h2 class="rv">Every AgentCore service is its own meter.</h2>
+        <p class="lede rv">A production agent on AgentCore meters every service it touches. The Akka platform fee covers those meters. The customer keeps paying AWS for the infrastructure the platform runs on.</p>
+      </div>
+      <div class="costscroll rv">
+        <table class="costtable">
+          <thead>
+            <tr><th class="h-item">AWS chargeable item</th><th class="h-cmp">Without Akka</th><th class="h-cmp h-with">With Akka</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>AgentCore Runtime</td><td class="meter">Per vCPU-hour, per GB-hour</td><td class="included" rowspan="15">Included</td></tr>
+          <tr><td>AgentCore Memory</td><td class="meter">Per record stored, per retrieval</td></tr>
+          <tr><td>AgentCore Gateway</td><td class="meter">Per tool call, per tool search</td></tr>
+          <tr><td>AgentCore Observability</td><td class="meter">Per GB ingested into CloudWatch</td></tr>
+          <tr><td>AgentCore Policy</td><td class="meter">Per policy decision</td></tr>
+          <tr><td>AgentCore Evaluations</td><td class="meter">Per evaluation</td></tr>
+          <tr><td>Bedrock model inference</td><td class="meter">Per token</td></tr>
+          <tr><td>Bedrock Guardrails</td><td class="meter">Per text unit</td></tr>
+          <tr><td>Bedrock Model Distillation</td><td class="meter">Per training run</td></tr>
+          <tr><td>AWS Step Functions</td><td class="meter">Per state transition</td></tr>
+          <tr><td>DynamoDB, Aurora</td><td class="meter">Per request, per GB</td></tr>
+          <tr><td>ElastiCache, MemoryDB</td><td class="meter">Per node-hour</td></tr>
+          <tr><td>Kinesis, MSK, SQS, SNS</td><td class="meter">Per shard-hour, per message</td></tr>
+          <tr><td>Managed Flink</td><td class="meter">Per KPU-hour</td></tr>
+          <tr><td>EventBridge, EventBridge Scheduler</td><td class="meter">Per event, per invocation</td></tr>
+          <tr class="infra"><td>EKS</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+          <tr class="infra"><td>EC2</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+          <tr class="infra"><td>EC2 GPU capacity</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+          <tr class="infra"><td>RDS</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+          <tr class="infra"><td>S3</td><td class="na">N/A</td><td class="with">Per GB stored and per request</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="costnote rv"><b>Included</b> means covered by the fixed annual Akka fee.</p>
+      <p class="costnote rv"><b>N/A</b> marks a service the AgentCore stack does not require. AgentCore Runtime is serverless, so it carries no cluster hours and no instance hours. Its memory and its state are managed services with their own meters. Its agent traces land in CloudWatch.</p>
+      <p class="costnote rv">EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The customer buys them from AWS at published unit prices, and the Akka fee does not move with those meters. Akka writes interaction records, evidence and policy artifacts to S3.</p>
+      <p class="costnote rv">Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is a choice. Routing to Bedrock stays available and bills per token on the requests sent there.</p>
+    </div>
+  </section>
+
+
+  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
@@ -225,7 +294,7 @@
   </section>
 
   <!-- ===================== WHEN TO CHOOSE WHICH ===================== -->
-  <section class="band--panel">
+  <section class="band--hair">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Choosing between them</div>
@@ -245,7 +314,7 @@
   </section>
 
   <!-- ===================== PROOF (the one one-sided section: evidence) ===================== -->
-  <section class="band--hair">
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Proof</div>
@@ -263,7 +332,7 @@
   </section>
 
   <!-- ===================== CLOSE ===================== -->
-  <section class="band--panel close">
+  <section class="band--hair close">
     <div class="inner">
       <h2 class="rv">Build on a portable platform.</h2>
       <p class="lede rv">Akka Platform builds, runs, and governs the entire agentic system under a contractual SLA, in your AWS VPC, on another cloud, on your own Kubernetes, or on-prem. Tell us what you are building, and we will show you how it runs in production.</p>

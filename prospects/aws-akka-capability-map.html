@@ -103,6 +103,23 @@ section.body{padding:8px 0}
   .tbl col.c-svc{width:20%}
   .tbl col.c-aws{width:26%}
   .tbl col.c-rel{width:13%}
+
+  /* -- Cost table: the two comparison columns carry the weight -- */
+  .costtbl th.h-cmp{font-family:var(--display);font-weight:700;font-size:19px;
+    letter-spacing:-.01em;color:var(--ink);text-transform:none;padding-bottom:10px;
+    border-bottom:2px solid var(--ink)}
+  .costtbl th.h-item{border-bottom:2px solid var(--ink)}
+  .costtbl th.h-with,.costtbl td.with{background:rgba(255,206,74,.16);
+    border-left:1px solid var(--line)}
+  .costtbl td{padding:4px 14px;vertical-align:middle;white-space:nowrap;line-height:1.35}
+  .costtbl td.with{color:var(--ink)}
+  .costtbl td.na{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--muted)}
+  .costtbl td.included{font-family:var(--display);font-weight:700;font-size:24px;
+    letter-spacing:-.015em;color:var(--ink);background:rgba(255,206,74,.32);
+    text-align:center;vertical-align:middle;border-left:1px solid var(--line)}
+  .costtbl tr.inc td{border-bottom-color:transparent}
+  .costtbl tr.inc-last td{border-bottom:1px solid var(--line)}
+  @media (max-width:720px){ .costtbl td.included{font-size:19px} }
   code{font-family:var(--mono);font-size:.86em;color:var(--ink);
     background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
   .body h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em;
@@ -453,6 +470,79 @@ section.body{padding:8px 0}
         </tbody>
       </table>
     </div>
+
+    <h2>What you pay for</h2>
+
+    <p class="lead-in">A production agent on AgentCore meters every service it touches. The Akka
+      platform fee covers those meters. The customer keeps paying AWS for the infrastructure the
+      platform runs on.</p>
+
+    <div class="tbl">
+      <table class="costtbl">
+        <colgroup><col style="width:34%"><col style="width:34%"><col style="width:32%"></colgroup>
+        <thead>
+          <tr><th class="h-item">AWS chargeable item</th>
+            <th class="h-cmp">Without Akka</th>
+            <th class="h-cmp h-with">With Akka</th></tr>
+        </thead>
+        <tbody>
+          <tr class="inc"><td class="row-h">AgentCore Runtime</td>
+            <td>Per vCPU-hour, per GB-hour</td>
+            <td class="included" rowspan="15">Included</td></tr>
+          <tr class="inc"><td class="row-h">AgentCore Memory</td>
+            <td>Per record stored, per retrieval</td></tr>
+          <tr class="inc"><td class="row-h">AgentCore Gateway</td>
+            <td>Per tool call, per tool search</td></tr>
+          <tr class="inc"><td class="row-h">AgentCore Observability</td>
+            <td>Per GB ingested into CloudWatch</td></tr>
+          <tr class="inc"><td class="row-h">AgentCore Policy</td>
+            <td>Per policy decision</td></tr>
+          <tr class="inc"><td class="row-h">AgentCore Evaluations</td>
+            <td>Per evaluation</td></tr>
+          <tr class="inc"><td class="row-h">Bedrock model inference</td>
+            <td>Per token</td></tr>
+          <tr class="inc"><td class="row-h">Bedrock Guardrails</td>
+            <td>Per text unit</td></tr>
+          <tr class="inc"><td class="row-h">Bedrock Model Distillation</td>
+            <td>Per training run</td></tr>
+          <tr class="inc"><td class="row-h">AWS Step Functions</td>
+            <td>Per state transition</td></tr>
+          <tr class="inc"><td class="row-h">DynamoDB, Aurora</td>
+            <td>Per request, per GB</td></tr>
+          <tr class="inc"><td class="row-h">ElastiCache, MemoryDB</td>
+            <td>Per node-hour</td></tr>
+          <tr class="inc"><td class="row-h">Kinesis, MSK, SQS, SNS</td>
+            <td>Per shard-hour, per message</td></tr>
+          <tr class="inc"><td class="row-h">Managed Flink</td>
+            <td>Per KPU-hour</td></tr>
+          <tr class="inc inc-last"><td class="row-h">EventBridge, EventBridge Scheduler</td>
+            <td>Per event, per invocation</td></tr>
+          <tr><td class="row-h">EKS</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+          <tr><td class="row-h">EC2</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+          <tr><td class="row-h">EC2 GPU capacity</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+          <tr><td class="row-h">RDS</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+          <tr><td class="row-h">S3</td><td class="na">N/A</td><td class="with">Per GB stored and per request</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><b>Included</b> means covered by the fixed annual Akka fee.</p>
+
+    <p>EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The customer
+      buys them from AWS at published unit prices, and the Akka fee does not move with those
+      meters. Akka writes interaction records, evidence and policy artifacts to S3.</p>
+
+    <p><b>N/A</b> marks a service the AgentCore stack does not require. AgentCore Runtime is
+      serverless, so it carries no cluster hours and no instance hours. Its memory and its state
+      are managed services with their own meters. Its agent traces land in CloudWatch.</p>
+
+    <p>Akka serves open-weight models on the customer's own GPU capacity, so token-metered
+      inference is a choice. Routing to Bedrock stays available and bills per token on the
+      requests sent there.</p>
+
+    <p>AgentCore Identity has no row because it carries no published usage meter. AgentCore
+      Identity is a separate resource with its own IAM role, so it counts as a service to
+      integrate and operate.</p>
 
     <h2>AgentCore and the Akka SDK in detail</h2>
 

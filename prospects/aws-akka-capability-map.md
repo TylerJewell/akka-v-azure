@@ -88,6 +88,51 @@ Relationship codes: **LEVERAGE** (Akka runs on it), **OVERLAP** (both do it, Akk
 | Evalkit and redkit | Evaluation and red-team corpora run against the deployed system. |
 | Portability | The same platform runs on Azure, GCP, customer Kubernetes, on-prem, and sovereign cloud. AgentCore runs on AWS. |
 
+## What you pay for
+
+A production agent on AgentCore meters every service it touches. The Akka platform fee covers
+those meters. The customer keeps paying AWS for the infrastructure the platform runs on.
+
+| AWS chargeable item | Without Akka | With Akka |
+|---|---|---|
+| AgentCore Runtime | Per vCPU-hour, per GB-hour | Included |
+| AgentCore Memory | Per record stored, per retrieval | Included |
+| AgentCore Gateway | Per tool call, per tool search | Included |
+| AgentCore Observability | Per GB ingested into CloudWatch | Included |
+| AgentCore Policy | Per policy decision | Included |
+| AgentCore Evaluations | Per evaluation | Included |
+| Bedrock model inference | Per token | Included |
+| Bedrock Guardrails | Per text unit | Included |
+| Bedrock Model Distillation | Per training run | Included |
+| AWS Step Functions | Per state transition | Included |
+| DynamoDB, Aurora | Per request, per GB | Included |
+| ElastiCache, MemoryDB | Per node-hour | Included |
+| Kinesis, MSK, SQS, SNS | Per shard-hour, per message | Included |
+| Managed Flink | Per KPU-hour | Included |
+| EventBridge, EventBridge Scheduler | Per event, per invocation | Included |
+| EKS | N/A | Per cluster-hour |
+| EC2 | N/A | Per instance-hour |
+| EC2 GPU capacity | N/A | Per accelerator-hour |
+| RDS | N/A | Per instance-hour plus storage |
+| S3 | N/A | Per GB stored and per request |
+
+**Included** means covered by the fixed annual Akka fee.
+
+EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The customer buys
+them from AWS at published unit prices, and the Akka fee does not move with those meters. Akka
+writes interaction records, evidence and policy artifacts to S3.
+
+**N/A** marks a service the AgentCore stack does not require. AgentCore Runtime is serverless, so
+it carries no cluster hours and no instance hours. Its memory and its state are managed services
+with their own meters. Its agent traces land in CloudWatch.
+
+Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is
+a choice. Routing to Bedrock stays available and bills per token on the requests sent there.
+
+AgentCore Identity has no row because it carries no published usage meter. AgentCore Identity
+is a separate resource with its own IAM role, so it counts as a service to integrate and
+operate.
+
 ## AgentCore and the Akka SDK in detail
 
 A production agent on AgentCore is assembled from separately provisioned services: Runtime, Memory, Gateway, Identity, Observability, Policy, Evaluations, and the managed harness that wires them together. Akka provides the same capabilities as components inside one deployable service on one runtime. AgentCore hosts an agent written in any framework and any language; the Akka SDK is Java.

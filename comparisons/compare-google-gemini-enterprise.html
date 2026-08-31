@@ -80,6 +80,31 @@
   .maptable td:last-child{color:#e6e6e6}
   .maptable tr td:last-child b{color:var(--yellow);font-weight:600}
 
+  /* --- COST TABLE --- */
+  .costscroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+  .costscroll::-webkit-scrollbar{height:8px}
+  .costscroll::-webkit-scrollbar-track{background:transparent}
+  .costscroll::-webkit-scrollbar-thumb{background:var(--line-2)}
+  .costscroll::-webkit-scrollbar-thumb:hover{background:var(--yellow)}
+  .costtable{width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px;line-height:1.35;min-width:760px}
+  .costtable th,.costtable td{text-align:left;padding:5px 20px;vertical-align:middle;white-space:nowrap}
+  .costtable thead th{border-bottom:1px solid var(--line);padding-bottom:10px}
+  .costtable th.h-item{color:var(--dim);font-family:var(--mono);font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;width:34%}
+  .costtable th.h-cmp{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--white);width:34%}
+  .costtable th.h-with{color:var(--yellow);background:rgba(245,197,24,.06);
+    border-left:1px solid var(--line-2);width:32%}
+  .costtable td:first-child{color:var(--white);font-weight:600}
+  .costtable td.meter{color:var(--muted)}
+  .costtable td.na{color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:1px}
+  .costtable td.with{color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid var(--line-2)}
+  .costtable tr.infra td{border-top:1px solid var(--line)}
+  .costtable td.included{background:rgba(245,197,24,.12);border-left:1px solid var(--line-2);
+    text-align:center;vertical-align:middle;color:var(--yellow);font-size:24px;font-weight:700;
+    letter-spacing:-.02em}
+  .costnote{color:var(--muted);font-size:14px;line-height:1.65;max-width:74ch;margin:26px 0 0}
+  .costnote b{color:var(--white);font-weight:600}
+
   /* --- CUSTOMER PROOF --- */
   .proofbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
   .pcard{background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px}
@@ -197,8 +222,52 @@
     </div>
   </section>
 
-  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
   <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">What you pay for</div>
+        <h2 class="rv">Every Vertex AI service is its own meter.</h2>
+        <p class="lede rv">A production agent on Agent Engine meters every service it touches. The Akka platform fee covers those meters. The customer keeps paying Google Cloud for the infrastructure the platform runs on.</p>
+      </div>
+      <div class="costscroll rv">
+        <table class="costtable">
+          <thead>
+            <tr><th class="h-item">Google Cloud chargeable item</th><th class="h-cmp">Without Akka</th><th class="h-cmp h-with">With Akka</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>Gemini Enterprise</td><td class="meter">Per seat, per month</td><td class="included" rowspan="15">Included</td></tr>
+          <tr><td>Vertex AI Agent Engine</td><td class="meter">Per vCPU-hour, per GiB-hour</td></tr>
+          <tr><td>Agent Engine Memory Bank</td><td class="meter">Per record stored, per retrieval</td></tr>
+          <tr><td>Apigee</td><td class="meter">Per API call</td></tr>
+          <tr><td>Model Armor</td><td class="meter">Per token screened</td></tr>
+          <tr><td>Vertex AI model inference</td><td class="meter">Per token</td></tr>
+          <tr><td>Gen AI evaluation service</td><td class="meter">Per evaluation</td></tr>
+          <tr><td>Vertex AI tuning and distillation</td><td class="meter">Per training run</td></tr>
+          <tr><td>Cloud Workflows</td><td class="meter">Per step executed</td></tr>
+          <tr><td>Firestore, Spanner, AlloyDB</td><td class="meter">Per request, per GB</td></tr>
+          <tr><td>Memorystore</td><td class="meter">Per node-hour</td></tr>
+          <tr><td>Pub/Sub</td><td class="meter">Per GB published</td></tr>
+          <tr><td>Dataflow</td><td class="meter">Per vCPU-hour</td></tr>
+          <tr><td>Cloud Scheduler</td><td class="meter">Per job, per month</td></tr>
+          <tr><td>Cloud Logging, Cloud Trace</td><td class="meter">Per GB ingested, per span</td></tr>
+          <tr class="infra"><td>GKE</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+          <tr class="infra"><td>Compute Engine</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+          <tr class="infra"><td>GPU capacity</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+          <tr class="infra"><td>Cloud SQL for PostgreSQL</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+          <tr class="infra"><td>Cloud Storage</td><td class="na">N/A</td><td class="with">Per GB stored and per request</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="costnote rv"><b>Included</b> means covered by the fixed annual Akka fee.</p>
+      <p class="costnote rv"><b>N/A</b> marks a service the Gemini Enterprise stack does not require. Agent Engine is serverless, so it carries no cluster hours and no instance hours. Its memory and its state are managed services with their own meters. Its agent traces land in Cloud Logging.</p>
+      <p class="costnote rv">GKE, Compute Engine, GPU capacity, Cloud SQL and Cloud Storage are the infrastructure Akka runs on. The customer buys them from Google Cloud at published unit prices, and the Akka fee does not move with those meters. Akka writes interaction records, evidence and policy artifacts to Cloud Storage.</p>
+      <p class="costnote rv">Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is a choice. Routing to Gemini stays available and bills per token on the requests sent there.</p>
+    </div>
+  </section>
+
+
+  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
@@ -225,7 +294,7 @@
   </section>
 
   <!-- ===================== WHEN TO CHOOSE WHICH ===================== -->
-  <section class="band--panel">
+  <section class="band--hair">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Choosing between them</div>
@@ -245,7 +314,7 @@
   </section>
 
   <!-- ===================== PROOF (the one one-sided section: evidence) ===================== -->
-  <section class="band--hair">
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Proof</div>
@@ -263,7 +332,7 @@
   </section>
 
   <!-- ===================== CLOSE ===================== -->
-  <section class="band--panel close">
+  <section class="band--hair close">
     <div class="inner">
       <h2 class="rv">Run one platform.</h2>
       <p class="lede rv">Gemini Enterprise gives you Google Cloud building blocks to assemble inside Google Cloud. Akka Platform builds, runs, and governs the whole agentic system under a contractual SLA — on any cloud, on-prem, or sovereign. Tell us what you are building, and we will show you how it runs in production.</p>

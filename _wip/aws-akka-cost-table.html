@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<title>What you pay for — AWS with and without Akka | Akka</title>
+<meta name="description" content="The AWS chargeable items in an agentic estate, showing which meters the Akka platform fee covers and which commodity AWS services the customer buys directly.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0B0B0C; --ink:#1A1A1A; --body:#2A2A2E; --muted:#6A6A72;
+  --line:#E7E7EA; --paper:#FFFFFF; --wash:#FAFAF7;
+  --gold:#FFCE4A; --gold-deep:#E9B426;
+  --display:"Instrument Sans",system-ui,sans-serif;
+  --text:"Roboto",system-ui,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:var(--text);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:56px 24px 72px}
+h1{font-family:var(--display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(28px,3.6vw,38px);line-height:1.12;color:var(--ink);margin:0 0 14px}
+.sub{font-family:var(--display);font-size:19px;line-height:1.5;color:var(--muted);
+  margin:0 0 36px;max-width:62ch}
+p{margin:0 0 18px;max-width:72ch}
+b,strong{color:var(--ink);font-weight:700}
+
+.tbl{overflow-x:auto;margin:14px 0 30px;
+  scrollbar-width:thin;scrollbar-color:#C9C9CE var(--wash)}
+.tbl::-webkit-scrollbar{height:10px}
+.tbl::-webkit-scrollbar-track{background:var(--wash)}
+.tbl::-webkit-scrollbar-thumb{background:#C9C9CE}
+.tbl::-webkit-scrollbar-thumb:hover{background:var(--gold-deep)}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:720px}
+
+/* Column heads: the two comparison columns carry the weight */
+th{font-family:var(--display);text-align:left;vertical-align:bottom;
+  padding:0 16px 10px;border-bottom:2px solid var(--ink)}
+th.h-item{font-weight:600;font-size:12px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted)}
+th.h-cmp{font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--ink)}
+th.h-with{background:rgba(255,206,74,.16);border-left:1px solid var(--line)}
+
+td{padding:4px 16px;border-bottom:1px solid var(--line);vertical-align:middle;
+  line-height:1.35;color:var(--body);white-space:nowrap}
+td.item{font-family:var(--display);font-weight:600;color:var(--ink)}
+td.na{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--muted)}
+td.with{background:rgba(255,206,74,.16);border-left:1px solid var(--line);color:var(--ink)}
+col.c-item{width:34%}
+col.c-without{width:34%}
+col.c-with{width:32%}
+
+/* The consolidated Included cell: one word, no internal rules */
+td.included{font-family:var(--display);font-weight:700;font-size:26px;
+  letter-spacing:-.015em;color:var(--ink);
+  background:rgba(255,206,74,.32);text-align:center;vertical-align:middle;
+  border-bottom:1px solid var(--line);border-left:1px solid var(--line)}
+tr.inc td{border-bottom-color:transparent}
+tr.inc-last td{border-bottom:1px solid var(--line)}
+
+.note{font-size:15px;color:var(--muted);max-width:72ch;margin:0 0 14px}
+.note b{color:var(--ink)}
+@media print{ .tbl{overflow-x:visible} table{font-size:9pt;min-width:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>What you pay for</h1>
+  <p class="sub">The AWS chargeable items in a production agentic estate, with and without the
+    Akka Agentic AI Platform.</p>
+
+  <div class="tbl">
+    <table>
+      <colgroup><col class="c-item"><col class="c-without"><col class="c-with"></colgroup>
+      <thead>
+        <tr><th class="h-item">AWS chargeable item</th><th class="h-cmp">Without Akka</th><th class="h-cmp h-with">With Akka</th></tr>
+      </thead>
+      <tbody>
+        <tr class="inc"><td class="item">AgentCore Runtime</td>
+          <td>Per vCPU-hour, per GB-hour</td>
+          <td class="included" rowspan="15">Included</td></tr>
+        <tr class="inc"><td class="item">AgentCore Memory</td>
+          <td>Per record stored, per retrieval</td></tr>
+        <tr class="inc"><td class="item">AgentCore Gateway</td>
+          <td>Per tool call, per tool search</td></tr>
+        <tr class="inc"><td class="item">AgentCore Observability</td>
+          <td>Per GB ingested into CloudWatch</td></tr>
+        <tr class="inc"><td class="item">AgentCore Policy</td>
+          <td>Per policy decision</td></tr>
+        <tr class="inc"><td class="item">AgentCore Evaluations</td>
+          <td>Per evaluation</td></tr>
+        <tr class="inc"><td class="item">Bedrock model inference</td>
+          <td>Per token</td></tr>
+        <tr class="inc"><td class="item">Bedrock Guardrails</td>
+          <td>Per text unit</td></tr>
+        <tr class="inc"><td class="item">Bedrock Model Distillation</td>
+          <td>Per training run</td></tr>
+        <tr class="inc"><td class="item">AWS Step Functions</td>
+          <td>Per state transition</td></tr>
+        <tr class="inc"><td class="item">DynamoDB, Aurora</td>
+          <td>Per request, per GB</td></tr>
+        <tr class="inc"><td class="item">ElastiCache, MemoryDB</td>
+          <td>Per node-hour</td></tr>
+        <tr class="inc"><td class="item">Kinesis, MSK, SQS, SNS</td>
+          <td>Per shard-hour, per message</td></tr>
+        <tr class="inc"><td class="item">Managed Flink</td>
+          <td>Per KPU-hour</td></tr>
+        <tr class="inc inc-last"><td class="item">EventBridge, EventBridge Scheduler</td>
+          <td>Per event, per invocation</td></tr>
+
+        <tr><td class="item">EKS</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+        <tr><td class="item">EC2</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+        <tr><td class="item">EC2 GPU capacity</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+        <tr><td class="item">RDS</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+        <tr><td class="item">S3</td><td class="na">N/A</td><td class="with">Per GB stored and per request</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note"><b>Included</b> means covered by the fixed annual Akka fee.</p>
+
+  <p class="note">EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The
+    customer buys them from AWS at published unit prices, and the Akka fee does not move with
+    those meters. Akka writes interaction records, evidence and policy artifacts to S3.</p>
+
+  <p class="note"><b>N/A</b> marks a service the AgentCore stack does not require. AgentCore
+    Runtime is serverless, so it carries no cluster hours and no instance hours. Its memory and
+    its state are managed services with their own meters. Its agent traces land in CloudWatch.</p>
+
+  <p class="note">Akka serves open-weight models on the customer's own GPU capacity, so
+    token-metered inference is a choice. Routing to Bedrock stays available and bills per token on
+    the requests sent there.</p>
+
+  <p class="note">AgentCore Identity has no row because it carries no published usage meter.
+    AgentCore Identity is a separate resource with its own IAM role, so it counts as a service
+    to integrate and operate.</p>
+
+</div>
+</body>
+</html>

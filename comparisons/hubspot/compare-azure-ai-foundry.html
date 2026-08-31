@@ -50,6 +50,29 @@
 .akka-embed .maptable td:nth-child(2) { width:40%;color:var(--muted) }
 .akka-embed .maptable td:last-child { color:#e6e6e6 }
 .akka-embed .maptable tr td:last-child b { color:var(--yellow);font-weight:600 }
+.akka-embed .costscroll { overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent }
+.akka-embed .costscroll::-webkit-scrollbar { height:8px }
+.akka-embed .costscroll::-webkit-scrollbar-track { background:transparent }
+.akka-embed .costscroll::-webkit-scrollbar-thumb { background:var(--line-2) }
+.akka-embed .costscroll::-webkit-scrollbar-thumb:hover { background:var(--yellow) }
+.akka-embed .costtable { width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px;line-height:1.35;min-width:760px }
+.akka-embed .costtable th, .akka-embed .costtable td { text-align:left;padding:5px 20px;vertical-align:middle;white-space:nowrap }
+.akka-embed .costtable thead th { border-bottom:1px solid var(--line);padding-bottom:10px }
+.akka-embed .costtable th.h-item { color:var(--dim);font-family:var(--mono);font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;width:34% }
+.akka-embed .costtable th.h-cmp { font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--white);width:34% }
+.akka-embed .costtable th.h-with { color:var(--yellow);background:rgba(245,197,24,.06);
+    border-left:1px solid var(--line-2);width:32% }
+.akka-embed .costtable td:first-child { color:var(--white);font-weight:600 }
+.akka-embed .costtable td.meter { color:var(--muted) }
+.akka-embed .costtable td.na { color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:1px }
+.akka-embed .costtable td.with { color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid var(--line-2) }
+.akka-embed .costtable tr.infra td { border-top:1px solid var(--line) }
+.akka-embed .costtable td.included { background:rgba(245,197,24,.12);border-left:1px solid var(--line-2);
+    text-align:center;vertical-align:middle;color:var(--yellow);font-size:24px;font-weight:700;
+    letter-spacing:-.02em }
+.akka-embed .costnote { color:var(--muted);font-size:14px;line-height:1.65;max-width:74ch;margin:26px 0 0 }
+.akka-embed .costnote b { color:var(--white);font-weight:600 }
 .akka-embed .proofbar { display:grid;grid-template-columns:repeat(5,1fr);gap:14px }
 .akka-embed .pcard { background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px }
 .akka-embed .pcard .co { font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim) }
@@ -83,7 +106,7 @@
     <div class="inner">
       <div class="eyebrow hero-eyebrow rv">Compare — Akka vs. Azure AI Foundry</div>
       <h1 class="hero-headline rv">Azure AI Foundry is a cloud AI toolkit. <span class="accent">Akka is a platform.</span></h1>
-      <p class="lede rv">Azure AI Foundry hands you Azure-locked building blocks — a model service, a database, a search index, a gateway — to assemble and operate into an agent. Akka delivers agents, memory, streaming, APIs, and governance as one runtime you can run on any cloud, on-prem, or in a sovereign region. With Foundry, the integration and the recovery across your Azure estate are yours to own. With Akka, the platform is built, operated, and portable.</p>
+      <p class="lede rv">Azure AI Foundry hands you Azure-locked building blocks — a model service, a database, a search index, a gateway — to assemble and operate into an agent. Akka delivers agents, memory, streaming, APIs, and governance as one runtime you can run on any cloud, on-prem, or in a sovereign region. Foundry leaves the integration and the recovery across your Azure estate for you to own. Akka is built, operated and portable.</p>
     </div>
   </section>
 
@@ -135,12 +158,12 @@
           </tr>
           <tr>
             <td>Recovery point</td>
-            <td>Recovery is reconstruction of a warm standby, not failover; the documented recovery point for agent state "can be total loss," and standby-region state is lost on failback.</td>
+            <td>Recovery reconstructs a warm standby. The documented recovery point for agent state "can be total loss," and standby-region state is lost on failback.</td>
             <td><b>Zero-byte RPO</b> — durable state is active-active replicated and fully preserved across a regional event.</td>
           </tr>
           <tr>
             <td>State &amp; memory</td>
-            <td>No native memory. Agent state and thread memory live in a Cosmos DB account you bring, size at a 3,000 RU/s minimum, and operate — including its backup, replication, and failover.</td>
+            <td>The Agent Service has no native memory. Agent state and thread memory live in a Cosmos DB account you bring, size at a 3,000 RU/s minimum, and operate — including its backup, replication, and failover.</td>
             <td><b>Durable state held in memory</b>, active-active replicated — 4 ms reads, sub-10 ms writes — built into the runtime.</td>
           </tr>
           <tr>
@@ -168,8 +191,51 @@
     </div>
   </section>
 
-  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
   <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow rv">What you pay for</div>
+        <h2 class="rv">Every Foundry service is its own meter.</h2>
+        <p class="lede rv">A production agent on the Foundry Agent Service meters every service it touches. The Akka platform fee covers those meters. The customer keeps paying Azure for the infrastructure the platform runs on.</p>
+      </div>
+      <div class="costscroll rv">
+        <table class="costtable">
+          <thead>
+            <tr><th class="h-item">Azure chargeable item</th><th class="h-cmp">Without Akka</th><th class="h-cmp h-with">With Akka</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>Azure AI Foundry Agent Service</td><td class="meter">Per token, per tool call</td><td class="included" rowspan="13">Included</td></tr>
+          <tr><td>Azure AI Foundry Models</td><td class="meter">Per token</td></tr>
+          <tr><td>Azure AI Content Safety</td><td class="meter">Per text record</td></tr>
+          <tr><td>Azure AI Search</td><td class="meter">Per search unit-hour</td></tr>
+          <tr><td>Azure Cosmos DB</td><td class="meter">Per request unit, per GB</td></tr>
+          <tr><td>Azure Cache for Redis</td><td class="meter">Per node-hour</td></tr>
+          <tr><td>Logic Apps, Durable Functions</td><td class="meter">Per action executed</td></tr>
+          <tr><td>Service Bus, Event Hubs, Event Grid</td><td class="meter">Per throughput unit, per message</td></tr>
+          <tr><td>Azure Stream Analytics</td><td class="meter">Per streaming unit-hour</td></tr>
+          <tr><td>Azure API Management</td><td class="meter">Per unit-hour</td></tr>
+          <tr><td>Azure Monitor, Application Insights</td><td class="meter">Per GB ingested</td></tr>
+          <tr><td>Azure AI Foundry evaluations</td><td class="meter">Per evaluation</td></tr>
+          <tr><td>Azure Machine Learning</td><td class="meter">Per training run</td></tr>
+          <tr class="infra"><td>AKS</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+          <tr class="infra"><td>Azure Virtual Machines</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+          <tr class="infra"><td>GPU virtual machines</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+          <tr class="infra"><td>Azure Database for PostgreSQL</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+          <tr class="infra"><td>Azure Blob Storage</td><td class="meter">Per GB stored and per request</td><td class="with">Per GB stored and per request</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="costnote rv"><b>Included</b> means covered by the fixed annual Akka fee.</p>
+      <p class="costnote rv"><b>N/A</b> marks a service the Foundry Agent Service stack does not require. The Agent Service is serverless, so it carries no cluster hours and no instance hours. Its memory and its state are managed services with their own meters.</p>
+      <p class="costnote rv">AKS, Azure Virtual Machines, GPU virtual machines and Azure Database for PostgreSQL are the infrastructure Akka runs on. The customer buys them from Azure at published unit prices, and the Akka fee does not move with those meters.</p>
+      <p class="costnote rv">Azure Blob Storage carries a meter in both columns. The Foundry Agent Service standard setup keeps agent files in the customer's own storage account, and Akka writes interaction records, evidence and policy artifacts there.</p>
+      <p class="costnote rv">Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is a choice. Routing to Foundry Models stays available and bills per token on the requests sent there.</p>
+    </div>
+  </section>
+
+
+  <!-- ===================== OBSERVE VS ENFORCE ===================== -->
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Governance &amp; the EU AI Act</div>
@@ -181,7 +247,7 @@
           <div class="vlabel">Azure AI Foundry — Observe</div>
           <h3>After the fact</h3>
           <p class="sub">Assess &amp; document across services</p>
-          <p class="vbody">Azure AI Foundry offers assessment and mapping spread across several services. Purview Compliance Manager ingests regulations such as the EU AI Act, extracts controls, maps improvement actions, and syncs Foundry evaluation results; Content Safety filters content, API Management applies gateway policies, and Monitor and Entra collect logs. Each of these observes, scores, and records.</p>
+          <p class="vbody">Azure AI Foundry offers assessment and mapping spread across several services. Purview Compliance Manager ingests regulations such as the EU AI Act, extracts controls, maps improvement actions, and syncs Foundry evaluation results; Content Safety filters content, API Management applies gateway policies, and Monitor and Entra collect logs. Every one of those services observes, scores and records.</p>
           <p class="vbody">No single enforcement plane is woven into the agent's execution. The evaluations score after the run and the logs are read after the fact. There is no built-in way to pause or override a running agent, capture authorization atomically at execution time, or gate a release on a pre-deployment classification.</p>
         </div>
         <div class="vcard akka">
@@ -196,7 +262,7 @@
   </section>
 
   <!-- ===================== WHEN TO CHOOSE WHICH ===================== -->
-  <section class="band--panel">
+  <section class="band--hair">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Choosing between them</div>
@@ -216,7 +282,7 @@
   </section>
 
   <!-- ===================== PROOF (the one one-sided section: evidence) ===================== -->
-  <section class="band--hair">
+  <section class="band--panel">
     <div class="inner">
       <div class="sec-head">
         <div class="eyebrow rv">Proof</div>
@@ -234,7 +300,7 @@
   </section>
 
   <!-- ===================== CLOSE ===================== -->
-  <section class="band--panel close">
+  <section class="band--hair close">
     <div class="inner">
       <h2 class="rv">Build on a portable platform.</h2>
       <p class="lede rv">Azure AI Foundry gives you Azure-locked building blocks to assemble and operate. Akka Platform builds, runs, and governs the whole agentic system under a contractual SLA, on any cloud, on-prem, or in a sovereign region. Tell us what you are building, and we will show you how it runs in production.</p>
