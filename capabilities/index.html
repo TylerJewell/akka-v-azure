@@ -230,6 +230,77 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
   </section>
 
   <section class="cat">
+    <h3>Inference routing</h3>
+    <div class="feat"><b>AI gateway router.</b> Routing decisions a proxy applies.</div>
+    <div class="feat"><b>Agent-blind routing.</b> Agents never name a model.</div>
+    <div class="feat"><b>Two-stage pipeline.</b> Declared rules first, meaning second.</div>
+    <div class="feat"><b>Rulesets.</b> Named rules enforced as one set.</div>
+    <div class="feat"><b>Six predicates.</b> Equals, prefix, suffix, contains, in, exists.</div>
+    <div class="feat"><b>No regex predicate.</b> Closed set, no request-path stall.</div>
+    <div class="feat"><b>Protocol-agnostic attributes.</b> One rule across OpenAI and Anthropic.</div>
+    <div class="feat"><b>Prompt-text matching.</b> Whole prompt, or last user turn.</div>
+    <div class="feat"><b>Header matching.</b> Any request header, lower-cased.</div>
+    <div class="feat"><b>Closed destination set.</b> Undeclared destinations refused at write.</div>
+    <div class="feat"><b>Immutable revisions.</b> A revision number is never reused.</div>
+    <div class="feat"><b>Conditional writes.</b> If-Match and ETag on every write.</div>
+    <div class="feat"><b>Ruleset history.</b> Every change, revision, and author.</div>
+    <div class="feat"><b>Rule dry run.</b> Try a request before shipping the rule.</div>
+    <div class="feat"><b>Classifier registry.</b> Model providers a rule may consult.</div>
+    <div class="feat"><b>Immutable classifiers.</b> A changed prompt is a new id.</div>
+    <div class="feat"><b>Classifier deferral.</b> A rule asks a model to decide.</div>
+    <div class="feat"><b>Conversation pinning.</b> Later turns follow the first model.</div>
+    <div class="feat"><b>Embedding-based matching.</b> Vector arithmetic, no model call.</div>
+    <div class="feat"><b>Zero-token decisions.</b> Semantic routing costs no tokens.</div>
+    <div class="feat"><b>Discovery mode.</b> Traffic observed, nothing routed.</div>
+    <div class="feat"><b>Routing mode.</b> A manifest routes unmatched requests.</div>
+    <div class="feat"><b>Embedder identity gate.</b> Manifest refused under a changed embedder.</div>
+    <div class="feat"><b>Frozen route header.</b> Header name hashed into the manifest.</div>
+    <div class="feat"><b>Tag bound once.</b> A tag never points elsewhere later.</div>
+    <div class="feat"><b>Evidence log.</b> Input, time, and rule version per decision.</div>
+    <div class="feat"><b>Exemplar privacy gate.</b> Text withheld below a sighting threshold.</div>
+    <div class="feat"><b>Retention opt-out.</b> Drop the stage, retain no text.</div>
+    <div class="feat"><b>Capture stages.</b> Summary line, local file, object storage.</div>
+    <div class="feat"><b>Gap markers.</b> Exchanges never recorded, named as such.</div>
+    <div class="feat"><b>Content never logged.</b> Bodies leave only through a recorder.</div>
+  </section>
+
+  <section class="cat">
+    <h3>Model serving</h3>
+    <div class="feat"><b>vLLM serving.</b> Open-weight models on your own GPUs.</div>
+    <div class="feat"><b>Model descriptor.</b> One file deploys a model.</div>
+    <div class="feat"><b>Descriptor validation.</b> Checked before anything is deployed.</div>
+    <div class="feat"><b>Descriptor export.</b> Running deployments written back to file.</div>
+    <div class="feat"><b>Accelerator classes.</b> GPU hardware carved into placement capacity.</div>
+    <div class="feat"><b>Dedicated or shared.</b> Cards held by one model or several.</div>
+    <div class="feat"><b>VRAM budget.</b> The share of a card per model.</div>
+    <div class="feat"><b>GPU inventory.</b> Kind, memory, free count, per node.</div>
+    <div class="feat"><b>Cards per node.</b> A multi-card model needs one machine.</div>
+    <div class="feat"><b>Portable accelerator names.</b> One descriptor across unlike regions.</div>
+    <div class="feat"><b>Tensor parallelism.</b> One model split across cards.</div>
+    <div class="feat"><b>Pipeline parallelism.</b> One model split across stages.</div>
+    <div class="feat"><b>Data parallelism.</b> Replicated weights across cards.</div>
+    <div class="feat"><b>Expert parallelism.</b> Mixture-of-experts sharded across cards.</div>
+    <div class="feat"><b>Prefill/decode disaggregation.</b> Separate fleets for each generation phase.</div>
+    <div class="feat"><b>Continuous batching.</b> Sequence and batched-token limits per deployment.</div>
+    <div class="feat"><b>Chunked prefill.</b> Long prompts split across scheduler steps.</div>
+    <div class="feat"><b>Quantization.</b> Weight precision set per deployment.</div>
+    <div class="feat"><b>KV-cache dtype.</b> Cache precision set per deployment.</div>
+    <div class="feat"><b>CPU offload.</b> Host memory holds weights past VRAM.</div>
+    <div class="feat"><b>Swap space.</b> Host memory backs the KV cache.</div>
+    <div class="feat"><b>LoRA adapter serving.</b> Task adapters over one shared base.</div>
+    <div class="feat"><b>Adapter by request.</b> A base:adapter name selects the adapter.</div>
+    <div class="feat"><b>Adapter discovery.</b> Found under an object-storage prefix.</div>
+    <div class="feat"><b>Queue-depth autoscale.</b> Replicas follow requests waiting.</div>
+    <div class="feat"><b>KV-cache autoscale.</b> Replicas follow cache pressure.</div>
+    <div class="feat"><b>Rolling model updates.</b> Surge, unavailable, and min-ready bounds.</div>
+    <div class="feat"><b>Inference routes.</b> Which models answer on which hostname.</div>
+    <div class="feat"><b>Model proxy.</b> A local port onto a deployment.</div>
+    <div class="feat"><b>Tool-calling parser.</b> Parser and chat template per model.</div>
+    <div class="feat"><b>Max model length.</b> Context ceiling set per deployment.</div>
+    <div class="feat"><b>Hugging Face source.</b> Token reference and weight cache volume.</div>
+  </section>
+
+  <section class="cat">
     <h3>Akka Optimize</h3>
     <div class="feat"><b>Observe.</b> Measure work agents do on live traffic.</div>
     <div class="feat"><b>Route.</b> Send each task to the fitting model.</div>
@@ -278,6 +349,16 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <div class="feat"><b>AI-owner console.</b> Pipeline, promoted-model quality.</div>
     <div class="feat"><b>System-owner console.</b> Throughput, ladder, health.</div>
     <div class="feat"><b>90-day assessment.</b> Install, Observe, Witness.</div>
+    <div class="feat"><b>Reinforcement learning.</b> Runs trained through TRL and verl.</div>
+    <div class="feat"><b>Engine by GPU count.</b> RL engine picked from cards given.</div>
+    <div class="feat"><b>Smoke check.</b> A real slice trained before full spend.</div>
+    <div class="feat"><b>Smoke verdicts.</b> Six named outcomes, ungraded among them.</div>
+    <div class="feat"><b>Pause and resume.</b> A run stopped and started again.</div>
+    <div class="feat"><b>Durable checkpoints.</b> A candidate outlives the job that made it.</div>
+    <div class="feat"><b>Per-run cost budget.</b> A ceiling set before a run starts.</div>
+    <div class="feat"><b>Training-job logs.</b> Job logs read without cluster access.</div>
+    <div class="feat"><b>Content-hashed datasets.</b> The same bytes are one dataset.</div>
+    <div class="feat"><b>Separate evaluation set.</b> Training and scoring data named apart.</div>
   </section>
 
   <section class="cat">
@@ -296,6 +377,42 @@ html, body { background: var(--black); color: var(--gray); font-family: var(--sa
     <div class="feat"><b>Prompt-injection defence.</b> Layered input filters.</div>
     <div class="feat"><b>Model comparison.</b> A/B judging harness.</div>
     <div class="feat"><b>Red-team harness.</b> Adversarial test suite.</div>
+    <div class="feat"><b>Tool-permission metric.</b> Tool names against an allow list.</div>
+    <div class="feat"><b>Tool-correctness metric.</b> Tool names against expected tools.</div>
+    <div class="feat"><b>Argument-correctness metric.</b> Tool arguments against expected arguments.</div>
+    <div class="feat"><b>Latency budget.</b> Recorded latency against a duration.</div>
+    <div class="feat"><b>Token budget.</b> Input plus output tokens against a number.</div>
+    <div class="feat"><b>Model-call budget.</b> Model calls against a limit.</div>
+    <div class="feat"><b>Retrieval metrics.</b> Recall, precision, reciprocal rank, NDCG@K.</div>
+    <div class="feat"><b>Faithfulness metrics.</b> Reply and citations against retrieved passages.</div>
+    <div class="feat"><b>Plan metrics.</b> Plan quality, adherence, and step efficiency.</div>
+    <div class="feat"><b>Bring-your-own judge.</b> You supply the model, we supply the prompt.</div>
+    <div class="feat"><b>Rubric override.</b> Your rubric beats the built-in id.</div>
+    <div class="feat"><b>Judge-call cap.</b> A ceiling on judge calls per run.</div>
+    <div class="feat"><b>Checkpoint evaluation.</b> A trained model scored before deployment.</div>
+    <div class="feat"><b>Tool-call evaluation.</b> The requests an agent made, scored.</div>
+  </section>
+
+  <section class="cat">
+    <h3>Red teaming</h3>
+    <div class="feat"><b>Adversarial campaigns.</b> Attacker-shaped prompts against your own system.</div>
+    <div class="feat"><b>AILuminate v1.1 hazards.</b> Results grouped by the published taxonomy.</div>
+    <div class="feat"><b>OWASP LLM Top 10.</b> The second classification each result carries.</div>
+    <div class="feat"><b>Three-verdict scoring.</b> Broke through, held, or inconclusive.</div>
+    <div class="feat"><b>Cost-ordered tiers.</b> Deterministic, then heuristic, then model judge.</div>
+    <div class="feat"><b>Secret exfiltration.</b> The reply quotes a withheld marker.</div>
+    <div class="feat"><b>Prompt-injection detection.</b> The injected marker read back out.</div>
+    <div class="feat"><b>PII leak detection.</b> Luhn-valid cards, SSN patterns, configured identifiers.</div>
+    <div class="feat"><b>Jailbreak scoring.</b> Refusal absent, task-fulfilment language present.</div>
+    <div class="feat"><b>Guardrail scoring.</b> Reply checked against a configured policy.</div>
+    <div class="feat"><b>Refusal consistency.</b> An early refusal reversed later on.</div>
+    <div class="feat"><b>Agentic jailbreak judge.</b> A model reads the undecided exchanges.</div>
+    <div class="feat"><b>Attack-goal judge.</b> Decides when an attacker reached its goal.</div>
+    <div class="feat"><b>Static attack wrappers.</b> Base64, ROT13, multilingual, splitting, role play.</div>
+    <div class="feat"><b>Adaptive attackers.</b> PAIR, Crescendo, and Tree of Attacks.</div>
+    <div class="feat"><b>Versioned corpora.</b> Date-versioned sets, each with attribution.</div>
+    <div class="feat"><b>Bring-your-own judge.</b> You supply the model, we supply the prompt.</div>
+    <div class="feat"><b>Breaks and holds.</b> Two counts, never a single rate.</div>
   </section>
 
   <section class="cat">
