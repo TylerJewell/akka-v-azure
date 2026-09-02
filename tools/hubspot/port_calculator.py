@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-"""Build the /calculator page template from the agentic cost calculator and PUT it.
+"""Build a calculator page template from a cost calculator and PUT it.
 
-The calculator is a standalone document with all of its CSS and JS inline. This scopes
+Each calculator is a standalone document with all of its CSS and JS inline. This scopes
 that CSS under .calculator-content, wraps the body in the same class, and drops the
 result into the full-page shell the comparison pages use — header partial, theme
 stylesheets, footer partial.
 
-    python tools/hubspot/port_calculator.py            # build only, writes hs-out/
-    python tools/hubspot/port_calculator.py --push     # build, then PUT draft+published
+    python tools/hubspot/port_calculator.py                # build every page, writes hs-out/
+    python tools/hubspot/port_calculator.py sovereign      # build one
+    python tools/hubspot/port_calculator.py --push         # build, then PUT the template
+                                                           # and publish the site page
 
 The token comes from the gitignored scratchpad/.hs_env.
 """
 import argparse
+import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -21,50 +25,51 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "sales-presentation" / "builder"))
 from hubspot import to_hubspot_fragment  # noqa: E402
 
-# /calculator serves the infrastructure-only variant: both columns show physical
-# infrastructure, so the build-it-yourself total carries no support or professional
-# services and the Akka figure carries no margin. index.html is the margin-bearing page
-# and is not what this publishes.
-#
-# Read from the calculator repo's working tree rather than its GitHub Pages URL, so a
-# port picks up edits that have not been committed and deployed yet.
-SOURCE = ROOT.parent / "calculator" / "physical.html"
+CALC = ROOT.parent / "calculator"
 SCOPE = "calculator-content"
-TEMPLATE_PATH = "custom-templates/akka-calculator.html"
 OUT = ROOT / "scratchpad" / "hs-out"
-
-TITLE = "What your AI agents will cost — Akka"
-DESCRIPTION = (
-    "Estimate what an agentic AI workload costs to run on AWS, Azure or Google Cloud "
-    "for a year, and what the same workload costs on the Akka Agentic AI Platform."
-)
+API = "https://api.hubapi.com"
 
 # The theme wins over the scoped styles on each of these. See the PORT TRANSFORM
 # CHECKLIST in tools/auditors/hubspot-ready/audit.py. The checklist's wrapper-neutralize
 # block is omitted: on a full-page template the content is not inside .row-fluid /
 # .widget-span, and the only elements carrying those classes are the header and footer
 # partials, which the resets would flatten.
-PORT_CSS = """
+SHARED_CSS = """
 .calculator-content h1, .calculator-content h2, .calculator-content h3,
 .calculator-content h4, .calculator-content h5, .calculator-content h6 {
   color: #F1F1F1 !important; font-family: 'Instrument Sans', sans-serif !important;
 }
 /* The theme draws a 3px black border on the top, left and right of every cell, which
-   reads as a grid over the calculator's own bottom-rule rows. Only the borders are
-   reset: the checklist pairs this with background:transparent, which would erase the
-   Akka column's fill. The totals row draws its own top rule and gets it back. */
+   reads as a grid over the calculator's own bottom-rule rows. The borders reset here and
+   the fill resets below; a page that paints cells of its own restores them in its own
+   block. */
 .calculator-content td, .calculator-content th {
   border-top: 0 !important; border-left: 0 !important; border-right: 0 !important;
 }
 .calculator-content tr.tot td { border-top: 3px double var(--line) !important; }
-/* Cells arrive with a #1A1A1A fill the exemplar does not have. Reset it, then put back
-   the two the calculator paints itself: the Akka column and the sticky first column. */
+/* Cells arrive with a #1A1A1A fill the exemplar does not have. */
 .calculator-content td, .calculator-content th { background-color: transparent !important; }
+.calculator-content blockquote {
+  border: 0 !important; background: transparent !important; padding: 0 !important;
+}
+/* === Header offset === The header is fixed and theme-overrides.css already clears it
+   with body padding-top (78px desktop / 64px mobile), so the wrapper adds none of its
+   own. Anchors still need it: fragment navigation scrolls the target to viewport 0,
+   which is behind the header. */
+.calculator-content [id] { scroll-margin-top: 88px; }
+/* The scoped rules paint the calculator's ground inside the wrapper only; the strip
+   behind the header and footer takes it here. */
+body { background: #000000; }
+"""
+
+# physical.html paints four fills of its own, which the transparent-cell reset takes.
+PHYSICAL_CSS = """
 .calculator-content td.akka, .calculator-content th.akka {
   background-color: rgba(255, 206, 74, .10) !important;
 }
 /* The API-vs-Akka table marks the row at the entered volume with a fill on the whole
-   row, which the transparent reset above would take with the rest. */
+   row. */
 .calculator-content #beTbl tr.cross td:not(.akka) {
   background-color: rgba(255, 206, 74, .09) !important;
 }
@@ -75,14 +80,6 @@ PORT_CSS = """
     background-color: #0C0C0C !important;
   }
 }
-.calculator-content blockquote {
-  border: 0 !important; background: transparent !important; padding: 0 !important;
-}
-/* === Header offset === The header is fixed and theme-overrides.css already clears it
-   with body padding-top (78px desktop / 64px mobile), so the wrapper adds none of its
-   own. Anchors still need it: fragment navigation scrolls the target to viewport 0,
-   which is behind the header. */
-.calculator-content [id] { scroll-margin-top: 88px; }
 /* .tabs is a horizontal scroll container, so overflow-y computes to auto and the
    scrollport eats the 1px top border the tabs draw on hover. A row of top padding puts
    it back inside. */
@@ -93,15 +90,51 @@ PORT_CSS = """
   .calculator-content .srcpick { flex-wrap: nowrap; }
   .calculator-content .srcq { white-space: nowrap; }
 }
-/* The scoped rules paint the calculator's ground inside the wrapper only; the strip
-   behind the header and footer takes it here. */
-body { background: #000000; }
 """
+
+# /calculator serves the infrastructure-only variant: both columns show physical
+# infrastructure, so the build-it-yourself total carries no support or professional
+# services and the Akka figure carries no margin. index.html is the margin-bearing page
+# and is not what this publishes.
+#
+# Sources are read from the calculator repo's working tree rather than its GitHub Pages
+# URL, so a port picks up edits that have not been committed and deployed yet.
+PAGES = {
+    "calculator": {
+        "source": CALC / "physical.html",
+        "out": "akka-calculator.html",
+        "template": "custom-templates/akka-calculator.html",
+        "slug": "calculator",
+        "label": "Agentic cost calculator",
+        "title": "What your AI agents will cost — Akka",
+        "description": (
+            "Estimate what an agentic AI workload costs to run on AWS, Azure or Google "
+            "Cloud for a year, and what the same workload costs on the Akka Agentic AI "
+            "Platform."
+        ),
+        "extra_css": PHYSICAL_CSS,
+    },
+    "sovereign": {
+        "source": CALC / "sovereign.html",
+        "out": "akka-sovereign.html",
+        "template": "custom-templates/akka-sovereign.html",
+        "slug": "sovereign",
+        "label": "Sovereign AI cost calculator",
+        "title": "What sovereign AI can save you — Akka",
+        "description": (
+            "Estimate what a year of agentic AI costs against paid model APIs, and what "
+            "the same workload costs under multi-model routing, session routing, "
+            "self-hosted open-weight models and trained SLMs on the Akka Agentic AI "
+            "Platform."
+        ),
+        "extra_css": "",
+    },
+}
 
 SHELL = """<!--
     templateType: page
     isAvailableForNewContent: false
-    label: Agentic cost calculator
+    label: {label}
 -->
 <!doctype html>
 <html lang="en">
@@ -138,11 +171,11 @@ SHELL = """<!--
 """
 
 
-def build():
-    if not SOURCE.exists():
-        sys.exit(f"calculator source not found: {SOURCE}")
-    src = SOURCE.read_text(encoding="utf-8")
-    fragment = to_hubspot_fragment(src, scope=SCOPE, label="cost calculator")
+def build(spec):
+    if not spec["source"].exists():
+        sys.exit(f"calculator source not found: {spec['source']}")
+    src = spec["source"].read_text(encoding="utf-8")
+    fragment = to_hubspot_fragment(src, scope=SCOPE, label=spec["label"].lower())
 
     css = re.search(r"<style>(.*?)</style>", fragment, re.S).group(1)
     links = "\n".join(
@@ -155,39 +188,89 @@ def build():
         sys.exit(f"expected one brand mark to strip, removed {n}")
 
     page = SHELL.format(
-        title=TITLE, description=DESCRIPTION, links=links,
-        css=css, port_css=PORT_CSS, body=body,
+        label=spec["label"], title=spec["title"], description=spec["description"],
+        links=links, css=css, port_css=SHARED_CSS + spec["extra_css"], body=body,
     )
     OUT.mkdir(parents=True, exist_ok=True)
-    out = OUT / "akka-calculator.html"
+    out = OUT / spec["out"]
     out.write_text(page, encoding="utf-8")
-    print(out, len(page), "bytes")
+    print(spec["slug"], out, len(page), "bytes")
     return out
 
 
-def push(path):
-    token = None
-    for line in (ROOT / "scratchpad" / ".hs_env").read_text(encoding="utf-8").splitlines():
-        if line.startswith("HUBSPOT_TOKEN="):
-            token = line.split("=", 1)[1].strip()
-    if not token:
-        sys.exit("HUBSPOT_TOKEN not found in scratchpad/.hs_env")
+_TOKEN = []
 
-    import subprocess
+
+def token():
+    if not _TOKEN:
+        env = (ROOT / "scratchpad" / ".hs_env").read_text(encoding="utf-8")
+        for line in env.splitlines():
+            if line.startswith("HUBSPOT_TOKEN="):
+                _TOKEN.append(line.split("=", 1)[1].strip())
+        if not _TOKEN:
+            sys.exit("HUBSPOT_TOKEN not found in scratchpad/.hs_env")
+    return _TOKEN[0]
+
+
+def _curl(args):
+    r = subprocess.run(
+        ["curl", "-s", "-H", "Authorization: Bearer " + token()] + args,
+        capture_output=True,
+    )
+    return r.stdout.decode("utf-8", errors="strict") if r.stdout else ""
+
+
+def _json_call(method, path, body):
+    # The JSON goes to a file and curl reads @file. The page titles carry an em dash, and
+    # a shell-quoted body holding one arrives mojibaked.
+    p = ROOT / "scratchpad" / ".hs_body.json"
+    p.write_text(json.dumps(body, ensure_ascii=False), encoding="utf-8")
+    try:
+        return _curl(["-X", method, "-H", "Content-Type: application/json",
+                      "--data-binary", "@" + str(p), API + path])
+    finally:
+        p.unlink()
+
+
+def put_template(spec, path):
     for env in ("draft", "published"):
-        url = f"https://api.hubapi.com/cms/v3/source-code/{env}/content/{TEMPLATE_PATH}"
-        r = subprocess.run(
+        url = f"{API}/cms/v3/source-code/{env}/content/{spec['template']}"
+        code = subprocess.run(
             ["curl", "-s", "-o", os.devnull, "-w", "%{http_code}", "-X", "PUT", url,
-             "-H", f"Authorization: Bearer {token}", "-F", f"file=@{path}"],
+             "-H", "Authorization: Bearer " + token(), "-F", f"file=@{path}"],
             capture_output=True, text=True,
-        )
-        print(env, r.stdout.strip())
+        ).stdout.strip()
+        print("  template", env, code)
+
+
+def publish_page(spec):
+    found = json.loads(_curl([API + "/cms/v3/pages/site-pages?limit=5&slug=" + spec["slug"]]))
+    pid = next((p["id"] for p in found.get("results", []) if p["slug"] == spec["slug"]), None)
+    body = {
+        "name": spec["label"], "slug": spec["slug"], "templatePath": spec["template"],
+        "htmlTitle": spec["title"], "metaDescription": spec["description"][:300],
+        "state": "PUBLISHED", "publishImmediately": True,
+        "language": "en", "subcategory": "site_page",
+    }
+    if pid:
+        r = json.loads(_json_call("PATCH", "/cms/v3/pages/site-pages/" + pid, body))
+    else:
+        r = json.loads(_json_call("POST", "/cms/v3/pages/site-pages", body))
+        pid = r.get("id")
+    if not pid:
+        sys.exit(f"page publish failed for {spec['slug']}: {str(r)[:300]}")
+    _json_call("POST", "/cms/v3/pages/site-pages/%s/draft/push-live" % pid, {})
+    print("  page", pid, r.get("url") or "https://akka.io/" + spec["slug"])
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("page", nargs="*", choices=list(PAGES), default=list(PAGES))
     ap.add_argument("--push", action="store_true")
     a = ap.parse_args()
-    p = build()
-    if a.push:
-        push(p)
+    for name in (a.page or list(PAGES)):
+        spec = PAGES[name]
+        p = build(spec)
+        if a.push:
+            put_template(spec, p)
+            publish_page(spec)
