@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>We Ported 65 OSS Projects With AI — LinkedIn cover</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* 1920x1005 is 1.91:1, the ratio LinkedIn crops an article cover to. The 84px
+   inset also survives a 16:9 centre-crop, which takes 66px off each side. */
+:root{
+  --white:#F1F1F1;
+  --yellow:#FFCE4A;
+  --blue:#00DBDD;
+  --soft-grey:#A6A6A6;
+  --ground:#0A1120;
+  --panel:#060E1E;
+  --card:#131A28;
+  --hair:rgba(255,255,255,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:1920px;height:1005px;background:var(--ground);}
+body{font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+
+.card{
+  position:relative;width:1920px;height:1005px;overflow:hidden;
+  background:var(--panel);
+  padding:84px 90px;
+}
+
+.wm{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  display:grid;grid-template-columns:repeat(7,1fr);
+  align-content:space-between;
+  padding:70px 70px;row-gap:120px;column-gap:26px;
+  opacity:.075;
+}
+.wm div{font-size:23px;font-weight:600;color:#7C90AB;line-height:1.5;white-space:nowrap;}
+.wm span{display:block;font-size:19px;font-weight:500;color:#5E7089;}
+
+.inner{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:700px 1fr;gap:66px;}
+
+.left{display:flex;flex-direction:column;height:100%;}
+
+.eyebrow{
+  display:flex;align-items:center;gap:20px;
+  font-size:22px;font-weight:700;letter-spacing:.28em;color:var(--yellow);
+  text-transform:uppercase;margin-bottom:40px;
+}
+.eyebrow::before{content:"";width:46px;height:3px;background:var(--yellow);}
+
+h1{
+  font-size:80px;line-height:1.02;font-weight:700;letter-spacing:-.03em;
+  color:#FFFFFF;
+}
+
+.sub{
+  margin-top:36px;
+  font-size:29px;line-height:1.44;font-weight:400;color:var(--soft-grey);
+}
+
+
+.right{display:flex;flex-direction:column;height:100%;}
+
+.label{
+  margin-bottom:26px;
+  font-size:20px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--soft-grey);
+}
+
+.grid{
+  flex:1;display:grid;
+  grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(5,1fr);
+  gap:18px;
+}
+.tile{
+  background:var(--card);border:1px solid var(--hair);border-radius:14px;
+  padding:0 26px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.tile .nm{
+  font-size:27px;font-weight:700;color:var(--blue);letter-spacing:-.012em;
+  white-space:nowrap;
+}
+.tile .nm.sm{font-size:23px;letter-spacing:-.02em;}
+.tile .st{
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  font-size:27px;font-weight:700;color:var(--yellow);
+  font-variant-numeric:tabular-nums;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="wm" id="wm"></div>
+
+  <div class="inner">
+    <div class="left">
+      <div class="eyebrow">Research report</div>
+      <h1>We Ported 65 OSS Projects With AI</h1>
+      <p class="sub">We created a self-improving, spec-driven delivery harness to rewrite complete systems.</p>
+    </div>
+
+    <div class="right">
+      <div class="label">The 15 most-starred projects rebuilt</div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOP = [
+  ["deepseek-harness",191454],["dify",153379],["browser-use",110339],
+  ["uptime-kuma",90561],["ragflow",89156],["mem0",63956],
+  ["usememos",62736],["pocketbase",60792],["crewai",57560],
+  ["localai",48656],["new-api",46125],["cobalt",42240],
+  ["agno",41887],["langgraph",40362],["novu",39660]
+];
+const WM = [
+  ["openllmetry",7400],["voltagent",10400],["listmonk",23100],["haystack",26300],["glance",36600],["localai",48700],["jaeger",7900],
+  ["higress",10900],["temporal",23100],["authelia",28700],["open-notebook",37500],["crewai",57600],["alertmanager",8600],["memos",11000],
+  ["archon",23300],["redash",28800],["umami",38400],["pocketbase",60800],["pocket-id",9000],["hive",11000],["prefect",23700],
+  ["supermemory",29000],["lightrag",39100],["mem0",64000],["remark42",5100],["activitywatch",18700],["activepieces",24000],["sim",29500],
+  ["langgraph",40400],["uptime-kuma",90600],["deepstream-io",7200],["metaflow",10200],["nsq",25500],["graphrag",35700],["new-api",46100]
+];
+
+function k(n){ return n>=100000 ? (n/1000).toFixed(0)+"k" : (n/1000).toFixed(1)+"k"; }
+
+document.getElementById("grid").innerHTML = TOP.map(([n,v]) =>
+  `<div class="tile"><span class="nm${n.length>11?" sm":""}">${n}</span>
+   <span class="st">★ ${k(v)}</span></div>`).join("");
+
+document.getElementById("wm").innerHTML = WM.map(([n,v]) =>
+  `<div>${n}<span>★ ${k(v)}</span></div>`).join("");
+</script>
+</body>
+</html>

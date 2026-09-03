@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>We Ported 65 OSS Projects With AI — social card</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#F1F1F1;
+  --yellow:#FFCE4A;
+  --blue:#00DBDD;
+  --soft-grey:#A6A6A6;
+  /* The card ground is the navy the original render used, not page black. */
+  --ground:#0A1120;
+  --panel:#060E1E;
+  --card:#131A28;
+  --hair:rgba(255,255,255,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:1700px;height:1696px;background:var(--ground);}
+body{font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+
+.card{
+  position:relative;width:1700px;height:1696px;overflow:hidden;
+  background:var(--panel);border-radius:34px;
+  padding:96px 110px 84px;
+}
+
+/* Faint project index behind the content. Sits under everything and never
+   competes: it reads as texture at this opacity, not as data. */
+.wm{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  display:grid;grid-template-columns:repeat(6,1fr);
+  align-content:space-between;
+  padding:150px 90px;row-gap:150px;column-gap:30px;
+  opacity:.085;
+}
+.wm div{font-size:26px;font-weight:600;color:#7C90AB;line-height:1.5;white-space:nowrap;}
+.wm span{display:block;font-size:21px;font-weight:500;color:#5E7089;}
+
+.inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;}
+
+.eyebrow{
+  display:flex;align-items:center;gap:22px;
+  font-size:25px;font-weight:700;letter-spacing:.28em;color:var(--yellow);
+  text-transform:uppercase;margin-bottom:56px;
+}
+.eyebrow::before{content:"";width:52px;height:3px;background:var(--yellow);}
+
+h1{
+  font-size:98px;line-height:1.04;font-weight:700;letter-spacing:-.028em;
+  color:#FFFFFF;max-width:1180px;
+}
+
+.sub{
+  margin-top:44px;max-width:1180px;
+  font-size:37px;line-height:1.42;font-weight:400;color:var(--soft-grey);
+}
+
+.label{
+  margin-top:150px;margin-bottom:38px;
+  font-size:23px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--soft-grey);
+}
+
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;}
+.tile{
+  background:var(--card);border:1px solid var(--hair);border-radius:16px;
+  padding:34px 28px;min-height:206px;
+  display:flex;flex-direction:column;justify-content:center;gap:24px;
+}
+.tile .nm{
+  font-size:34px;font-weight:700;color:var(--blue);letter-spacing:-.012em;
+  line-height:1.15;white-space:nowrap;
+}
+.tile .nm.sm{font-size:26px;letter-spacing:-.02em;}
+.tile .st{
+  display:flex;align-items:center;gap:14px;
+  font-size:34px;font-weight:700;color:var(--yellow);
+  font-variant-numeric:tabular-nums;
+}
+
+.foot{
+  margin-top:auto;padding-top:56px;
+  font-size:33px;font-weight:400;color:var(--white);
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="wm" id="wm"></div>
+
+  <div class="inner">
+    <div class="eyebrow">Research report</div>
+
+    <h1>We Ported 65 OSS Projects With AI</h1>
+
+    <p class="sub">We created a self-improving, spec-driven delivery harness to rewrite complete systems.</p>
+
+    <div class="label">The 15 most-starred projects rebuilt</div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="foot">…and 50 more</div>
+  </div>
+</div>
+
+<script>
+const TOP = [
+  ["deepseek-harness",191454],["dify",153379],["browser-use",110339],
+  ["uptime-kuma",90561],["ragflow",89156],
+  ["mem0",63956],["usememos",62736],["pocketbase",60792],
+  ["crewai",57560],["localai",48656],
+  ["new-api",46125],["cobalt",42240],["agno",41887],
+  ["langgraph",40362],["novu",39660]
+];
+const WM = [
+  ["openllmetry",7400],["voltagent",10400],["listmonk",23100],["haystack",26300],["glance",36600],["localai",48700],
+  ["jaeger",7900],["higress",10900],["temporal",23100],["authelia",28700],["open-notebook",37500],["crewai",57600],
+  ["alertmanager",8600],["memos",11000],["archon",23300],["redash",28800],["umami",38400],["pocketbase",60800],
+  ["pocket-id",9000],["hive",11000],["prefect",23700],["supermemory",29000],["lightrag",39100],["mem0",64000],
+  ["remark42",5100],["activitywatch",18700],["activepieces",24000],["sim",29500],["langgraph",40400],["uptime-kuma",90600],
+  ["deepstream-io",7200],["metaflow",10200],["nsq",25500],["graphrag",35700],["new-api",46100],["deepseek-harness",191000]
+];
+
+function k(n){
+  if(n>=100000) return (n/1000).toFixed(0)+"k";
+  return (n/1000).toFixed(1)+"k";
+}
+
+document.getElementById("grid").innerHTML = TOP.map(([n,v]) =>
+  `<div class="tile"><div class="nm${n.length>10?" sm":""}">${n}</div>
+   <div class="st">★ ${k(v)}</div></div>`).join("");
+
+document.getElementById("wm").innerHTML = WM.map(([n,v]) =>
+  `<div>${n}<span>★ ${k(v)}</span></div>`).join("");
+</script>
+</body>
+</html>

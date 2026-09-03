@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Blog band background — 65 ports</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Background art only. blog-index-technical.html lays its own wash, eyebrow,
+   title, dek, date and Read link over this, so the image carries no text.
+   1792x592 at 2x renders 3584x1184, matching the existing band backgrounds. */
+:root{
+  --yellow:#FFCE4A;
+  --blue:#00DBDD;
+  --ground:#0A1120;
+  --card:#131A28;
+  --hair:rgba(255,255,255,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:1792px;height:592px;background:var(--ground);}
+body{font-family:'Instrument Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+.band{position:relative;width:1792px;height:592px;overflow:hidden;background:var(--ground);
+  padding:16px;display:grid;grid-template-columns:repeat(13,1fr);grid-template-rows:repeat(5,1fr);gap:12px;}
+/* The index template lays its own left-to-right wash over this, tuned for
+   photography. A grid of type keeps more detail through that wash than a
+   photograph does, and the headline sits on top of it to about 56% of the
+   width. This carries the left side most of the way to black so the title and
+   dek read cleanly, and clears entirely before the right edge. */
+.band::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(3,6,14,1)    0%,
+    rgba(3,6,14,1)    38%,
+    rgba(3,6,14,.86)  48%,
+    rgba(3,6,14,.45)  60%,
+    rgba(3,6,14,.12)  70%,
+    rgba(3,6,14,0)    80%);}
+.tile{
+  background:var(--card);border:1px solid var(--hair);border-radius:10px;
+  padding:0 14px;display:flex;flex-direction:column;justify-content:center;gap:8px;
+  overflow:hidden;
+}
+.nm{font-size:16px;font-weight:700;color:var(--blue);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nm.sm{font-size:13px;}
+.st{font-size:15px;font-weight:700;color:var(--yellow);white-space:nowrap;
+  font-variant-numeric:tabular-nums;}
+</style>
+</head>
+<body>
+<div class="band" id="band"></div>
+<script>
+const PORTS = [["deepseek-harness", 191454], ["dify", 153379], ["browser-use", 110339], ["uptime-kuma", 90561], ["ragflow", 89156], ["mem0", 63956], ["usememos", 62736], ["pocketbase", 60792], ["crewai", 57560], ["localai", 48656], ["new-api", 46125], ["cobalt", 42240], ["agno", 41887], ["langgraph", 40362], ["novu", 39660], ["lightrag", 39142], ["umami", 38417], ["open-notebook", 37531], ["glance", 36570], ["graphrag", 35657], ["pageindex", 35313], ["changedetection-io", 33325], ["sim", 29469], ["gpt-researcher", 29133], ["supermemory", 29034], ["redash", 28766], ["karakeep", 28738], ["authelia", 28677], ["focalboard", 26445], ["haystack", 26304], ["nsq", 25773], ["crawlee", 25485], ["promptfoo", 24536], ["activepieces", 24025], ["vanna", 23820], ["prefect", 23667], ["archon", 23266], ["jaeger", 23134], ["listmonk", 23093], ["temporal", 22501], ["teable", 21750], ["docmost", 21453], ["linkwarden", 19617], ["activitywatch", 18692], ["etherpad", 18518], ["deepwiki-open", 17752], ["planka", 12485], ["hive", 10955], ["memos", 10951], ["dtm", 10911], ["voltagent", 10409], ["metaflow", 10236], ["hyperdx", 9860], ["omnigent", 9228], ["higress", 9177], ["openstatus", 9012], ["pocket-id", 9008], ["alertmanager", 8593], ["coroot", 7887], ["openllmetry", 7396], ["deepstream-io", 7188], ["honcho", 6809], ["intentkit", 6507], ["remark42", 5587], ["opal", 5503]];
+function k(n){ return n>=100000 ? (n/1000).toFixed(0)+"k" : (n/1000).toFixed(1)+"k"; }
+document.getElementById("band").innerHTML = PORTS.map(([n,v]) =>
+  `<div class="tile"><span class="nm${n.length>11?" sm":""}">${n}</span>
+   <span class="st">★ ${k(v)}</span></div>`).join("");
+</script>
+</body>
+</html>

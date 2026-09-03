@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akka vs. AWS Bedrock</title>
+<meta name="description" content="AWS Bedrock is a cloud model service — AWS-locked building blocks you assemble and operate — while Akka is a portable, operated, governed platform.">
+<link rel="canonical" href="https://akka.io/compare/akka-vs-aws-bedrock">
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================== */
+  /*  COMPARE PAGE — Akka vs. AWS Bedrock.                                */
+  /*  Public, self-serve. akka.io/platform-intro look, shared with the   */
+  /*  industry pages: black canvas, #F5C518 accent, JetBrains Mono       */
+  /*  eyebrows, #131316 cards.                                           */
+  /*  RULE: every section is a two-sided contrast. No solo Akka stats —  */
+  /*  a number appears only opposite the AWS Bedrock number it beats.    */
+  /*  The one intentionally one-sided section is Proof (evidence).       */
+  /* ================================================================== */
+  :root{
+    --yellow:#F5C518;--black:#000;--dark:#07070C;--white:#fff;
+    --gray:#555;--muted:#9a9a9a;--dim:#6c6c6c;
+    --line:#222;--line-2:#2a2a2a;--card:#131316;--card-2:#1a1a1a;
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --pad:clamp(24px,8vw,123px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;
+    font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.55}
+  a{color:inherit}
+  section{position:relative;padding:104px var(--pad)}
+  .inner{max-width:1180px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);
+    font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--yellow);font-weight:600}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--yellow);opacity:.6}
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.03em;color:var(--white)}
+  h2{font-size:clamp(30px,4vw,54px);line-height:1.1}
+  h3{letter-spacing:-.01em}
+  .accent{color:var(--yellow)}
+  .lede{color:var(--muted);font-size:clamp(16px,1.3vw,19px);max-width:66ch;line-height:1.6}
+  .sec-head{max-width:74ch;margin-bottom:48px}
+  .sec-head h2{margin:16px 0 18px}
+
+  /* --- HERO --- */
+  #hero{min-height:78vh;display:flex;flex-direction:column;justify-content:center;
+    background:radial-gradient(90% 70% at 82% 0%,rgba(245,197,24,.10),transparent 55%),var(--black);overflow:hidden}
+  #hero .inner{max-width:1000px}
+  .hero-eyebrow{margin-bottom:28px}
+  .hero-headline{font-size:clamp(42px,6.2vw,88px);line-height:1.02;letter-spacing:-.035em;max-width:15ch}
+  .hero .lede{font-size:clamp(17px,1.5vw,21px);margin-top:26px;max-width:70ch}
+
+  /* --- section variants --- */
+  .band--panel{background:var(--dark)}
+  .band--hair{border-top:1px solid var(--line)}
+
+  /* --- VERSUS (two-column contrast) --- */
+  .versus{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:32px 30px}
+  .vcard.akka{border-color:rgba(245,197,24,.4);background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card)}
+  .vlabel{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+  .vcard.akka .vlabel{color:var(--yellow)}
+  .vcard h3{font-size:24px;margin:8px 0 6px}
+  .vcard .sub{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .vbody{margin:16px 0 0;color:var(--muted);font-size:15.5px;line-height:1.62}
+  .vbody + .vbody{margin-top:14px}
+  .vcard.akka .vbody{color:#d7d7d7}
+  .versus-note{margin-top:26px;font-size:17px;color:#cfcfcf;border-left:2px solid var(--yellow);padding-left:20px;max-width:70ch;line-height:1.5}
+
+  /* --- HEAD-TO-HEAD TABLE --- */
+  .maptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
+  .maptable th,.maptable td{text-align:left;padding:18px 20px;border-top:1px solid var(--line);vertical-align:top}
+  .maptable thead th{border-top:0;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+  .maptable thead th:last-child{color:var(--yellow)}
+  .maptable td:first-child{width:20%;color:var(--white);font-weight:600}
+  .maptable td:nth-child(2){width:40%;color:var(--muted)}
+  .maptable td:last-child{color:#e6e6e6}
+  .maptable tr td:last-child b{color:var(--yellow);font-weight:600}
+
+  /* --- COST TABLE --- */
+  .costscroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+  .costscroll::-webkit-scrollbar{height:8px}
+  .costscroll::-webkit-scrollbar-track{background:transparent}
+  .costscroll::-webkit-scrollbar-thumb{background:var(--line-2)}
+  .costscroll::-webkit-scrollbar-thumb:hover{background:var(--yellow)}
+  .costtable{width:100%;border-collapse:collapse;margin-top:4px;font-size:13.5px;line-height:1.35;min-width:760px}
+  .costtable th,.costtable td{text-align:left;padding:5px 20px;vertical-align:middle;white-space:nowrap}
+  .costtable thead th{border-bottom:1px solid var(--line);padding-bottom:10px}
+  .costtable th.h-item{color:var(--dim);font-family:var(--mono);font-size:11px;
+    letter-spacing:2px;text-transform:uppercase;font-weight:600;width:34%}
+  .costtable th.h-cmp{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--white);width:34%}
+  .costtable th.h-with{color:var(--yellow);background:rgba(245,197,24,.06);
+    border-left:1px solid rgba(245,197,24,.4);width:32%}
+  .costtable td:first-child{color:var(--white);font-weight:600}
+  .costtable td.meter{color:var(--muted)}
+  .costtable td.na{color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:1px}
+  .costtable td.with{color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid rgba(245,197,24,.4)}
+  .costtable tr.infra td{border-top:1px solid var(--line)}
+  .costtable td.included{background:rgba(245,197,24,.12);border-left:1px solid rgba(245,197,24,.4);
+    text-align:center;vertical-align:middle;color:var(--yellow);font-size:24px;font-weight:700;
+    letter-spacing:-.02em}
+  .costnote{color:var(--muted);font-size:14px;line-height:1.65;max-width:74ch;margin:26px 0 0}
+  .costnote b{color:var(--white);font-weight:600}
+
+  /* --- CUSTOMER PROOF --- */
+  .proofbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .pcard{background:linear-gradient(180deg,rgba(245,197,24,.05),transparent 55%),var(--card);border:1px solid rgba(245,197,24,.4);border-radius:14px;padding:24px 20px}
+  .pcard .co{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+  .pcard .mv{font-size:30px;font-weight:700;color:var(--yellow);line-height:1.05;letter-spacing:-.03em;margin:12px 0 8px}
+  .pcard .d{color:var(--muted);font-size:13px}
+
+  /* --- CLOSE --- */
+  .close{text-align:center}
+  .close h2{max-width:22ch;margin:0 auto 16px}
+  .close .lede{margin:0 auto}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:34px;background:var(--yellow);color:#000;
+    text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:8px}
+  .cta span{transition:transform .18s cubic-bezier(.16,1,.3,1)}
+  .cta:hover span{transform:translateX(4px)}
+
+  /* --- reveal --- */
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  /* --- responsive --- */
+  @media (max-width:960px){
+    .versus{grid-template-columns:1fr}
+    .proofbar{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:620px){
+    section{padding:64px var(--pad)}
+    .proofbar{grid-template-columns:1fr}
+    .maptable thead{display:none}
+    .maptable tr{display:block;border-top:1px solid var(--line);padding:16px 0}
+    .maptable td{display:block;border-top:0;padding:4px 0;width:auto!important}
+    .maptable td:first-child{margin-bottom:2px}
+  }
+</style>
+</head>
+<body>
+  <section class="band--hair">
+    <div class="inner">
+      <div class="sec-head">
+        <div class="eyebrow">What you pay for</div>
+        <h2 class="">You integrate numerous AWS services that are provided with Akka.</h2>
+        <p class="lede">AWS uses meter-based pricing across high margin services to calculate your bill. Akka only uses AWS commodity infrastructure.</p>
+      </div>
+      <div class="costscroll">
+        <table class="costtable">
+          <thead>
+            <tr><th class="h-item">AWS chargeable item</th><th class="h-cmp">Without Akka</th><th class="h-cmp h-with">With Akka</th></tr>
+          </thead>
+          <tbody>
+          <tr><td>AgentCore Runtime</td><td class="meter">Per vCPU-hour, per GB-hour</td><td class="included" rowspan="15">Included</td></tr>
+          <tr><td>AgentCore Memory</td><td class="meter">Per record stored, per retrieval</td></tr>
+          <tr><td>AgentCore Gateway</td><td class="meter">Per tool call, per tool search</td></tr>
+          <tr><td>AgentCore Observability</td><td class="meter">Per GB ingested into CloudWatch</td></tr>
+          <tr><td>AgentCore Policy</td><td class="meter">Per policy decision</td></tr>
+          <tr><td>AgentCore Evaluations</td><td class="meter">Per evaluation</td></tr>
+          <tr><td>Bedrock model inference</td><td class="meter">Per token</td></tr>
+          <tr><td>Bedrock Guardrails</td><td class="meter">Per text unit</td></tr>
+          <tr><td>Bedrock Model Distillation</td><td class="meter">Per training run</td></tr>
+          <tr><td>AWS Step Functions</td><td class="meter">Per state transition</td></tr>
+          <tr><td>DynamoDB, Aurora</td><td class="meter">Per request, per GB</td></tr>
+          <tr><td>ElastiCache, MemoryDB</td><td class="meter">Per node-hour</td></tr>
+          <tr><td>Kinesis, MSK, SQS, SNS</td><td class="meter">Per shard-hour, per message</td></tr>
+          <tr><td>Managed Flink</td><td class="meter">Per KPU-hour</td></tr>
+          <tr><td>EventBridge, EventBridge Scheduler</td><td class="meter">Per event, per invocation</td></tr>
+          <tr class="infra"><td>EKS</td><td class="na">N/A</td><td class="with">Per cluster-hour</td></tr>
+          <tr class="infra"><td>EC2</td><td class="na">N/A</td><td class="with">Per instance-hour</td></tr>
+          <tr class="infra"><td>EC2 GPU capacity</td><td class="na">N/A</td><td class="with">Per accelerator-hour</td></tr>
+          <tr class="infra"><td>RDS</td><td class="na">N/A</td><td class="with">Per instance-hour plus storage</td></tr>
+          <tr class="infra"><td>S3</td><td class="na">N/A</td><td class="with">Per GB stored and per request</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="costnote"><b>Included</b> means covered by the fixed annual Akka fee.</p>
+      <p class="costnote"><b>N/A</b> marks a service the AgentCore stack does not require. AgentCore Runtime is serverless, so it carries no cluster hours and no instance hours. Its memory and its state are managed services with their own meters. Its agent traces land in CloudWatch.</p>
+      <p class="costnote">EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The customer buys them from AWS at published unit prices, and the Akka fee does not move with those meters. Akka writes interaction records, evidence and policy artifacts to S3.</p>
+      <p class="costnote">Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is a choice. Routing to Bedrock stays available and bills per token on the requests sent there.</p>
+    </div>
+  </section>
+
+</body></html>
