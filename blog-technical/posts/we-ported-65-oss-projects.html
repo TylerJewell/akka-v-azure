@@ -287,7 +287,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
       <tr><td>Total</td><td></td><td>11,597 M</td><td>30,351</td><td>95.1 h</td><td>280,837</td><td>147,173</td><td class="win">0.52×</td><td></td><td></td><td></td></tr>
     </tfoot>
   </table></div>
-  <figcaption><b>Steps.</b> The number of agent-LLM interactions in order to complete a port. <b>LOC ratio.</b> Port divided by original, scope-matched; below 1× the rebuild shipped fewer lines for the same behaviour. <b>Perf ratio.</b> Original divided by port, in each report's own units, so a row is self-consistent but two rows are not comparable; above 1× the rebuild is faster.</figcaption>
+  <figcaption><b>Steps.</b> The number of agent-LLM interactions in order to complete a port. <b>LOC ratio.</b> Port divided by original, scope-matched; below 1× the rebuild shipped fewer lines for the same behavior. <b>Perf ratio.</b> Original divided by port, in each report's own units, so a row is self-consistent but two rows are not comparable; above 1× the rebuild is faster.</figcaption>
 </figure>
 </div>
 
@@ -848,7 +848,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <p>Spec-driven delivery (SDD) is the process of using specifications to define a system and use it as a foundation for its delivery. A side-effect of SDD is the avoidance of technical debt and loss from tribal knowledge migration. When implemented with appropriate guardrails, an SDD system can ensure that it maintains itself against all current best practices, avoiding the introduction of technical debt, and further, no project tribal knowledge is lost when a team member migrates to another project or someone new who is unfamiliar with the project starts to engage. If the specifications are complete and the engine which generates systems from them comprehensive, then knowledge is captured and system maintenance is (mostly) automatic.</p>
 
-<p>There are a number of spec-driven development open source toolkits available. Akka Specify is based upon speckit. We've extended it by:</p>
+<p>There are a number of spec-driven development open source toolkits available. Akka Specify is based upon <a href="https://github.com/github/spec-kit">speckit</a>. We've extended it by:</p>
 
 <h3>Structured Projects</h3>
 
@@ -965,7 +965,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
   <tr><td rowspan="4" class="prop"><strong>Process</strong><br>was the build honest?</td><td class="prop">Process integrity</td><td class="prop">Did the AI build stay honest and transparent?</td></tr>
   <tr><td class="prop">Build efficiency</td><td class="prop">Development speed and resource use</td></tr>
   <tr><td class="prop">Content &amp; brand governance</td><td class="prop">Standards compliance</td></tr>
-  <tr><td class="prop">Agentic AI safety</td><td class="prop">Safe autonomous agent behaviour</td></tr>
+  <tr><td class="prop">Agentic AI safety</td><td class="prop">Safe autonomous agent behavior</td></tr>
   </tbody>
   </table>
 </figure>
@@ -976,7 +976,7 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <h3>A Specification Standard</h3>
 
-<p>Most spec-driven development toolkits are indifferent to the structure of the specification. We've extended speckit to accept an Akka Specification which has a structure that leads to better requirements creation and faster authoring. The more structure we give to a specification, the faster a delivery cycle can complete.</p>
+<p>Most spec-driven development toolkits are indifferent to the structure of the specification. We've extended <a href="https://github.com/github/spec-kit">speckit</a> to accept an Akka Specification which has a structure that leads to better requirements creation and faster authoring. The more structure we give to a specification, the faster a delivery cycle can complete.</p>
 
 </div>
 
@@ -1011,10 +1011,10 @@ figure.viz > h5,figure.tbl > h5{max-width:640px;margin:0 auto 12px;text-align:le
 
 <ol>
 <li><strong>Interface enumeration.</strong> Extract the source system's complete interface — routes, flags, config keys, env vars, scheduled jobs, event types, migrations — into a manifest before specification begins, and require every entry to resolve to a spec rule or a recorded out-of-scope decision. It identifies interface surface the specification has not accounted for, in either direction.</li>
-<li><strong>Test-suite ingestion.</strong> Parse the source project's own test suite, plus its closed issues and release notes, and treat each assertion as a candidate rule requiring a mapping or an explicit rejection. It identifies behaviour the original's authors considered contractual that the specification does not state.</li>
+<li><strong>Test-suite ingestion.</strong> Parse the source project's own test suite, plus its closed issues and release notes, and treat each assertion as a candidate rule requiring a mapping or an explicit rejection. It identifies behavior the original's authors considered contractual that the specification does not state.</li>
 <li><strong>Copy-time provenance.</strong> Instrument the pipeline's copy path so that taking a file from the clone appends its destination, source, and content hash to the manifest as a side effect. It identifies reused material, and distinguishes files shipped byte-for-byte from files copied and then modified.</li>
-<li><strong>Differential oracle.</strong> Run the source system alongside the rebuild behind a proxy that sends each request to both and compares the responses, active throughout construction rather than only at measurement. It identifies behavioural divergence at the moment it is introduced, and — once fed generated inputs — the cases that weren't initially considered.</li>
-<li><strong>Adverse-condition observation.</strong> Degrade the running original on purpose: withdraw its dependencies one at a time, control its clock, and issue concurrent conflicting writes. It identifies error handling, retry and scheduling semantics, and concurrency behaviour, none of which appear during normal operation.</li>
+<li><strong>Differential oracle.</strong> Run the source system alongside the rebuild behind a proxy that sends each request to both and compares the responses, active throughout construction rather than only at measurement. It identifies behavioral divergence at the moment it is introduced, and — once fed generated inputs — the cases that weren't initially considered.</li>
+<li><strong>Adverse-condition observation.</strong> Degrade the running original on purpose: withdraw its dependencies one at a time, control its clock, and issue concurrent conflicting writes. It identifies error handling, retry and scheduling semantics, and concurrency behavior, none of which appear during normal operation.</li>
 </ol>
 
 </div>
@@ -1145,10 +1145,10 @@ Based upon our experience in executing these ports, we productized the project d
 <p>These results give us a baseline for comparison. We want to run a few variations against it for additional insight.</p>
 
 <ol>
-<li><strong>The blind port:</strong> We run the same target at the same model and effort, in an empty session with no discovery tooling, so the agent has only the original and Akka. This measures what those tools contribute. We expect parity to fall before LOC does, because the tools that carry the most weight are the ones that refuse: <code>test_census</code>, <code>runtime_errors</code> and <code>mutation_probe</code>. Trying harder does not replace them.</li>
-<li><strong>The rival-framework port:</strong> We port the same target onto a framework that supplies neither durable execution nor entity persistence, using the full harness. The port has to hand-write what Akka provides, and the cost of writing it lands in the LOC count. That is the same mechanism that made glanceapp/glance 44% larger when it had to reproduce Go's template library. Running it puts a number on what the platform contributes.</li>
-<li><strong>Spec-only reproduction:</strong> We give a fresh agent SPEC-001 and nothing else, with no access to the original and no clone to read, and we run the same benchmark against what it builds. This measures specification quality directly. Nothing in this run does.</li>
-<li><strong>Seeded-defect control:</strong> We remove one rule from a specification and confirm that the method removes the corresponding code from both sides and nothing else. Without it there is no evidence that the measurement can move down.</li>
+<li><strong>Porting with the tools switched off:</strong> We port the same project again, with the same model and the same effort setting. This time we take away the tools that read the original code first. The AI gets the original project and Akka, and nothing else. We want to see how much those tools were helping. We think the port will start giving wrong answers before it starts getting bigger, because the tools that help most are the ones that say no: <code>test_census</code>, <code>runtime_errors</code> and <code>mutation_probe</code>. An AI that tries harder cannot do their job for them.</li>
+<li><strong>Porting onto a different framework:</strong> We port the same project onto a framework that forgets its work when something crashes and does not store data for you. Everything Akka hands over for free has to be written by hand instead. All that hand-written code shows up as extra lines. We have seen this happen already: glanceapp/glance came out 44% bigger because it had to rebuild Go's template library itself. Running it tells us how many lines the platform saves.</li>
+<li><strong>Building from the specification alone:</strong> We hand a brand new AI the specification, SPEC-001, and nothing else. That AI never sees the original project and has no copy of it to read. Then we run the same tests against whatever it builds. Running it tells us whether the specification is good enough on its own. Every port we have run so far let the AI read the original code, so none of them answered that question.</li>
+<li><strong>Breaking the specification on purpose:</strong> We take a single rule out of a specification. Then we check that the matching code disappears from both the original and the port, and that nothing else disappears. Until we do this, we have not shown that the measurement can go down at all.</li>
 </ol>
 
 </div>
@@ -1239,7 +1239,7 @@ Based upon our experience in executing these ports, we productized the project d
       <tr><td>56</td><td class="prop">uptime-kuma</td><td><a href="https://github.com/louislam/uptime-kuma">louislam/uptime-kuma</a></td><td>90,561</td><td>Full implementation</td><td><a href="https://github.com/TylerJewell/uptime-kuma-akka">TylerJewell/uptime-kuma-akka</a></td></tr>
       <tr><td>57</td><td class="prop">linkwarden</td><td><a href="https://github.com/linkwarden/linkwarden">linkwarden/linkwarden</a></td><td>19,617</td><td>Full implementation</td><td><a href="https://github.com/TylerJewell/linkwarden-akka">TylerJewell/linkwarden-akka</a></td></tr>
       <tr><td>58</td><td class="prop">umami</td><td><a href="https://github.com/umami-software/umami">umami-software/umami</a></td><td>38,417</td><td>Full implementation</td><td><a href="https://github.com/TylerJewell/umami-akka">TylerJewell/umami-akka</a></td></tr>
-      <tr><td>59</td><td class="prop">redash</td><td><a href="https://github.com/getredash/redash">getredash/redash</a></td><td>28,766</td><td>Full implementation</td><td><a href="https://github.com/TylerJewell/redash-akka">TylerJewell/redash-akka</a></td></tr>
+      <tr><td>59</td><td class="prop">redash</td><td><a href="https://github.com/getredash/redash">getredash/redash</a></td><td>28,766</td><td>Full implementation</td><td><a href="https://github.com/TylerJewell/redash-akka">TylerJewell/redash-akka</a></td></tr><tr><td>60</td><td class="prop">usememos</td><td><a href="https://github.com/usememos/memos">usememos/memos</a></td><td>62,736</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/usememos-akka">TylerJewell/usememos-akka</a></td></tr><tr><td>61</td><td class="prop">etherpad</td><td><a href="https://github.com/ether/etherpad">ether/etherpad</a></td><td>18,518</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/etherpad-akka">TylerJewell/etherpad-akka</a></td></tr><tr><td>62</td><td class="prop">focalboard</td><td><a href="https://github.com/mattermost-community/focalboard">mattermost-community/focalboard</a></td><td>26,445</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/focalboard-akka">TylerJewell/focalboard-akka</a></td></tr><tr><td>63</td><td class="prop">planka</td><td><a href="https://github.com/plankanban/planka">plankanban/planka</a></td><td>12,485</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/planka-akka">TylerJewell/planka-akka</a></td></tr><tr><td>64</td><td class="prop">teable</td><td><a href="https://github.com/teableio/teable">teableio/teable</a></td><td>21,750</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/teable-akka">TylerJewell/teable-akka</a></td></tr><tr><td>65</td><td class="prop">karakeep</td><td><a href="https://github.com/karakeep-app/karakeep">karakeep-app/karakeep</a></td><td>28,738</td><td>10% slice</td><td><a href="https://github.com/TylerJewell/karakeep-akka">TylerJewell/karakeep-akka</a></td></tr>
     </tbody>
   </table>
 </figure>
