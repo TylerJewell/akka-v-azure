@@ -71,6 +71,9 @@
   .versus-note{margin-top:26px;font-size:17px;color:#cfcfcf;border-left:2px solid var(--yellow);padding-left:20px;max-width:70ch;line-height:1.5}
 
   /* --- HEAD-TO-HEAD TABLE --- */
+  /* The site theme puts a 3px border and a #1A1A1A fill on every cell; these
+     tables draw their own rules instead. */
+  table th,table td{border:0;background:transparent}
   .maptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:14px}
   .maptable th,.maptable td{text-align:left;padding:18px 20px;border-top:1px solid var(--line);vertical-align:top}
   .maptable thead th{border-top:0;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
@@ -93,13 +96,13 @@
     letter-spacing:2px;text-transform:uppercase;font-weight:600;width:34%}
   .costtable th.h-cmp{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--white);width:34%}
   .costtable th.h-with{color:var(--yellow);background:rgba(245,197,24,.06);
-    border-left:1px solid var(--line-2);width:32%}
+    border-left:1px solid rgba(245,197,24,.4);width:32%}
   .costtable td:first-child{color:var(--white);font-weight:600}
   .costtable td.meter{color:var(--muted)}
   .costtable td.na{color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:1px}
-  .costtable td.with{color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid var(--line-2)}
+  .costtable td.with{color:#e6e6e6;background:rgba(245,197,24,.06);border-left:1px solid rgba(245,197,24,.4)}
   .costtable tr.infra td{border-top:1px solid var(--line)}
-  .costtable td.included{background:rgba(245,197,24,.12);border-left:1px solid var(--line-2);
+  .costtable td.included{background:rgba(245,197,24,.12);border-left:1px solid rgba(245,197,24,.4);
     text-align:center;vertical-align:middle;color:var(--yellow);font-size:24px;font-weight:700;
     letter-spacing:-.02em}
   .costnote{color:var(--muted);font-size:14px;line-height:1.65;max-width:74ch;margin:26px 0 0}
@@ -266,11 +269,7 @@
           </tbody>
         </table>
       </div>
-      <p class="costnote rv"><b>Included</b> means covered by the fixed annual Akka fee.</p>
-      <p class="costnote rv"><b>N/A</b> marks a service the Foundry Agent Service stack does not require. The Agent Service is serverless, so it carries no cluster hours and no instance hours. Its memory and its state are managed services with their own meters.</p>
-      <p class="costnote rv">AKS, Azure Virtual Machines, GPU virtual machines and Azure Database for PostgreSQL are the infrastructure Akka runs on. The customer buys them from Azure at published unit prices, and the Akka fee does not move with those meters.</p>
-      <p class="costnote rv">Azure Blob Storage carries a meter in both columns. The Foundry Agent Service standard setup keeps agent files in the customer's own storage account, and Akka writes interaction records, evidence and policy artifacts there.</p>
-      <p class="costnote rv">Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is a choice. Routing to Foundry Models stays available and bills per token on the requests sent there.</p>
+      <p class="costnote rv">Akka provides spec-driven delivery, guardrails, red teaming, evaluations, AI policies, AI orchestration, AI memory, AI routing, inference, and SLM training within a single integrated stack that depends upon commodity infrastructure provided by the hyperscaler. Akka charges a fixed, annual fee without metering. With the hyperscaler, you integrate various high margin services together to create an AI solution. Each of those metered services include the relevant compute, storage, and I/O infrastructure within their fees.</p>
     </div>
   </section>
 

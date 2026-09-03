@@ -116,22 +116,12 @@ those meters. The customer keeps paying AWS for the infrastructure the platform 
 | RDS | N/A | Per instance-hour plus storage |
 | S3 | N/A | Per GB stored and per request |
 
-**Included** means covered by the fixed annual Akka fee.
-
-EKS, EC2, EC2 GPU capacity, RDS and S3 are the infrastructure Akka runs on. The customer buys
-them from AWS at published unit prices, and the Akka fee does not move with those meters. Akka
-writes interaction records, evidence and policy artifacts to S3.
-
-**N/A** marks a service the AgentCore stack does not require. AgentCore Runtime is serverless, so
-it carries no cluster hours and no instance hours. Its memory and its state are managed services
-with their own meters. Its agent traces land in CloudWatch.
-
-Akka serves open-weight models on the customer's own GPU capacity, so token-metered inference is
-a choice. Routing to Bedrock stays available and bills per token on the requests sent there.
-
-AgentCore Identity has no row because it carries no published usage meter. AgentCore Identity
-is a separate resource with its own IAM role, so it counts as a service to integrate and
-operate.
+Akka provides spec-driven delivery, guardrails, red teaming, evaluations, AI policies, AI
+orchestration, AI memory, AI routing, inference, and SLM training within a single integrated stack
+that depends upon commodity infrastructure provided by the hyperscaler. Akka charges a fixed,
+annual fee without metering. With the hyperscaler, you integrate various high margin services
+together to create an AI solution. Each of those metered services include the relevant compute,
+storage, and I/O infrastructure within their fees.
 
 ## AgentCore and the Akka SDK in detail
 
